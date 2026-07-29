@@ -38,8 +38,10 @@ need docker
 
 GATEWAY_API_KEY="$(read_env GATEWAY_API_KEY)"
 GATEWAY_ADMIN_TOKEN="$(read_env GATEWAY_ADMIN_TOKEN)"
+GATEWAY_SERVICE_TOKEN="$(read_env GATEWAY_SERVICE_TOKEN)"
 OPENAI_CHAT_MODEL="$(read_env OPENAI_CHAT_MODEL)"
 MEMORY_PROVIDER="$(read_env MEMORY_PROVIDER mempalace-letta)"
+IDENTITY_MODE="$(read_env IDENTITY_MODE legacy-client-asserted)"
 SMOKE_REQUIRE_RECALL="$(read_env SMOKE_REQUIRE_RECALL false)"
 RUSTFS_ACCESS_KEY="$(read_env RUSTFS_ACCESS_KEY)"
 RUSTFS_SECRET_KEY="$(read_env RUSTFS_SECRET_KEY)"
@@ -53,6 +55,27 @@ case "${MEMORY_PROVIDER}" in
     ;;
   *)
     echo "Unsupported MEMORY_PROVIDER: ${MEMORY_PROVIDER}" >&2
+    exit 64
+    ;;
+esac
+
+case "${IDENTITY_MODE}" in
+  legacy)
+    IDENTITY_MODE="legacy-client-asserted"
+    ;;
+  lobehub|trusted-user)
+    IDENTITY_MODE="trusted-openai-user"
+    ;;
+  optional|preferred)
+    IDENTITY_MODE="jwt-preferred"
+    ;;
+  required|jwt)
+    IDENTITY_MODE="jwt-required"
+    ;;
+  legacy-client-asserted|trusted-openai-user|jwt-preferred|jwt-required)
+    ;;
+  *)
+    echo "Unsupported IDENTITY_MODE: ${IDENTITY_MODE}" >&2
     exit 64
     ;;
 esac
@@ -77,6 +100,13 @@ for key in GATEWAY_API_KEY GATEWAY_ADMIN_TOKEN OPENAI_CHAT_MODEL RUSTFS_ACCESS_K
   fi
 done
 
+if [[ "${IDENTITY_MODE}" == "trusted-openai-user" || "${IDENTITY_MODE}" == "jwt-required" ]]; then
+  if [[ -z "${GATEWAY_SERVICE_TOKEN}" ]]; then
+    echo "GATEWAY_SERVICE_TOKEN is required for smoke tests in ${IDENTITY_MODE} mode" >&2
+    exit 64
+  fi
+fi
+
 started_at="$(date --iso-8601=seconds)"
 started_epoch="$(date +%s)"
 marker="SUMEME_SMOKE_$(date -u +%Y%m%dT%H%M%SZ)_${RANDOM}"
@@ -95,6 +125,7 @@ mempalace_recall_ok=false
 letta_recall_ok=false
 supermemory_recall_ok=false
 s3_ok=false
+service_identity_used=false
 error_codes=()
 
 http_code="$(curl --silent --show-error --max-time 30 \
@@ -153,11 +184,24 @@ with open(path, "w", encoding="utf-8") as handle:
     json.dump(payload, handle, ensure_ascii=False)
 PY
 
+chat_headers=(
+  --header "Authorization: Bearer ${GATEWAY_API_KEY}"
+  --header 'Content-Type: application/json'
+)
+if [[ -n "${GATEWAY_SERVICE_TOKEN}" ]]; then
+  chat_headers+=(
+    --header "X-SuMeMe-Service-Token: ${GATEWAY_SERVICE_TOKEN}"
+    --header "X-SuMeMe-Service-Id: ${SMOKE_ACCOUNT_ID}"
+    --header "X-SuMeMe-Vault-Id: ${SMOKE_VAULT_ID}"
+    --header 'X-SuMeMe-Device-Id: production-runner'
+  )
+  service_identity_used=true
+fi
+
 http_code="$(curl --silent --show-error --max-time 180 \
   --output "${temp_dir}/chat-response.json" \
   --write-out '%{http_code}' \
-  --header "Authorization: Bearer ${GATEWAY_API_KEY}" \
-  --header 'Content-Type: application/json' \
+  "${chat_headers[@]}" \
   --data-binary "@${temp_dir}/chat-request.json" \
   "http://127.0.0.1:${GATEWAY_PORT}/v1/chat/completions" || true)"
 if [[ "${http_code}" =~ ^2 ]]; then
@@ -384,11 +428,11 @@ errors_json="$(printf '%s\n' "${error_codes[@]:-}" | python3 -c 'import json,sys
 python3 - \
   "${OUTPUT_PATH}.tmp" \
   "${started_at}" "${finished_at}" "${duration_seconds}" "${overall}" \
-  "${deployment_gate}" "${MEMORY_PROVIDER}" "${SMOKE_SCOPE}" \
-  "${SMOKE_REQUIRE_RECALL}" "${models_ok}" "${chat_ok}" "${scope_ok}" \
-  "${write_ok}" "${recall_ok}" "${mempalace_write_ok}" "${letta_write_ok}" \
-  "${supermemory_write_ok}" "${mempalace_recall_ok}" "${letta_recall_ok}" \
-  "${supermemory_recall_ok}" "${s3_ok}" "${errors_json}" <<'PY'
+  "${deployment_gate}" "${MEMORY_PROVIDER}" "${IDENTITY_MODE}" "${SMOKE_SCOPE}" \
+  "${service_identity_used}" "${SMOKE_REQUIRE_RECALL}" "${models_ok}" "${chat_ok}" \
+  "${scope_ok}" "${write_ok}" "${recall_ok}" "${mempalace_write_ok}" \
+  "${letta_write_ok}" "${supermemory_write_ok}" "${mempalace_recall_ok}" \
+  "${letta_recall_ok}" "${supermemory_recall_ok}" "${s3_ok}" "${errors_json}" <<'PY'
 import json
 import sys
 
@@ -400,7 +444,9 @@ import sys
     overall,
     deployment_gate,
     memory_provider,
+    identity_mode,
     test_scope,
+    service_identity_used,
     require_recall,
     models_ok,
     chat_ok,
@@ -441,7 +487,7 @@ else:
     recall_components = {"supermemory": supermemory_recall_ok == "true"}
 
 result = {
-    "schema_version": 4,
+    "schema_version": 5,
     "generated_at": finished_at,
     "started_at": started_at,
     "finished_at": finished_at,
@@ -449,6 +495,8 @@ result = {
     "overall": overall,
     "deployment_gate": deployment_gate,
     "memory_provider": memory_provider,
+    "identity_mode": identity_mode,
+    "service_identity_used": service_identity_used == "true",
     "test_scope": test_scope,
     "require_recall": require_recall == "true",
     "checks": checks,
@@ -462,9 +510,9 @@ with open(output_path, "w", encoding="utf-8") as handle:
 PY
 mv "${OUTPUT_PATH}.tmp" "${OUTPUT_PATH}"
 
-printf 'SuMeMe smoke test: overall=%s gate=%s provider=%s scope=%s models=%s chat=%s write=%s recall=%s s3=%s duration=%ss\n' \
-  "${overall}" "${deployment_gate}" "${MEMORY_PROVIDER}" "${SMOKE_SCOPE}" \
-  "${models_ok}" "${chat_ok}" "${write_ok}" "${recall_ok}" "${s3_ok}" \
-  "${duration_seconds}"
+printf 'SuMeMe smoke test: overall=%s gate=%s provider=%s identity=%s scope=%s models=%s chat=%s write=%s recall=%s s3=%s duration=%ss\n' \
+  "${overall}" "${deployment_gate}" "${MEMORY_PROVIDER}" "${IDENTITY_MODE}" \
+  "${SMOKE_SCOPE}" "${models_ok}" "${chat_ok}" "${write_ok}" "${recall_ok}" \
+  "${s3_ok}" "${duration_seconds}"
 
 [[ "${deployment_gate}" == "success" ]]
