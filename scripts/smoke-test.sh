@@ -40,6 +40,7 @@ GATEWAY_API_KEY="$(read_env GATEWAY_API_KEY)"
 GATEWAY_ADMIN_TOKEN="$(read_env GATEWAY_ADMIN_TOKEN)"
 OPENAI_CHAT_MODEL="$(read_env OPENAI_CHAT_MODEL)"
 MEMORY_PROVIDER="$(read_env MEMORY_PROVIDER mempalace-letta)"
+SMOKE_REQUIRE_RECALL="$(read_env SMOKE_REQUIRE_RECALL false)"
 RUSTFS_ACCESS_KEY="$(read_env RUSTFS_ACCESS_KEY)"
 RUSTFS_SECRET_KEY="$(read_env RUSTFS_SECRET_KEY)"
 RUSTFS_LOBE_BUCKET="$(read_env RUSTFS_LOBE_BUCKET lobe)"
@@ -52,6 +53,19 @@ case "${MEMORY_PROVIDER}" in
     ;;
   *)
     echo "Unsupported MEMORY_PROVIDER: ${MEMORY_PROVIDER}" >&2
+    exit 64
+    ;;
+esac
+
+case "${SMOKE_REQUIRE_RECALL,,}" in
+  1|true|yes|on)
+    SMOKE_REQUIRE_RECALL=true
+    ;;
+  0|false|no|off)
+    SMOKE_REQUIRE_RECALL=false
+    ;;
+  *)
+    echo "Invalid SMOKE_REQUIRE_RECALL=${SMOKE_REQUIRE_RECALL}" >&2
     exit 64
     ;;
 esac
@@ -72,10 +86,14 @@ trap 'rm -rf "${temp_dir}"' EXIT
 models_ok=false
 chat_ok=false
 scope_ok=false
-active_memory_ok=false
-mempalace_ok=false
-letta_ok=false
-supermemory_ok=false
+write_ok=false
+recall_ok=false
+mempalace_write_ok=false
+letta_write_ok=false
+supermemory_write_ok=false
+mempalace_recall_ok=false
+letta_recall_ok=false
+supermemory_recall_ok=false
 s3_ok=false
 error_codes=()
 
@@ -167,6 +185,78 @@ else
 fi
 
 if [[ "${chat_ok}" == "true" ]]; then
+  python3 - \
+    "${temp_dir}/checkpoint-request.json" \
+    "${temp_dir}/chat-request.json" \
+    "${marker}" "${SMOKE_ACCOUNT_ID}" "${SMOKE_VAULT_ID}" <<'PY'
+import json
+import sys
+
+output_path, chat_path, marker, account_id, vault_id = sys.argv[1:]
+with open(chat_path, encoding="utf-8") as handle:
+    chat_payload = json.load(handle)
+body = {
+    "principal_type": "service",
+    "account_id": account_id,
+    "vault_id": vault_id,
+    "conversation_id": "sumeme-production-smoke",
+    "request_payload": chat_payload,
+    "assistant_text": marker,
+}
+with open(output_path, "w", encoding="utf-8") as handle:
+    json.dump(body, handle, ensure_ascii=False)
+PY
+
+  http_code="$(curl --silent --show-error --max-time 360 \
+    --output "${temp_dir}/checkpoint-response.json" \
+    --write-out '%{http_code}' \
+    --header "Authorization: Bearer ${GATEWAY_ADMIN_TOKEN}" \
+    --header 'Content-Type: application/json' \
+    --data-binary "@${temp_dir}/checkpoint-request.json" \
+    "http://127.0.0.1:${GATEWAY_PORT}/api/memory/checkpoint" || true)"
+
+  if [[ "${http_code}" =~ ^2 ]]; then
+    read -r response_scope response_provider write_result mempalace_result letta_result supermemory_result write_errors < <(
+      python3 - "${temp_dir}/checkpoint-response.json" <<'PY'
+import json
+import sys
+
+with open(sys.argv[1], encoding="utf-8") as handle:
+    value = json.load(handle)
+write = value.get("write") if isinstance(value, dict) else {}
+components = write.get("components") if isinstance(write, dict) else {}
+errors = write.get("error_codes") if isinstance(write, dict) else []
+print(
+    value.get("scope", "unknown") if isinstance(value, dict) else "unknown",
+    write.get("provider", "unknown") if isinstance(write, dict) else "unknown",
+    "true" if write.get("success") is True else "false",
+    "true" if components.get("mempalace") is True else "false",
+    "true" if components.get("letta") is True else "false",
+    "true" if components.get("supermemory") is True else "false",
+    ",".join(str(item) for item in errors) or "none",
+)
+PY
+    )
+
+    [[ "${response_scope}" == "${SMOKE_SCOPE}" ]] && scope_ok=true
+    [[ "${response_provider}" == "${MEMORY_PROVIDER}" && "${write_result}" == "true" ]] && write_ok=true
+    [[ "${mempalace_result}" == "true" ]] && mempalace_write_ok=true
+    [[ "${letta_result}" == "true" ]] && letta_write_ok=true
+    [[ "${supermemory_result}" == "true" ]] && supermemory_write_ok=true
+
+    [[ "${response_scope}" == "${SMOKE_SCOPE}" ]] || error_codes+=("checkpoint_scope_mismatch")
+    [[ "${response_provider}" == "${MEMORY_PROVIDER}" ]] || error_codes+=("checkpoint_provider_mismatch")
+    if [[ "${write_errors}" != "none" ]]; then
+      IFS=',' read -ra checkpoint_errors <<<"${write_errors}"
+      error_codes+=("${checkpoint_errors[@]}")
+    fi
+    [[ "${write_result}" == "true" ]] || error_codes+=("memory_checkpoint_failed")
+  else
+    error_codes+=("memory_checkpoint_http_${http_code:-000}")
+  fi
+fi
+
+if [[ "${write_ok}" == "true" ]]; then
   for ((attempt = 1; attempt <= SMOKE_MEMORY_ATTEMPTS; attempt++)); do
     python3 - \
       "${temp_dir}/memory-request.json" \
@@ -221,39 +311,35 @@ PY
         error_codes+=("memory_provider_mismatch")
         break
       fi
-      if [[ "${response_scope}" == "${SMOKE_SCOPE}" ]]; then
-        scope_ok=true
-      else
+      if [[ "${response_scope}" != "${SMOKE_SCOPE}" ]]; then
         error_codes+=("memory_scope_mismatch")
         break
       fi
 
-      [[ "${mempalace_hit}" == "true" ]] && mempalace_ok=true
-      [[ "${letta_hit}" == "true" ]] && letta_ok=true
-      [[ "${supermemory_hit}" == "true" ]] && supermemory_ok=true
+      mempalace_recall_ok="${mempalace_hit}"
+      letta_recall_ok="${letta_hit}"
+      supermemory_recall_ok="${supermemory_hit}"
 
       if [[ "${MEMORY_PROVIDER}" == "mempalace-letta" ]]; then
-        [[ "${mempalace_ok}" == "true" && "${letta_ok}" == "true" ]] && active_memory_ok=true
+        [[ "${mempalace_recall_ok}" == "true" && "${letta_recall_ok}" == "true" ]] && recall_ok=true
       else
-        [[ "${supermemory_ok}" == "true" ]] && active_memory_ok=true
+        [[ "${supermemory_recall_ok}" == "true" ]] && recall_ok=true
       fi
     fi
 
-    if [[ "${active_memory_ok}" == "true" && "${scope_ok}" == "true" ]]; then
-      break
-    fi
+    [[ "${recall_ok}" == "true" ]] && break
     if (( attempt < SMOKE_MEMORY_ATTEMPTS )); then
       sleep "${SMOKE_MEMORY_DELAY_SECONDS}"
     fi
   done
 fi
 
-if [[ "${active_memory_ok}" != "true" ]]; then
+if [[ "${recall_ok}" != "true" ]]; then
   if [[ "${MEMORY_PROVIDER}" == "mempalace-letta" ]]; then
-    [[ "${mempalace_ok}" == "true" ]] || error_codes+=("mempalace_recall_failed")
-    [[ "${letta_ok}" == "true" ]] || error_codes+=("letta_recall_failed")
+    [[ "${mempalace_recall_ok}" == "true" ]] || error_codes+=("mempalace_recall_delayed")
+    [[ "${letta_recall_ok}" == "true" ]] || error_codes+=("letta_recall_delayed")
   else
-    error_codes+=("supermemory_recall_failed")
+    error_codes+=("supermemory_recall_delayed")
   fi
 fi
 [[ "${scope_ok}" == "true" ]] || error_codes+=("service_scope_verification_failed")
@@ -280,20 +366,29 @@ fi
 
 finished_at="$(date --iso-8601=seconds)"
 duration_seconds="$(( $(date +%s) - started_epoch ))"
+deployment_gate="success"
 overall="success"
 if [[ "${models_ok}" != "true" || "${chat_ok}" != "true" || \
-      "${scope_ok}" != "true" || "${active_memory_ok}" != "true" || \
+      "${scope_ok}" != "true" || "${write_ok}" != "true" || \
       "${s3_ok}" != "true" ]]; then
+  deployment_gate="failure"
   overall="failure"
+elif [[ "${recall_ok}" != "true" ]]; then
+  overall="degraded"
+  if [[ "${SMOKE_REQUIRE_RECALL}" == "true" ]]; then
+    deployment_gate="failure"
+  fi
 fi
 
-errors_json="$(printf '%s\n' "${error_codes[@]:-}" | python3 -c 'import json,sys; print(json.dumps([x for x in (line.strip() for line in sys.stdin) if x]))')"
+errors_json="$(printf '%s\n' "${error_codes[@]:-}" | python3 -c 'import json,sys; print(json.dumps(list(dict.fromkeys(x for x in (line.strip() for line in sys.stdin) if x))))')"
 python3 - \
   "${OUTPUT_PATH}.tmp" \
   "${started_at}" "${finished_at}" "${duration_seconds}" "${overall}" \
-  "${MEMORY_PROVIDER}" "${SMOKE_SCOPE}" "${models_ok}" "${chat_ok}" \
-  "${scope_ok}" "${active_memory_ok}" "${mempalace_ok}" "${letta_ok}" \
-  "${supermemory_ok}" "${s3_ok}" "${errors_json}" <<'PY'
+  "${deployment_gate}" "${MEMORY_PROVIDER}" "${SMOKE_SCOPE}" \
+  "${SMOKE_REQUIRE_RECALL}" "${models_ok}" "${chat_ok}" "${scope_ok}" \
+  "${write_ok}" "${recall_ok}" "${mempalace_write_ok}" "${letta_write_ok}" \
+  "${supermemory_write_ok}" "${mempalace_recall_ok}" "${letta_recall_ok}" \
+  "${supermemory_recall_ok}" "${s3_ok}" "${errors_json}" <<'PY'
 import json
 import sys
 
@@ -303,15 +398,21 @@ import sys
     finished_at,
     duration_seconds,
     overall,
+    deployment_gate,
     memory_provider,
     test_scope,
+    require_recall,
     models_ok,
     chat_ok,
     scope_ok,
-    active_memory_ok,
-    mempalace_ok,
-    letta_ok,
-    supermemory_ok,
+    write_ok,
+    recall_ok,
+    mempalace_write_ok,
+    letta_write_ok,
+    supermemory_write_ok,
+    mempalace_recall_ok,
+    letta_recall_ok,
+    supermemory_recall_ok,
     s3_ok,
     errors_json,
 ) = sys.argv[1:]
@@ -320,25 +421,39 @@ checks = {
     "models": models_ok == "true",
     "chat": chat_ok == "true",
     "scope": scope_ok == "true",
-    "active_memory": active_memory_ok == "true",
+    "memory_write": write_ok == "true",
+    "memory_recall": recall_ok == "true",
     "s3": s3_ok == "true",
 }
+write_components = {}
+recall_components = {}
 if memory_provider == "mempalace-letta":
-    checks["mempalace"] = mempalace_ok == "true"
-    checks["letta"] = letta_ok == "true"
+    write_components = {
+        "mempalace": mempalace_write_ok == "true",
+        "letta": letta_write_ok == "true",
+    }
+    recall_components = {
+        "mempalace": mempalace_recall_ok == "true",
+        "letta": letta_recall_ok == "true",
+    }
 else:
-    checks["supermemory"] = supermemory_ok == "true"
+    write_components = {"supermemory": supermemory_write_ok == "true"}
+    recall_components = {"supermemory": supermemory_recall_ok == "true"}
 
 result = {
-    "schema_version": 3,
+    "schema_version": 4,
     "generated_at": finished_at,
     "started_at": started_at,
     "finished_at": finished_at,
     "duration_seconds": int(duration_seconds),
     "overall": overall,
+    "deployment_gate": deployment_gate,
     "memory_provider": memory_provider,
     "test_scope": test_scope,
+    "require_recall": require_recall == "true",
     "checks": checks,
+    "write_components": write_components,
+    "recall_components": recall_components,
     "error_codes": json.loads(errors_json),
 }
 with open(output_path, "w", encoding="utf-8") as handle:
@@ -347,8 +462,9 @@ with open(output_path, "w", encoding="utf-8") as handle:
 PY
 mv "${OUTPUT_PATH}.tmp" "${OUTPUT_PATH}"
 
-printf 'SuMeMe smoke test: overall=%s provider=%s scope=%s models=%s chat=%s memory=%s s3=%s duration=%ss\n' \
-  "${overall}" "${MEMORY_PROVIDER}" "${SMOKE_SCOPE}" "${models_ok}" \
-  "${chat_ok}" "${active_memory_ok}" "${s3_ok}" "${duration_seconds}"
+printf 'SuMeMe smoke test: overall=%s gate=%s provider=%s scope=%s models=%s chat=%s write=%s recall=%s s3=%s duration=%ss\n' \
+  "${overall}" "${deployment_gate}" "${MEMORY_PROVIDER}" "${SMOKE_SCOPE}" \
+  "${models_ok}" "${chat_ok}" "${write_ok}" "${recall_ok}" "${s3_ok}" \
+  "${duration_seconds}"
 
-[[ "${overall}" == "success" ]]
+[[ "${deployment_gate}" == "success" ]]
