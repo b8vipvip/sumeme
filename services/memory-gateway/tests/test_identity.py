@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import time
 
@@ -28,12 +29,18 @@ def key_material() -> tuple[rsa.RSAPrivateKey, str]:
     return private_key, json.dumps({"keys": [public_jwk]})
 
 
+def verified_account_id(subject: str, issuer: str = ISSUER) -> str:
+    digest = hashlib.sha256(f"{issuer}\x00{subject}".encode()).hexdigest()
+    return f"oidc-{digest[:32]}"
+
+
 def make_settings(jwks: str, **overrides) -> Settings:
     values = {
         "openai_relay_base_url": "https://relay.example/v1",
         "openai_relay_api_key": SecretStr("relay-key"),
         "gateway_api_key": SecretStr("gateway-key"),
         "gateway_admin_token": SecretStr("admin-key"),
+        "gateway_service_token": SecretStr("service-key"),
         "identity_mode": "jwt-required",
         "identity_issuer": ISSUER,
         "identity_audience": AUDIENCE,
@@ -99,9 +106,43 @@ async def test_verified_subject_replaces_all_client_asserted_account_ids() -> No
         },
     )
 
-    assert scope == MemoryScope.account("oidc-user-123", "work", device_id="phone-a")
+    expected_account = verified_account_id("oidc-user-123")
+    assert scope == MemoryScope.account(expected_account, "work", device_id="phone-a")
     assert "attacker" not in scope.storage_key
+    assert "oidc-user-123" not in scope.storage_key
     assert scope.principal_type == "account"
+
+
+@pytest.mark.asyncio
+async def test_subjects_that_normalize_similarly_still_get_distinct_accounts() -> None:
+    private_key, jwks = key_material()
+    resolver = IdentityResolver(make_settings(jwks))
+
+    first = await resolver.resolve_chat_scope(
+        Headers(
+            {
+                "x-sumeme-identity-token": issue_token(
+                    private_key,
+                    subject="tenant/a",
+                )
+            }
+        ),
+        {},
+    )
+    second = await resolver.resolve_chat_scope(
+        Headers(
+            {
+                "x-sumeme-identity-token": issue_token(
+                    private_key,
+                    subject="tenant_a",
+                )
+            }
+        ),
+        {},
+    )
+
+    assert first.account_id != second.account_id
+    assert first.storage_key != second.storage_key
 
 
 @pytest.mark.asyncio
@@ -197,6 +238,49 @@ async def test_old_but_unexpired_token_is_rejected() -> None:
         )
 
     assert captured.value.code == "identity_token_too_old"
+
+
+@pytest.mark.asyncio
+async def test_service_token_creates_only_a_service_scope() -> None:
+    _private_key, jwks = key_material()
+    resolver = IdentityResolver(make_settings(jwks))
+
+    scope = await resolver.resolve_chat_scope(
+        Headers(
+            {
+                "x-sumeme-service-token": "service-key",
+                "x-sumeme-service-id": "sumeme-smoke",
+                "x-sumeme-vault-id": "production-smoke",
+                "x-sumeme-account-id": "real-user-cannot-be-impersonated",
+            }
+        ),
+        {"user": "another-account"},
+    )
+
+    assert scope == MemoryScope.service("sumeme-smoke", "production-smoke")
+    assert scope.principal_type == "service"
+
+
+@pytest.mark.asyncio
+async def test_invalid_service_token_never_falls_back() -> None:
+    _private_key, jwks = key_material()
+    resolver = IdentityResolver(
+        make_settings(jwks, identity_mode="jwt-preferred")
+    )
+
+    with pytest.raises(IdentityError) as captured:
+        await resolver.resolve_chat_scope(
+            Headers(
+                {
+                    "x-sumeme-service-token": "wrong",
+                    "x-sumeme-service-id": "smoke",
+                    "x-sumeme-account-id": "fallback-user",
+                }
+            ),
+            {},
+        )
+
+    assert captured.value.code == "service_identity_invalid"
 
 
 def test_jwt_mode_rejects_hmac_algorithm_configuration() -> None:
