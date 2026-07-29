@@ -4,8 +4,9 @@ import asyncio
 import json
 import logging
 import uuid
+from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
-from typing import Any, AsyncIterator
+from typing import Any
 
 import httpx
 from fastapi import FastAPI, Header, HTTPException, Request
@@ -241,7 +242,7 @@ def _capture_sse_text(line: bytes, parts: list[str]) -> None:
             parts.append(delta)
         elif delta:
             parts.append(flatten_content(delta))
-    except Exception:
+    except (json.JSONDecodeError, UnicodeDecodeError, TypeError):
         return
 
 
@@ -251,7 +252,7 @@ def _json_or_error(response: httpx.Response) -> dict[str, Any]:
         if isinstance(value, dict):
             return value
         return {"data": value}
-    except Exception:
+    except ValueError:
         return {
             "error": {
                 "message": response.text[:5000],
