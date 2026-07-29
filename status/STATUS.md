@@ -1,12 +1,12 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-29T15:26:36+08:00
+- **采集时间：** 2026-07-29T15:32:32+08:00
 - **总体状态：** `healthy`
-- **开发阶段：** `deployed_and_stable`
+- **开发阶段：** `development_in_progress`
 - **线上版本：** `fe9e4a37401cdda1288226990236536cba85288b`
 - **main 最新版本：** `fe9e4a37401cdda1288226990236536cba85288b`
 - **线上与 main 同步：** 是
-- **开放 PR：** 0
+- **开放 PR：** 1
 - **开放 Issue：** 0
 
 ## 健康检查
@@ -14,15 +14,15 @@
 - 本地网关：`ok`
 - 公网入口：`ok`
 - 磁盘使用：`82.5%`，剩余 5.2 GiB
-- 内存使用：`60.7%`，可用 1.4 GiB
+- 内存使用：`60.0%`，可用 1.5 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
 | letta | running | healthy | Up 3 hours (healthy) |
-| lobe | running | - | Up 2 hours |
-| memory-gateway | running | healthy | Up 23 minutes (healthy) |
+| lobe | running | - | Up 3 hours |
+| memory-gateway | running | healthy | Up 29 minutes (healthy) |
 | postgresql | running | healthy | Up 3 hours (healthy) |
 | qdrant | running | healthy | Up 3 hours (healthy) |
 | redis | running | healthy | Up 3 hours (healthy) |
@@ -33,18 +33,18 @@
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| CI | in_progress | agent/autodevops-plugin | 2026-07-29T07:26:26Z |
-| Publish project status | in_progress | main | 2026-07-29T07:26:07Z |
-| Publish project status | cancelled | main | 2026-07-29T07:25:59Z |
-| Deploy production | skipped | main | 2026-07-29T07:25:45Z |
-| CI | success | agent/autodevops-plugin | 2026-07-29T07:25:35Z |
-| Publish project status | success | main | 2026-07-29T07:06:12Z |
-| Publish project status | success | main | 2026-07-29T07:02:49Z |
-| Deploy production | success | main | 2026-07-29T07:03:32Z |
+| Plugin CI | in_progress | agent/autodevops-plugin | 2026-07-29T07:32:09Z |
+| CI | in_progress | agent/autodevops-plugin | 2026-07-29T07:32:04Z |
+| CI | in_progress | agent/autodevops-plugin | 2026-07-29T07:32:04Z |
+| Plugin CI | failure | agent/autodevops-plugin | 2026-07-29T07:32:20Z |
+| Publish project status | in_progress | main | 2026-07-29T07:32:11Z |
+| Publish project status | cancelled | main | 2026-07-29T07:31:38Z |
+| Deploy production | skipped | main | 2026-07-29T07:31:35Z |
+| Publish project status | cancelled | main | 2026-07-29T07:31:35Z |
 
 ## 开放 PR
 
-- 无
+- #2 Build reusable AutoDevOps Bridge ChatGPT plugin (`agent/autodevops-plugin` → `main`)
 
 ## 开放 Issue
 
