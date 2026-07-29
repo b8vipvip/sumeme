@@ -1,6 +1,6 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-29T18:28:06+08:00
+- **采集时间：** 2026-07-29T19:41:04+08:00
 - **总体状态：** `healthy`
 - **开发阶段：** `deployment_behind_main`
 - **线上版本：** `fe9e4a37401cdda1288226990236536cba85288b`
@@ -14,33 +14,33 @@
 - 本地网关：`ok`
 - 公网入口：`ok`
 - 磁盘使用：`76.3%`，剩余 7.6 GiB
-- 内存使用：`54.6%`，可用 1.6 GiB
+- 内存使用：`53.9%`，可用 1.7 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| letta | running | healthy | Up 6 hours (healthy) |
-| lobe | running | - | Up 5 hours |
-| memory-gateway | running | healthy | Up 17 minutes (healthy) |
-| postgresql | running | healthy | Up 6 hours (healthy) |
-| qdrant | running | healthy | Up 6 hours (healthy) |
-| redis | running | healthy | Up 6 hours (healthy) |
-| rustfs | running | healthy | Up 6 hours (healthy) |
-| searxng | running | - | Up 6 hours |
+| letta | running | healthy | Up 7 hours (healthy) |
+| lobe | running | - | Up 7 hours |
+| memory-gateway | running | healthy | Up About an hour (healthy) |
+| postgresql | running | healthy | Up 8 hours (healthy) |
+| qdrant | running | healthy | Up 8 hours (healthy) |
+| redis | running | healthy | Up 8 hours (healthy) |
+| rustfs | running | healthy | Up 8 hours (healthy) |
+| searxng | running | - | Up 8 hours |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-07-29T10:27:45Z |
-| Deploy production | failure | main | 2026-07-29T10:27:29Z |
-| Publish project status | cancelled | main | 2026-07-29T10:27:40Z |
-| CI | success | main | 2026-07-29T10:17:50Z |
-| Publish project status | cancelled | main | 2026-07-29T10:18:03Z |
-| Publish project status | cancelled | main | 2026-07-29T10:17:15Z |
-| Deploy production | skipped | main | 2026-07-29T10:16:45Z |
-| Publish project status | cancelled | main | 2026-07-29T10:16:48Z |
+| CI | queued | agent/trusted-jwt-identity | 2026-07-29T11:40:57Z |
+| CI | queued | agent/trusted-jwt-identity | 2026-07-29T11:40:49Z |
+| Publish project status | in_progress | main | 2026-07-29T11:40:43Z |
+| Deploy production | skipped | main | 2026-07-29T11:40:34Z |
+| Publish project status | cancelled | main | 2026-07-29T11:40:38Z |
+| CI | in_progress | agent/trusted-jwt-identity | 2026-07-29T11:40:25Z |
+| CI | success | agent/trusted-jwt-identity | 2026-07-29T11:40:31Z |
+| Publish project status | success | main | 2026-07-29T10:29:29Z |
 
 ## 开放 PR
 
@@ -61,7 +61,7 @@
 
 ## 可靠性信号
 
-- 状态快照发布时年龄：`1s`
+- 状态快照发布时年龄：`0s`
 - 状态快照过期：`no`（阈值 2100s）
 - 磁盘保护级别：`ok`
 - 最近 smoke test：`failure`
