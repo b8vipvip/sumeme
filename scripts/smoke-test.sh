@@ -224,27 +224,46 @@ if [[ "${models_ok}" != "true" || "${chat_ok}" != "true" || \
 fi
 
 errors_json="$(printf '%s\n' "${error_codes[@]:-}" | python3 -c 'import json,sys; print(json.dumps([x for x in (line.strip() for line in sys.stdin) if x]))')"
-python3 - "${OUTPUT_PATH}.tmp" <<PY
+python3 - \
+  "${OUTPUT_PATH}.tmp" \
+  "${started_at}" "${finished_at}" "${duration_seconds}" "${overall}" \
+  "${models_ok}" "${chat_ok}" "${mempalace_ok}" "${letta_ok}" "${s3_ok}" \
+  "${errors_json}" <<'PY'
 import json
+import sys
+
+(
+    output_path,
+    started_at,
+    finished_at,
+    duration_seconds,
+    overall,
+    models_ok,
+    chat_ok,
+    mempalace_ok,
+    letta_ok,
+    s3_ok,
+    errors_json,
+) = sys.argv[1:]
 
 result = {
     "schema_version": 1,
-    "generated_at": ${finished_at@Q},
-    "started_at": ${started_at@Q},
-    "finished_at": ${finished_at@Q},
-    "duration_seconds": int(${duration_seconds}),
-    "overall": ${overall@Q},
+    "generated_at": finished_at,
+    "started_at": started_at,
+    "finished_at": finished_at,
+    "duration_seconds": int(duration_seconds),
+    "overall": overall,
     "checks": {
-        "models": ${models_ok},
-        "chat": ${chat_ok},
-        "mempalace": ${mempalace_ok},
-        "letta": ${letta_ok},
-        "s3": ${s3_ok},
+        "models": models_ok == "true",
+        "chat": chat_ok == "true",
+        "mempalace": mempalace_ok == "true",
+        "letta": letta_ok == "true",
+        "s3": s3_ok == "true",
     },
-    "error_codes": json.loads(${errors_json@Q}),
+    "error_codes": json.loads(errors_json),
     "test_user": "__sumeme_smoke__",
 }
-with open(${OUTPUT_PATH@Q} + ".tmp", "w", encoding="utf-8") as handle:
+with open(output_path, "w", encoding="utf-8") as handle:
     json.dump(result, handle, ensure_ascii=False, indent=2)
     handle.write("\n")
 PY
