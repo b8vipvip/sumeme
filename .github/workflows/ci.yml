@@ -23,12 +23,35 @@ jobs:
       - run: PYTHONPATH=. pytest -q
       - run: python -m compileall app
 
+  reliability:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile operational Python scripts
+        run: python -m compileall scripts tests
+      - name: Run reliability unit tests
+        run: python -m unittest discover -s tests -v
+      - name: Validate shell scripts
+        run: bash -n scripts/*.sh
+      - name: Exercise disk preflight JSON
+        env:
+          DEPLOY_DIR: ${{ github.workspace }}
+          DISK_WARN_PERCENT: 99
+          DISK_FAIL_PERCENT: 100
+          DISK_MIN_FREE_GIB: 0
+        run: bash scripts/preflight-disk.sh --json | python -m json.tool >/dev/null
+      - name: Dry-run runtime cleanup
+        env:
+          DEPLOY_DIR: ${{ runner.temp }}/sumeme-cleanup-test
+        run: bash scripts/cleanup-runtime.sh --dry-run
+
   compose:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Validate shell scripts
-        run: bash -n scripts/*.sh
       - name: Validate Compose
         run: |
           cp .env.example .env
