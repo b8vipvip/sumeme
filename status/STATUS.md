@@ -1,6 +1,6 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-29T19:43:14+08:00
+- **采集时间：** 2026-07-29T19:43:52+08:00
 - **总体状态：** `healthy`
 - **开发阶段：** `deployment_behind_main`
 - **线上版本：** `fe9e4a37401cdda1288226990236536cba85288b`
@@ -14,7 +14,7 @@
 - 本地网关：`ok`
 - 公网入口：`ok`
 - 磁盘使用：`76.3%`，剩余 7.6 GiB
-- 内存使用：`55.3%`，可用 1.6 GiB
+- 内存使用：`54.6%`，可用 1.7 GiB
 
 ## 容器服务
 
@@ -33,14 +33,14 @@
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-07-29T11:42:50Z |
+| Publish project status | in_progress | main | 2026-07-29T11:43:31Z |
+| CI | in_progress | agent/trusted-jwt-identity | 2026-07-29T11:43:30Z |
+| Publish project status | cancelled | main | 2026-07-29T11:43:20Z |
+| Deploy production | skipped | main | 2026-07-29T11:43:16Z |
+| Publish project status | cancelled | main | 2026-07-29T11:43:27Z |
 | Publish project status | cancelled | main | 2026-07-29T11:42:42Z |
 | Deploy production | skipped | main | 2026-07-29T11:42:38Z |
-| CI | in_progress | agent/trusted-jwt-identity | 2026-07-29T11:42:44Z |
-| Publish project status | cancelled | main | 2026-07-29T11:42:46Z |
-| Deploy production | skipped | main | 2026-07-29T11:42:27Z |
-| Publish project status | cancelled | main | 2026-07-29T11:42:31Z |
-| CI | failure | agent/trusted-jwt-identity | 2026-07-29T11:42:35Z |
+| CI | failure | agent/trusted-jwt-identity | 2026-07-29T11:43:12Z |
 
 ## 开放 PR
 

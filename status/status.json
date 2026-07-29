@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-07-29T19:43:14+08:00",
+  "generated_at": "2026-07-29T19:43:52+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "healthy",
   "project_stage": "deployment_behind_main",
@@ -107,14 +107,14 @@
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 32171597824,
-      "free_bytes": 8142798848,
+      "used_bytes": 32171933696,
+      "free_bytes": 8142462976,
       "used_percent": 76.3
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1743736832,
-      "used_percent": 55.3
+      "available_bytes": 1773457408,
+      "used_percent": 54.6
     }
   },
   "github": {
@@ -150,9 +150,61 @@
         "conclusion": null,
         "head_branch": "main",
         "head_sha": "1fbb8a8bca92bdf678a720c6a4607f71fcbc840d",
+        "run_number": 234,
+        "created_at": "2026-07-29T11:43:19Z",
+        "updated_at": "2026-07-29T11:43:31Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30448654735"
+      },
+      {
+        "name": "CI",
+        "display_title": "feat: add operational service identity secret",
+        "event": "push",
+        "status": "in_progress",
+        "conclusion": null,
+        "head_branch": "agent/trusted-jwt-identity",
+        "head_sha": "de10e4d39c32912b4b6005ff48f2e1a44eaea530",
+        "run_number": 152,
+        "created_at": "2026-07-29T11:43:17Z",
+        "updated_at": "2026-07-29T11:43:30Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30448652433"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "cancelled",
+        "head_branch": "main",
+        "head_sha": "1fbb8a8bca92bdf678a720c6a4607f71fcbc840d",
+        "run_number": 233,
+        "created_at": "2026-07-29T11:43:15Z",
+        "updated_at": "2026-07-29T11:43:20Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30448650728"
+      },
+      {
+        "name": "Deploy production",
+        "display_title": "Deploy production",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "skipped",
+        "head_branch": "main",
+        "head_sha": "1fbb8a8bca92bdf678a720c6a4607f71fcbc840d",
+        "run_number": 114,
+        "created_at": "2026-07-29T11:43:15Z",
+        "updated_at": "2026-07-29T11:43:16Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30448650717"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "cancelled",
+        "head_branch": "main",
+        "head_sha": "1fbb8a8bca92bdf678a720c6a4607f71fcbc840d",
         "run_number": 232,
         "created_at": "2026-07-29T11:42:41Z",
-        "updated_at": "2026-07-29T11:42:50Z",
+        "updated_at": "2026-07-29T11:43:27Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30448613257"
       },
       {
@@ -185,13 +237,13 @@
         "name": "CI",
         "display_title": "test: cover verified account and vault identity",
         "event": "push",
-        "status": "in_progress",
-        "conclusion": null,
+        "status": "completed",
+        "conclusion": "failure",
         "head_branch": "agent/trusted-jwt-identity",
         "head_sha": "85f69345480a4047521d8c1e2f6e3776ba16fe83",
         "run_number": 151,
         "created_at": "2026-07-29T11:42:32Z",
-        "updated_at": "2026-07-29T11:42:44Z",
+        "updated_at": "2026-07-29T11:43:12Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30448604060"
       },
       {
@@ -245,72 +297,20 @@
         "created_at": "2026-07-29T11:42:00Z",
         "updated_at": "2026-07-29T11:42:35Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30448569304"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "cancelled",
-        "head_branch": "main",
-        "head_sha": "1fbb8a8bca92bdf678a720c6a4607f71fcbc840d",
-        "run_number": 228,
-        "created_at": "2026-07-29T11:41:41Z",
-        "updated_at": "2026-07-29T11:42:27Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30448549810"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "cancelled",
-        "head_branch": "main",
-        "head_sha": "1fbb8a8bca92bdf678a720c6a4607f71fcbc840d",
-        "run_number": 227,
-        "created_at": "2026-07-29T11:41:41Z",
-        "updated_at": "2026-07-29T11:41:43Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30448549147"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "cancelled",
-        "head_branch": "main",
-        "head_sha": "1fbb8a8bca92bdf678a720c6a4607f71fcbc840d",
-        "run_number": 226,
-        "created_at": "2026-07-29T11:41:38Z",
-        "updated_at": "2026-07-29T11:41:42Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30448546051"
-      },
-      {
-        "name": "Deploy production",
-        "display_title": "Deploy production",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "skipped",
-        "head_branch": "main",
-        "head_sha": "1fbb8a8bca92bdf678a720c6a4607f71fcbc840d",
-        "run_number": 111,
-        "created_at": "2026-07-29T11:41:37Z",
-        "updated_at": "2026-07-29T11:41:39Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30448546030"
       }
     ]
   },
   "collector": {
     "event_name": "workflow_run",
     "workflow": "Publish project status",
-    "run_id": "30448613257"
+    "run_id": "30448654735"
   },
   "freshness": {
     "age_seconds_at_publish": 0,
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-29T19:43:14+08:00"
+    "generated_at": "2026-07-29T19:43:52+08:00"
   },
   "reliability": {
     "disk": {
@@ -341,7 +341,7 @@
         "mempalace_recall_failed",
         "letta_recall_failed"
       ],
-      "age_seconds_at_publish": 5545,
+      "age_seconds_at_publish": 5583,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }
