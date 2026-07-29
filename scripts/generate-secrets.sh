@@ -51,6 +51,7 @@ PY
 
 set_env GATEWAY_API_KEY "$(random_hex 32)"
 set_env GATEWAY_ADMIN_TOKEN "$(random_hex 32)"
+set_env GATEWAY_SERVICE_TOKEN "$(random_hex 32)"
 set_env POSTGRES_PASSWORD "$(random_hex 24)"
 set_env AUTH_SECRET "$(random_hex 32)"
 # LobeHub 要求 Base64 解码后恰好为 16、24 或 32 字节。

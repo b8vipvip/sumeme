@@ -1,9 +1,22 @@
 from __future__ import annotations
 
+import json
 from functools import lru_cache
 
 from pydantic import Field, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+_SAFE_IDENTITY_ALGORITHMS = {
+    "RS256",
+    "RS384",
+    "RS512",
+    "PS256",
+    "PS384",
+    "PS512",
+    "ES256",
+    "ES384",
+    "EdDSA",
+}
 
 
 class Settings(BaseSettings):
@@ -22,11 +35,25 @@ class Settings(BaseSettings):
 
     gateway_api_key: SecretStr
     gateway_admin_token: SecretStr
+    gateway_service_token: SecretStr = SecretStr("")
     sumeme_user_id: str = "default"
     memory_provider: str = "mempalace-letta"
     memory_recall_limit: int = Field(default=6, ge=1, le=30)
     memory_context_max_chars: int = Field(default=24000, ge=1000, le=200000)
     store_assistant_verbatim: bool = True
+
+    identity_mode: str = "legacy-client-asserted"
+    identity_issuer: str = ""
+    identity_audience: str = ""
+    identity_jwks_url: str = ""
+    identity_jwks_json: SecretStr = SecretStr("")
+    identity_allowed_algorithms: str = "RS256,ES256,EdDSA"
+    identity_vaults_claim: str = "sumeme_vaults"
+    identity_default_vault_claim: str = "sumeme_default_vault"
+    identity_clock_skew_seconds: int = Field(default=60, ge=0, le=600)
+    identity_max_token_age_seconds: int = Field(default=3600, ge=60, le=604800)
+    identity_max_token_chars: int = Field(default=16384, ge=1024, le=65536)
+    identity_allow_insecure_jwks_url: bool = False
 
     mempalace_enabled: bool = True
     mempalace_recall_limit: int = Field(default=6, ge=1, le=30)
@@ -53,7 +80,12 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
 
     @model_validator(mode="after")
-    def validate_memory_provider(self) -> Settings:
+    def validate_runtime_modes(self) -> Settings:
+        self._validate_memory_provider()
+        self._validate_identity()
+        return self
+
+    def _validate_memory_provider(self) -> None:
         aliases = {
             "mempalace+letta": "mempalace-letta",
             "mempalace_letta": "mempalace-letta",
@@ -82,7 +114,92 @@ class Settings(BaseSettings):
             raise ValueError(
                 "SUPERMEMORY_SEARCH_MODE must be hybrid, memories, or documents"
             )
-        return self
+
+    def _validate_identity(self) -> None:
+        aliases = {
+            "legacy": "legacy-client-asserted",
+            "optional": "jwt-preferred",
+            "preferred": "jwt-preferred",
+            "required": "jwt-required",
+            "jwt": "jwt-required",
+        }
+        raw_mode = self.identity_mode.strip().lower()
+        mode = aliases.get(raw_mode, raw_mode)
+        if mode not in {
+            "legacy-client-asserted",
+            "jwt-preferred",
+            "jwt-required",
+        }:
+            raise ValueError(
+                "IDENTITY_MODE must be legacy-client-asserted, jwt-preferred, "
+                "or jwt-required"
+            )
+        self.identity_mode = mode
+
+        algorithms = self.identity_algorithm_list
+        if not algorithms or any(
+            algorithm not in _SAFE_IDENTITY_ALGORITHMS for algorithm in algorithms
+        ):
+            raise ValueError(
+                "IDENTITY_ALLOWED_ALGORITHMS contains an unsafe or unsupported "
+                "algorithm"
+            )
+
+        if mode == "legacy-client-asserted":
+            return
+
+        if not self.identity_issuer.strip():
+            raise ValueError("IDENTITY_ISSUER is required for JWT identity modes")
+        if not self.identity_audience.strip():
+            raise ValueError("IDENTITY_AUDIENCE is required for JWT identity modes")
+
+        jwks_url = self.identity_jwks_url.strip()
+        jwks_json = self.identity_jwks_json.get_secret_value().strip()
+        if bool(jwks_url) == bool(jwks_json):
+            raise ValueError(
+                "Configure exactly one of IDENTITY_JWKS_URL or IDENTITY_JWKS_JSON"
+            )
+        if (
+            jwks_url
+            and not jwks_url.lower().startswith("https://")
+            and not self.identity_allow_insecure_jwks_url
+        ):
+            raise ValueError(
+                "IDENTITY_JWKS_URL must use HTTPS unless explicitly allowed "
+                "for development"
+            )
+        if jwks_json:
+            try:
+                value = json.loads(jwks_json)
+            except json.JSONDecodeError as exc:
+                raise ValueError("IDENTITY_JWKS_JSON must be valid JSON") from exc
+            keys = value.get("keys") if isinstance(value, dict) else None
+            if not isinstance(keys, list) or not keys:
+                raise ValueError(
+                    "IDENTITY_JWKS_JSON must contain a non-empty keys array"
+                )
+            private_fields = ("d", "p", "q", "dp", "dq", "qi")
+            if any(
+                isinstance(key, dict)
+                and any(field in key for field in private_fields)
+                for key in keys
+            ):
+                raise ValueError(
+                    "IDENTITY_JWKS_JSON must contain public keys only"
+                )
+
+        if not self.identity_vaults_claim.strip():
+            raise ValueError("IDENTITY_VAULTS_CLAIM cannot be empty")
+        if not self.identity_default_vault_claim.strip():
+            raise ValueError("IDENTITY_DEFAULT_VAULT_CLAIM cannot be empty")
+
+    @property
+    def identity_algorithm_list(self) -> list[str]:
+        return [
+            algorithm.strip()
+            for algorithm in self.identity_allowed_algorithms.split(",")
+            if algorithm.strip()
+        ]
 
     @property
     def relay_chat_url(self) -> str:
