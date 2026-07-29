@@ -1,0 +1,225 @@
+name: sumeme
+
+services:
+  lobe:
+    image: ${LOBEHUB_IMAGE:-lobehub/lobehub:latest}
+    container_name: sumeme-lobehub
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:${LOBE_PORT:-3210}:3210
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rustfs:
+        condition: service_healthy
+      rustfs-init:
+        condition: service_completed_successfully
+      memory-gateway:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      APP_URL: ${APP_URL}
+      INTERNAL_APP_URL: http://lobe:3210
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@postgresql:5432/${LOBE_DB_NAME}
+      REDIS_URL: redis://redis:6379
+      REDIS_PREFIX: sumeme
+      REDIS_TLS: "0"
+      S3_ENDPOINT: ${S3_ENDPOINT}
+      S3_BUCKET: ${RUSTFS_LOBE_BUCKET}
+      S3_ENABLE_PATH_STYLE: "1"
+      S3_ACCESS_KEY: ${RUSTFS_ACCESS_KEY}
+      S3_ACCESS_KEY_ID: ${RUSTFS_ACCESS_KEY}
+      S3_SECRET_ACCESS_KEY: ${RUSTFS_SECRET_KEY}
+      S3_SET_ACL: "0"
+      LLM_VISION_IMAGE_USE_BASE64: "1"
+      SEARXNG_URL: http://searxng:8080
+      OPENAI_PROXY_URL: http://memory-gateway:8000/v1
+      OPENAI_API_KEY: ${GATEWAY_API_KEY}
+      OPENAI_MODEL_LIST: ${OPENAI_MODEL_LIST}
+    networks:
+      - sumeme
+
+  memory-gateway:
+    build:
+      context: ./services/memory-gateway
+    container_name: sumeme-memory-gateway
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:${GATEWAY_PORT:-8010}:8000
+    env_file:
+      - .env
+    environment:
+      LETTA_BASE_URL: http://letta:8283
+      MEMPALACE_QDRANT_URL: http://qdrant:6333
+      MEMPALACE_PALACE_PATH: /data/mempalace/palace
+    volumes:
+      - mempalace-data:/data/mempalace
+      - gateway-data:/data/gateway
+    depends_on:
+      qdrant:
+        condition: service_healthy
+      letta:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=5)"]
+      interval: 10s
+      timeout: 6s
+      retries: 20
+      start_period: 30s
+    networks:
+      - sumeme
+
+  letta:
+    image: ${LETTA_IMAGE:-letta/letta:latest}
+    container_name: sumeme-letta
+    restart: unless-stopped
+    expose:
+      - "8283"
+    env_file:
+      - .env
+    environment:
+      SECURE: "true"
+      LETTA_SERVER_PASSWORD: ${LETTA_SERVER_PASSWORD}
+      LETTA_ENCRYPTION_KEY: ${LETTA_ENCRYPTION_KEY}
+      OPENAI_API_KEY: ${OPENAI_RELAY_API_KEY}
+      OPENAI_API_BASE: ${OPENAI_RELAY_BASE_URL}
+      OPENAI_BASE_URL: ${OPENAI_RELAY_BASE_URL}
+    volumes:
+      - letta-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8283/v1/health', timeout=5)\""]
+      interval: 15s
+      timeout: 8s
+      retries: 30
+      start_period: 60s
+    networks:
+      - sumeme
+
+  qdrant:
+    image: ${QDRANT_IMAGE:-qdrant/qdrant:latest}
+    container_name: sumeme-qdrant
+    restart: unless-stopped
+    expose:
+      - "6333"
+    volumes:
+      - qdrant-data:/qdrant/storage
+    healthcheck:
+      test: [CMD-SHELL, "bash -c '</dev/tcp/127.0.0.1/6333'"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+    networks:
+      - sumeme
+
+  postgresql:
+    image: paradedb/paradedb:latest-pg17
+    container_name: sumeme-postgres
+    restart: unless-stopped
+    expose:
+      - "5432"
+    command: [postgres, -c, shared_preload_libraries=pg_search]
+    environment:
+      POSTGRES_DB: ${LOBE_DB_NAME}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U postgres -d ${LOBE_DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - sumeme
+
+  redis:
+    image: redis:7-alpine
+    container_name: sumeme-redis
+    restart: unless-stopped
+    expose:
+      - "6379"
+    command: [redis-server, --save, "60", "1000", --appendonly, "yes"]
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: [CMD, redis-cli, ping]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks:
+      - sumeme
+
+  rustfs:
+    image: rustfs/rustfs:latest
+    container_name: sumeme-rustfs
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:${RUSTFS_PORT:-9000}:9000
+      - 127.0.0.1:${RUSTFS_ADMIN_PORT:-9001}:9001
+    environment:
+      RUSTFS_CONSOLE_ENABLE: "true"
+      RUSTFS_ACCESS_KEY: ${RUSTFS_ACCESS_KEY}
+      RUSTFS_SECRET_KEY: ${RUSTFS_SECRET_KEY}
+    command:
+      - --access-key
+      - ${RUSTFS_ACCESS_KEY}
+      - --secret-key
+      - ${RUSTFS_SECRET_KEY}
+      - /data
+    volumes:
+      - rustfs-data:/data
+    healthcheck:
+      test: [CMD-SHELL, "wget -qO- http://localhost:9000/health >/dev/null 2>&1 || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    networks:
+      - sumeme
+
+  rustfs-init:
+    image: minio/mc:latest
+    container_name: sumeme-rustfs-init
+    depends_on:
+      rustfs:
+        condition: service_healthy
+    volumes:
+      - ./deploy/bucket.config.json:/bucket.config.json:ro
+    entrypoint: /bin/sh
+    command:
+      - -c
+      - >
+        set -eu;
+        mc alias set rustfs http://rustfs:9000 "${RUSTFS_ACCESS_KEY}" "${RUSTFS_SECRET_KEY}";
+        mc mb "rustfs/${RUSTFS_LOBE_BUCKET}" --ignore-existing;
+        mc anonymous set-json /bucket.config.json "rustfs/${RUSTFS_LOBE_BUCKET}";
+    restart: "no"
+    networks:
+      - sumeme
+
+  searxng:
+    image: searxng/searxng:latest
+    container_name: sumeme-searxng
+    restart: unless-stopped
+    expose:
+      - "8080"
+    volumes:
+      - ./deploy/searxng-settings.yml:/etc/searxng/settings.yml:ro
+    environment:
+      SEARXNG_SETTINGS_FILE: /etc/searxng/settings.yml
+    networks:
+      - sumeme
+
+networks:
+  sumeme:
+    driver: bridge
+
+volumes:
+  postgres-data:
+  redis-data:
+  rustfs-data:
+  qdrant-data:
+  letta-data:
+  mempalace-data:
+  gateway-data:
