@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-07-30T00:58:25+08:00",
+  "generated_at": "2026-07-30T01:09:09+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "healthy",
   "project_stage": "deployment_behind_main",
@@ -107,14 +107,14 @@
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 32671211520,
-      "free_bytes": 7643185152,
+      "used_bytes": 32665702400,
+      "free_bytes": 7648694272,
       "used_percent": 77.5
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1759838208,
-      "used_percent": 54.9
+      "available_bytes": 1783676928,
+      "used_percent": 54.3
     }
   },
   "github": {
@@ -145,14 +145,27 @@
       {
         "name": "Publish project status",
         "display_title": "Publish project status",
-        "event": "schedule",
+        "event": "workflow_run",
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
         "head_sha": "3c955a64a87bcbdf67130675b321c31d07ee7ed7",
+        "run_number": 306,
+        "created_at": "2026-07-29T17:08:34Z",
+        "updated_at": "2026-07-29T17:08:40Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30473978295"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "schedule",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "3c955a64a87bcbdf67130675b321c31d07ee7ed7",
         "run_number": 305,
         "created_at": "2026-07-29T16:58:03Z",
-        "updated_at": "2026-07-29T16:58:08Z",
+        "updated_at": "2026-07-29T16:58:38Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30473167415"
       },
       {
@@ -172,13 +185,13 @@
         "name": "CI",
         "display_title": "Persist pip cache for memory gateway image builds",
         "event": "push",
-        "status": "in_progress",
-        "conclusion": null,
+        "status": "completed",
+        "conclusion": "cancelled",
         "head_branch": "main",
         "head_sha": "3c955a64a87bcbdf67130675b321c31d07ee7ed7",
         "run_number": 214,
         "created_at": "2026-07-29T15:45:13Z",
-        "updated_at": "2026-07-29T16:08:12Z",
+        "updated_at": "2026-07-29T17:08:30Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30467408945"
       },
       {
@@ -284,33 +297,20 @@
         "created_at": "2026-07-29T15:40:55Z",
         "updated_at": "2026-07-29T15:41:37Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30467053632"
-      },
-      {
-        "name": "CI",
-        "display_title": "Serialize self-hosted and ADOB SSH production jobs",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/diagnose-deploy-lock",
-        "head_sha": "dcf7cd9000007d0d2fa8f4c9e51799b24cf22d13",
-        "run_number": 206,
-        "created_at": "2026-07-29T15:40:17Z",
-        "updated_at": "2026-07-29T15:40:51Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30466998603"
       }
     ]
   },
   "collector": {
-    "event_name": "schedule",
+    "event_name": "workflow_run",
     "workflow": "Publish project status",
-    "run_id": "30473167415"
+    "run_id": "30473978295"
   },
   "freshness": {
     "age_seconds_at_publish": 0,
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-30T00:58:25+08:00"
+    "generated_at": "2026-07-30T01:09:09+08:00"
   },
   "reliability": {
     "disk": {
@@ -354,7 +354,7 @@
         "letta_recall_delayed",
         "service_scope_verification_failed"
       ],
-      "age_seconds_at_publish": 8458,
+      "age_seconds_at_publish": 9102,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }
