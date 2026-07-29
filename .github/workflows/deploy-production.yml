@@ -3,18 +3,20 @@ name: Deploy production
 on:
   workflow_dispatch:
 
-concurrency:
-  group: sumeme-production
-  cancel-in-progress: false
-
 permissions:
   contents: read
 
 jobs:
-  deploy:
-    if: github.ref == 'refs/heads/main'
+  deploy-self-hosted:
+    name: Deploy production (self-hosted fallback)
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      vars.SUMEME_DEPLOY_TRANSPORT != 'github-hosted-ssh'
     runs-on: [self-hosted, linux, x64, sumeme-production]
     timeout-minutes: 60
+    concurrency:
+      group: sumeme-production
+      cancel-in-progress: false
 
     steps:
       - name: Check out selected main release
@@ -43,3 +45,22 @@ jobs:
           echo "Expected release: ${GITHUB_SHA}"
           echo "Current release: $(cat /opt/sumeme/.deploy/current_sha 2>/dev/null || echo unknown)"
           tail -n 20 /opt/sumeme/.deploy/history.log 2>/dev/null || true
+
+  deploy-ssh:
+    name: Deploy production (ADOB SSH)
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      vars.SUMEME_DEPLOY_TRANSPORT == 'github-hosted-ssh'
+    uses: b8vipvip/ADOB/.github/workflows/deploy-via-ssh.yml@621a5fc3d0876a5a33560468ae6073ec3ac640a4
+    with:
+      project_name: sumeme
+      ssh_host: ${{ vars.SUMEME_VPS_HOST }}
+      ssh_port: ${{ vars.SUMEME_VPS_PORT || '22' }}
+      ssh_user: ${{ vars.SUMEME_VPS_USER || 'sumeme-runner' }}
+      deploy_path: /opt/sumeme
+      deploy_script: scripts/deploy-production.sh
+      public_health_url: https://sumeme.mv3.cn/health
+      retain_staging_releases: 3
+    secrets:
+      ssh_private_key: ${{ secrets.SUMEME_SSH_PRIVATE_KEY }}
+      ssh_host_key: ${{ secrets.SUMEME_SSH_HOST_KEY }}
