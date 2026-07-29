@@ -9,6 +9,7 @@ import httpx
 
 from .config import Settings
 from .content import safe_id
+from .memory_result import MemoryWriteResult
 from .memory_scope import MemoryScope, coerce_scope
 
 logger = logging.getLogger(__name__)
@@ -81,7 +82,7 @@ class SupermemoryProvider:
         conversation_id: str,
         request_payload: dict[str, Any],
         assistant_text: str,
-    ) -> bool:
+    ) -> MemoryWriteResult:
         resolved = coerce_scope(scope, default_user_id=self.settings.sumeme_user_id)
         content_payload = {
             "conversation_id": conversation_id,
@@ -124,13 +125,20 @@ class SupermemoryProvider:
                 json=payload,
             )
             response.raise_for_status()
-            return True
+            return MemoryWriteResult(
+                provider=self.name,
+                components={"supermemory": True},
+            )
         except httpx.HTTPError:
             logger.exception(
                 "Supermemory write failed for scope %s",
                 resolved.display_key,
             )
-            return False
+            return MemoryWriteResult(
+                provider=self.name,
+                components={"supermemory": False},
+                error_codes=("supermemory_write_rejected",),
+            )
 
     async def aclose(self) -> None:
         await self._client.aclose()
