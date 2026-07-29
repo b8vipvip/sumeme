@@ -6,8 +6,8 @@ import pytest
 from pydantic import SecretStr
 
 from app.config import Settings
-from app.mempalace_store import MemPalaceStore
 from app.memory_scope import MemoryScope
+from app.mempalace_store import MemPalaceStore
 
 
 def make_settings(**overrides) -> Settings:
