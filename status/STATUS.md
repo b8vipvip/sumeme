@@ -1,6 +1,6 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-29T22:38:21+08:00
+- **采集时间：** 2026-07-29T23:08:36+08:00
 - **总体状态：** `healthy`
 - **开发阶段：** `deployment_behind_main`
 - **线上版本：** `fe9e4a37401cdda1288226990236536cba85288b`
@@ -13,8 +13,8 @@
 
 - 本地网关：`ok`
 - 公网入口：`ok`
-- 磁盘使用：`76.8%`，剩余 7.4 GiB
-- 内存使用：`54.3%`，可用 1.7 GiB
+- 磁盘使用：`76.9%`，剩余 7.3 GiB
+- 内存使用：`55.6%`，可用 1.6 GiB
 
 ## 容器服务
 
@@ -22,7 +22,7 @@
 |---|---|---|---|
 | letta | running | healthy | Up 10 hours (healthy) |
 | lobe | running | - | Up 10 hours |
-| memory-gateway | running | healthy | Up 4 hours (healthy) |
+| memory-gateway | running | healthy | Up 5 hours (healthy) |
 | postgresql | running | healthy | Up 11 hours (healthy) |
 | qdrant | running | healthy | Up 11 hours (healthy) |
 | redis | running | healthy | Up 11 hours (healthy) |
@@ -33,14 +33,14 @@
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-07-29T14:37:47Z |
+| Publish project status | in_progress | main | 2026-07-29T15:07:57Z |
+| Publish project status | success | main | 2026-07-29T14:38:35Z |
 | Publish project status | cancelled | main | 2026-07-29T14:37:48Z |
 | Smoke production | success | main | 2026-07-29T14:37:35Z |
-| CI | pending | main | 2026-07-29T14:13:11Z |
+| CI | in_progress | main | 2026-07-29T15:07:50Z |
 | CI | success | agent/unify-deploy-concurrency | 2026-07-29T14:11:56Z |
 | CI | success | agent/unify-deploy-concurrency | 2026-07-29T14:10:52Z |
 | CI | success | agent/unify-deploy-concurrency | 2026-07-29T14:10:47Z |
-| CI | success | agent/unify-deploy-concurrency | 2026-07-29T14:10:19Z |
 
 ## 开放 PR
 
