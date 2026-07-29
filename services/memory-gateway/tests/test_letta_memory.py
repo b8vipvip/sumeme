@@ -8,6 +8,7 @@ from pydantic import SecretStr
 
 from app.config import Settings
 from app.letta_memory import LettaMemory
+from app.memory_scope import MemoryScope
 
 
 def make_settings(**overrides) -> Settings:
@@ -37,7 +38,7 @@ class FakeAgents:
 
 
 @pytest.mark.asyncio
-async def test_legacy_agent_is_migrated_only_for_default_user(tmp_path) -> None:
+async def test_legacy_agent_is_migrated_only_for_default_scope(tmp_path) -> None:
     state_file = tmp_path / "letta-agent.json"
     state_file.write_text(json.dumps({"agent_id": "legacy-agent"}), encoding="utf-8")
 
@@ -46,39 +47,103 @@ async def test_legacy_agent_is_migrated_only_for_default_user(tmp_path) -> None:
     agents = FakeAgents()
     memory._client = SimpleNamespace(agents=agents)
 
-    assert await memory.ensure_agent("default") == "legacy-agent"
-    smoke_agent = await memory.ensure_agent("__sumeme_smoke__")
+    assert await memory.ensure_agent(MemoryScope.account("default")) == "legacy-agent"
+    smoke_agent = await memory.ensure_agent(
+        MemoryScope.service("sumeme-smoke", "production-smoke")
+    )
 
     assert smoke_agent == "agent-1"
-    assert agents.created_names == ["sumeme-personal-memory-sumeme_smoke"]
+    assert agents.created_names == [
+        "sumeme-personal-memory-svc.sumeme-smoke.vault.production-smoke"
+    ]
 
     persisted = json.loads(state_file.read_text(encoding="utf-8"))
-    assert persisted["schema_version"] == 2
-    assert persisted["agents"]["default"] == "legacy-agent"
-    assert persisted["agents"]["sumeme_smoke"] == "agent-1"
+    assert persisted["schema_version"] == 3
+    assert persisted["agents"]["acct.default.vault.default"] == "legacy-agent"
+    assert (
+        persisted["agents"]["svc.sumeme-smoke.vault.production-smoke"]
+        == "agent-1"
+    )
 
 
 @pytest.mark.asyncio
-async def test_explicit_agent_id_does_not_leak_to_other_users(tmp_path) -> None:
+async def test_schema_two_user_map_migrates_to_default_vault(tmp_path) -> None:
+    state_file = tmp_path / "letta-agent.json"
+    state_file.write_text(
+        json.dumps(
+            {
+                "schema_version": 2,
+                "agents": {
+                    "default": "default-agent",
+                    "user-a": "user-agent",
+                    "sumeme_smoke": "smoke-agent",
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    memory = LettaMemory(make_settings())
+    memory._state_file = state_file
+
+    assert await memory.ensure_agent(MemoryScope.account("default")) == "default-agent"
+    assert await memory.ensure_agent(MemoryScope.account("user-a")) == "user-agent"
+    assert (
+        await memory.ensure_agent(MemoryScope.service("sumeme-smoke", "production-smoke"))
+        == "smoke-agent"
+    )
+
+
+@pytest.mark.asyncio
+async def test_explicit_agent_id_does_not_leak_to_other_scopes(tmp_path) -> None:
     memory = LettaMemory(make_settings(letta_agent_id="configured-default-agent"))
     memory._state_file = tmp_path / "letta-agent.json"
     agents = FakeAgents()
     memory._client = SimpleNamespace(agents=agents)
 
-    assert await memory.ensure_agent("default") == "configured-default-agent"
-    assert await memory.ensure_agent("another-user") == "agent-1"
-    assert agents.created_names == ["sumeme-personal-memory-another-user"]
+    assert (
+        await memory.ensure_agent(MemoryScope.account("default"))
+        == "configured-default-agent"
+    )
+    assert await memory.ensure_agent(MemoryScope.account("another-user")) == "agent-1"
+    assert await memory.ensure_agent(
+        MemoryScope.account("default", "work")
+    ) == "agent-2"
+    assert agents.created_names == [
+        "sumeme-personal-memory-acct.another-user.vault.default",
+        "sumeme-personal-memory-acct.default.vault.work",
+    ]
 
 
 @pytest.mark.asyncio
-async def test_same_user_reuses_persisted_agent(tmp_path) -> None:
+async def test_same_scope_reuses_persisted_agent(tmp_path) -> None:
+    memory = LettaMemory(make_settings())
+    memory._state_file = tmp_path / "letta-agent.json"
+    agents = FakeAgents()
+    memory._client = SimpleNamespace(agents=agents)
+    scope = MemoryScope.account("user-a", "work")
+
+    first = await memory.ensure_agent(scope)
+    second = await memory.ensure_agent(scope)
+
+    assert first == second == "agent-1"
+    assert len(agents.created_names) == 1
+
+
+@pytest.mark.asyncio
+async def test_account_and_vault_pairs_never_share_an_agent(tmp_path) -> None:
     memory = LettaMemory(make_settings())
     memory._state_file = tmp_path / "letta-agent.json"
     agents = FakeAgents()
     memory._client = SimpleNamespace(agents=agents)
 
-    first = await memory.ensure_agent("user-a")
-    second = await memory.ensure_agent("user-a")
+    scopes = [
+        MemoryScope.account("account-a", "personal"),
+        MemoryScope.account("account-a", "work"),
+        MemoryScope.account("account-b", "personal"),
+        MemoryScope.service("account-a", "personal"),
+    ]
+    agent_ids = [await memory.ensure_agent(scope) for scope in scopes]
 
-    assert first == second == "agent-1"
-    assert len(agents.created_names) == 1
+    assert agent_ids == ["agent-1", "agent-2", "agent-3", "agent-4"]
+    assert len(set(agent_ids)) == len(scopes)
