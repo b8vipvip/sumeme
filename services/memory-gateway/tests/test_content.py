@@ -1,4 +1,9 @@
-from app.content import abbreviate_secret_url, flatten_content, latest_user_message, safe_id
+from app.content import (
+    abbreviate_secret_url,
+    flatten_content,
+    latest_user_message,
+    safe_id,
+)
 
 
 def test_flatten_multimodal_content():
