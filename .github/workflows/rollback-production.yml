@@ -25,7 +25,6 @@ permissions:
 jobs:
   rollback:
     if: inputs.confirm == 'ROLLBACK'
-    environment: production
     runs-on: [self-hosted, linux, x64, sumeme-production]
     timeout-minutes: 30
 
