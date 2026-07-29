@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
 from datetime import datetime, timezone
@@ -40,7 +41,7 @@ class MemPalaceStore:
         if legacy := self._legacy_wing(resolved):
             wings.append(legacy)
 
-        batches = await anyio.gather(
+        batches = await asyncio.gather(
             *[self._search_wing(query, wing) for wing in dict.fromkeys(wings)]
         )
         merged: list[dict[str, Any]] = []
