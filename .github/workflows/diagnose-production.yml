@@ -42,7 +42,6 @@ permissions:
 
 jobs:
   diagnose:
-    environment: production
     runs-on: [self-hosted, linux, x64, sumeme-production]
     timeout-minutes: 15
 
