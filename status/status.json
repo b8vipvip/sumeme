@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-07-29T19:44:36+08:00",
+  "generated_at": "2026-07-29T22:38:21+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "healthy",
   "project_stage": "deployment_behind_main",
@@ -44,7 +44,7 @@
       "name": "sumeme-letta",
       "state": "running",
       "health": "healthy",
-      "status": "Up 7 hours (healthy)",
+      "status": "Up 10 hours (healthy)",
       "critical": true
     },
     {
@@ -52,7 +52,7 @@
       "name": "sumeme-lobehub",
       "state": "running",
       "health": "",
-      "status": "Up 7 hours",
+      "status": "Up 10 hours",
       "critical": true
     },
     {
@@ -60,7 +60,7 @@
       "name": "sumeme-memory-gateway",
       "state": "running",
       "health": "healthy",
-      "status": "Up 2 hours (healthy)",
+      "status": "Up 4 hours (healthy)",
       "critical": true
     },
     {
@@ -68,7 +68,7 @@
       "name": "sumeme-postgres",
       "state": "running",
       "health": "healthy",
-      "status": "Up 8 hours (healthy)",
+      "status": "Up 11 hours (healthy)",
       "critical": true
     },
     {
@@ -76,7 +76,7 @@
       "name": "sumeme-qdrant",
       "state": "running",
       "health": "healthy",
-      "status": "Up 8 hours (healthy)",
+      "status": "Up 11 hours (healthy)",
       "critical": true
     },
     {
@@ -84,7 +84,7 @@
       "name": "sumeme-redis",
       "state": "running",
       "health": "healthy",
-      "status": "Up 8 hours (healthy)",
+      "status": "Up 11 hours (healthy)",
       "critical": true
     },
     {
@@ -92,7 +92,7 @@
       "name": "sumeme-rustfs",
       "state": "running",
       "health": "healthy",
-      "status": "Up 8 hours (healthy)",
+      "status": "Up 11 hours (healthy)",
       "critical": true
     },
     {
@@ -100,26 +100,26 @@
       "name": "sumeme-searxng",
       "state": "running",
       "health": "",
-      "status": "Up 8 hours",
+      "status": "Up 11 hours",
       "critical": true
     }
   ],
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 32172257280,
-      "free_bytes": 8142139392,
-      "used_percent": 76.3
+      "used_bytes": 32390852608,
+      "free_bytes": 7923544064,
+      "used_percent": 76.8
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1798672384,
-      "used_percent": 53.9
+      "available_bytes": 1784274944,
+      "used_percent": 54.3
     }
   },
   "github": {
     "default_branch": "main",
-    "latest_main_sha": "1fbb8a8bca92bdf678a720c6a4607f71fcbc840d",
+    "latest_main_sha": "dcf7cd9000007d0d2fa8f4c9e51799b24cf22d13",
     "open_pull_requests": [],
     "open_issues": [
       {
@@ -137,49 +137,23 @@
       {
         "number": 4,
         "title": "Phase 1.5：端到端验证、状态新鲜度与磁盘保护",
-        "updated_at": "2026-07-29T10:22:54Z",
+        "updated_at": "2026-07-29T13:12:57Z",
         "html_url": "https://github.com/b8vipvip/sumeme/issues/4"
       }
     ],
     "recent_workflows": [
       {
-        "name": "CI",
-        "display_title": "ops: generate dedicated service identity token",
-        "event": "push",
-        "status": "in_progress",
-        "conclusion": null,
-        "head_branch": "agent/trusted-jwt-identity",
-        "head_sha": "c4b3d73c219cd89f14379ded8d06b63ceb41f822",
-        "run_number": 154,
-        "created_at": "2026-07-29T11:44:11Z",
-        "updated_at": "2026-07-29T11:44:15Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30448712244"
-      },
-      {
         "name": "Publish project status",
         "display_title": "Publish project status",
         "event": "workflow_run",
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
-        "head_sha": "1fbb8a8bca92bdf678a720c6a4607f71fcbc840d",
-        "run_number": 236,
-        "created_at": "2026-07-29T11:44:04Z",
-        "updated_at": "2026-07-29T11:44:12Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30448704600"
-      },
-      {
-        "name": "Deploy production",
-        "display_title": "Deploy production",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "skipped",
-        "head_branch": "main",
-        "head_sha": "1fbb8a8bca92bdf678a720c6a4607f71fcbc840d",
-        "run_number": 115,
-        "created_at": "2026-07-29T11:44:01Z",
-        "updated_at": "2026-07-29T11:44:02Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30448701409"
+        "head_sha": "dcf7cd9000007d0d2fa8f4c9e51799b24cf22d13",
+        "run_number": 301,
+        "created_at": "2026-07-29T14:37:38Z",
+        "updated_at": "2026-07-29T14:37:47Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30461807820"
       },
       {
         "name": "Publish project status",
@@ -188,129 +162,155 @@
         "status": "completed",
         "conclusion": "cancelled",
         "head_branch": "main",
-        "head_sha": "1fbb8a8bca92bdf678a720c6a4607f71fcbc840d",
-        "run_number": 235,
-        "created_at": "2026-07-29T11:44:01Z",
-        "updated_at": "2026-07-29T11:44:05Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30448701362"
+        "head_sha": "dcf7cd9000007d0d2fa8f4c9e51799b24cf22d13",
+        "run_number": 300,
+        "created_at": "2026-07-29T14:36:57Z",
+        "updated_at": "2026-07-29T14:37:48Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30461749305"
+      },
+      {
+        "name": "Smoke production",
+        "display_title": "Smoke production",
+        "event": "schedule",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "dcf7cd9000007d0d2fa8f4c9e51799b24cf22d13",
+        "run_number": 1,
+        "created_at": "2026-07-29T14:29:50Z",
+        "updated_at": "2026-07-29T14:37:35Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30461145207"
       },
       {
         "name": "CI",
-        "display_title": "feat: support isolated operational service identities",
+        "display_title": "Serialize self-hosted and ADOB SSH production jobs",
+        "event": "push",
+        "status": "pending",
+        "conclusion": null,
+        "head_branch": "main",
+        "head_sha": "dcf7cd9000007d0d2fa8f4c9e51799b24cf22d13",
+        "run_number": 205,
+        "created_at": "2026-07-29T14:12:23Z",
+        "updated_at": "2026-07-29T14:13:11Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30459713248"
+      },
+      {
+        "name": "CI",
+        "display_title": "Serialize self-hosted and ADOB SSH production jobs",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/unify-deploy-concurrency",
+        "head_sha": "5baec6425c6dffb53d4e407cd93d35d5eff24f7a",
+        "run_number": 204,
+        "created_at": "2026-07-29T14:11:12Z",
+        "updated_at": "2026-07-29T14:11:56Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30459615567"
+      },
+      {
+        "name": "CI",
+        "display_title": "ci: serialize manual ADOB SSH deployments",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/unify-deploy-concurrency",
+        "head_sha": "5baec6425c6dffb53d4e407cd93d35d5eff24f7a",
+        "run_number": 203,
+        "created_at": "2026-07-29T14:10:14Z",
+        "updated_at": "2026-07-29T14:10:52Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30459536633"
+      },
+      {
+        "name": "CI",
+        "display_title": "ci: serialize ADOB SSH with legacy production deploys",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/unify-deploy-concurrency",
+        "head_sha": "5175ce99a87bf691e646035bfe30a000f4f02493",
+        "run_number": 202,
+        "created_at": "2026-07-29T14:09:57Z",
+        "updated_at": "2026-07-29T14:10:47Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30459511410"
+      },
+      {
+        "name": "CI",
+        "display_title": "Wait safely for overlapping production deployments",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/unify-deploy-concurrency",
+        "head_sha": "9cce75a5cb2c038130bc96c84a573ca560b48a2f",
+        "run_number": 201,
+        "created_at": "2026-07-29T14:09:33Z",
+        "updated_at": "2026-07-29T14:10:19Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30459479841"
+      },
+      {
+        "name": "CI",
+        "display_title": "Wait safely for overlapping production deployments",
         "event": "push",
         "status": "in_progress",
         "conclusion": null,
-        "head_branch": "agent/trusted-jwt-identity",
-        "head_sha": "8727b07da85cbf7fd9ba7970c72160e0df3ad8e1",
-        "run_number": 153,
-        "created_at": "2026-07-29T11:43:51Z",
-        "updated_at": "2026-07-29T11:44:01Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30448690062"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "cancelled",
         "head_branch": "main",
-        "head_sha": "1fbb8a8bca92bdf678a720c6a4607f71fcbc840d",
-        "run_number": 234,
-        "created_at": "2026-07-29T11:43:19Z",
-        "updated_at": "2026-07-29T11:44:06Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30448654735"
+        "head_sha": "9cce75a5cb2c038130bc96c84a573ca560b48a2f",
+        "run_number": 200,
+        "created_at": "2026-07-29T14:06:42Z",
+        "updated_at": "2026-07-29T14:07:30Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30459243861"
       },
       {
         "name": "CI",
-        "display_title": "feat: add operational service identity secret",
+        "display_title": "Wait safely for overlapping production deployments",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/wait-for-deployment-lock",
+        "head_sha": "0937ebcb959bd1c71448fe194f4dced25bdbccca",
+        "run_number": 199,
+        "created_at": "2026-07-29T14:05:27Z",
+        "updated_at": "2026-07-29T14:06:05Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30459140854"
+      },
+      {
+        "name": "CI",
+        "display_title": "test: cover bounded production lock waiting",
         "event": "push",
         "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/trusted-jwt-identity",
-        "head_sha": "de10e4d39c32912b4b6005ff48f2e1a44eaea530",
-        "run_number": 152,
-        "created_at": "2026-07-29T11:43:17Z",
-        "updated_at": "2026-07-29T11:43:58Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30448652433"
+        "conclusion": "success",
+        "head_branch": "agent/wait-for-deployment-lock",
+        "head_sha": "0937ebcb959bd1c71448fe194f4dced25bdbccca",
+        "run_number": 198,
+        "created_at": "2026-07-29T14:05:07Z",
+        "updated_at": "2026-07-29T14:05:53Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30459111669"
       },
       {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
+        "name": "CI",
+        "display_title": "ops: wait for active production deployment lock",
+        "event": "push",
         "status": "completed",
-        "conclusion": "cancelled",
-        "head_branch": "main",
-        "head_sha": "1fbb8a8bca92bdf678a720c6a4607f71fcbc840d",
-        "run_number": 233,
-        "created_at": "2026-07-29T11:43:15Z",
-        "updated_at": "2026-07-29T11:43:20Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30448650728"
-      },
-      {
-        "name": "Deploy production",
-        "display_title": "Deploy production",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "skipped",
-        "head_branch": "main",
-        "head_sha": "1fbb8a8bca92bdf678a720c6a4607f71fcbc840d",
-        "run_number": 114,
-        "created_at": "2026-07-29T11:43:15Z",
-        "updated_at": "2026-07-29T11:43:16Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30448650717"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "cancelled",
-        "head_branch": "main",
-        "head_sha": "1fbb8a8bca92bdf678a720c6a4607f71fcbc840d",
-        "run_number": 232,
-        "created_at": "2026-07-29T11:42:41Z",
-        "updated_at": "2026-07-29T11:43:27Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30448613257"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "cancelled",
-        "head_branch": "main",
-        "head_sha": "1fbb8a8bca92bdf678a720c6a4607f71fcbc840d",
-        "run_number": 231,
-        "created_at": "2026-07-29T11:42:37Z",
-        "updated_at": "2026-07-29T11:42:42Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30448609359"
-      },
-      {
-        "name": "Deploy production",
-        "display_title": "Deploy production",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "skipped",
-        "head_branch": "main",
-        "head_sha": "1fbb8a8bca92bdf678a720c6a4607f71fcbc840d",
-        "run_number": 113,
-        "created_at": "2026-07-29T11:42:37Z",
-        "updated_at": "2026-07-29T11:42:38Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30448609334"
+        "conclusion": "success",
+        "head_branch": "agent/wait-for-deployment-lock",
+        "head_sha": "621f582a0ab289d8c8f8542992a608912b0a41f5",
+        "run_number": 197,
+        "created_at": "2026-07-29T14:04:48Z",
+        "updated_at": "2026-07-29T14:05:25Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30459084546"
       }
     ]
   },
   "collector": {
     "event_name": "workflow_run",
     "workflow": "Publish project status",
-    "run_id": "30448704600"
+    "run_id": "30461807820"
   },
   "freshness": {
     "age_seconds_at_publish": 0,
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-29T19:44:36+08:00"
+    "generated_at": "2026-07-29T22:38:21+08:00"
   },
   "reliability": {
     "disk": {
@@ -320,28 +320,41 @@
       "minimum_free_bytes": 3221225472
     },
     "smoke_test": {
-      "schema_version": 3,
-      "generated_at": "2026-07-29T18:10:49+08:00",
-      "started_at": "2026-07-29T18:10:06+08:00",
-      "finished_at": "2026-07-29T18:10:49+08:00",
-      "duration_seconds": 43,
+      "schema_version": 5,
+      "generated_at": "2026-07-29T22:37:27+08:00",
+      "started_at": "2026-07-29T22:37:20+08:00",
+      "finished_at": "2026-07-29T22:37:27+08:00",
+      "duration_seconds": 7,
       "overall": "failure",
+      "deployment_gate": "failure",
       "memory_provider": "mempalace-letta",
+      "identity_mode": "legacy-client-asserted",
+      "service_identity_used": false,
       "test_scope": "service:sumeme-smoke/production-smoke",
+      "require_recall": false,
       "checks": {
         "models": true,
         "chat": true,
-        "scope": true,
-        "active_memory": false,
-        "s3": true,
+        "scope": false,
+        "memory_write": false,
+        "memory_recall": false,
+        "s3": true
+      },
+      "write_components": {
+        "mempalace": false,
+        "letta": false
+      },
+      "recall_components": {
         "mempalace": false,
         "letta": false
       },
       "error_codes": [
-        "mempalace_recall_failed",
-        "letta_recall_failed"
+        "memory_checkpoint_http_404",
+        "mempalace_recall_delayed",
+        "letta_recall_delayed",
+        "service_scope_verification_failed"
       ],
-      "age_seconds_at_publish": 5627,
+      "age_seconds_at_publish": 54,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }
