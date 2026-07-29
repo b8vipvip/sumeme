@@ -1,0 +1,51 @@
+name: Rollback production
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_sha:
+        description: Optional release SHA; blank uses previous_sha
+        required: false
+        type: string
+      confirm:
+        description: Confirm production rollback
+        required: true
+        type: choice
+        options:
+          - CANCEL
+          - ROLLBACK
+
+concurrency:
+  group: sumeme-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  rollback:
+    if: inputs.confirm == 'ROLLBACK'
+    environment: production
+    runs-on: [self-hosted, linux, x64, sumeme-production]
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out rollback tooling
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Roll back release
+        env:
+          DEPLOY_DIR: /opt/sumeme
+          TARGET_SHA: ${{ inputs.release_sha }}
+        run: |
+          if [[ -n "${TARGET_SHA}" ]]; then
+            DEPLOY_DIR="${DEPLOY_DIR}" bash scripts/rollback.sh "${TARGET_SHA}"
+          else
+            DEPLOY_DIR="${DEPLOY_DIR}" bash scripts/rollback.sh
+          fi
+
+      - name: Print deployment history
+        if: always()
+        run: tail -n 30 /opt/sumeme/.deploy/history.log 2>/dev/null || true
