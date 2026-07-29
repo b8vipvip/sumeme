@@ -1,0 +1,88 @@
+name: Publish project status
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_run:
+    workflows:
+      - CI
+      - Deploy production
+      - Diagnose production
+      - Rollback production
+    types: [completed]
+
+concurrency:
+  group: sumeme-project-status
+  cancel-in-progress: true
+
+permissions:
+  actions: read
+  contents: write
+  issues: read
+  pull-requests: read
+
+jobs:
+  publish:
+    runs-on: [self-hosted, linux, x64, sumeme-production]
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out trusted status collector
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: Collect sanitized project status
+        env:
+          DEPLOY_DIR: /opt/sumeme
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 scripts/collect-project-status.py \
+            --json "${RUNNER_TEMP}/status.json" \
+            --markdown "${RUNNER_TEMP}/STATUS.md"
+
+      - name: Publish snapshot to ops-status branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          STATUS_REPO="${RUNNER_TEMP}/sumeme-ops-status"
+          rm -rf "${STATUS_REPO}"
+          mkdir -p "${STATUS_REPO}"
+          cd "${STATUS_REPO}"
+
+          git init
+          git config user.name "sumeme-status-bot"
+          git config user.email "sumeme-status-bot@users.noreply.github.com"
+          git remote add origin \
+            "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
+          if git ls-remote --exit-code --heads origin ops-status >/dev/null 2>&1; then
+            git fetch --depth=1 origin ops-status
+            git checkout -B ops-status FETCH_HEAD
+          else
+            git checkout --orphan ops-status
+          fi
+
+          mkdir -p status
+          cp "${RUNNER_TEMP}/status.json" status/status.json
+          cp "${RUNNER_TEMP}/STATUS.md" status/STATUS.md
+
+          git add status/status.json status/STATUS.md
+          if git diff --cached --quiet; then
+            echo "Status snapshot is unchanged."
+            exit 0
+          fi
+
+          git commit -m "status: update project snapshot"
+          git push origin HEAD:ops-status
+
+      - name: Print summary
+        if: always()
+        run: |
+          echo "Status branch: ops-status"
+          echo "Machine-readable: status/status.json"
+          echo "Human-readable: status/STATUS.md"
