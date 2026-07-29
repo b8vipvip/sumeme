@@ -1,6 +1,6 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-29T15:01:55+08:00
+- **采集时间：** 2026-07-29T15:02:35+08:00
 - **总体状态：** `healthy`
 - **开发阶段：** `deployment_behind_main`
 - **线上版本：** `985f62c95ecff62417e9f515c3a683e369fdaf8d`
@@ -14,7 +14,7 @@
 - 本地网关：`ok`
 - 公网入口：`ok`
 - 磁盘使用：`82.4%`，剩余 5.2 GiB
-- 内存使用：`61.6%`，可用 1.4 GiB
+- 内存使用：`61.4%`，可用 1.4 GiB
 
 ## 容器服务
 
@@ -22,7 +22,7 @@
 |---|---|---|---|
 | letta | running | healthy | Up 2 hours (healthy) |
 | lobe | running | - | Up 2 hours |
-| memory-gateway | running | healthy | Up 40 seconds (healthy) |
+| memory-gateway | running | healthy | Up About a minute (healthy) |
 | postgresql | running | healthy | Up 3 hours (healthy) |
 | qdrant | running | healthy | Up 3 hours (healthy) |
 | redis | running | healthy | Up 3 hours (healthy) |
@@ -33,14 +33,14 @@
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-07-29T07:01:35Z |
-| CI | in_progress | main | 2026-07-29T07:01:26Z |
+| Publish project status | in_progress | main | 2026-07-29T07:02:16Z |
+| Deploy production | queued | main | 2026-07-29T07:02:10Z |
+| Publish project status | success | main | 2026-07-29T07:02:09Z |
+| CI | success | main | 2026-07-29T07:02:09Z |
 | Publish project status | cancelled | main | 2026-07-29T07:01:31Z |
 | Publish project status | cancelled | main | 2026-07-29T07:01:25Z |
 | Publish project status | cancelled | main | 2026-07-29T07:00:49Z |
 | Deploy production | success | main | 2026-07-29T07:01:25Z |
-| Deploy production | success | main | 2026-07-29T07:00:35Z |
-| Publish project status | cancelled | main | 2026-07-29T07:00:03Z |
 
 ## 开放 PR
 
