@@ -1,10 +1,10 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-29T17:40:17+08:00
+- **采集时间：** 2026-07-29T17:50:19+08:00
 - **总体状态：** `healthy`
 - **开发阶段：** `deployment_behind_main`
 - **线上版本：** `fe9e4a37401cdda1288226990236536cba85288b`
-- **main 最新版本：** `896082d30731e584805c591dd88e39b38c85b0e3`
+- **main 最新版本：** `8b3c9da37f04b2d4be52ce05d1d4bba92d7fc9c6`
 - **线上与 main 同步：** 否
 - **开放 PR：** 0
 - **开放 Issue：** 2
@@ -13,8 +13,8 @@
 
 - 本地网关：`ok`
 - 公网入口：`ok`
-- 磁盘使用：`76.2%`，剩余 7.6 GiB
-- 内存使用：`54.1%`，可用 1.7 GiB
+- 磁盘使用：`76.3%`，剩余 7.6 GiB
+- 内存使用：`54.3%`，可用 1.7 GiB
 
 ## 容器服务
 
@@ -22,7 +22,7 @@
 |---|---|---|---|
 | letta | running | healthy | Up 5 hours (healthy) |
 | lobe | running | - | Up 5 hours |
-| memory-gateway | running | healthy | Up 33 minutes (healthy) |
+| memory-gateway | running | healthy | Up 40 seconds (healthy) |
 | postgresql | running | healthy | Up 6 hours (healthy) |
 | qdrant | running | healthy | Up 6 hours (healthy) |
 | redis | running | healthy | Up 6 hours (healthy) |
@@ -33,14 +33,14 @@
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-07-29T09:40:00Z |
-| Publish project status | cancelled | main | 2026-07-29T09:17:14Z |
-| Publish project status | cancelled | main | 2026-07-29T09:06:50Z |
-| Publish project status | cancelled | main | 2026-07-29T09:05:08Z |
-| Deploy production | failure | main | 2026-07-29T09:06:47Z |
-| Publish project status | cancelled | main | 2026-07-29T09:05:02Z |
-| CI | success | main | 2026-07-29T09:04:49Z |
-| Publish project status | cancelled | main | 2026-07-29T09:04:56Z |
+| Publish project status | in_progress | main | 2026-07-29T09:49:55Z |
+| Publish project status | cancelled | main | 2026-07-29T09:49:50Z |
+| Deploy production | failure | main | 2026-07-29T09:49:46Z |
+| CI | success | main | 2026-07-29T09:43:52Z |
+| Publish project status | cancelled | main | 2026-07-29T09:44:04Z |
+| Publish project status | cancelled | main | 2026-07-29T09:43:07Z |
+| Deploy production | skipped | main | 2026-07-29T09:42:54Z |
+| Publish project status | cancelled | main | 2026-07-29T09:42:57Z |
 
 ## 开放 PR
 
