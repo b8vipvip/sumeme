@@ -9,6 +9,7 @@ import anyio
 
 from .config import Settings
 from .content import flatten_content, safe_id
+from .memory_scope import MemoryScope, coerce_scope
 
 logger = logging.getLogger(__name__)
 
@@ -33,18 +34,21 @@ class LettaMemory:
             self._client = Letta(**kwargs)
         return self._client
 
-    def _user_key(self, user_id: str) -> str:
-        return safe_id(user_id or self.settings.sumeme_user_id)
+    def _scope(self, value: MemoryScope | str) -> MemoryScope:
+        return coerce_scope(value, default_user_id=self.settings.sumeme_user_id)
+
+    def _scope_key(self, value: MemoryScope | str) -> str:
+        return self._scope(value).storage_key
 
     def _load_state(self) -> None:
         if self._state_loaded:
             return
         self._state_loaded = True
 
-        default_key = self._user_key(self.settings.sumeme_user_id)
+        default_scope = MemoryScope.account(self.settings.sumeme_user_id)
         explicit = self.settings.letta_agent_id.strip()
         if explicit:
-            self._agent_ids[default_key] = explicit
+            self._agent_ids[default_scope.storage_key] = explicit
 
         if not self._state_file.exists():
             return
@@ -52,17 +56,26 @@ class LettaMemory:
             data = json.loads(self._state_file.read_text(encoding="utf-8"))
             agents = data.get("agents")
             if isinstance(agents, dict):
-                for raw_user, raw_agent in agents.items():
-                    user_key = self._user_key(str(raw_user))
+                for raw_scope, raw_agent in agents.items():
+                    raw_key = str(raw_scope or "").strip()
+                    if not raw_key:
+                        continue
+                    if raw_key.startswith(("acct.", "svc.")) and ".vault." in raw_key:
+                        scope_key = safe_id(raw_key)
+                    else:
+                        scope_key = MemoryScope.from_legacy_user_id(
+                            raw_key,
+                            self.settings.sumeme_user_id,
+                        ).storage_key
                     agent_id = str(raw_agent or "").strip()
                     if agent_id:
-                        self._agent_ids.setdefault(user_key, agent_id)
+                        self._agent_ids.setdefault(scope_key, agent_id)
                 return
 
             # Backward compatibility with the Phase 1 single-agent state file.
             legacy = str(data.get("agent_id") or "").strip()
             if legacy:
-                self._agent_ids.setdefault(default_key, legacy)
+                self._agent_ids.setdefault(default_scope.storage_key, legacy)
         except Exception:
             logger.warning("Could not read persisted Letta agent map", exc_info=True)
 
@@ -72,7 +85,8 @@ class LettaMemory:
         temporary.write_text(
             json.dumps(
                 {
-                    "schema_version": 2,
+                    "schema_version": 3,
+                    "scope_format": "principal.account.vault",
                     "agents": dict(sorted(self._agent_ids.items())),
                 },
                 ensure_ascii=False,
@@ -83,13 +97,14 @@ class LettaMemory:
         )
         temporary.replace(self._state_file)
 
-    async def ensure_agent(self, user_id: str) -> str | None:
+    async def ensure_agent(self, scope: MemoryScope | str) -> str | None:
         if not self.settings.letta_enabled:
             return None
 
-        user_key = self._user_key(user_id)
+        resolved = self._scope(scope)
+        scope_key = resolved.storage_key
         self._load_state()
-        if agent_id := self._agent_ids.get(user_key):
+        if agent_id := self._agent_ids.get(scope_key):
             return agent_id
 
         if not self.settings.letta_model or not self.settings.letta_embedding:
@@ -97,21 +112,23 @@ class LettaMemory:
             return None
 
         async with self._agent_lock:
-            if agent_id := self._agent_ids.get(user_key):
+            if agent_id := self._agent_ids.get(scope_key):
                 return agent_id
 
             def create() -> Any:
                 return self._get_client().agents.create(
-                    name=f"{self.settings.letta_agent_name}-{user_key}",
+                    name=f"{self.settings.letta_agent_name}-{safe_id(scope_key)}",
                     model=self.settings.letta_model,
                     embedding=self.settings.letta_embedding,
                     memory_blocks=[
                         {
                             "label": "human",
                             "value": (
-                                "This is the long-term personal memory for one user. "
+                                "This is one isolated long-term memory vault. "
+                                f"Scope: {resolved.display_key}. "
                                 "Keep stable facts, preferences, projects, people, events, "
-                                "dates, changes and contradictions. Never invent facts."
+                                "dates, changes and contradictions. Never invent facts and "
+                                "never copy facts from another scope."
                             ),
                         },
                         {
@@ -130,26 +147,38 @@ class LettaMemory:
                 agent = await anyio.to_thread.run_sync(create)
                 agent_id = str(getattr(agent, "id", "") or "")
                 if not agent_id:
-                    logger.error("Letta created an agent without an id for user %s", user_key)
+                    logger.error(
+                        "Letta created an agent without an id for scope %s",
+                        resolved.display_key,
+                    )
                     return None
-                self._agent_ids[user_key] = agent_id
+                self._agent_ids[scope_key] = agent_id
                 self._persist_state()
-                logger.info("Created Letta agent %s for user %s", agent_id, user_key)
+                logger.info(
+                    "Created Letta agent %s for scope %s",
+                    agent_id,
+                    resolved.display_key,
+                )
                 return agent_id
             except Exception:
-                logger.exception("Letta agent creation failed for user %s", user_key)
+                logger.exception(
+                    "Letta agent creation failed for scope %s",
+                    resolved.display_key,
+                )
                 return None
 
-    async def recall(self, query: str, user_id: str) -> str:
-        agent_id = await self.ensure_agent(user_id)
+    async def recall(self, query: str, scope: MemoryScope | str) -> str:
+        resolved = self._scope(scope)
+        agent_id = await self.ensure_agent(resolved)
         if not agent_id or not query.strip():
             return ""
 
         prompt = (
             "[RECALL_ONLY]\n"
+            f"Memory scope: {resolved.display_key}\n"
             "Return only personal memories relevant to the current question. "
             "Use concise Chinese bullet points. Include dates and uncertainty. "
-            "Do not answer the question itself.\n\n"
+            "Do not answer the question itself. Never use another scope.\n\n"
             f"Current question:\n{query[:12000]}"
         )
         try:
@@ -161,26 +190,29 @@ class LettaMemory:
             )
             return self._extract_text(response)
         except Exception:
-            logger.exception("Letta recall failed")
+            logger.exception("Letta recall failed for scope %s", resolved.display_key)
             return ""
 
     async def remember(
         self,
         *,
-        user_id: str,
+        scope: MemoryScope | str,
         user_text: str,
         assistant_text: str,
         conversation_id: str,
     ) -> None:
-        agent_id = await self.ensure_agent(user_id)
+        resolved = self._scope(scope)
+        agent_id = await self.ensure_agent(resolved)
         if not agent_id or not user_text.strip():
             return
 
         prompt = (
             "[MEMORY_UPDATE]\n"
+            f"Memory scope: {resolved.display_key}\n"
             "Study this exchange and update durable personal memory. Preserve concrete "
             "names, dates, numbers, preferences, decisions, project status and changes. "
-            "Do not treat assistant speculation as user fact. Reply only with SAVED.\n\n"
+            "Do not treat assistant speculation as user fact. Never use or update another "
+            "scope. Reply only with SAVED.\n\n"
             f"conversation_id: {conversation_id}\n"
             f"USER:\n{user_text[:30000]}\n\n"
             f"ASSISTANT:\n{assistant_text[:30000]}"
@@ -193,7 +225,10 @@ class LettaMemory:
                 )
             )
         except Exception:
-            logger.exception("Letta memory update failed")
+            logger.exception(
+                "Letta memory update failed for scope %s",
+                resolved.display_key,
+            )
 
     @staticmethod
     def _extract_text(response: Any) -> str:
