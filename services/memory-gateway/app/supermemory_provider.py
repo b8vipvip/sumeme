@@ -81,7 +81,7 @@ class SupermemoryProvider:
         conversation_id: str,
         request_payload: dict[str, Any],
         assistant_text: str,
-    ) -> None:
+    ) -> bool:
         resolved = coerce_scope(scope, default_user_id=self.settings.sumeme_user_id)
         content_payload = {
             "conversation_id": conversation_id,
@@ -124,11 +124,13 @@ class SupermemoryProvider:
                 json=payload,
             )
             response.raise_for_status()
+            return True
         except httpx.HTTPError:
             logger.exception(
                 "Supermemory write failed for scope %s",
                 resolved.display_key,
             )
+            return False
 
     async def aclose(self) -> None:
         await self._client.aclose()
