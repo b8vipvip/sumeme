@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import hashlib
 import json
 import time
 
@@ -12,7 +11,7 @@ from pydantic import SecretStr, ValidationError
 from starlette.datastructures import Headers
 
 from app.config import Settings
-from app.identity import IdentityError, IdentityResolver
+from app.identity import IdentityError, IdentityResolver, derive_account_id
 from app.memory_scope import MemoryScope
 
 ISSUER = "https://identity.example"
@@ -27,11 +26,6 @@ def key_material() -> tuple[rsa.RSAPrivateKey, str]:
     public_jwk["use"] = "sig"
     public_jwk["alg"] = "RS256"
     return private_key, json.dumps({"keys": [public_jwk]})
-
-
-def verified_account_id(subject: str, issuer: str = ISSUER) -> str:
-    digest = hashlib.sha256(f"{issuer}\x00{subject}".encode()).hexdigest()
-    return f"oidc-{digest[:32]}"
 
 
 def make_settings(jwks: str, **overrides) -> Settings:
@@ -106,7 +100,7 @@ async def test_verified_subject_replaces_all_client_asserted_account_ids() -> No
         },
     )
 
-    expected_account = verified_account_id("oidc-user-123")
+    expected_account = derive_account_id(ISSUER, "oidc-user-123")
     assert scope == MemoryScope.account(expected_account, "work", device_id="phone-a")
     assert "attacker" not in scope.storage_key
     assert "oidc-user-123" not in scope.storage_key
