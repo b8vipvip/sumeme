@@ -50,12 +50,12 @@ async def test_legacy_agent_is_migrated_only_for_default_user(tmp_path) -> None:
     smoke_agent = await memory.ensure_agent("__sumeme_smoke__")
 
     assert smoke_agent == "agent-1"
-    assert agents.created_names == ["sumeme-personal-memory-__sumeme_smoke__"]
+    assert agents.created_names == ["sumeme-personal-memory-sumeme_smoke"]
 
     persisted = json.loads(state_file.read_text(encoding="utf-8"))
     assert persisted["schema_version"] == 2
     assert persisted["agents"]["default"] == "legacy-agent"
-    assert persisted["agents"]["__sumeme_smoke__"] == "agent-1"
+    assert persisted["agents"]["sumeme_smoke"] == "agent-1"
 
 
 @pytest.mark.asyncio
