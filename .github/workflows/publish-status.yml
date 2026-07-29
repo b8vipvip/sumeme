@@ -12,6 +12,7 @@ on:
       - Deploy production
       - Diagnose production
       - Rollback production
+      - Smoke production
     types: [completed]
 
 concurrency:
@@ -44,6 +45,11 @@ jobs:
           python3 scripts/collect-project-status.py \
             --json "${RUNNER_TEMP}/status.json" \
             --markdown "${RUNNER_TEMP}/STATUS.md"
+
+          python3 scripts/enrich-project-status.py \
+            --json "${RUNNER_TEMP}/status.json" \
+            --markdown "${RUNNER_TEMP}/STATUS.md" \
+            --smoke "/opt/sumeme/.deploy/smoke/latest.json"
 
       - name: Publish snapshot to ops-status branch
         env:
