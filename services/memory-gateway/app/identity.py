@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import hmac
 import json
 import time
@@ -8,8 +9,13 @@ from typing import Any, Mapping
 
 import anyio
 import jwt
-from jwt import InvalidTokenError, PyJWK, PyJWKClient
-from jwt.exceptions import PyJWKClientConnectionError
+from jwt import PyJWK, PyJWKClient
+from jwt.exceptions import (
+    InvalidTokenError,
+    PyJWKClientConnectionError,
+    PyJWKClientError,
+    PyJWTError,
+)
 
 from .config import Settings
 from .content import safe_id
@@ -96,7 +102,14 @@ class IdentityVerifier:
                 "identity_verifier_unavailable",
                 status_code=503,
             ) from exc
-        except (InvalidTokenError, KeyError, TypeError, ValueError) as exc:
+        except (
+            InvalidTokenError,
+            PyJWKClientError,
+            PyJWTError,
+            KeyError,
+            TypeError,
+            ValueError,
+        ) as exc:
             raise IdentityError("identity_token_invalid") from exc
 
     def _resolve_signing_key(self, token: str, header: dict[str, Any]) -> Any:
@@ -122,8 +135,11 @@ class IdentityVerifier:
 
     def _identity_from_claims(self, claims: dict[str, Any]) -> VerifiedIdentity:
         subject = str(claims.get("sub") or "").strip()
+        issuer = str(claims.get("iss") or "").strip()
         if not subject or len(subject) > 512:
             raise IdentityError("identity_subject_invalid")
+        if not issuer or len(issuer) > 2048:
+            raise IdentityError("identity_issuer_invalid")
 
         issued_at = claims.get("iat")
         if isinstance(issued_at, bool) or not isinstance(issued_at, (int, float)):
@@ -135,18 +151,18 @@ class IdentityVerifier:
         ):
             raise IdentityError("identity_token_too_old")
 
-        account_scope = MemoryScope.account(subject)
+        account_id = self._verified_account_id(issuer, subject)
         vaults = self._vault_claim(claims)
         default_raw = str(
             claims.get(self.settings.identity_default_vault_claim) or "default"
         )
-        default_vault = MemoryScope.account(subject, default_raw).vault_id
+        default_vault = MemoryScope.account(account_id, default_raw).vault_id
         if default_vault not in vaults:
             raise IdentityError("identity_default_vault_not_allowed")
 
         return VerifiedIdentity(
             subject=subject,
-            account_id=account_scope.account_id,
+            account_id=account_id,
             allowed_vaults=frozenset(vaults),
             default_vault=default_vault,
         )
@@ -173,6 +189,11 @@ class IdentityVerifier:
         if not normalized:
             raise IdentityError("identity_vault_claim_invalid")
         return normalized
+
+    @staticmethod
+    def _verified_account_id(issuer: str, subject: str) -> str:
+        digest = hashlib.sha256(f"{issuer}\x00{subject}".encode()).hexdigest()
+        return f"oidc-{digest[:32]}"
 
     def _load_static_jwks(self) -> dict[str, Any] | None:
         raw = self.settings.identity_jwks_json.get_secret_value().strip()
