@@ -6,6 +6,7 @@ from typing import Any, Protocol
 from .config import Settings
 from .content import flatten_content, latest_user_message
 from .letta_memory import LettaMemory
+from .memory_result import MemoryWriteResult
 from .memory_scope import MemoryScope
 from .mempalace_store import MemPalaceStore
 
@@ -22,7 +23,7 @@ class MemoryProvider(Protocol):
         conversation_id: str,
         request_payload: dict[str, Any],
         assistant_text: str,
-    ) -> None: ...
+    ) -> MemoryWriteResult: ...
 
     async def aclose(self) -> None: ...
 
@@ -62,10 +63,10 @@ class MemPalaceLettaProvider:
         conversation_id: str,
         request_payload: dict[str, Any],
         assistant_text: str,
-    ) -> None:
+    ) -> MemoryWriteResult:
         message = latest_user_message(request_payload.get("messages") or [])
         user_text = flatten_content((message or {}).get("content"))
-        await asyncio.gather(
+        outcomes = await asyncio.gather(
             self.mempalace.add_exchange(
                 scope=scope,
                 conversation_id=conversation_id,
@@ -79,6 +80,23 @@ class MemPalaceLettaProvider:
                 conversation_id=conversation_id,
             ),
             return_exceptions=True,
+        )
+
+        names = ("mempalace", "letta")
+        components: dict[str, bool] = {}
+        error_codes: list[str] = []
+        for name, outcome in zip(names, outcomes, strict=True):
+            accepted = outcome is True
+            components[name] = accepted
+            if isinstance(outcome, BaseException):
+                error_codes.append(f"{name}_write_exception")
+            elif not accepted:
+                error_codes.append(f"{name}_write_rejected")
+
+        return MemoryWriteResult(
+            provider=self.name,
+            components=components,
+            error_codes=tuple(error_codes),
         )
 
     async def aclose(self) -> None:
