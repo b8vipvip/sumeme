@@ -9,6 +9,7 @@ import httpx
 
 from .config import Settings
 from .content import safe_id
+from .memory_scope import MemoryScope, coerce_scope
 
 logger = logging.getLogger(__name__)
 
@@ -30,13 +31,14 @@ class SupermemoryProvider:
             follow_redirects=True,
         )
 
-    async def recall(self, query: str, user_id: str) -> str:
+    async def recall(self, query: str, scope: MemoryScope | str) -> str:
         if not query.strip():
             return ""
 
+        resolved = coerce_scope(scope, default_user_id=self.settings.sumeme_user_id)
         payload = {
             "q": query,
-            "containerTag": self._container_tag(user_id),
+            "containerTag": self._container_tag(resolved),
             "searchMode": self.settings.supermemory_search_mode,
             "limit": self.settings.memory_recall_limit,
             "threshold": self.settings.supermemory_search_threshold,
@@ -51,7 +53,10 @@ class SupermemoryProvider:
             response.raise_for_status()
             data = response.json()
         except (httpx.HTTPError, ValueError):
-            logger.exception("Supermemory search failed")
+            logger.exception(
+                "Supermemory search failed for scope %s",
+                resolved.display_key,
+            )
             return ""
 
         rendered: list[str] = []
@@ -72,13 +77,17 @@ class SupermemoryProvider:
     async def remember_exchange(
         self,
         *,
-        user_id: str,
+        scope: MemoryScope | str,
         conversation_id: str,
         request_payload: dict[str, Any],
         assistant_text: str,
     ) -> None:
+        resolved = coerce_scope(scope, default_user_id=self.settings.sumeme_user_id)
         content_payload = {
             "conversation_id": conversation_id,
+            "account_id": resolved.account_id,
+            "vault_id": resolved.vault_id,
+            "principal_type": resolved.principal_type,
             "request": request_payload,
             "assistant": assistant_text,
         }
@@ -90,16 +99,20 @@ class SupermemoryProvider:
             default=str,
         )
         digest = hashlib.sha256(
-            f"{user_id}\n{conversation_id}\n{canonical}".encode()
+            f"{resolved.storage_key}\n{conversation_id}\n{canonical}".encode()
         ).hexdigest()[:48]
         payload = {
             "content": canonical,
-            "containerTag": self._container_tag(user_id),
+            "containerTag": self._container_tag(resolved),
             "customId": f"sumeme-{digest}",
             "metadata": {
                 "source": "sumeme-conversation",
                 "conversation_id": safe_id(conversation_id, "unknown")[:100],
-                "schema_version": 1,
+                "account_id": resolved.account_id,
+                "vault_id": resolved.vault_id,
+                "principal_type": resolved.principal_type,
+                "scope_key": resolved.storage_key,
+                "schema_version": 2,
             },
             "taskType": "memory",
         }
@@ -112,7 +125,10 @@ class SupermemoryProvider:
             )
             response.raise_for_status()
         except httpx.HTTPError:
-            logger.exception("Supermemory write failed")
+            logger.exception(
+                "Supermemory write failed for scope %s",
+                resolved.display_key,
+            )
 
     async def aclose(self) -> None:
         await self._client.aclose()
@@ -125,10 +141,9 @@ class SupermemoryProvider:
             "Content-Type": "application/json",
         }
 
-    def _container_tag(self, user_id: str) -> str:
+    def _container_tag(self, scope: MemoryScope) -> str:
         prefix = safe_id(self.settings.supermemory_container_prefix, "sumeme")
-        account = safe_id(user_id, "default")
-        return f"{prefix}:{account}"[:100]
+        return f"{prefix}:{scope.storage_key}"[:100]
 
     @staticmethod
     def _result_text(item: dict[str, Any]) -> str:
