@@ -108,6 +108,9 @@ jobs:
       github.ref == 'refs/heads/main' &&
       vars.SUMEME_DEPLOY_TRANSPORT == 'github-hosted-ssh'
     needs: [gateway, reliability, compose]
+    concurrency:
+      group: sumeme-production
+      cancel-in-progress: false
     uses: b8vipvip/ADOB/.github/workflows/deploy-via-ssh.yml@621a5fc3d0876a5a33560468ae6073ec3ac640a4
     with:
       project_name: sumeme
