@@ -25,10 +25,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-          cache: npm
-          cache-dependency-path: plugins/autodevops-bridge/mcp-server/package-lock.json
       - name: Install dependencies
-        run: npm install --package-lock-only && npm ci
+        run: npm install
       - name: Type-check
         run: npm run check
       - name: Build
