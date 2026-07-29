@@ -28,6 +28,13 @@ _SERVICE_ID_HEADER = "x-sumeme-service-id"
 _MAX_VAULTS_PER_TOKEN = 32
 
 
+def derive_account_id(issuer: str, subject: str) -> str:
+    """Create a stable 32-character storage-safe account key."""
+
+    digest = hashlib.sha256(f"{issuer}\x00{subject}".encode()).hexdigest()
+    return f"acct-{digest[:27]}"
+
+
 class IdentityError(Exception):
     def __init__(self, code: str, status_code: int = 401):
         super().__init__(code)
@@ -152,7 +159,7 @@ class IdentityVerifier:
         ):
             raise IdentityError("identity_token_too_old")
 
-        account_id = self._verified_account_id(issuer, subject)
+        account_id = derive_account_id(issuer, subject)
         vaults = self._vault_claim(claims)
         default_raw = str(
             claims.get(self.settings.identity_default_vault_claim) or "default"
@@ -191,11 +198,6 @@ class IdentityVerifier:
             raise IdentityError("identity_vault_claim_invalid")
         return normalized
 
-    @staticmethod
-    def _verified_account_id(issuer: str, subject: str) -> str:
-        digest = hashlib.sha256(f"{issuer}\x00{subject}".encode()).hexdigest()
-        return f"oidc-{digest[:32]}"
-
     def _load_static_jwks(self) -> dict[str, Any] | None:
         raw = self.settings.identity_jwks_json.get_secret_value().strip()
         if not raw:
@@ -232,6 +234,8 @@ class IdentityResolver:
                 payload,
                 identity_token,
             )
+        if self.settings.identity_mode == "trusted-openai-user":
+            return self._trusted_openai_user_scope(payload)
         if self.settings.identity_mode == "jwt-required":
             raise IdentityError("identity_token_required")
         return self._legacy_scope(headers, payload)
@@ -256,6 +260,23 @@ class IdentityResolver:
             or str(metadata.get("device_id") or "").strip()
         )
         return identity.scope(requested_vault, device_id=device_id)
+
+    def _trusted_openai_user_scope(self, payload: dict[str, Any]) -> MemoryScope:
+        raw_subject = payload.get("user")
+        if not isinstance(raw_subject, str):
+            raise IdentityError("trusted_upstream_user_required")
+        subject = raw_subject.strip()
+        if not subject or len(subject) > 512:
+            raise IdentityError("trusted_upstream_user_invalid")
+
+        metadata = self._metadata(payload)
+        vault_id = str(metadata.get("vault_id") or "default")
+        device_id = str(metadata.get("device_id") or "")
+        account_id = derive_account_id(
+            self.settings.identity_trusted_upstream_issuer,
+            subject,
+        )
+        return MemoryScope.account(account_id, vault_id, device_id=device_id)
 
     def _service_scope(
         self,
