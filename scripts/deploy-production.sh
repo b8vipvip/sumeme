@@ -7,6 +7,8 @@ TARGET_SHA="${1:-${GITHUB_SHA:-unknown}}"
 STATE_DIR="${DEPLOY_DIR}/.deploy"
 RELEASE_DIR="${STATE_DIR}/releases"
 LOCK_FILE="${STATE_DIR}/deploy.lock"
+LOCK_OWNER_FILE="${STATE_DIR}/deploy.lock.owner"
+DEPLOY_LOCK_WAIT_SECONDS="${DEPLOY_LOCK_WAIT_SECONDS:-1800}"
 
 need() {
   command -v "$1" >/dev/null 2>&1 || {
@@ -34,12 +36,41 @@ need curl
 need flock
 need python3
 
+if [[ ! "${DEPLOY_LOCK_WAIT_SECONDS}" =~ ^[0-9]+$ ]] || (( DEPLOY_LOCK_WAIT_SECONDS > 7200 )); then
+  echo "Invalid DEPLOY_LOCK_WAIT_SECONDS=${DEPLOY_LOCK_WAIT_SECONDS}; expected 0-7200 seconds." >&2
+  exit 64
+fi
+
 mkdir -p "${DEPLOY_DIR}" "${STATE_DIR}" "${RELEASE_DIR}"
 exec 9>"${LOCK_FILE}"
-if ! flock -n 9; then
-  echo "Another SuMeMe deployment is already running." >&2
-  exit 1
+
+echo "Waiting up to ${DEPLOY_LOCK_WAIT_SECONDS}s for the SuMeMe production deployment lock..."
+if ! flock -w "${DEPLOY_LOCK_WAIT_SECONDS}" 9; then
+  echo "Timed out waiting for the SuMeMe production deployment lock." >&2
+  if [[ -s "${LOCK_OWNER_FILE}" ]]; then
+    echo "Last recorded lock owner:" >&2
+    sed -n '1,10p' "${LOCK_OWNER_FILE}" >&2 || true
+  fi
+  if command -v fuser >/dev/null 2>&1; then
+    echo "Processes currently holding or using ${LOCK_FILE}:" >&2
+    fuser -v "${LOCK_FILE}" >&2 || true
+  fi
+  exit 75
 fi
+
+cleanup_lock_owner() {
+  rm -f "${LOCK_OWNER_FILE}"
+}
+trap cleanup_lock_owner EXIT
+
+{
+  printf 'pid=%s\n' "$$"
+  printf 'target_sha=%s\n' "${TARGET_SHA}"
+  printf 'started_at=%s\n' "$(date --iso-8601=seconds)"
+  printf 'source_dir=%s\n' "${SOURCE_DIR}"
+} > "${LOCK_OWNER_FILE}"
+
+echo "Acquired SuMeMe production deployment lock."
 
 if [[ ! -f "${DEPLOY_DIR}/.env" ]]; then
   echo "Missing ${DEPLOY_DIR}/.env; refusing to deploy." >&2
