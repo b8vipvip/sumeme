@@ -35,6 +35,7 @@ class Settings(BaseSettings):
 
     gateway_api_key: SecretStr
     gateway_admin_token: SecretStr
+    gateway_service_token: SecretStr = SecretStr("")
     sumeme_user_id: str = "default"
     memory_provider: str = "mempalace-letta"
     memory_recall_limit: int = Field(default=6, ge=1, le=30)
@@ -122,14 +123,16 @@ class Settings(BaseSettings):
             "required": "jwt-required",
             "jwt": "jwt-required",
         }
-        mode = aliases.get(self.identity_mode.strip().lower(), self.identity_mode.strip().lower())
+        raw_mode = self.identity_mode.strip().lower()
+        mode = aliases.get(raw_mode, raw_mode)
         if mode not in {
             "legacy-client-asserted",
             "jwt-preferred",
             "jwt-required",
         }:
             raise ValueError(
-                "IDENTITY_MODE must be legacy-client-asserted, jwt-preferred, or jwt-required"
+                "IDENTITY_MODE must be legacy-client-asserted, jwt-preferred, "
+                "or jwt-required"
             )
         self.identity_mode = mode
 
@@ -138,7 +141,8 @@ class Settings(BaseSettings):
             algorithm not in _SAFE_IDENTITY_ALGORITHMS for algorithm in algorithms
         ):
             raise ValueError(
-                "IDENTITY_ALLOWED_ALGORITHMS contains an unsafe or unsupported algorithm"
+                "IDENTITY_ALLOWED_ALGORITHMS contains an unsafe or unsupported "
+                "algorithm"
             )
 
         if mode == "legacy-client-asserted":
@@ -161,7 +165,8 @@ class Settings(BaseSettings):
             and not self.identity_allow_insecure_jwks_url
         ):
             raise ValueError(
-                "IDENTITY_JWKS_URL must use HTTPS unless explicitly allowed for development"
+                "IDENTITY_JWKS_URL must use HTTPS unless explicitly allowed "
+                "for development"
             )
         if jwks_json:
             try:
@@ -170,13 +175,18 @@ class Settings(BaseSettings):
                 raise ValueError("IDENTITY_JWKS_JSON must be valid JSON") from exc
             keys = value.get("keys") if isinstance(value, dict) else None
             if not isinstance(keys, list) or not keys:
-                raise ValueError("IDENTITY_JWKS_JSON must contain a non-empty keys array")
+                raise ValueError(
+                    "IDENTITY_JWKS_JSON must contain a non-empty keys array"
+                )
+            private_fields = ("d", "p", "q", "dp", "dq", "qi")
             if any(
                 isinstance(key, dict)
-                and any(private_field in key for private_field in ("d", "p", "q", "dp", "dq", "qi"))
+                and any(field in key for field in private_fields)
                 for key in keys
             ):
-                raise ValueError("IDENTITY_JWKS_JSON must contain public keys only")
+                raise ValueError(
+                    "IDENTITY_JWKS_JSON must contain public keys only"
+                )
 
         if not self.identity_vaults_claim.strip():
             raise ValueError("IDENTITY_VAULTS_CLAIM cannot be empty")
