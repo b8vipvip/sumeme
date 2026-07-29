@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hmac
 import json
 import time
 from dataclasses import dataclass
@@ -15,6 +16,8 @@ from .content import safe_id
 from .memory_scope import MemoryScope
 
 _IDENTITY_HEADER = "x-sumeme-identity-token"
+_SERVICE_TOKEN_HEADER = "x-sumeme-service-token"
+_SERVICE_ID_HEADER = "x-sumeme-service-id"
 _MAX_VAULTS_PER_TOKEN = 32
 
 
@@ -101,7 +104,9 @@ class IdentityVerifier:
             keys = self._static_jwks.get("keys") or []
             kid = str(header.get("kid") or "")
             if kid:
-                matches = [key for key in keys if str(key.get("kid") or "") == kid]
+                matches = [
+                    key for key in keys if str(key.get("kid") or "") == kid
+                ]
             else:
                 matches = keys if len(keys) == 1 else []
             if len(matches) != 1:
@@ -109,7 +114,10 @@ class IdentityVerifier:
             return PyJWK.from_dict(matches[0], algorithm=header.get("alg")).key
 
         if self._jwks_client is None:
-            raise IdentityError("identity_verifier_not_configured", status_code=503)
+            raise IdentityError(
+                "identity_verifier_not_configured",
+                status_code=503,
+            )
         return self._jwks_client.get_signing_key_from_jwt(token).key
 
     def _identity_from_claims(self, claims: dict[str, Any]) -> VerifiedIdentity:
@@ -190,38 +198,83 @@ class IdentityResolver:
         headers: Mapping[str, str],
         payload: dict[str, Any],
     ) -> MemoryScope:
-        token = str(headers.get(_IDENTITY_HEADER) or "").strip()
-        if token:
-            if self.verifier is None:
-                raise IdentityError("identity_token_not_configured", status_code=400)
-            identity = await self.verifier.verify(token)
-            metadata = payload.get("metadata")
-            if not isinstance(metadata, dict):
-                metadata = {}
-            requested_vault = (
-                str(headers.get("x-sumeme-vault-id") or "").strip()
-                or str(metadata.get("vault_id") or "").strip()
-                or identity.default_vault
+        identity_token = str(headers.get(_IDENTITY_HEADER) or "").strip()
+        service_token = str(headers.get(_SERVICE_TOKEN_HEADER) or "").strip()
+        if identity_token and service_token:
+            raise IdentityError("identity_multiple_credentials", status_code=400)
+        if service_token:
+            return self._service_scope(headers, payload, service_token)
+        if identity_token:
+            return await self._verified_account_scope(
+                headers,
+                payload,
+                identity_token,
             )
-            device_id = (
-                str(headers.get("x-sumeme-device-id") or "").strip()
-                or str(metadata.get("device_id") or "").strip()
-            )
-            return identity.scope(requested_vault, device_id=device_id)
-
         if self.settings.identity_mode == "jwt-required":
             raise IdentityError("identity_token_required")
         return self._legacy_scope(headers, payload)
+
+    async def _verified_account_scope(
+        self,
+        headers: Mapping[str, str],
+        payload: dict[str, Any],
+        token: str,
+    ) -> MemoryScope:
+        if self.verifier is None:
+            raise IdentityError("identity_token_not_configured", status_code=400)
+        identity = await self.verifier.verify(token)
+        metadata = self._metadata(payload)
+        requested_vault = (
+            str(headers.get("x-sumeme-vault-id") or "").strip()
+            or str(metadata.get("vault_id") or "").strip()
+            or identity.default_vault
+        )
+        device_id = (
+            str(headers.get("x-sumeme-device-id") or "").strip()
+            or str(metadata.get("device_id") or "").strip()
+        )
+        return identity.scope(requested_vault, device_id=device_id)
+
+    def _service_scope(
+        self,
+        headers: Mapping[str, str],
+        payload: dict[str, Any],
+        supplied_token: str,
+    ) -> MemoryScope:
+        expected = self.settings.gateway_service_token.get_secret_value()
+        if not expected:
+            raise IdentityError(
+                "service_identity_not_configured",
+                status_code=503,
+            )
+        if not hmac.compare_digest(supplied_token, expected):
+            raise IdentityError("service_identity_invalid")
+
+        service_id = str(headers.get(_SERVICE_ID_HEADER) or "").strip()
+        if not service_id:
+            raise IdentityError("service_identity_id_required", status_code=400)
+        metadata = self._metadata(payload)
+        vault_id = (
+            str(headers.get("x-sumeme-vault-id") or "").strip()
+            or str(metadata.get("vault_id") or "").strip()
+            or "system"
+        )
+        device_id = (
+            str(headers.get("x-sumeme-device-id") or "").strip()
+            or str(metadata.get("device_id") or "").strip()
+        )
+        return MemoryScope.service(
+            safe_id(service_id, "service"),
+            safe_id(vault_id, "system"),
+            device_id=device_id,
+        )
 
     def _legacy_scope(
         self,
         headers: Mapping[str, str],
         payload: dict[str, Any],
     ) -> MemoryScope:
-        metadata = payload.get("metadata")
-        if not isinstance(metadata, dict):
-            metadata = {}
-
+        metadata = self._metadata(payload)
         raw_account = (
             str(headers.get("x-sumeme-account-id") or "").strip()
             or str(headers.get("x-sumeme-user-id") or "").strip()
@@ -250,3 +303,8 @@ class IdentityResolver:
             safe_id(raw_vault, "default"),
             device_id=device_id,
         )
+
+    @staticmethod
+    def _metadata(payload: dict[str, Any]) -> dict[str, Any]:
+        metadata = payload.get("metadata")
+        return metadata if isinstance(metadata, dict) else {}
