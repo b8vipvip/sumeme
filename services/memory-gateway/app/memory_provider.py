@@ -6,8 +6,8 @@ from typing import Any, Protocol
 from .config import Settings
 from .content import flatten_content, latest_user_message
 from .letta_memory import LettaMemory
-from .mempalace_store import MemPalaceStore
 from .memory_scope import MemoryScope
+from .mempalace_store import MemPalaceStore
 
 
 class MemoryProvider(Protocol):
