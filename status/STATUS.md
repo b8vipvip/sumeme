@@ -1,50 +1,50 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-29T23:08:36+08:00
+- **采集时间：** 2026-07-29T23:45:06+08:00
 - **总体状态：** `healthy`
 - **开发阶段：** `deployment_behind_main`
 - **线上版本：** `fe9e4a37401cdda1288226990236536cba85288b`
 - **main 最新版本：** `dcf7cd9000007d0d2fa8f4c9e51799b24cf22d13`
 - **线上与 main 同步：** 否
-- **开放 PR：** 0
+- **开放 PR：** 1
 - **开放 Issue：** 3
 
 ## 健康检查
 
 - 本地网关：`ok`
 - 公网入口：`ok`
-- 磁盘使用：`76.9%`，剩余 7.3 GiB
+- 磁盘使用：`77.0%`，剩余 7.3 GiB
 - 内存使用：`55.6%`，可用 1.6 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| letta | running | healthy | Up 10 hours (healthy) |
-| lobe | running | - | Up 10 hours |
-| memory-gateway | running | healthy | Up 5 hours (healthy) |
-| postgresql | running | healthy | Up 11 hours (healthy) |
-| qdrant | running | healthy | Up 11 hours (healthy) |
-| redis | running | healthy | Up 11 hours (healthy) |
-| rustfs | running | healthy | Up 11 hours (healthy) |
-| searxng | running | - | Up 11 hours |
+| letta | running | healthy | Up 11 hours (healthy) |
+| lobe | running | - | Up 11 hours |
+| memory-gateway | running | healthy | Up 6 hours (healthy) |
+| postgresql | running | healthy | Up 12 hours (healthy) |
+| qdrant | running | healthy | Up 12 hours (healthy) |
+| redis | running | healthy | Up 12 hours (healthy) |
+| rustfs | running | healthy | Up 12 hours (healthy) |
+| searxng | running | - | Up 12 hours |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-07-29T15:07:57Z |
-| Publish project status | success | main | 2026-07-29T14:38:35Z |
-| Publish project status | cancelled | main | 2026-07-29T14:37:48Z |
-| Smoke production | success | main | 2026-07-29T14:37:35Z |
-| CI | in_progress | main | 2026-07-29T15:07:50Z |
-| CI | success | agent/unify-deploy-concurrency | 2026-07-29T14:11:56Z |
-| CI | success | agent/unify-deploy-concurrency | 2026-07-29T14:10:52Z |
-| CI | success | agent/unify-deploy-concurrency | 2026-07-29T14:10:47Z |
+| Publish project status | in_progress | main | 2026-07-29T15:44:30Z |
+| CI | success | agent/skip-unchanged-gateway-build | 2026-07-29T15:44:51Z |
+| CI | in_progress | agent/skip-unchanged-gateway-build | 2026-07-29T15:44:21Z |
+| CI | success | agent/skip-unchanged-gateway-build | 2026-07-29T15:44:43Z |
+| CI | success | agent/skip-unchanged-gateway-build | 2026-07-29T15:44:06Z |
+| CI | success | agent/diagnose-deploy-lock | 2026-07-29T15:42:33Z |
+| CI | success | agent/diagnose-deploy-lock | 2026-07-29T15:42:27Z |
+| CI | success | agent/diagnose-deploy-lock | 2026-07-29T15:41:37Z |
 
 ## 开放 PR
 
-- 无
+- #21 Persist pip cache for memory gateway image builds (`agent/skip-unchanged-gateway-build` → `main`)
 
 ## 开放 Issue
 

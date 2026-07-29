@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-07-29T23:08:36+08:00",
+  "generated_at": "2026-07-29T23:45:06+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "healthy",
   "project_stage": "deployment_behind_main",
@@ -44,7 +44,7 @@
       "name": "sumeme-letta",
       "state": "running",
       "health": "healthy",
-      "status": "Up 10 hours (healthy)",
+      "status": "Up 11 hours (healthy)",
       "critical": true
     },
     {
@@ -52,7 +52,7 @@
       "name": "sumeme-lobehub",
       "state": "running",
       "health": "",
-      "status": "Up 10 hours",
+      "status": "Up 11 hours",
       "critical": true
     },
     {
@@ -60,7 +60,7 @@
       "name": "sumeme-memory-gateway",
       "state": "running",
       "health": "healthy",
-      "status": "Up 5 hours (healthy)",
+      "status": "Up 6 hours (healthy)",
       "critical": true
     },
     {
@@ -68,7 +68,7 @@
       "name": "sumeme-postgres",
       "state": "running",
       "health": "healthy",
-      "status": "Up 11 hours (healthy)",
+      "status": "Up 12 hours (healthy)",
       "critical": true
     },
     {
@@ -76,7 +76,7 @@
       "name": "sumeme-qdrant",
       "state": "running",
       "health": "healthy",
-      "status": "Up 11 hours (healthy)",
+      "status": "Up 12 hours (healthy)",
       "critical": true
     },
     {
@@ -84,7 +84,7 @@
       "name": "sumeme-redis",
       "state": "running",
       "health": "healthy",
-      "status": "Up 11 hours (healthy)",
+      "status": "Up 12 hours (healthy)",
       "critical": true
     },
     {
@@ -92,7 +92,7 @@
       "name": "sumeme-rustfs",
       "state": "running",
       "health": "healthy",
-      "status": "Up 11 hours (healthy)",
+      "status": "Up 12 hours (healthy)",
       "critical": true
     },
     {
@@ -100,27 +100,37 @@
       "name": "sumeme-searxng",
       "state": "running",
       "health": "",
-      "status": "Up 11 hours",
+      "status": "Up 12 hours",
       "critical": true
     }
   ],
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 32436051968,
-      "free_bytes": 7878344704,
-      "used_percent": 76.9
+      "used_bytes": 32474509312,
+      "free_bytes": 7839887360,
+      "used_percent": 77.0
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1733312512,
+      "available_bytes": 1732931584,
       "used_percent": 55.6
     }
   },
   "github": {
     "default_branch": "main",
     "latest_main_sha": "dcf7cd9000007d0d2fa8f4c9e51799b24cf22d13",
-    "open_pull_requests": [],
+    "open_pull_requests": [
+      {
+        "number": 21,
+        "title": "Persist pip cache for memory gateway image builds",
+        "draft": false,
+        "head": "agent/skip-unchanged-gateway-build",
+        "base": "main",
+        "updated_at": "2026-07-29T15:44:07Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/pull/21"
+      }
+    ],
     "open_issues": [
       {
         "number": 10,
@@ -145,14 +155,131 @@
       {
         "name": "Publish project status",
         "display_title": "Publish project status",
-        "event": "workflow_run",
+        "event": "schedule",
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
         "head_sha": "dcf7cd9000007d0d2fa8f4c9e51799b24cf22d13",
+        "run_number": 303,
+        "created_at": "2026-07-29T15:44:25Z",
+        "updated_at": "2026-07-29T15:44:30Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30467343486"
+      },
+      {
+        "name": "CI",
+        "display_title": "Persist pip cache for memory gateway image builds",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/skip-unchanged-gateway-build",
+        "head_sha": "808fb62a7fcead7d4ea2afb51a06d67bf5529dbb",
+        "run_number": 213,
+        "created_at": "2026-07-29T15:44:12Z",
+        "updated_at": "2026-07-29T15:44:51Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30467326366"
+      },
+      {
+        "name": "CI",
+        "display_title": "test: require persistent pip cache in gateway image build",
+        "event": "push",
+        "status": "in_progress",
+        "conclusion": null,
+        "head_branch": "agent/skip-unchanged-gateway-build",
+        "head_sha": "808fb62a7fcead7d4ea2afb51a06d67bf5529dbb",
+        "run_number": 212,
+        "created_at": "2026-07-29T15:44:02Z",
+        "updated_at": "2026-07-29T15:44:21Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30467311651"
+      },
+      {
+        "name": "CI",
+        "display_title": "build: persist pip cache across gateway image builds",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/skip-unchanged-gateway-build",
+        "head_sha": "bdbe5bfbefcc02b54fb2674f87a3ecabb1df83d3",
+        "run_number": 211,
+        "created_at": "2026-07-29T15:43:51Z",
+        "updated_at": "2026-07-29T15:44:43Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30467296410"
+      },
+      {
+        "name": "CI",
+        "display_title": "Serialize self-hosted and ADOB SSH production jobs",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/skip-unchanged-gateway-build",
+        "head_sha": "dcf7cd9000007d0d2fa8f4c9e51799b24cf22d13",
+        "run_number": 210,
+        "created_at": "2026-07-29T15:43:18Z",
+        "updated_at": "2026-07-29T15:44:06Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30467250202"
+      },
+      {
+        "name": "CI",
+        "display_title": "Temporary read-only deployment lock diagnostics",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/diagnose-deploy-lock",
+        "head_sha": "d528227df5f37d89426c4e794f9ef9c5e941bf5c",
+        "run_number": 209,
+        "created_at": "2026-07-29T15:41:50Z",
+        "updated_at": "2026-07-29T15:42:33Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30467127169"
+      },
+      {
+        "name": "CI",
+        "display_title": "ops: run temporary diagnostics on same-repository PR",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/diagnose-deploy-lock",
+        "head_sha": "d528227df5f37d89426c4e794f9ef9c5e941bf5c",
+        "run_number": 208,
+        "created_at": "2026-07-29T15:41:43Z",
+        "updated_at": "2026-07-29T15:42:27Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30467116576"
+      },
+      {
+        "name": "CI",
+        "display_title": "ops: add temporary read-only deployment lock diagnostics",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/diagnose-deploy-lock",
+        "head_sha": "72098baca422d6c65860e1cf2f74cc7b02d48051",
+        "run_number": 207,
+        "created_at": "2026-07-29T15:40:55Z",
+        "updated_at": "2026-07-29T15:41:37Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30467053632"
+      },
+      {
+        "name": "CI",
+        "display_title": "Serialize self-hosted and ADOB SSH production jobs",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/diagnose-deploy-lock",
+        "head_sha": "dcf7cd9000007d0d2fa8f4c9e51799b24cf22d13",
+        "run_number": 206,
+        "created_at": "2026-07-29T15:40:17Z",
+        "updated_at": "2026-07-29T15:40:51Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30466998603"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "dcf7cd9000007d0d2fa8f4c9e51799b24cf22d13",
         "run_number": 302,
         "created_at": "2026-07-29T15:07:51Z",
-        "updated_at": "2026-07-29T15:07:57Z",
+        "updated_at": "2026-07-29T15:08:53Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30464342049"
       },
       {
@@ -180,137 +307,20 @@
         "created_at": "2026-07-29T14:36:57Z",
         "updated_at": "2026-07-29T14:37:48Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30461749305"
-      },
-      {
-        "name": "Smoke production",
-        "display_title": "Smoke production",
-        "event": "schedule",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "dcf7cd9000007d0d2fa8f4c9e51799b24cf22d13",
-        "run_number": 1,
-        "created_at": "2026-07-29T14:29:50Z",
-        "updated_at": "2026-07-29T14:37:35Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30461145207"
-      },
-      {
-        "name": "CI",
-        "display_title": "Serialize self-hosted and ADOB SSH production jobs",
-        "event": "push",
-        "status": "in_progress",
-        "conclusion": null,
-        "head_branch": "main",
-        "head_sha": "dcf7cd9000007d0d2fa8f4c9e51799b24cf22d13",
-        "run_number": 205,
-        "created_at": "2026-07-29T14:12:23Z",
-        "updated_at": "2026-07-29T15:07:50Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30459713248"
-      },
-      {
-        "name": "CI",
-        "display_title": "Serialize self-hosted and ADOB SSH production jobs",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/unify-deploy-concurrency",
-        "head_sha": "5baec6425c6dffb53d4e407cd93d35d5eff24f7a",
-        "run_number": 204,
-        "created_at": "2026-07-29T14:11:12Z",
-        "updated_at": "2026-07-29T14:11:56Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30459615567"
-      },
-      {
-        "name": "CI",
-        "display_title": "ci: serialize manual ADOB SSH deployments",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/unify-deploy-concurrency",
-        "head_sha": "5baec6425c6dffb53d4e407cd93d35d5eff24f7a",
-        "run_number": 203,
-        "created_at": "2026-07-29T14:10:14Z",
-        "updated_at": "2026-07-29T14:10:52Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30459536633"
-      },
-      {
-        "name": "CI",
-        "display_title": "ci: serialize ADOB SSH with legacy production deploys",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/unify-deploy-concurrency",
-        "head_sha": "5175ce99a87bf691e646035bfe30a000f4f02493",
-        "run_number": 202,
-        "created_at": "2026-07-29T14:09:57Z",
-        "updated_at": "2026-07-29T14:10:47Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30459511410"
-      },
-      {
-        "name": "CI",
-        "display_title": "Wait safely for overlapping production deployments",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/unify-deploy-concurrency",
-        "head_sha": "9cce75a5cb2c038130bc96c84a573ca560b48a2f",
-        "run_number": 201,
-        "created_at": "2026-07-29T14:09:33Z",
-        "updated_at": "2026-07-29T14:10:19Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30459479841"
-      },
-      {
-        "name": "CI",
-        "display_title": "Wait safely for overlapping production deployments",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "cancelled",
-        "head_branch": "main",
-        "head_sha": "9cce75a5cb2c038130bc96c84a573ca560b48a2f",
-        "run_number": 200,
-        "created_at": "2026-07-29T14:06:42Z",
-        "updated_at": "2026-07-29T15:07:48Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30459243861"
-      },
-      {
-        "name": "CI",
-        "display_title": "Wait safely for overlapping production deployments",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/wait-for-deployment-lock",
-        "head_sha": "0937ebcb959bd1c71448fe194f4dced25bdbccca",
-        "run_number": 199,
-        "created_at": "2026-07-29T14:05:27Z",
-        "updated_at": "2026-07-29T14:06:05Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30459140854"
-      },
-      {
-        "name": "CI",
-        "display_title": "test: cover bounded production lock waiting",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/wait-for-deployment-lock",
-        "head_sha": "0937ebcb959bd1c71448fe194f4dced25bdbccca",
-        "run_number": 198,
-        "created_at": "2026-07-29T14:05:07Z",
-        "updated_at": "2026-07-29T14:05:53Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30459111669"
       }
     ]
   },
   "collector": {
-    "event_name": "workflow_run",
+    "event_name": "schedule",
     "workflow": "Publish project status",
-    "run_id": "30464342049"
+    "run_id": "30467343486"
   },
   "freshness": {
     "age_seconds_at_publish": 0,
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-29T23:08:36+08:00"
+    "generated_at": "2026-07-29T23:45:06+08:00"
   },
   "reliability": {
     "disk": {
@@ -354,7 +364,7 @@
         "letta_recall_delayed",
         "service_scope_verification_failed"
       ],
-      "age_seconds_at_publish": 1869,
+      "age_seconds_at_publish": 4059,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }
