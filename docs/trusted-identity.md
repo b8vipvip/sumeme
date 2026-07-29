@@ -2,24 +2,80 @@
 
 ## 目标
 
-记忆作用域不能继续由客户端自由填写的 `user`、`X-SuMeMe-User-Id` 或
-`X-SuMeMe-Account-Id` 决定。可信模式下，memory-gateway 必须先验证由受信任
-身份系统签发的 JWT，再从经过验证的声明生成账户和 Vault 作用域。
+记忆账户不能继续由浏览器自由填写的 `user`、`X-SuMeMe-User-Id` 或
+`X-SuMeMe-Account-Id` 决定。memory-gateway 支持两条可信账户来源：
 
-当前生产部署仍保持 `IDENTITY_MODE=legacy-client-asserted`，因为现有 LobeHub
-容器尚未把服务端会话转换成 `X-SuMeMe-Identity-Token`。在身份桥接完成前，
-不得把健康状态描述为“严格多账户隔离”。
+1. LobeHub 服务端在完成 Better Auth/OIDC 验证后注入的 OpenAI `user` 字段；
+2. 安卓、Windows、Web 客户端或其他后端提交的已验证 JWT/OIDC `sub`。
+
+生产可以先从 `legacy-client-asserted` 切换到 `trusted-openai-user`，无需维护
+LobeHub Fork。外部客户端随后使用 JWT 模式接入。
+
+## LobeHub 当前可信链路
+
+SuMeMe 核对的 LobeHub 上游提交为：
+
+```text
+61d8fd4687fd8f73c058a723f82230ed12ee7e5e
+```
+
+该版本的聊天路由：
+
+- `src/app/(backend)/middleware/auth/index.ts` 使用 Better Auth session 或 OIDC JWT
+  得到服务端 `userId`；
+- `src/app/(backend)/webapi/chat/[provider]/route.ts` 把该 `userId` 传给
+  `modelRuntime.chat(..., { user: userId })`；
+- `packages/model-runtime/src/core/openaiCompatibleFactory/index.ts` 在发送下游请求时，
+  先展开清理后的请求体，再写入 `{ user: options?.user }`，因此浏览器提交的同名
+  字段会被服务端认证结果覆盖。
+
+因此 `trusted-openai-user` 的安全边界是：
+
+```text
+浏览器 session / OIDC
+        ↓ LobeHub checkAuth
+服务端 userId
+        ↓ OpenAI user 字段
+GATEWAY_API_KEY + Docker 内网
+        ↓
+memory-gateway account scope
+```
+
+该模式只适用于受信任 LobeHub 服务端。任何持有 `GATEWAY_API_KEY` 的调用方都属于
+高权限内部服务，因此该密钥不得发送到浏览器，也不得开放 memory-gateway 端口。
 
 ## 运行模式
 
-| 模式 | 有 JWT | 无 JWT | 用途 |
+| 模式 | 账户来源 | 缺失凭据时 | 用途 |
 |---|---|---|---|
-| `legacy-client-asserted` | 拒绝未配置的身份令牌 | 使用旧客户端声明 | 现有生产兼容 |
-| `jwt-preferred` | 必须验证，失败不降级 | 暂时回退旧作用域 | 灰度迁移 |
-| `jwt-required` | 必须验证 | 返回 401 | 最终严格模式 |
+| `legacy-client-asserted` | 客户端字段 | 使用默认账户 | 旧生产兼容 |
+| `trusted-openai-user` | LobeHub 服务端注入的 `user` | 返回 401 | 当前 LobeHub 严格账户隔离 |
+| `jwt-preferred` | 有 JWT 时验证 `sub` | 暂时回退旧作用域 | 外部客户端灰度迁移 |
+| `jwt-required` | 验证后的 JWT `sub` | 返回 401 | 外部客户端最终模式 |
 
 在 `jwt-preferred` 模式中，只有完全没有身份令牌时才允许兼容回退。已提供但
 无效、过期、受众错误或签名错误的令牌永远不会回退到客户端声明身份。
+
+## `trusted-openai-user` 规则
+
+推荐配置：
+
+```env
+IDENTITY_MODE=trusted-openai-user
+IDENTITY_TRUSTED_UPSTREAM_ISSUER=lobehub-internal
+```
+
+规则：
+
+- 请求必须先通过 `GATEWAY_API_KEY`；
+- OpenAI 请求体必须含非空字符串 `user`；
+- `X-SuMeMe-Account-Id`、`X-SuMeMe-User-Id` 等账户头全部忽略；
+- 原始 LobeHub user ID 不写入存储路径；
+- Vault 名称位于该账户自己的命名空间内，不能跳到另一个账户；
+- `IDENTITY_TRUSTED_UPSTREAM_ISSUER` 必须长期稳定，更改它会创建新的账户命名空间。
+
+当前模式默认使用 `default` Vault。未来由 SuMeMe 的 Vault 数据库维护所有权、共享
+和权限时，再把 Vault ID 作为服务端授权结果注入。
 
 ## 账户 JWT 契约
 
@@ -57,17 +113,18 @@ JWT 必须包含：
 
 ## 存储账户键
 
-外部 `sub` 不直接进入存储路径。网关使用：
+外部身份标识不直接进入存储路径。两种可信模式统一使用：
 
 ```text
-oidc-<sha256(issuer + NUL + subject) 前 32 个十六进制字符>
+acct-<sha256(issuer + NUL + subject) 前 27 个十六进制字符>
 ```
 
-这样可以：
+结果固定为 32 个存储安全字符。这样可以：
 
 - 避免 `a/b` 与 `a_b` 等字符归一化碰撞；
 - 避免不同身份发行方使用相同 `sub` 时发生冲突；
-- 不在 Qdrant、Letta、Supermemory 或对象路径中暴露原始身份标识。
+- 不在 Qdrant、Letta、Supermemory 或对象路径中暴露原始身份标识；
+- 在发行方和 subject 相同时，让 LobeHub assertion 与 JWT 迁移到同一账户键。
 
 ## 运维 Service Identity
 
@@ -110,15 +167,16 @@ IDENTITY_ALLOW_INSECURE_JWKS_URL=true
 
 ## 上线顺序
 
-1. 生产继续保持 `legacy-client-asserted`；
-2. 在 LobeHub 服务端模型请求路径加入可信身份桥接；
-3. 身份桥只从已验证服务端会话读取用户 ID，不接受浏览器自报账户 ID；
-4. 身份桥签发或转发符合本文件契约的短期 JWT；
-5. 切换为 `jwt-preferred`，观察账户和 Vault 映射；
-6. 验证生产 smoke 使用独立 service identity；
-7. 完成旧默认账户记忆迁移；
-8. 切换为 `jwt-required`；
-9. 停止读取所有客户端声明账户字段。
+1. 生产保持 `legacy-client-asserted`，部署新代码；
+2. 生成服务器本地 `GATEWAY_SERVICE_TOKEN`；
+3. 运行新版 smoke，确认 service identity 可用；
+4. 固定 `IDENTITY_TRUSTED_UPSTREAM_ISSUER`；
+5. 切换为 `trusted-openai-user`；
+6. 用两个真实 LobeHub 账户执行交叉负向测试；
+7. 迁移旧默认账户记忆到第一个可信账户；
+8. 为安卓、Windows 和其他客户端接入 JWT；
+9. 建立 Vault 所有权表与 PostgreSQL RLS；
+10. 停止读取所有旧客户端声明账户字段。
 
 ## 管理接口
 
