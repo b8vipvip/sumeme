@@ -4,8 +4,9 @@ import hashlib
 import hmac
 import json
 import time
+from collections.abc import Mapping
 from dataclasses import dataclass
-from typing import Any, Mapping
+from typing import Any
 
 import anyio
 import jwt
@@ -201,7 +202,7 @@ class IdentityVerifier:
             return None
         value = json.loads(raw)
         if not isinstance(value, dict) or not isinstance(value.get("keys"), list):
-            raise ValueError("IDENTITY_JWKS_JSON must contain a JWKS keys array")
+            raise TypeError("IDENTITY_JWKS_JSON must contain a JWKS keys array")
         return value
 
 
