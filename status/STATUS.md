@@ -1,12 +1,12 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-29T15:34:21+08:00
+- **采集时间：** 2026-07-29T16:18:26+08:00
 - **总体状态：** `healthy`
-- **开发阶段：** `development_in_progress`
+- **开发阶段：** `deployed_and_stable`
 - **线上版本：** `fe9e4a37401cdda1288226990236536cba85288b`
 - **main 最新版本：** `fe9e4a37401cdda1288226990236536cba85288b`
 - **线上与 main 同步：** 是
-- **开放 PR：** 1
+- **开放 PR：** 0
 - **开放 Issue：** 1
 
 ## 健康检查
@@ -14,7 +14,7 @@
 - 本地网关：`ok`
 - 公网入口：`ok`
 - 磁盘使用：`82.5%`，剩余 5.2 GiB
-- 内存使用：`60.3%`，可用 1.4 GiB
+- 内存使用：`59.1%`，可用 1.5 GiB
 
 ## 容器服务
 
@@ -22,33 +22,33 @@
 |---|---|---|---|
 | letta | running | healthy | Up 3 hours (healthy) |
 | lobe | running | - | Up 3 hours |
-| memory-gateway | running | healthy | Up 30 minutes (healthy) |
-| postgresql | running | healthy | Up 3 hours (healthy) |
-| qdrant | running | healthy | Up 3 hours (healthy) |
-| redis | running | healthy | Up 3 hours (healthy) |
-| rustfs | running | healthy | Up 3 hours (healthy) |
-| searxng | running | - | Up 3 hours |
+| memory-gateway | running | healthy | Up About an hour (healthy) |
+| postgresql | running | healthy | Up 4 hours (healthy) |
+| qdrant | running | healthy | Up 4 hours (healthy) |
+| redis | running | healthy | Up 4 hours (healthy) |
+| rustfs | running | healthy | Up 4 hours (healthy) |
+| searxng | running | - | Up 4 hours |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-07-29T07:33:54Z |
+| Publish project status | in_progress | main | 2026-07-29T08:17:56Z |
+| Publish project status | cancelled | main | 2026-07-29T08:17:49Z |
+| Deploy production | skipped | main | 2026-07-29T08:17:46Z |
+| CI | success | agent/phase1-5-reliability | 2026-07-29T08:17:43Z |
+| Publish project status | success | main | 2026-07-29T07:34:34Z |
 | Publish project status | cancelled | main | 2026-07-29T07:33:48Z |
 | Deploy production | skipped | main | 2026-07-29T07:33:44Z |
 | Publish project status | cancelled | main | 2026-07-29T07:33:46Z |
-| Publish project status | cancelled | main | 2026-07-29T07:33:45Z |
-| Deploy production | skipped | main | 2026-07-29T07:33:42Z |
-| CI | success | agent/autodevops-plugin | 2026-07-29T07:33:41Z |
-| Plugin CI | success | agent/autodevops-plugin | 2026-07-29T07:33:37Z |
 
 ## 开放 PR
 
-- #2 Build reusable AutoDevOps Bridge ChatGPT plugin (`agent/autodevops-plugin` → `main`)
+- 无
 
 ## 开放 Issue
 
-- #3 AutoDevOps Bridge：完成 ChatGPT 公共插件发布
+- #4 Phase 1.5：端到端验证、状态新鲜度与磁盘保护
 
 ## 最近部署
 
