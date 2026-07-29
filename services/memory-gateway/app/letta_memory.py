@@ -17,7 +17,9 @@ class LettaMemory:
     def __init__(self, settings: Settings):
         self.settings = settings
         self._client: Any | None = None
-        self._agent_id: str | None = settings.letta_agent_id.strip() or None
+        self._agent_ids: dict[str, str] = {}
+        self._state_loaded = False
+        self._agent_lock = anyio.Lock()
         self._state_file = Path("/data/gateway/letta-agent.json")
 
     def _get_client(self) -> Any:
@@ -31,69 +33,112 @@ class LettaMemory:
             self._client = Letta(**kwargs)
         return self._client
 
+    def _user_key(self, user_id: str) -> str:
+        return safe_id(user_id or self.settings.sumeme_user_id)
+
+    def _load_state(self) -> None:
+        if self._state_loaded:
+            return
+        self._state_loaded = True
+
+        default_key = self._user_key(self.settings.sumeme_user_id)
+        explicit = self.settings.letta_agent_id.strip()
+        if explicit:
+            self._agent_ids[default_key] = explicit
+
+        if not self._state_file.exists():
+            return
+        try:
+            data = json.loads(self._state_file.read_text(encoding="utf-8"))
+            agents = data.get("agents")
+            if isinstance(agents, dict):
+                for raw_user, raw_agent in agents.items():
+                    user_key = self._user_key(str(raw_user))
+                    agent_id = str(raw_agent or "").strip()
+                    if agent_id:
+                        self._agent_ids.setdefault(user_key, agent_id)
+                return
+
+            # Backward compatibility with the Phase 1 single-agent state file.
+            legacy = str(data.get("agent_id") or "").strip()
+            if legacy:
+                self._agent_ids.setdefault(default_key, legacy)
+        except Exception:
+            logger.warning("Could not read persisted Letta agent map", exc_info=True)
+
+    def _persist_state(self) -> None:
+        self._state_file.parent.mkdir(parents=True, exist_ok=True)
+        temporary = self._state_file.with_suffix(".json.tmp")
+        temporary.write_text(
+            json.dumps(
+                {
+                    "schema_version": 2,
+                    "agents": dict(sorted(self._agent_ids.items())),
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        temporary.replace(self._state_file)
+
     async def ensure_agent(self, user_id: str) -> str | None:
         if not self.settings.letta_enabled:
             return None
-        if self._agent_id:
-            return self._agent_id
 
-        if self._state_file.exists():
-            try:
-                data = json.loads(self._state_file.read_text(encoding="utf-8"))
-                saved = str(data.get("agent_id") or "")
-                if saved:
-                    self._agent_id = saved
-                    return saved
-            except Exception:
-                logger.warning("Could not read persisted Letta agent id", exc_info=True)
+        user_key = self._user_key(user_id)
+        self._load_state()
+        if agent_id := self._agent_ids.get(user_key):
+            return agent_id
 
         if not self.settings.letta_model or not self.settings.letta_embedding:
             logger.warning("Letta model/embedding missing; structured memory disabled")
             return None
 
-        def create() -> Any:
-            return self._get_client().agents.create(
-                name=f"{self.settings.letta_agent_name}-{safe_id(user_id)}",
-                model=self.settings.letta_model,
-                embedding=self.settings.letta_embedding,
-                memory_blocks=[
-                    {
-                        "label": "human",
-                        "value": (
-                            "This is the long-term personal memory for one user. "
-                            "Keep stable facts, preferences, projects, people, events, "
-                            "dates, changes and contradictions. Never invent facts."
-                        ),
-                    },
-                    {
-                        "label": "persona",
-                        "value": (
-                            "You are SuMeMe's private memory curator. "
-                            "For MEMORY_UPDATE messages, update memory and answer briefly. "
-                            "For RECALL_ONLY messages, return only relevant remembered facts "
-                            "with uncertainty and dates when available."
-                        ),
-                    },
-                ],
-            )
+        async with self._agent_lock:
+            if agent_id := self._agent_ids.get(user_key):
+                return agent_id
 
-        try:
-            agent = await anyio.to_thread.run_sync(create)
-            agent_id = str(getattr(agent, "id", "") or "")
-            if not agent_id:
-                logger.error("Letta created an agent without an id")
+            def create() -> Any:
+                return self._get_client().agents.create(
+                    name=f"{self.settings.letta_agent_name}-{user_key}",
+                    model=self.settings.letta_model,
+                    embedding=self.settings.letta_embedding,
+                    memory_blocks=[
+                        {
+                            "label": "human",
+                            "value": (
+                                "This is the long-term personal memory for one user. "
+                                "Keep stable facts, preferences, projects, people, events, "
+                                "dates, changes and contradictions. Never invent facts."
+                            ),
+                        },
+                        {
+                            "label": "persona",
+                            "value": (
+                                "You are SuMeMe's private memory curator. "
+                                "For MEMORY_UPDATE messages, update memory and answer briefly. "
+                                "For RECALL_ONLY messages, return only relevant remembered facts "
+                                "with uncertainty and dates when available."
+                            ),
+                        },
+                    ],
+                )
+
+            try:
+                agent = await anyio.to_thread.run_sync(create)
+                agent_id = str(getattr(agent, "id", "") or "")
+                if not agent_id:
+                    logger.error("Letta created an agent without an id for user %s", user_key)
+                    return None
+                self._agent_ids[user_key] = agent_id
+                self._persist_state()
+                logger.info("Created Letta agent %s for user %s", agent_id, user_key)
+                return agent_id
+            except Exception:
+                logger.exception("Letta agent creation failed for user %s", user_key)
                 return None
-            self._agent_id = agent_id
-            self._state_file.parent.mkdir(parents=True, exist_ok=True)
-            self._state_file.write_text(
-                json.dumps({"agent_id": agent_id}, ensure_ascii=False),
-                encoding="utf-8",
-            )
-            logger.info("Created Letta agent %s", agent_id)
-            return agent_id
-        except Exception:
-            logger.exception("Letta agent creation failed")
-            return None
 
     async def recall(self, query: str, user_id: str) -> str:
         agent_id = await self.ensure_agent(user_id)
