@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-07-29T15:04:09+08:00",
+  "generated_at": "2026-07-29T15:26:36+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "healthy",
   "project_stage": "deployed_and_stable",
@@ -44,7 +44,7 @@
       "name": "sumeme-letta",
       "state": "running",
       "health": "healthy",
-      "status": "Up 2 hours (healthy)",
+      "status": "Up 3 hours (healthy)",
       "critical": true
     },
     {
@@ -60,7 +60,7 @@
       "name": "sumeme-memory-gateway",
       "state": "running",
       "health": "healthy",
-      "status": "Up 43 seconds (healthy)",
+      "status": "Up 23 minutes (healthy)",
       "critical": true
     },
     {
@@ -107,14 +107,14 @@
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 34757521408,
-      "free_bytes": 5556875264,
-      "used_percent": 82.4
+      "used_bytes": 34763714560,
+      "free_bytes": 5550682112,
+      "used_percent": 82.5
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1504952320,
-      "used_percent": 61.5
+      "available_bytes": 1535676416,
+      "used_percent": 60.7
     }
   },
   "github": {
@@ -124,6 +124,19 @@
     "open_issues": [],
     "recent_workflows": [
       {
+        "name": "CI",
+        "display_title": "feat(plugin): add AutoDevOps plugin manifest",
+        "event": "push",
+        "status": "in_progress",
+        "conclusion": null,
+        "head_branch": "agent/autodevops-plugin",
+        "head_sha": "e68ae782ef6ca7982bbf9cb18a5f1fd851f6caeb",
+        "run_number": 43,
+        "created_at": "2026-07-29T07:26:15Z",
+        "updated_at": "2026-07-29T07:26:26Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30431647658"
+      },
+      {
         "name": "Publish project status",
         "display_title": "Publish project status",
         "event": "workflow_run",
@@ -131,9 +144,61 @@
         "conclusion": null,
         "head_branch": "main",
         "head_sha": "fe9e4a37401cdda1288226990236536cba85288b",
+        "run_number": 9,
+        "created_at": "2026-07-29T07:25:47Z",
+        "updated_at": "2026-07-29T07:26:07Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30431618479"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "cancelled",
+        "head_branch": "main",
+        "head_sha": "fe9e4a37401cdda1288226990236536cba85288b",
+        "run_number": 8,
+        "created_at": "2026-07-29T07:25:38Z",
+        "updated_at": "2026-07-29T07:25:59Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30431608825"
+      },
+      {
+        "name": "Deploy production",
+        "display_title": "Deploy production",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "skipped",
+        "head_branch": "main",
+        "head_sha": "fe9e4a37401cdda1288226990236536cba85288b",
+        "run_number": 5,
+        "created_at": "2026-07-29T07:25:38Z",
+        "updated_at": "2026-07-29T07:25:45Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30431608801"
+      },
+      {
+        "name": "CI",
+        "display_title": "ops: publish status immediately on main updates",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/autodevops-plugin",
+        "head_sha": "fe9e4a37401cdda1288226990236536cba85288b",
+        "run_number": 42,
+        "created_at": "2026-07-29T07:25:02Z",
+        "updated_at": "2026-07-29T07:25:35Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30431571043"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "fe9e4a37401cdda1288226990236536cba85288b",
         "run_number": 7,
         "created_at": "2026-07-29T07:03:35Z",
-        "updated_at": "2026-07-29T07:03:39Z",
+        "updated_at": "2026-07-29T07:06:12Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30430268317"
       },
       {
@@ -213,77 +278,12 @@
         "created_at": "2026-07-29T07:00:37Z",
         "updated_at": "2026-07-29T07:01:25Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30430087752"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "cancelled",
-        "head_branch": "main",
-        "head_sha": "985f62c95ecff62417e9f515c3a683e369fdaf8d",
-        "run_number": 2,
-        "created_at": "2026-07-29T07:00:02Z",
-        "updated_at": "2026-07-29T07:00:49Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30430046958"
-      },
-      {
-        "name": "Deploy production",
-        "display_title": "Deploy production",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "985f62c95ecff62417e9f515c3a683e369fdaf8d",
-        "run_number": 3,
-        "created_at": "2026-07-29T07:00:02Z",
-        "updated_at": "2026-07-29T07:01:25Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30430046845"
-      },
-      {
-        "name": "Deploy production",
-        "display_title": "Deploy production",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "985f62c95ecff62417e9f515c3a683e369fdaf8d",
-        "run_number": 2,
-        "created_at": "2026-07-29T06:59:48Z",
-        "updated_at": "2026-07-29T07:00:35Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30430033481"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "cancelled",
-        "head_branch": "main",
-        "head_sha": "985f62c95ecff62417e9f515c3a683e369fdaf8d",
-        "run_number": 1,
-        "created_at": "2026-07-29T06:59:48Z",
-        "updated_at": "2026-07-29T07:00:03Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30430033476"
-      },
-      {
-        "name": "CI",
-        "display_title": "ops: publish VPS and GitHub status snapshots",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "985f62c95ecff62417e9f515c3a683e369fdaf8d",
-        "run_number": 40,
-        "created_at": "2026-07-29T06:59:18Z",
-        "updated_at": "2026-07-29T07:00:00Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30430004624"
       }
     ]
   },
   "collector": {
     "event_name": "workflow_run",
     "workflow": "Publish project status",
-    "run_id": "30430268317"
+    "run_id": "30431618479"
   }
 }

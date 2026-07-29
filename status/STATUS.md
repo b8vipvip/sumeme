@@ -1,6 +1,6 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-29T15:04:09+08:00
+- **采集时间：** 2026-07-29T15:26:36+08:00
 - **总体状态：** `healthy`
 - **开发阶段：** `deployed_and_stable`
 - **线上版本：** `fe9e4a37401cdda1288226990236536cba85288b`
@@ -13,16 +13,16 @@
 
 - 本地网关：`ok`
 - 公网入口：`ok`
-- 磁盘使用：`82.4%`，剩余 5.2 GiB
-- 内存使用：`61.5%`，可用 1.4 GiB
+- 磁盘使用：`82.5%`，剩余 5.2 GiB
+- 内存使用：`60.7%`，可用 1.4 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| letta | running | healthy | Up 2 hours (healthy) |
+| letta | running | healthy | Up 3 hours (healthy) |
 | lobe | running | - | Up 2 hours |
-| memory-gateway | running | healthy | Up 43 seconds (healthy) |
+| memory-gateway | running | healthy | Up 23 minutes (healthy) |
 | postgresql | running | healthy | Up 3 hours (healthy) |
 | qdrant | running | healthy | Up 3 hours (healthy) |
 | redis | running | healthy | Up 3 hours (healthy) |
@@ -33,14 +33,14 @@
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-07-29T07:03:39Z |
+| CI | in_progress | agent/autodevops-plugin | 2026-07-29T07:26:26Z |
+| Publish project status | in_progress | main | 2026-07-29T07:26:07Z |
+| Publish project status | cancelled | main | 2026-07-29T07:25:59Z |
+| Deploy production | skipped | main | 2026-07-29T07:25:45Z |
+| CI | success | agent/autodevops-plugin | 2026-07-29T07:25:35Z |
+| Publish project status | success | main | 2026-07-29T07:06:12Z |
 | Publish project status | success | main | 2026-07-29T07:02:49Z |
 | Deploy production | success | main | 2026-07-29T07:03:32Z |
-| Publish project status | success | main | 2026-07-29T07:02:09Z |
-| CI | success | main | 2026-07-29T07:02:09Z |
-| Publish project status | cancelled | main | 2026-07-29T07:01:31Z |
-| Publish project status | cancelled | main | 2026-07-29T07:01:25Z |
-| Publish project status | cancelled | main | 2026-07-29T07:00:49Z |
 
 ## 开放 PR
 
