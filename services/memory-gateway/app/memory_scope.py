@@ -1,11 +1,22 @@
 from __future__ import annotations
 
+import hashlib
 from dataclasses import dataclass
 from typing import Literal
 
 from .content import safe_id
 
 PrincipalType = Literal["account", "service"]
+_SCOPE_COMPONENT_MAX = 32
+
+
+def _scope_component(value: str, fallback: str) -> str:
+    normalized = safe_id(value, fallback)
+    if len(normalized) <= _SCOPE_COMPONENT_MAX:
+        return normalized
+    digest = hashlib.sha256(normalized.encode()).hexdigest()[:10]
+    visible = normalized[: _SCOPE_COMPONENT_MAX - len(digest) - 1]
+    return f"{visible}-{digest}"
 
 
 @dataclass(frozen=True, slots=True)
@@ -23,9 +34,21 @@ class MemoryScope:
     device_id: str = ""
 
     def __post_init__(self) -> None:
-        object.__setattr__(self, "account_id", safe_id(self.account_id, "default"))
-        object.__setattr__(self, "vault_id", safe_id(self.vault_id, "default"))
-        object.__setattr__(self, "device_id", safe_id(self.device_id, "") if self.device_id else "")
+        object.__setattr__(
+            self,
+            "account_id",
+            _scope_component(self.account_id, "default"),
+        )
+        object.__setattr__(
+            self,
+            "vault_id",
+            _scope_component(self.vault_id, "default"),
+        )
+        object.__setattr__(
+            self,
+            "device_id",
+            _scope_component(self.device_id, "device") if self.device_id else "",
+        )
         if self.principal_type not in {"account", "service"}:
             raise ValueError("principal_type must be account or service")
 
