@@ -43,6 +43,7 @@ class Settings(BaseSettings):
     store_assistant_verbatim: bool = True
 
     identity_mode: str = "legacy-client-asserted"
+    identity_trusted_upstream_issuer: str = "lobehub-internal"
     identity_issuer: str = ""
     identity_audience: str = ""
     identity_jwks_url: str = ""
@@ -118,6 +119,8 @@ class Settings(BaseSettings):
     def _validate_identity(self) -> None:
         aliases = {
             "legacy": "legacy-client-asserted",
+            "lobehub": "trusted-openai-user",
+            "trusted-user": "trusted-openai-user",
             "optional": "jwt-preferred",
             "preferred": "jwt-preferred",
             "required": "jwt-required",
@@ -125,16 +128,30 @@ class Settings(BaseSettings):
         }
         raw_mode = self.identity_mode.strip().lower()
         mode = aliases.get(raw_mode, raw_mode)
-        if mode not in {
+        allowed_modes = {
             "legacy-client-asserted",
+            "trusted-openai-user",
             "jwt-preferred",
             "jwt-required",
-        }:
+        }
+        if mode not in allowed_modes:
             raise ValueError(
-                "IDENTITY_MODE must be legacy-client-asserted, jwt-preferred, "
-                "or jwt-required"
+                "IDENTITY_MODE must be legacy-client-asserted, "
+                "trusted-openai-user, jwt-preferred, or jwt-required"
             )
         self.identity_mode = mode
+
+        if mode == "legacy-client-asserted":
+            return
+
+        if mode == "trusted-openai-user":
+            issuer = self.identity_trusted_upstream_issuer.strip()
+            if not issuer or len(issuer) > 2048:
+                raise ValueError(
+                    "IDENTITY_TRUSTED_UPSTREAM_ISSUER must be a non-empty stable identifier"
+                )
+            self.identity_trusted_upstream_issuer = issuer
+            return
 
         algorithms = self.identity_algorithm_list
         if not algorithms or any(
@@ -144,9 +161,6 @@ class Settings(BaseSettings):
                 "IDENTITY_ALLOWED_ALGORITHMS contains an unsafe or unsupported "
                 "algorithm"
             )
-
-        if mode == "legacy-client-asserted":
-            return
 
         if not self.identity_issuer.strip():
             raise ValueError("IDENTITY_ISSUER is required for JWT identity modes")

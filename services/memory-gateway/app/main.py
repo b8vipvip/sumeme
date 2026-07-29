@@ -43,7 +43,7 @@ async def lifespan(app: FastAPI):
         await app.state.http.aclose()
 
 
-app = FastAPI(title="SuMeMe Memory Gateway", version="0.5.0", lifespan=lifespan)
+app = FastAPI(title="SuMeMe Memory Gateway", version="0.6.0", lifespan=lifespan)
 
 
 def _bearer_token(authorization: str | None) -> str:
@@ -102,21 +102,36 @@ def resolve_conversation_id(request: Request, payload: dict[str, Any]) -> str:
 
 @app.get("/health")
 async def health() -> dict[str, Any]:
-    jwt_mode = settings.identity_mode in {"jwt-preferred", "jwt-required"}
+    mode = settings.identity_mode
+    jwt_mode = mode in {"jwt-preferred", "jwt-required"}
+    trusted_user_mode = mode == "trusted-openai-user"
     jwks_source = "none"
     if settings.identity_jwks_url.strip():
         jwks_source = "remote-https"
     elif settings.identity_jwks_json.get_secret_value().strip():
         jwks_source = "static-public-jwks"
 
+    if jwt_mode:
+        account_source = "verified-sub"
+        vault_authorization = "claim-enforced"
+    elif trusted_user_mode:
+        account_source = "gateway-authenticated-openai-user"
+        vault_authorization = "account-owned-namespace"
+    else:
+        account_source = "client-asserted"
+        vault_authorization = "client-asserted"
+
     return {
         "status": "ok",
         "memory_provider": app.state.memory.provider_name,
         "memory_scope_schema": 1,
-        "identity_enforcement": settings.identity_mode,
-        "identity_account_source": "verified-sub" if jwt_mode else "client-asserted",
-        "identity_vault_authorization": "claim-enforced" if jwt_mode else "client-asserted",
+        "identity_enforcement": mode,
+        "identity_account_source": account_source,
+        "identity_vault_authorization": vault_authorization,
         "identity_jwks_source": jwks_source,
+        "service_identity_configured": bool(
+            settings.gateway_service_token.get_secret_value()
+        ),
         "memory_checkpoint": True,
         "mempalace_enabled": settings.mempalace_enabled,
         "letta_enabled": settings.letta_enabled,
