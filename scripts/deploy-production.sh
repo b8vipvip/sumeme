@@ -15,11 +15,24 @@ need() {
   }
 }
 
+read_env() {
+  local key="$1"
+  local fallback="${2:-}"
+  local value
+  value="$(grep -m1 -E "^${key}=" "${DEPLOY_DIR}/.env" 2>/dev/null | cut -d= -f2- || true)"
+  value="${value%\"}"
+  value="${value#\"}"
+  value="${value%\'}"
+  value="${value#\'}"
+  printf '%s' "${value:-${fallback}}"
+}
+
 need docker
 need rsync
 need tar
 need curl
 need flock
+need python3
 
 mkdir -p "${DEPLOY_DIR}" "${STATE_DIR}" "${RELEASE_DIR}"
 exec 9>"${LOCK_FILE}"
@@ -97,6 +110,32 @@ rollback_on_error() {
 }
 trap rollback_on_error ERR
 
+run_disk_preflight() {
+  local output status level
+  set +e
+  output="$(DEPLOY_DIR="${DEPLOY_DIR}" bash "${SOURCE_DIR}/scripts/preflight-disk.sh" --json)"
+  status=$?
+  set -e
+  echo "Disk preflight: ${output}"
+  level="$(python3 -c 'import json,sys; print(json.loads(sys.stdin.read()).get("level", "unknown"))' <<<"${output}" 2>/dev/null || echo unknown)"
+
+  if [[ "${level}" == "warning" || "${status}" -eq 2 ]]; then
+    echo "Running safe cleanup before image pull/build..."
+    DEPLOY_DIR="${DEPLOY_DIR}" bash "${SOURCE_DIR}/scripts/cleanup-runtime.sh"
+    set +e
+    output="$(DEPLOY_DIR="${DEPLOY_DIR}" bash "${SOURCE_DIR}/scripts/preflight-disk.sh" --json)"
+    status=$?
+    set -e
+    echo "Disk preflight after cleanup: ${output}"
+  fi
+
+  if [[ "${status}" -ne 0 ]]; then
+    echo "Disk preflight failed; deployment is blocked to protect production data." >&2
+    return "${status}"
+  fi
+}
+
+run_disk_preflight
 snapshot_current "${CURRENT_SHA}"
 
 printf '%s\n' "${CURRENT_SHA}" > "${STATE_DIR}/previous_sha"
@@ -118,6 +157,30 @@ docker compose build memory-gateway
 docker compose up -d --remove-orphans
 
 DEPLOY_DIR="${DEPLOY_DIR}" bash scripts/health-check.sh
+
+SMOKE_TEST_MODE="$(read_env SMOKE_TEST_MODE warn)"
+case "${SMOKE_TEST_MODE}" in
+  off)
+    echo "Production smoke test is disabled."
+    ;;
+  warn|required)
+    set +e
+    DEPLOY_DIR="${DEPLOY_DIR}" bash scripts/smoke-test.sh
+    smoke_status=$?
+    set -e
+    if (( smoke_status != 0 )); then
+      if [[ "${SMOKE_TEST_MODE}" == "required" ]]; then
+        echo "Required production smoke test failed." >&2
+        false
+      fi
+      echo "WARNING: production smoke test failed; deployment remains active because mode=warn." >&2
+    fi
+    ;;
+  *)
+    echo "Invalid SMOKE_TEST_MODE=${SMOKE_TEST_MODE}; expected off, warn, or required." >&2
+    false
+    ;;
+esac
 
 printf '%s\n' "${TARGET_SHA}" > "${STATE_DIR}/current_sha"
 rm -f "${STATE_DIR}/deploying_sha"
