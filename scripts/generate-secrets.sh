@@ -23,6 +23,10 @@ random_hex() {
   openssl rand -hex "${1:-32}"
 }
 
+random_base64() {
+  openssl rand -base64 "${1:-32}" | tr -d '\n'
+}
+
 set_env() {
   local key="$1"
   local value="$2"
@@ -49,7 +53,8 @@ set_env GATEWAY_API_KEY "$(random_hex 32)"
 set_env GATEWAY_ADMIN_TOKEN "$(random_hex 32)"
 set_env POSTGRES_PASSWORD "$(random_hex 24)"
 set_env AUTH_SECRET "$(random_hex 32)"
-set_env KEY_VAULTS_SECRET "$(random_hex 32)"
+# LobeHub 要求 Base64 解码后恰好为 16、24 或 32 字节。
+set_env KEY_VAULTS_SECRET "$(random_base64 32)"
 set_env RUSTFS_SECRET_KEY "$(random_hex 24)"
 set_env LETTA_SERVER_PASSWORD "$(random_hex 32)"
 set_env LETTA_ENCRYPTION_KEY "$(random_hex 32)"
