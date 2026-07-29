@@ -200,11 +200,16 @@ class LettaMemory:
         user_text: str,
         assistant_text: str,
         conversation_id: str,
-    ) -> None:
+    ) -> bool:
+        if not self.settings.letta_enabled:
+            return False
+        if not user_text.strip():
+            return True
+
         resolved = self._scope(scope)
         agent_id = await self.ensure_agent(resolved)
-        if not agent_id or not user_text.strip():
-            return
+        if not agent_id:
+            return False
 
         prompt = (
             "[MEMORY_UPDATE]\n"
@@ -224,11 +229,13 @@ class LettaMemory:
                     input=prompt,
                 )
             )
+            return True
         except Exception:
             logger.exception(
                 "Letta memory update failed for scope %s",
                 resolved.display_key,
             )
+            return False
 
     @staticmethod
     def _extract_text(response: Any) -> str:

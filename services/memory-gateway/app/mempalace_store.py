@@ -87,9 +87,9 @@ class MemPalaceStore:
         conversation_id: str,
         request_payload: dict[str, Any],
         assistant: str,
-    ) -> None:
+    ) -> bool:
         if not self.settings.mempalace_enabled:
-            return
+            return False
 
         resolved = coerce_scope(scope, default_user_id=self.settings.sumeme_user_id)
         now = datetime.now(timezone.utc).isoformat()
@@ -143,12 +143,14 @@ class MemPalaceStore:
                     added_by="sumeme-memory-gateway",
                 )
             )
+            return True
         except Exception:
             logger.exception(
                 "MemPalace write failed for %s in %s",
                 source,
                 resolved.display_key,
             )
+            return False
 
     @staticmethod
     def _wing(scope: MemoryScope) -> str:

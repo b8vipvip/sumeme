@@ -40,7 +40,7 @@ async def lifespan(app: FastAPI):
         await app.state.http.aclose()
 
 
-app = FastAPI(title="SuMeMe Memory Gateway", version="0.3.0", lifespan=lifespan)
+app = FastAPI(title="SuMeMe Memory Gateway", version="0.4.0", lifespan=lifespan)
 
 
 def require_gateway_auth(authorization: str | None) -> None:
@@ -111,6 +111,23 @@ def resolve_memory_scope(request: Request, payload: dict[str, Any]) -> MemorySco
     )
 
 
+def resolve_admin_scope(body: dict[str, Any]) -> MemoryScope:
+    principal_type = str(body.get("principal_type") or "account").strip().lower()
+    if "account_id" in body or "vault_id" in body or principal_type == "service":
+        account_id = str(body.get("account_id") or settings.sumeme_user_id)
+        vault_id = str(body.get("vault_id") or "default")
+        if principal_type == "service":
+            return MemoryScope.service(account_id, vault_id)
+        if principal_type == "account":
+            return MemoryScope.account(account_id, vault_id)
+        raise HTTPException(status_code=400, detail="invalid principal_type")
+
+    return MemoryScope.from_legacy_user_id(
+        str(body.get("user_id") or settings.sumeme_user_id),
+        settings.sumeme_user_id,
+    )
+
+
 def resolve_conversation_id(request: Request, payload: dict[str, Any]) -> str:
     metadata = payload.get("metadata") or {}
     return safe_id(
@@ -128,6 +145,7 @@ async def health() -> dict[str, Any]:
         "memory_provider": app.state.memory.provider_name,
         "memory_scope_schema": 1,
         "identity_enforcement": "legacy-client-asserted",
+        "memory_checkpoint": True,
         "mempalace_enabled": settings.mempalace_enabled,
         "letta_enabled": settings.letta_enabled,
         "relay_base_url": settings.openai_relay_base_url,
@@ -191,11 +209,11 @@ async def chat_completions(
     data = _json_or_error(response)
     if 200 <= response.status_code < 300:
         asyncio.create_task(
-            app.state.memory.remember_exchange(
+            _remember_background(
                 scope=scope,
                 conversation_id=conversation_id,
                 request_payload=payload,
-                assistant_text=assistant_text(data),
+                assistant_output=assistant_text(data),
             )
         )
     return JSONResponse(
@@ -203,6 +221,42 @@ async def chat_completions(
         content=data,
         headers=_safe_response_headers(response),
     )
+
+
+@app.post("/api/memory/checkpoint")
+async def memory_checkpoint(
+    request: Request,
+    authorization: str | None = Header(default=None),
+):
+    """Synchronously submit one exchange and return only sanitized outcomes."""
+
+    require_admin_auth(authorization)
+    body = await request.json()
+    scope = resolve_admin_scope(body)
+    request_payload = body.get("request_payload")
+    if not isinstance(request_payload, dict):
+        raise HTTPException(status_code=400, detail="request_payload must be an object")
+    if not isinstance(request_payload.get("messages"), list):
+        raise HTTPException(
+            status_code=400,
+            detail="request_payload.messages must be an array",
+        )
+
+    conversation_id = safe_id(
+        str(body.get("conversation_id") or uuid.uuid4().hex),
+        "memory-checkpoint",
+    )
+    assistant_output = str(body.get("assistant_text") or "")
+    result = await app.state.memory.remember_exchange(
+        scope=scope,
+        conversation_id=conversation_id,
+        request_payload=request_payload,
+        assistant_text=assistant_output,
+    )
+    return {
+        "scope": scope.display_key,
+        "write": result.as_dict(),
+    }
 
 
 @app.post("/api/memory/search")
@@ -213,28 +267,42 @@ async def memory_search(
     require_admin_auth(authorization)
     body = await request.json()
     query = str(body.get("query") or "")
-
-    principal_type = str(body.get("principal_type") or "account").strip().lower()
-    if "account_id" in body or "vault_id" in body or principal_type == "service":
-        account_id = str(body.get("account_id") or settings.sumeme_user_id)
-        vault_id = str(body.get("vault_id") or "default")
-        if principal_type == "service":
-            scope = MemoryScope.service(account_id, vault_id)
-        elif principal_type == "account":
-            scope = MemoryScope.account(account_id, vault_id)
-        else:
-            raise HTTPException(status_code=400, detail="invalid principal_type")
-    else:
-        scope = MemoryScope.from_legacy_user_id(
-            str(body.get("user_id") or settings.sumeme_user_id),
-            settings.sumeme_user_id,
-        )
+    scope = resolve_admin_scope(body)
 
     return {
         "provider": app.state.memory.provider_name,
         "scope": scope.display_key,
         "context": await app.state.memory.recall(query, scope),
     }
+
+
+async def _remember_background(
+    *,
+    scope: MemoryScope,
+    conversation_id: str,
+    request_payload: dict[str, Any],
+    assistant_output: str,
+) -> None:
+    try:
+        result = await app.state.memory.remember_exchange(
+            scope=scope,
+            conversation_id=conversation_id,
+            request_payload=request_payload,
+            assistant_text=assistant_output,
+        )
+        if not result.success:
+            logger.warning(
+                "Memory write incomplete provider=%s scope=%s error_codes=%s",
+                result.provider,
+                scope.display_key,
+                ",".join(result.error_codes) or "unknown",
+            )
+    except Exception:
+        logger.exception(
+            "Unexpected background memory write failure provider=%s scope=%s",
+            app.state.memory.provider_name,
+            scope.display_key,
+        )
 
 
 async def _stream_relay(
@@ -281,11 +349,11 @@ async def _stream_relay(
         return
 
     asyncio.create_task(
-        app.state.memory.remember_exchange(
+        _remember_background(
             scope=scope,
             conversation_id=conversation_id,
             request_payload=request_payload,
-            assistant_text="".join(assistant_parts),
+            assistant_output="".join(assistant_parts),
         )
     )
 
