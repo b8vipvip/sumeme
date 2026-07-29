@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import hmac
 import json
 import logging
 import uuid
@@ -14,6 +15,7 @@ from fastapi.responses import JSONResponse, StreamingResponse
 
 from .config import get_settings
 from .content import assistant_text, flatten_content, latest_user_message, safe_id
+from .identity import IdentityError, IdentityResolver
 from .memory import MemoryCoordinator
 from .memory_scope import MemoryScope
 
@@ -33,6 +35,7 @@ async def lifespan(app: FastAPI):
         follow_redirects=True,
     )
     app.state.memory = MemoryCoordinator(settings)
+    app.state.identity = IdentityResolver(settings)
     try:
         yield
     finally:
@@ -40,24 +43,26 @@ async def lifespan(app: FastAPI):
         await app.state.http.aclose()
 
 
-app = FastAPI(title="SuMeMe Memory Gateway", version="0.4.0", lifespan=lifespan)
+app = FastAPI(title="SuMeMe Memory Gateway", version="0.5.0", lifespan=lifespan)
+
+
+def _bearer_token(authorization: str | None) -> str:
+    if authorization and authorization.lower().startswith("bearer "):
+        return authorization[7:].strip()
+    return ""
 
 
 def require_gateway_auth(authorization: str | None) -> None:
     expected = settings.gateway_api_key.get_secret_value()
-    supplied = ""
-    if authorization and authorization.lower().startswith("bearer "):
-        supplied = authorization[7:].strip()
-    if not expected or supplied != expected:
+    supplied = _bearer_token(authorization)
+    if not expected or not hmac.compare_digest(supplied, expected):
         raise HTTPException(status_code=401, detail="invalid gateway token")
 
 
 def require_admin_auth(authorization: str | None) -> None:
     expected = settings.gateway_admin_token.get_secret_value()
-    supplied = ""
-    if authorization and authorization.lower().startswith("bearer "):
-        supplied = authorization[7:].strip()
-    if not expected or supplied != expected:
+    supplied = _bearer_token(authorization)
+    if not expected or not hmac.compare_digest(supplied, expected):
         raise HTTPException(status_code=401, detail="invalid admin token")
 
 
@@ -66,49 +71,6 @@ def relay_headers() -> dict[str, str]:
         "Authorization": f"Bearer {settings.openai_relay_api_key.get_secret_value()}",
         "Content-Type": "application/json",
     }
-
-
-def resolve_memory_scope(request: Request, payload: dict[str, Any]) -> MemoryScope:
-    """Resolve the compatibility identity into a canonical storage scope.
-
-    This is an intermediate data-model step. Until verified JWT/OIDC identity is
-    added, account headers are client asserted and are not a complete security
-    boundary. All storage providers nevertheless receive the same account/vault
-    scope so the later authentication layer can replace this resolver centrally.
-    """
-
-    metadata = payload.get("metadata")
-    if not isinstance(metadata, dict):
-        metadata = {}
-
-    raw_account = (
-        request.headers.get("x-sumeme-account-id")
-        or request.headers.get("x-sumeme-user-id")
-        or str(payload.get("user") or "")
-        or settings.sumeme_user_id
-    )
-    raw_vault = (
-        request.headers.get("x-sumeme-vault-id")
-        or str(metadata.get("vault_id") or "")
-        or "default"
-    )
-    device_id = (
-        request.headers.get("x-sumeme-device-id")
-        or str(metadata.get("device_id") or "")
-    )
-
-    normalized_account = safe_id(raw_account, settings.sumeme_user_id)
-    if normalized_account == "sumeme_smoke":
-        return MemoryScope.service(
-            "sumeme-smoke",
-            safe_id(raw_vault, "production-smoke"),
-            device_id=device_id,
-        )
-    return MemoryScope.account(
-        normalized_account,
-        safe_id(raw_vault, "default"),
-        device_id=device_id,
-    )
 
 
 def resolve_admin_scope(body: dict[str, Any]) -> MemoryScope:
@@ -140,11 +102,21 @@ def resolve_conversation_id(request: Request, payload: dict[str, Any]) -> str:
 
 @app.get("/health")
 async def health() -> dict[str, Any]:
+    jwt_mode = settings.identity_mode in {"jwt-preferred", "jwt-required"}
+    jwks_source = "none"
+    if settings.identity_jwks_url.strip():
+        jwks_source = "remote-https"
+    elif settings.identity_jwks_json.get_secret_value().strip():
+        jwks_source = "static-public-jwks"
+
     return {
         "status": "ok",
         "memory_provider": app.state.memory.provider_name,
         "memory_scope_schema": 1,
-        "identity_enforcement": "legacy-client-asserted",
+        "identity_enforcement": settings.identity_mode,
+        "identity_account_source": "verified-sub" if jwt_mode else "client-asserted",
+        "identity_vault_authorization": "claim-enforced" if jwt_mode else "client-asserted",
+        "identity_jwks_source": jwks_source,
         "memory_checkpoint": True,
         "mempalace_enabled": settings.mempalace_enabled,
         "letta_enabled": settings.letta_enabled,
@@ -177,7 +149,11 @@ async def chat_completions(
     if not isinstance(messages, list):
         raise HTTPException(status_code=400, detail="messages must be an array")
 
-    scope = resolve_memory_scope(request, payload)
+    try:
+        scope = await app.state.identity.resolve_chat_scope(request.headers, payload)
+    except IdentityError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=exc.code) from exc
+
     conversation_id = resolve_conversation_id(request, payload)
     latest = latest_user_message(messages)
     query = flatten_content((latest or {}).get("content"))
