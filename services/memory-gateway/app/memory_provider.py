@@ -6,18 +6,19 @@ from typing import Any, Protocol
 from .config import Settings
 from .content import flatten_content, latest_user_message
 from .letta_memory import LettaMemory
+from .memory_scope import MemoryScope
 from .mempalace_store import MemPalaceStore
 
 
 class MemoryProvider(Protocol):
     name: str
 
-    async def recall(self, query: str, user_id: str) -> str: ...
+    async def recall(self, query: str, scope: MemoryScope) -> str: ...
 
     async def remember_exchange(
         self,
         *,
-        user_id: str,
+        scope: MemoryScope,
         conversation_id: str,
         request_payload: dict[str, Any],
         assistant_text: str,
@@ -34,9 +35,9 @@ class MemPalaceLettaProvider:
         self.mempalace = MemPalaceStore(settings)
         self.letta = LettaMemory(settings)
 
-    async def recall(self, query: str, user_id: str) -> str:
-        raw_task = asyncio.create_task(self.mempalace.search(query, user_id))
-        structured_task = asyncio.create_task(self.letta.recall(query, user_id))
+    async def recall(self, query: str, scope: MemoryScope) -> str:
+        raw_task = asyncio.create_task(self.mempalace.search(query, scope))
+        structured_task = asyncio.create_task(self.letta.recall(query, scope))
         raw_results, structured = await asyncio.gather(raw_task, structured_task)
 
         sections: list[str] = []
@@ -57,7 +58,7 @@ class MemPalaceLettaProvider:
     async def remember_exchange(
         self,
         *,
-        user_id: str,
+        scope: MemoryScope,
         conversation_id: str,
         request_payload: dict[str, Any],
         assistant_text: str,
@@ -66,13 +67,13 @@ class MemPalaceLettaProvider:
         user_text = flatten_content((message or {}).get("content"))
         await asyncio.gather(
             self.mempalace.add_exchange(
-                user_id=user_id,
+                scope=scope,
                 conversation_id=conversation_id,
                 request_payload=request_payload,
                 assistant=assistant_text,
             ),
             self.letta.remember(
-                user_id=user_id,
+                scope=scope,
                 user_text=user_text,
                 assistant_text=assistant_text,
                 conversation_id=conversation_id,

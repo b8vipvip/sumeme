@@ -5,6 +5,7 @@ from typing import Any
 
 from .config import Settings
 from .memory_provider import MemoryProvider, MemPalaceLettaProvider
+from .memory_scope import MemoryScope
 from .supermemory_provider import SupermemoryProvider
 
 
@@ -17,20 +18,20 @@ class MemoryCoordinator:
     def provider_name(self) -> str:
         return self.provider.name
 
-    async def recall(self, query: str, user_id: str) -> str:
-        context = await self.provider.recall(query, user_id)
+    async def recall(self, query: str, scope: MemoryScope) -> str:
+        context = await self.provider.recall(query, scope)
         return context[: self.settings.memory_context_max_chars]
 
     async def remember_exchange(
         self,
         *,
-        user_id: str,
+        scope: MemoryScope,
         conversation_id: str,
         request_payload: dict[str, Any],
         assistant_text: str,
     ) -> None:
         await self.provider.remember_exchange(
-            user_id=user_id,
+            scope=scope,
             conversation_id=conversation_id,
             request_payload=request_payload,
             assistant_text=assistant_text,

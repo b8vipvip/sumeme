@@ -15,6 +15,7 @@ from fastapi.responses import JSONResponse, StreamingResponse
 from .config import get_settings
 from .content import assistant_text, flatten_content, latest_user_message, safe_id
 from .memory import MemoryCoordinator
+from .memory_scope import MemoryScope
 
 settings = get_settings()
 
@@ -39,7 +40,7 @@ async def lifespan(app: FastAPI):
         await app.state.http.aclose()
 
 
-app = FastAPI(title="SuMeMe Memory Gateway", version="0.2.0", lifespan=lifespan)
+app = FastAPI(title="SuMeMe Memory Gateway", version="0.3.0", lifespan=lifespan)
 
 
 def require_gateway_auth(authorization: str | None) -> None:
@@ -67,11 +68,46 @@ def relay_headers() -> dict[str, str]:
     }
 
 
-def resolve_user_id(request: Request, payload: dict[str, Any]) -> str:
-    return safe_id(
-        request.headers.get("x-sumeme-user-id")
+def resolve_memory_scope(request: Request, payload: dict[str, Any]) -> MemoryScope:
+    """Resolve the compatibility identity into a canonical storage scope.
+
+    This is an intermediate data-model step. Until verified JWT/OIDC identity is
+    added, account headers are client asserted and are not a complete security
+    boundary. All storage providers nevertheless receive the same account/vault
+    scope so the later authentication layer can replace this resolver centrally.
+    """
+
+    metadata = payload.get("metadata")
+    if not isinstance(metadata, dict):
+        metadata = {}
+
+    raw_account = (
+        request.headers.get("x-sumeme-account-id")
+        or request.headers.get("x-sumeme-user-id")
         or str(payload.get("user") or "")
         or settings.sumeme_user_id
+    )
+    raw_vault = (
+        request.headers.get("x-sumeme-vault-id")
+        or str(metadata.get("vault_id") or "")
+        or "default"
+    )
+    device_id = (
+        request.headers.get("x-sumeme-device-id")
+        or str(metadata.get("device_id") or "")
+    )
+
+    normalized_account = safe_id(raw_account, settings.sumeme_user_id)
+    if normalized_account == "sumeme_smoke":
+        return MemoryScope.service(
+            "sumeme-smoke",
+            safe_id(raw_vault, "production-smoke"),
+            device_id=device_id,
+        )
+    return MemoryScope.account(
+        normalized_account,
+        safe_id(raw_vault, "default"),
+        device_id=device_id,
     )
 
 
@@ -90,6 +126,8 @@ async def health() -> dict[str, Any]:
     return {
         "status": "ok",
         "memory_provider": app.state.memory.provider_name,
+        "memory_scope_schema": 1,
+        "identity_enforcement": "legacy-client-asserted",
         "mempalace_enabled": settings.mempalace_enabled,
         "letta_enabled": settings.letta_enabled,
         "relay_base_url": settings.openai_relay_base_url,
@@ -121,12 +159,12 @@ async def chat_completions(
     if not isinstance(messages, list):
         raise HTTPException(status_code=400, detail="messages must be an array")
 
-    user_id = resolve_user_id(request, payload)
+    scope = resolve_memory_scope(request, payload)
     conversation_id = resolve_conversation_id(request, payload)
     latest = latest_user_message(messages)
     query = flatten_content((latest or {}).get("content"))
 
-    memory_context = await app.state.memory.recall(query, user_id)
+    memory_context = await app.state.memory.recall(query, scope)
     enriched = app.state.memory.inject_context(payload, memory_context)
 
     if payload.get("stream"):
@@ -134,7 +172,7 @@ async def chat_completions(
             _stream_relay(
                 request_payload=payload,
                 enriched_payload=enriched,
-                user_id=user_id,
+                scope=scope,
                 conversation_id=conversation_id,
             ),
             media_type="text/event-stream",
@@ -154,7 +192,7 @@ async def chat_completions(
     if 200 <= response.status_code < 300:
         asyncio.create_task(
             app.state.memory.remember_exchange(
-                user_id=user_id,
+                scope=scope,
                 conversation_id=conversation_id,
                 request_payload=payload,
                 assistant_text=assistant_text(data),
@@ -175,10 +213,27 @@ async def memory_search(
     require_admin_auth(authorization)
     body = await request.json()
     query = str(body.get("query") or "")
-    user_id = safe_id(str(body.get("user_id") or settings.sumeme_user_id))
+
+    principal_type = str(body.get("principal_type") or "account").strip().lower()
+    if "account_id" in body or "vault_id" in body or principal_type == "service":
+        account_id = str(body.get("account_id") or settings.sumeme_user_id)
+        vault_id = str(body.get("vault_id") or "default")
+        if principal_type == "service":
+            scope = MemoryScope.service(account_id, vault_id)
+        elif principal_type == "account":
+            scope = MemoryScope.account(account_id, vault_id)
+        else:
+            raise HTTPException(status_code=400, detail="invalid principal_type")
+    else:
+        scope = MemoryScope.from_legacy_user_id(
+            str(body.get("user_id") or settings.sumeme_user_id),
+            settings.sumeme_user_id,
+        )
+
     return {
         "provider": app.state.memory.provider_name,
-        "context": await app.state.memory.recall(query, user_id),
+        "scope": scope.display_key,
+        "context": await app.state.memory.recall(query, scope),
     }
 
 
@@ -186,7 +241,7 @@ async def _stream_relay(
     *,
     request_payload: dict[str, Any],
     enriched_payload: dict[str, Any],
-    user_id: str,
+    scope: MemoryScope,
     conversation_id: str,
 ) -> AsyncIterator[bytes]:
     assistant_parts: list[str] = []
@@ -227,7 +282,7 @@ async def _stream_relay(
 
     asyncio.create_task(
         app.state.memory.remember_exchange(
-            user_id=user_id,
+            scope=scope,
             conversation_id=conversation_id,
             request_payload=request_payload,
             assistant_text="".join(assistant_parts),

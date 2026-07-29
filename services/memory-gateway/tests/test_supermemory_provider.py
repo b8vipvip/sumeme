@@ -7,6 +7,7 @@ import pytest
 from pydantic import SecretStr
 
 from app.config import Settings
+from app.memory_scope import MemoryScope
 from app.supermemory_provider import SupermemoryProvider
 
 
@@ -26,7 +27,7 @@ def make_settings(**overrides) -> Settings:
 
 
 @pytest.mark.asyncio
-async def test_recall_uses_scoped_container_and_v4_search() -> None:
+async def test_recall_uses_account_and_vault_container() -> None:
     captured: dict[str, object] = {}
 
     def handler(request: httpx.Request) -> httpx.Response:
@@ -46,14 +47,15 @@ async def test_recall_uses_scoped_container_and_v4_search() -> None:
     provider = SupermemoryProvider(make_settings())
     await provider._client.aclose()
     provider._client = httpx.AsyncClient(transport=httpx.MockTransport(handler))
+    scope = MemoryScope.account("account-a", "work")
 
-    result = await provider.recall("用户喜欢什么", "account-a")
+    result = await provider.recall("用户喜欢什么", scope)
 
     assert captured["path"] == "/v4/search"
     assert captured["authorization"] == "Bearer supermemory-key"
     assert captured["payload"] == {
         "q": "用户喜欢什么",
-        "containerTag": "sumeme:account-a",
+        "containerTag": "sumeme:acct.account-a.vault.work",
         "searchMode": "hybrid",
         "limit": 5,
         "threshold": 0.6,
@@ -65,7 +67,7 @@ async def test_recall_uses_scoped_container_and_v4_search() -> None:
 
 
 @pytest.mark.asyncio
-async def test_remember_exchange_uses_idempotent_custom_id() -> None:
+async def test_remember_exchange_uses_idempotent_scope_specific_id() -> None:
     requests: list[dict[str, object]] = []
 
     def handler(request: httpx.Request) -> httpx.Response:
@@ -81,7 +83,7 @@ async def test_remember_exchange_uses_idempotent_custom_id() -> None:
     await provider._client.aclose()
     provider._client = httpx.AsyncClient(transport=httpx.MockTransport(handler))
     kwargs = {
-        "user_id": "account-a",
+        "scope": MemoryScope.account("account-a", "work"),
         "conversation_id": "conversation-1",
         "request_payload": {
             "messages": [{"role": "user", "content": "我喜欢喝茶"}]
@@ -95,11 +97,51 @@ async def test_remember_exchange_uses_idempotent_custom_id() -> None:
     first = requests[0]
     second = requests[1]
     assert first["path"] == "/v3/documents"
-    assert first["payload"]["containerTag"] == "sumeme:account-a"
+    assert first["payload"]["containerTag"] == "sumeme:acct.account-a.vault.work"
     assert first["payload"]["taskType"] == "memory"
     assert first["payload"]["customId"] == second["payload"]["customId"]
     assert first["payload"]["customId"].startswith("sumeme-")
+    assert first["payload"]["metadata"] == {
+        "source": "sumeme-conversation",
+        "conversation_id": "conversation-1",
+        "account_id": "account-a",
+        "vault_id": "work",
+        "principal_type": "account",
+        "scope_key": "acct.account-a.vault.work",
+        "schema_version": 2,
+    }
     assert "我喜欢喝茶" in first["payload"]["content"]
+    await provider.aclose()
+
+
+@pytest.mark.asyncio
+async def test_same_content_in_different_vaults_has_different_ids() -> None:
+    requests: list[dict[str, object]] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        requests.append(json.loads(request.content))
+        return httpx.Response(200, json={"id": "doc", "status": "queued"})
+
+    provider = SupermemoryProvider(make_settings())
+    await provider._client.aclose()
+    provider._client = httpx.AsyncClient(transport=httpx.MockTransport(handler))
+    common = {
+        "conversation_id": "conversation-1",
+        "request_payload": {"messages": [{"role": "user", "content": "secret"}]},
+        "assistant_text": "saved",
+    }
+
+    await provider.remember_exchange(
+        scope=MemoryScope.account("account-a", "personal"),
+        **common,
+    )
+    await provider.remember_exchange(
+        scope=MemoryScope.account("account-a", "work"),
+        **common,
+    )
+
+    assert requests[0]["containerTag"] != requests[1]["containerTag"]
+    assert requests[0]["customId"] != requests[1]["customId"]
     await provider.aclose()
 
 
@@ -112,5 +154,8 @@ async def test_search_failure_degrades_to_empty_context() -> None:
     await provider._client.aclose()
     provider._client = httpx.AsyncClient(transport=httpx.MockTransport(handler))
 
-    assert await provider.recall("test", "account-a") == ""
+    assert (
+        await provider.recall("test", MemoryScope.account("account-a", "personal"))
+        == ""
+    )
     await provider.aclose()
