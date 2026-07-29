@@ -4,7 +4,7 @@ import json
 from typing import Any
 
 from .config import Settings
-from .memory_provider import MemPalaceLettaProvider, MemoryProvider
+from .memory_provider import MemoryProvider, MemPalaceLettaProvider
 from .supermemory_provider import SupermemoryProvider
 
 
