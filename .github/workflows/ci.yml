@@ -60,6 +60,63 @@ jobs:
           cp .env.example .env
           docker compose config >/dev/null
 
+  diagnose-deployment-lock:
+    name: Temporary read-only deployment diagnostics
+    if: github.event_name == 'push' && github.ref == 'refs/heads/agent/diagnose-deploy-lock'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Configure pinned SSH trust
+        shell: bash
+        env:
+          SSH_HOST: ${{ vars.SUMEME_VPS_HOST }}
+          SSH_PORT: ${{ vars.SUMEME_VPS_PORT || '22' }}
+          SSH_USER: ${{ vars.SUMEME_VPS_USER || 'sumeme-runner' }}
+          SSH_PRIVATE_KEY: ${{ secrets.SUMEME_SSH_PRIVATE_KEY }}
+          SSH_HOST_KEY: ${{ secrets.SUMEME_SSH_HOST_KEY }}
+        run: |
+          set -euo pipefail
+          install -d -m 700 "${HOME}/.ssh"
+          printf '%s\n' "${SSH_PRIVATE_KEY}" | tr -d '\r' > "${HOME}/.ssh/sumeme_diag"
+          printf '%s\n' "${SSH_HOST_KEY}" | tr -d '\r' > "${HOME}/.ssh/known_hosts"
+          chmod 600 "${HOME}/.ssh/sumeme_diag" "${HOME}/.ssh/known_hosts"
+          cat > "${HOME}/.ssh/config" <<EOF
+          Host sumeme-production
+            HostName ${SSH_HOST}
+            Port ${SSH_PORT}
+            User ${SSH_USER}
+            IdentityFile ${HOME}/.ssh/sumeme_diag
+            IdentitiesOnly yes
+            BatchMode yes
+            StrictHostKeyChecking yes
+            UserKnownHostsFile ${HOME}/.ssh/known_hosts
+            ConnectTimeout 20
+          EOF
+          chmod 600 "${HOME}/.ssh/config"
+
+      - name: Inspect deployment lock and bounded process state
+        shell: bash
+        run: |
+          ssh sumeme-production 'bash -s' <<'REMOTE'
+          set -euo pipefail
+          echo '=== current/deploying SHA ==='
+          cat /opt/sumeme/.deploy/current_sha 2>/dev/null || true
+          cat /opt/sumeme/.deploy/deploying_sha 2>/dev/null || true
+          echo '=== lock owner metadata ==='
+          cat /opt/sumeme/.deploy/deploy.lock.owner 2>/dev/null || true
+          echo '=== lock file users ==='
+          fuser -v /opt/sumeme/.deploy/deploy.lock 2>&1 || true
+          echo '=== related processes ==='
+          ps -eo pid,ppid,stat,etime,cmd --sort=etime \
+            | grep -E 'deploy-production|docker compose|buildx|buildkit|rsync|smoke-test' \
+            | grep -v grep \
+            | tail -n 40 || true
+          echo '=== docker compose status ==='
+          cd /opt/sumeme && docker compose ps || true
+          echo '=== disk ==='
+          df -h /opt/sumeme || true
+          REMOTE
+
   deploy-production-self-hosted:
     name: Deploy production (self-hosted fallback)
     if: >-
