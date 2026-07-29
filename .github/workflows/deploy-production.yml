@@ -1,0 +1,53 @@
+name: Deploy production
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+
+concurrency:
+  group: sumeme-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.head_branch == 'main')
+    environment: production
+    runs-on: [self-hosted, linux, x64, sumeme-production]
+    timeout-minutes: 60
+
+    steps:
+      - name: Resolve release SHA
+        id: release
+        shell: bash
+        run: |
+          if [[ "${GITHUB_EVENT_NAME}" == "workflow_run" ]]; then
+            echo "sha=${{ github.event.workflow_run.head_sha }}" >> "${GITHUB_OUTPUT}"
+          else
+            echo "sha=${GITHUB_SHA}" >> "${GITHUB_OUTPUT}"
+          fi
+
+      - name: Check out trusted release
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.release.outputs.sha }}
+          persist-credentials: false
+
+      - name: Deploy to VPS
+        env:
+          DEPLOY_DIR: /opt/sumeme
+          SOURCE_DIR: ${{ github.workspace }}
+        run: bash scripts/deploy-production.sh "${{ steps.release.outputs.sha }}"
+
+      - name: Print deployment state
+        if: always()
+        run: |
+          echo "Current release: $(cat /opt/sumeme/.deploy/current_sha 2>/dev/null || echo unknown)"
+          tail -n 20 /opt/sumeme/.deploy/history.log 2>/dev/null || true
