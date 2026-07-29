@@ -6,6 +6,9 @@ OUTPUT_PATH="${SMOKE_OUTPUT_PATH:-${DEPLOY_DIR}/.deploy/smoke/latest.json}"
 GATEWAY_PORT="${GATEWAY_PORT:-8010}"
 SMOKE_MEMORY_ATTEMPTS="${SMOKE_MEMORY_ATTEMPTS:-4}"
 SMOKE_MEMORY_DELAY_SECONDS="${SMOKE_MEMORY_DELAY_SECONDS:-12}"
+SMOKE_ACCOUNT_ID="sumeme-smoke"
+SMOKE_VAULT_ID="production-smoke"
+SMOKE_SCOPE="service:${SMOKE_ACCOUNT_ID}/${SMOKE_VAULT_ID}"
 
 cd "${DEPLOY_DIR}"
 mkdir -p "$(dirname "${OUTPUT_PATH}")"
@@ -68,6 +71,7 @@ trap 'rm -rf "${temp_dir}"' EXIT
 
 models_ok=false
 chat_ok=false
+scope_ok=false
 active_memory_ok=false
 mempalace_ok=false
 letta_ok=false
@@ -101,16 +105,22 @@ else
   error_codes+=("models_http_${http_code:-000}")
 fi
 
-python3 - "${temp_dir}/chat-request.json" "${OPENAI_CHAT_MODEL}" "${marker}" <<'PY'
+python3 - \
+  "${temp_dir}/chat-request.json" \
+  "${OPENAI_CHAT_MODEL}" "${marker}" "${SMOKE_VAULT_ID}" <<'PY'
 import json
 import sys
 
-path, model, marker = sys.argv[1:]
+path, model, marker, vault_id = sys.argv[1:]
 payload = {
     "model": model,
     "stream": False,
     "user": "__sumeme_smoke__",
-    "metadata": {"conversation_id": "sumeme-production-smoke"},
+    "metadata": {
+        "conversation_id": "sumeme-production-smoke",
+        "vault_id": vault_id,
+        "device_id": "production-runner",
+    },
     "messages": [
         {
             "role": "user",
@@ -158,14 +168,21 @@ fi
 
 if [[ "${chat_ok}" == "true" ]]; then
   for ((attempt = 1; attempt <= SMOKE_MEMORY_ATTEMPTS; attempt++)); do
-    python3 - "${temp_dir}/memory-request.json" "${marker}" <<'PY'
+    python3 - \
+      "${temp_dir}/memory-request.json" \
+      "${marker}" "${SMOKE_ACCOUNT_ID}" "${SMOKE_VAULT_ID}" <<'PY'
 import json
 import sys
 
-path, marker = sys.argv[1:]
+path, marker, account_id, vault_id = sys.argv[1:]
 with open(path, "w", encoding="utf-8") as handle:
     json.dump(
-        {"query": f"请召回唯一测试标记 {marker}", "user_id": "__sumeme_smoke__"},
+        {
+            "query": f"请召回唯一测试标记 {marker}",
+            "principal_type": "service",
+            "account_id": account_id,
+            "vault_id": vault_id,
+        },
         handle,
         ensure_ascii=False,
     )
@@ -179,7 +196,7 @@ PY
       "http://127.0.0.1:${GATEWAY_PORT}/api/memory/search" || true)"
 
     if [[ "${http_code}" =~ ^2 ]]; then
-      read -r response_provider mempalace_hit letta_hit supermemory_hit < <(
+      read -r response_provider response_scope mempalace_hit letta_hit supermemory_hit < <(
         python3 - "${temp_dir}/memory-response.json" "${marker}" <<'PY'
 import json
 import sys
@@ -187,10 +204,12 @@ import sys
 with open(sys.argv[1], encoding="utf-8") as handle:
     value = json.load(handle)
 provider = value.get("provider", "") if isinstance(value, dict) else ""
+scope = value.get("scope", "") if isinstance(value, dict) else ""
 context = value.get("context", "") if isinstance(value, dict) else ""
 marker = sys.argv[2]
 print(
     provider or "unknown",
+    scope or "unknown",
     "true" if "MemPalace 原始历史片段" in context and marker in context else "false",
     "true" if "Letta 结构化个人记忆" in context else "false",
     "true" if "Supermemory 个人记忆候选" in context and marker in context else "false",
@@ -200,6 +219,12 @@ PY
 
       if [[ "${response_provider}" != "${MEMORY_PROVIDER}" ]]; then
         error_codes+=("memory_provider_mismatch")
+        break
+      fi
+      if [[ "${response_scope}" == "${SMOKE_SCOPE}" ]]; then
+        scope_ok=true
+      else
+        error_codes+=("memory_scope_mismatch")
         break
       fi
 
@@ -214,7 +239,7 @@ PY
       fi
     fi
 
-    if [[ "${active_memory_ok}" == "true" ]]; then
+    if [[ "${active_memory_ok}" == "true" && "${scope_ok}" == "true" ]]; then
       break
     fi
     if (( attempt < SMOKE_MEMORY_ATTEMPTS )); then
@@ -231,8 +256,9 @@ if [[ "${active_memory_ok}" != "true" ]]; then
     error_codes+=("supermemory_recall_failed")
   fi
 fi
+[[ "${scope_ok}" == "true" ]] || error_codes+=("service_scope_verification_failed")
 
-s3_object="sumeme-smoke/${marker}.txt"
+s3_object="services/${SMOKE_ACCOUNT_ID}/vaults/${SMOKE_VAULT_ID}/${marker}.txt"
 if docker compose run --rm --no-deps -T \
   -e "RUSTFS_ACCESS_KEY=${RUSTFS_ACCESS_KEY}" \
   -e "RUSTFS_SECRET_KEY=${RUSTFS_SECRET_KEY}" \
@@ -256,7 +282,8 @@ finished_at="$(date --iso-8601=seconds)"
 duration_seconds="$(( $(date +%s) - started_epoch ))"
 overall="success"
 if [[ "${models_ok}" != "true" || "${chat_ok}" != "true" || \
-      "${active_memory_ok}" != "true" || "${s3_ok}" != "true" ]]; then
+      "${scope_ok}" != "true" || "${active_memory_ok}" != "true" || \
+      "${s3_ok}" != "true" ]]; then
   overall="failure"
 fi
 
@@ -264,9 +291,9 @@ errors_json="$(printf '%s\n' "${error_codes[@]:-}" | python3 -c 'import json,sys
 python3 - \
   "${OUTPUT_PATH}.tmp" \
   "${started_at}" "${finished_at}" "${duration_seconds}" "${overall}" \
-  "${MEMORY_PROVIDER}" "${models_ok}" "${chat_ok}" "${active_memory_ok}" \
-  "${mempalace_ok}" "${letta_ok}" "${supermemory_ok}" "${s3_ok}" \
-  "${errors_json}" <<'PY'
+  "${MEMORY_PROVIDER}" "${SMOKE_SCOPE}" "${models_ok}" "${chat_ok}" \
+  "${scope_ok}" "${active_memory_ok}" "${mempalace_ok}" "${letta_ok}" \
+  "${supermemory_ok}" "${s3_ok}" "${errors_json}" <<'PY'
 import json
 import sys
 
@@ -277,8 +304,10 @@ import sys
     duration_seconds,
     overall,
     memory_provider,
+    test_scope,
     models_ok,
     chat_ok,
+    scope_ok,
     active_memory_ok,
     mempalace_ok,
     letta_ok,
@@ -290,6 +319,7 @@ import sys
 checks = {
     "models": models_ok == "true",
     "chat": chat_ok == "true",
+    "scope": scope_ok == "true",
     "active_memory": active_memory_ok == "true",
     "s3": s3_ok == "true",
 }
@@ -300,16 +330,16 @@ else:
     checks["supermemory"] = supermemory_ok == "true"
 
 result = {
-    "schema_version": 2,
+    "schema_version": 3,
     "generated_at": finished_at,
     "started_at": started_at,
     "finished_at": finished_at,
     "duration_seconds": int(duration_seconds),
     "overall": overall,
     "memory_provider": memory_provider,
+    "test_scope": test_scope,
     "checks": checks,
     "error_codes": json.loads(errors_json),
-    "test_user": "__sumeme_smoke__",
 }
 with open(output_path, "w", encoding="utf-8") as handle:
     json.dump(result, handle, ensure_ascii=False, indent=2)
@@ -317,8 +347,8 @@ with open(output_path, "w", encoding="utf-8") as handle:
 PY
 mv "${OUTPUT_PATH}.tmp" "${OUTPUT_PATH}"
 
-printf 'SuMeMe smoke test: overall=%s provider=%s models=%s chat=%s memory=%s s3=%s duration=%ss\n' \
-  "${overall}" "${MEMORY_PROVIDER}" "${models_ok}" "${chat_ok}" \
-  "${active_memory_ok}" "${s3_ok}" "${duration_seconds}"
+printf 'SuMeMe smoke test: overall=%s provider=%s scope=%s models=%s chat=%s memory=%s s3=%s duration=%ss\n' \
+  "${overall}" "${MEMORY_PROVIDER}" "${SMOKE_SCOPE}" "${models_ok}" \
+  "${chat_ok}" "${active_memory_ok}" "${s3_ok}" "${duration_seconds}"
 
 [[ "${overall}" == "success" ]]
