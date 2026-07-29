@@ -90,7 +90,7 @@ class SupermemoryProvider:
             default=str,
         )
         digest = hashlib.sha256(
-            f"{user_id}\n{conversation_id}\n{canonical}".encode("utf-8")
+            f"{user_id}\n{conversation_id}\n{canonical}".encode()
         ).hexdigest()[:48]
         payload = {
             "content": canonical,
