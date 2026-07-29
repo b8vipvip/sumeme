@@ -1,0 +1,75 @@
+name: Observe latest main CI once
+
+on:
+  push:
+    branches: [agent/actions-observer]
+    paths: [.github/workflows/observe-main-ci-once.yml]
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+jobs:
+  observe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish sanitized main CI state
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const repo = await github.rest.repos.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+            const branch = await github.rest.repos.getBranch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              branch: repo.data.default_branch,
+            });
+            const sha = branch.data.commit.sha;
+            const runs = await github.rest.actions.listWorkflowRuns({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'ci.yml',
+              branch: repo.data.default_branch,
+              event: 'push',
+              per_page: 20,
+            });
+            const run = runs.data.workflow_runs.find((item) => item.head_sha === sha);
+            let body = [
+              '<!-- sumeme-main-ci-observer -->',
+              '## Main CI 一次性观察结果',
+              '',
+              `- main SHA: \`${sha}\``,
+            ];
+            if (!run) {
+              body.push('- CI: 未找到该 SHA 的 push run');
+            } else {
+              const jobs = await github.rest.actions.listJobsForWorkflowRun({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                run_id: run.id,
+                filter: 'latest',
+                per_page: 100,
+              });
+              body.push(
+                `- run id: \`${run.id}\``,
+                `- run number: \`${run.run_number}\``,
+                `- status: \`${run.status}\``,
+                `- conclusion: \`${run.conclusion || 'pending'}\``,
+                '',
+                '### Jobs',
+                '',
+              );
+              for (const job of jobs.data.jobs) {
+                body.push(`- ${job.name}: \`${job.status}\` / \`${job.conclusion || 'pending'}\``);
+              }
+            }
+            body.push('', `观察时间：${new Date().toISOString()}`);
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 4,
+              body: body.join('\n'),
+            });
