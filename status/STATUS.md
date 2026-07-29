@@ -1,20 +1,20 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-29T15:33:14+08:00
+- **采集时间：** 2026-07-29T15:34:21+08:00
 - **总体状态：** `healthy`
 - **开发阶段：** `development_in_progress`
 - **线上版本：** `fe9e4a37401cdda1288226990236536cba85288b`
 - **main 最新版本：** `fe9e4a37401cdda1288226990236536cba85288b`
 - **线上与 main 同步：** 是
 - **开放 PR：** 1
-- **开放 Issue：** 0
+- **开放 Issue：** 1
 
 ## 健康检查
 
 - 本地网关：`ok`
 - 公网入口：`ok`
 - 磁盘使用：`82.5%`，剩余 5.2 GiB
-- 内存使用：`60.6%`，可用 1.4 GiB
+- 内存使用：`60.3%`，可用 1.4 GiB
 
 ## 容器服务
 
@@ -22,7 +22,7 @@
 |---|---|---|---|
 | letta | running | healthy | Up 3 hours (healthy) |
 | lobe | running | - | Up 3 hours |
-| memory-gateway | running | healthy | Up 29 minutes (healthy) |
+| memory-gateway | running | healthy | Up 30 minutes (healthy) |
 | postgresql | running | healthy | Up 3 hours (healthy) |
 | qdrant | running | healthy | Up 3 hours (healthy) |
 | redis | running | healthy | Up 3 hours (healthy) |
@@ -33,14 +33,14 @@
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| CI | in_progress | agent/autodevops-plugin | 2026-07-29T07:33:01Z |
-| Plugin CI | in_progress | agent/autodevops-plugin | 2026-07-29T07:33:00Z |
-| Publish project status | in_progress | main | 2026-07-29T07:32:54Z |
-| CI | in_progress | agent/autodevops-plugin | 2026-07-29T07:33:00Z |
-| Plugin CI | in_progress | agent/autodevops-plugin | 2026-07-29T07:33:00Z |
-| Publish project status | cancelled | main | 2026-07-29T07:32:51Z |
-| Deploy production | skipped | main | 2026-07-29T07:32:46Z |
-| Publish project status | cancelled | main | 2026-07-29T07:32:46Z |
+| Publish project status | in_progress | main | 2026-07-29T07:33:54Z |
+| Publish project status | cancelled | main | 2026-07-29T07:33:48Z |
+| Deploy production | skipped | main | 2026-07-29T07:33:44Z |
+| Publish project status | cancelled | main | 2026-07-29T07:33:46Z |
+| Publish project status | cancelled | main | 2026-07-29T07:33:45Z |
+| Deploy production | skipped | main | 2026-07-29T07:33:42Z |
+| CI | success | agent/autodevops-plugin | 2026-07-29T07:33:41Z |
+| Plugin CI | success | agent/autodevops-plugin | 2026-07-29T07:33:37Z |
 
 ## 开放 PR
 
@@ -48,7 +48,7 @@
 
 ## 开放 Issue
 
-- 无
+- #3 AutoDevOps Bridge：完成 ChatGPT 公共插件发布
 
 ## 最近部署
 

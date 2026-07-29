@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-07-29T15:33:14+08:00",
+  "generated_at": "2026-07-29T15:34:21+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "healthy",
   "project_stage": "development_in_progress",
@@ -60,7 +60,7 @@
       "name": "sumeme-memory-gateway",
       "state": "running",
       "health": "healthy",
-      "status": "Up 29 minutes (healthy)",
+      "status": "Up 30 minutes (healthy)",
       "critical": true
     },
     {
@@ -107,14 +107,14 @@
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 34765295616,
-      "free_bytes": 5549101056,
+      "used_bytes": 34765680640,
+      "free_bytes": 5548716032,
       "used_percent": 82.5
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1536761856,
-      "used_percent": 60.6
+      "available_bytes": 1551323136,
+      "used_percent": 60.3
     }
   },
   "github": {
@@ -131,34 +131,15 @@
         "html_url": "https://github.com/b8vipvip/sumeme/pull/2"
       }
     ],
-    "open_issues": [],
+    "open_issues": [
+      {
+        "number": 3,
+        "title": "AutoDevOps Bridge：完成 ChatGPT 公共插件发布",
+        "updated_at": "2026-07-29T07:34:13Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/issues/3"
+      }
+    ],
     "recent_workflows": [
-      {
-        "name": "CI",
-        "display_title": "Build reusable AutoDevOps Bridge ChatGPT plugin",
-        "event": "pull_request",
-        "status": "in_progress",
-        "conclusion": null,
-        "head_branch": "agent/autodevops-plugin",
-        "head_sha": "0e0195de9cea9e22cd6554149c5cf1d5ba60c9e8",
-        "run_number": 62,
-        "created_at": "2026-07-29T07:32:50Z",
-        "updated_at": "2026-07-29T07:33:01Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30432058252"
-      },
-      {
-        "name": "Plugin CI",
-        "display_title": "Build reusable AutoDevOps Bridge ChatGPT plugin",
-        "event": "pull_request",
-        "status": "in_progress",
-        "conclusion": null,
-        "head_branch": "agent/autodevops-plugin",
-        "head_sha": "0e0195de9cea9e22cd6554149c5cf1d5ba60c9e8",
-        "run_number": 9,
-        "created_at": "2026-07-29T07:32:50Z",
-        "updated_at": "2026-07-29T07:33:00Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30432058247"
-      },
       {
         "name": "Publish project status",
         "display_title": "Publish project status",
@@ -167,35 +148,139 @@
         "conclusion": null,
         "head_branch": "main",
         "head_sha": "fe9e4a37401cdda1288226990236536cba85288b",
+        "run_number": 49,
+        "created_at": "2026-07-29T07:33:47Z",
+        "updated_at": "2026-07-29T07:33:54Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30432118382"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "cancelled",
+        "head_branch": "main",
+        "head_sha": "fe9e4a37401cdda1288226990236536cba85288b",
+        "run_number": 48,
+        "created_at": "2026-07-29T07:33:45Z",
+        "updated_at": "2026-07-29T07:33:48Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30432117043"
+      },
+      {
+        "name": "Deploy production",
+        "display_title": "Deploy production",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "skipped",
+        "head_branch": "main",
+        "head_sha": "fe9e4a37401cdda1288226990236536cba85288b",
+        "run_number": 25,
+        "created_at": "2026-07-29T07:33:43Z",
+        "updated_at": "2026-07-29T07:33:44Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30432115311"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "cancelled",
+        "head_branch": "main",
+        "head_sha": "fe9e4a37401cdda1288226990236536cba85288b",
+        "run_number": 47,
+        "created_at": "2026-07-29T07:33:43Z",
+        "updated_at": "2026-07-29T07:33:46Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30432115283"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "cancelled",
+        "head_branch": "main",
+        "head_sha": "fe9e4a37401cdda1288226990236536cba85288b",
+        "run_number": 46,
+        "created_at": "2026-07-29T07:33:41Z",
+        "updated_at": "2026-07-29T07:33:45Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30432112722"
+      },
+      {
+        "name": "Deploy production",
+        "display_title": "Deploy production",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "skipped",
+        "head_branch": "main",
+        "head_sha": "fe9e4a37401cdda1288226990236536cba85288b",
+        "run_number": 24,
+        "created_at": "2026-07-29T07:33:41Z",
+        "updated_at": "2026-07-29T07:33:42Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30432112649"
+      },
+      {
+        "name": "CI",
+        "display_title": "Build reusable AutoDevOps Bridge ChatGPT plugin",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/autodevops-plugin",
+        "head_sha": "0e0195de9cea9e22cd6554149c5cf1d5ba60c9e8",
+        "run_number": 62,
+        "created_at": "2026-07-29T07:32:50Z",
+        "updated_at": "2026-07-29T07:33:41Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30432058252"
+      },
+      {
+        "name": "Plugin CI",
+        "display_title": "Build reusable AutoDevOps Bridge ChatGPT plugin",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/autodevops-plugin",
+        "head_sha": "0e0195de9cea9e22cd6554149c5cf1d5ba60c9e8",
+        "run_number": 9,
+        "created_at": "2026-07-29T07:32:50Z",
+        "updated_at": "2026-07-29T07:33:37Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30432058247"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "fe9e4a37401cdda1288226990236536cba85288b",
         "run_number": 45,
         "created_at": "2026-07-29T07:32:49Z",
-        "updated_at": "2026-07-29T07:32:54Z",
+        "updated_at": "2026-07-29T07:33:31Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30432057976"
       },
       {
         "name": "CI",
         "display_title": "fix(plugin): align strict TypeScript settings with MCP SDK",
         "event": "push",
-        "status": "in_progress",
-        "conclusion": null,
+        "status": "completed",
+        "conclusion": "success",
         "head_branch": "agent/autodevops-plugin",
         "head_sha": "0e0195de9cea9e22cd6554149c5cf1d5ba60c9e8",
         "run_number": 61,
         "created_at": "2026-07-29T07:32:49Z",
-        "updated_at": "2026-07-29T07:33:00Z",
+        "updated_at": "2026-07-29T07:33:38Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30432057635"
       },
       {
         "name": "Plugin CI",
         "display_title": "fix(plugin): align strict TypeScript settings with MCP SDK",
         "event": "push",
-        "status": "in_progress",
-        "conclusion": null,
+        "status": "completed",
+        "conclusion": "success",
         "head_branch": "agent/autodevops-plugin",
         "head_sha": "0e0195de9cea9e22cd6554149c5cf1d5ba60c9e8",
         "run_number": 8,
         "created_at": "2026-07-29T07:32:49Z",
-        "updated_at": "2026-07-29T07:33:00Z",
+        "updated_at": "2026-07-29T07:33:44Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30432057158"
       },
       {
@@ -210,90 +295,12 @@
         "created_at": "2026-07-29T07:32:45Z",
         "updated_at": "2026-07-29T07:32:51Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30432053547"
-      },
-      {
-        "name": "Deploy production",
-        "display_title": "Deploy production",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "skipped",
-        "head_branch": "main",
-        "head_sha": "fe9e4a37401cdda1288226990236536cba85288b",
-        "run_number": 23,
-        "created_at": "2026-07-29T07:32:45Z",
-        "updated_at": "2026-07-29T07:32:46Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30432053545"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "cancelled",
-        "head_branch": "main",
-        "head_sha": "fe9e4a37401cdda1288226990236536cba85288b",
-        "run_number": 43,
-        "created_at": "2026-07-29T07:32:37Z",
-        "updated_at": "2026-07-29T07:32:46Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30432045287"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "cancelled",
-        "head_branch": "main",
-        "head_sha": "fe9e4a37401cdda1288226990236536cba85288b",
-        "run_number": 42,
-        "created_at": "2026-07-29T07:32:34Z",
-        "updated_at": "2026-07-29T07:32:38Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30432042638"
-      },
-      {
-        "name": "Deploy production",
-        "display_title": "Deploy production",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "skipped",
-        "head_branch": "main",
-        "head_sha": "fe9e4a37401cdda1288226990236536cba85288b",
-        "run_number": 22,
-        "created_at": "2026-07-29T07:32:34Z",
-        "updated_at": "2026-07-29T07:32:35Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30432042561"
-      },
-      {
-        "name": "Plugin CI",
-        "display_title": "Build reusable AutoDevOps Bridge ChatGPT plugin",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/autodevops-plugin",
-        "head_sha": "2a0df2c99406b1a88e05cf1c9ed03e4f6a593f17",
-        "run_number": 7,
-        "created_at": "2026-07-29T07:32:00Z",
-        "updated_at": "2026-07-29T07:32:28Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30432007929"
-      },
-      {
-        "name": "CI",
-        "display_title": "Build reusable AutoDevOps Bridge ChatGPT plugin",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/autodevops-plugin",
-        "head_sha": "2a0df2c99406b1a88e05cf1c9ed03e4f6a593f17",
-        "run_number": 60,
-        "created_at": "2026-07-29T07:32:00Z",
-        "updated_at": "2026-07-29T07:32:43Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30432007905"
       }
     ]
   },
   "collector": {
     "event_name": "workflow_run",
     "workflow": "Publish project status",
-    "run_id": "30432057976"
+    "run_id": "30432118382"
   }
 }
