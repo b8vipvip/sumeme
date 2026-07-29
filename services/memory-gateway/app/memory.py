@@ -1,40 +1,24 @@
 from __future__ import annotations
 
-import asyncio
 import json
 from typing import Any
 
 from .config import Settings
-from .content import flatten_content, latest_user_message
-from .letta_memory import LettaMemory
-from .mempalace_store import MemPalaceStore
+from .memory_provider import MemoryProvider, MemPalaceLettaProvider
+from .supermemory_provider import SupermemoryProvider
 
 
 class MemoryCoordinator:
     def __init__(self, settings: Settings):
         self.settings = settings
-        self.mempalace = MemPalaceStore(settings)
-        self.letta = LettaMemory(settings)
+        self.provider = self._build_provider(settings)
+
+    @property
+    def provider_name(self) -> str:
+        return self.provider.name
 
     async def recall(self, query: str, user_id: str) -> str:
-        raw_task = asyncio.create_task(self.mempalace.search(query, user_id))
-        structured_task = asyncio.create_task(self.letta.recall(query, user_id))
-        raw_results, structured = await asyncio.gather(raw_task, structured_task)
-
-        sections: list[str] = []
-        if raw_results:
-            rendered = []
-            for item in raw_results[: self.settings.memory_recall_limit]:
-                text = str(item.get("text") or "")
-                similarity = item.get("similarity")
-                rendered.append(
-                    f"- [{item.get('wing')}/{item.get('room')} score={similarity}] {text}"
-                )
-            sections.append("MemPalace 原始历史片段：\n" + "\n".join(rendered))
-        if structured:
-            sections.append("Letta 结构化个人记忆：\n" + structured)
-
-        context = "\n\n".join(sections)
+        context = await self.provider.recall(query, user_id)
         return context[: self.settings.memory_context_max_chars]
 
     async def remember_exchange(
@@ -45,23 +29,23 @@ class MemoryCoordinator:
         request_payload: dict[str, Any],
         assistant_text: str,
     ) -> None:
-        message = latest_user_message(request_payload.get("messages") or [])
-        user_text = flatten_content((message or {}).get("content"))
-        await asyncio.gather(
-            self.mempalace.add_exchange(
-                user_id=user_id,
-                conversation_id=conversation_id,
-                request_payload=request_payload,
-                assistant=assistant_text,
-            ),
-            self.letta.remember(
-                user_id=user_id,
-                user_text=user_text,
-                assistant_text=assistant_text,
-                conversation_id=conversation_id,
-            ),
-            return_exceptions=True,
+        await self.provider.remember_exchange(
+            user_id=user_id,
+            conversation_id=conversation_id,
+            request_payload=request_payload,
+            assistant_text=assistant_text,
         )
+
+    async def aclose(self) -> None:
+        await self.provider.aclose()
+
+    @staticmethod
+    def _build_provider(settings: Settings) -> MemoryProvider:
+        if settings.memory_provider == "mempalace-letta":
+            return MemPalaceLettaProvider(settings)
+        if settings.memory_provider == "supermemory":
+            return SupermemoryProvider(settings)
+        raise RuntimeError(f"unsupported memory provider: {settings.memory_provider}")
 
     @staticmethod
     def inject_context(payload: dict[str, Any], context: str) -> dict[str, Any]:

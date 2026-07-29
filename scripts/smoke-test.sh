@@ -36,9 +36,22 @@ need docker
 GATEWAY_API_KEY="$(read_env GATEWAY_API_KEY)"
 GATEWAY_ADMIN_TOKEN="$(read_env GATEWAY_ADMIN_TOKEN)"
 OPENAI_CHAT_MODEL="$(read_env OPENAI_CHAT_MODEL)"
+MEMORY_PROVIDER="$(read_env MEMORY_PROVIDER mempalace-letta)"
 RUSTFS_ACCESS_KEY="$(read_env RUSTFS_ACCESS_KEY)"
 RUSTFS_SECRET_KEY="$(read_env RUSTFS_SECRET_KEY)"
 RUSTFS_LOBE_BUCKET="$(read_env RUSTFS_LOBE_BUCKET lobe)"
+
+case "${MEMORY_PROVIDER}" in
+  default|mempalace+letta|mempalace_letta)
+    MEMORY_PROVIDER="mempalace-letta"
+    ;;
+  mempalace-letta|supermemory)
+    ;;
+  *)
+    echo "Unsupported MEMORY_PROVIDER: ${MEMORY_PROVIDER}" >&2
+    exit 64
+    ;;
+esac
 
 for key in GATEWAY_API_KEY GATEWAY_ADMIN_TOKEN OPENAI_CHAT_MODEL RUSTFS_ACCESS_KEY RUSTFS_SECRET_KEY; do
   if [[ -z "${!key}" ]]; then
@@ -55,8 +68,10 @@ trap 'rm -rf "${temp_dir}"' EXIT
 
 models_ok=false
 chat_ok=false
+active_memory_ok=false
 mempalace_ok=false
 letta_ok=false
+supermemory_ok=false
 s3_ok=false
 error_codes=()
 
@@ -164,26 +179,42 @@ PY
       "http://127.0.0.1:${GATEWAY_PORT}/api/memory/search" || true)"
 
     if [[ "${http_code}" =~ ^2 ]]; then
-      read -r mempalace_hit letta_hit < <(
+      read -r response_provider mempalace_hit letta_hit supermemory_hit < <(
         python3 - "${temp_dir}/memory-response.json" "${marker}" <<'PY'
 import json
 import sys
 
 with open(sys.argv[1], encoding="utf-8") as handle:
     value = json.load(handle)
+provider = value.get("provider", "") if isinstance(value, dict) else ""
 context = value.get("context", "") if isinstance(value, dict) else ""
 marker = sys.argv[2]
 print(
+    provider or "unknown",
     "true" if "MemPalace 原始历史片段" in context and marker in context else "false",
     "true" if "Letta 结构化个人记忆" in context else "false",
+    "true" if "Supermemory 个人记忆候选" in context and marker in context else "false",
 )
 PY
       )
+
+      if [[ "${response_provider}" != "${MEMORY_PROVIDER}" ]]; then
+        error_codes+=("memory_provider_mismatch")
+        break
+      fi
+
       [[ "${mempalace_hit}" == "true" ]] && mempalace_ok=true
       [[ "${letta_hit}" == "true" ]] && letta_ok=true
+      [[ "${supermemory_hit}" == "true" ]] && supermemory_ok=true
+
+      if [[ "${MEMORY_PROVIDER}" == "mempalace-letta" ]]; then
+        [[ "${mempalace_ok}" == "true" && "${letta_ok}" == "true" ]] && active_memory_ok=true
+      else
+        [[ "${supermemory_ok}" == "true" ]] && active_memory_ok=true
+      fi
     fi
 
-    if [[ "${mempalace_ok}" == "true" && "${letta_ok}" == "true" ]]; then
+    if [[ "${active_memory_ok}" == "true" ]]; then
       break
     fi
     if (( attempt < SMOKE_MEMORY_ATTEMPTS )); then
@@ -192,8 +223,14 @@ PY
   done
 fi
 
-[[ "${mempalace_ok}" == "true" ]] || error_codes+=("mempalace_recall_failed")
-[[ "${letta_ok}" == "true" ]] || error_codes+=("letta_recall_failed")
+if [[ "${active_memory_ok}" != "true" ]]; then
+  if [[ "${MEMORY_PROVIDER}" == "mempalace-letta" ]]; then
+    [[ "${mempalace_ok}" == "true" ]] || error_codes+=("mempalace_recall_failed")
+    [[ "${letta_ok}" == "true" ]] || error_codes+=("letta_recall_failed")
+  else
+    error_codes+=("supermemory_recall_failed")
+  fi
+fi
 
 s3_object="sumeme-smoke/${marker}.txt"
 if docker compose run --rm --no-deps -T \
@@ -219,7 +256,7 @@ finished_at="$(date --iso-8601=seconds)"
 duration_seconds="$(( $(date +%s) - started_epoch ))"
 overall="success"
 if [[ "${models_ok}" != "true" || "${chat_ok}" != "true" || \
-      "${mempalace_ok}" != "true" || "${letta_ok}" != "true" || "${s3_ok}" != "true" ]]; then
+      "${active_memory_ok}" != "true" || "${s3_ok}" != "true" ]]; then
   overall="failure"
 fi
 
@@ -227,7 +264,8 @@ errors_json="$(printf '%s\n' "${error_codes[@]:-}" | python3 -c 'import json,sys
 python3 - \
   "${OUTPUT_PATH}.tmp" \
   "${started_at}" "${finished_at}" "${duration_seconds}" "${overall}" \
-  "${models_ok}" "${chat_ok}" "${mempalace_ok}" "${letta_ok}" "${s3_ok}" \
+  "${MEMORY_PROVIDER}" "${models_ok}" "${chat_ok}" "${active_memory_ok}" \
+  "${mempalace_ok}" "${letta_ok}" "${supermemory_ok}" "${s3_ok}" \
   "${errors_json}" <<'PY'
 import json
 import sys
@@ -238,28 +276,38 @@ import sys
     finished_at,
     duration_seconds,
     overall,
+    memory_provider,
     models_ok,
     chat_ok,
+    active_memory_ok,
     mempalace_ok,
     letta_ok,
+    supermemory_ok,
     s3_ok,
     errors_json,
 ) = sys.argv[1:]
 
+checks = {
+    "models": models_ok == "true",
+    "chat": chat_ok == "true",
+    "active_memory": active_memory_ok == "true",
+    "s3": s3_ok == "true",
+}
+if memory_provider == "mempalace-letta":
+    checks["mempalace"] = mempalace_ok == "true"
+    checks["letta"] = letta_ok == "true"
+else:
+    checks["supermemory"] = supermemory_ok == "true"
+
 result = {
-    "schema_version": 1,
+    "schema_version": 2,
     "generated_at": finished_at,
     "started_at": started_at,
     "finished_at": finished_at,
     "duration_seconds": int(duration_seconds),
     "overall": overall,
-    "checks": {
-        "models": models_ok == "true",
-        "chat": chat_ok == "true",
-        "mempalace": mempalace_ok == "true",
-        "letta": letta_ok == "true",
-        "s3": s3_ok == "true",
-    },
+    "memory_provider": memory_provider,
+    "checks": checks,
     "error_codes": json.loads(errors_json),
     "test_user": "__sumeme_smoke__",
 }
@@ -269,7 +317,8 @@ with open(output_path, "w", encoding="utf-8") as handle:
 PY
 mv "${OUTPUT_PATH}.tmp" "${OUTPUT_PATH}"
 
-printf 'SuMeMe smoke test: overall=%s models=%s chat=%s mempalace=%s letta=%s s3=%s duration=%ss\n' \
-  "${overall}" "${models_ok}" "${chat_ok}" "${mempalace_ok}" "${letta_ok}" "${s3_ok}" "${duration_seconds}"
+printf 'SuMeMe smoke test: overall=%s provider=%s models=%s chat=%s memory=%s s3=%s duration=%ss\n' \
+  "${overall}" "${MEMORY_PROVIDER}" "${models_ok}" "${chat_ok}" \
+  "${active_memory_ok}" "${s3_ok}" "${duration_seconds}"
 
 [[ "${overall}" == "success" ]]

@@ -32,11 +32,14 @@ async def lifespan(app: FastAPI):
         follow_redirects=True,
     )
     app.state.memory = MemoryCoordinator(settings)
-    yield
-    await app.state.http.aclose()
+    try:
+        yield
+    finally:
+        await app.state.memory.aclose()
+        await app.state.http.aclose()
 
 
-app = FastAPI(title="SuMeMe Memory Gateway", version="0.1.0", lifespan=lifespan)
+app = FastAPI(title="SuMeMe Memory Gateway", version="0.2.0", lifespan=lifespan)
 
 
 def require_gateway_auth(authorization: str | None) -> None:
@@ -86,6 +89,7 @@ def resolve_conversation_id(request: Request, payload: dict[str, Any]) -> str:
 async def health() -> dict[str, Any]:
     return {
         "status": "ok",
+        "memory_provider": app.state.memory.provider_name,
         "mempalace_enabled": settings.mempalace_enabled,
         "letta_enabled": settings.letta_enabled,
         "relay_base_url": settings.openai_relay_base_url,
@@ -172,7 +176,10 @@ async def memory_search(
     body = await request.json()
     query = str(body.get("query") or "")
     user_id = safe_id(str(body.get("user_id") or settings.sumeme_user_id))
-    return {"context": await app.state.memory.recall(query, user_id)}
+    return {
+        "provider": app.state.memory.provider_name,
+        "context": await app.state.memory.recall(query, user_id),
+    }
 
 
 async def _stream_relay(
