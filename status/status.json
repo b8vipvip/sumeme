@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-07-29T18:09:06+08:00",
+  "generated_at": "2026-07-29T18:28:06+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "healthy",
   "project_stage": "deployment_behind_main",
@@ -44,7 +44,7 @@
       "name": "sumeme-letta",
       "state": "running",
       "health": "healthy",
-      "status": "Up 5 hours (healthy)",
+      "status": "Up 6 hours (healthy)",
       "critical": true
     },
     {
@@ -60,7 +60,7 @@
       "name": "sumeme-memory-gateway",
       "state": "running",
       "health": "healthy",
-      "status": "Up 8 minutes (healthy)",
+      "status": "Up 17 minutes (healthy)",
       "critical": true
     },
     {
@@ -107,19 +107,19 @@
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 32154566656,
-      "free_bytes": 8159830016,
+      "used_bytes": 32159596544,
+      "free_bytes": 8154800128,
       "used_percent": 76.3
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1788084224,
-      "used_percent": 54.2
+      "available_bytes": 1771036672,
+      "used_percent": 54.6
     }
   },
   "github": {
     "default_branch": "main",
-    "latest_main_sha": "162f19d31bb3845478e33fef0c3911c87d8a3a32",
+    "latest_main_sha": "1fbb8a8bca92bdf678a720c6a4607f71fcbc840d",
     "open_pull_requests": [],
     "open_issues": [
       {
@@ -131,30 +131,17 @@
       {
         "number": 7,
         "title": "基础架构：严格账户隔离与本地/云端/混合三种记忆存储模式",
-        "updated_at": "2026-07-29T09:43:11Z",
+        "updated_at": "2026-07-29T10:23:06Z",
         "html_url": "https://github.com/b8vipvip/sumeme/issues/7"
       },
       {
         "number": 4,
         "title": "Phase 1.5：端到端验证、状态新鲜度与磁盘保护",
-        "updated_at": "2026-07-29T09:05:09Z",
+        "updated_at": "2026-07-29T10:22:54Z",
         "html_url": "https://github.com/b8vipvip/sumeme/issues/4"
       }
     ],
     "recent_workflows": [
-      {
-        "name": "Deploy production",
-        "display_title": "Deploy production",
-        "event": "workflow_run",
-        "status": "queued",
-        "conclusion": null,
-        "head_branch": "main",
-        "head_sha": "162f19d31bb3845478e33fef0c3911c87d8a3a32",
-        "run_number": 93,
-        "created_at": "2026-07-29T10:08:32Z",
-        "updated_at": "2026-07-29T10:08:32Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30442492862"
-      },
       {
         "name": "Publish project status",
         "display_title": "Publish project status",
@@ -162,63 +149,76 @@
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
-        "head_sha": "162f19d31bb3845478e33fef0c3911c87d8a3a32",
-        "run_number": 190,
-        "created_at": "2026-07-29T10:08:32Z",
-        "updated_at": "2026-07-29T10:08:50Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30442492832"
+        "head_sha": "1fbb8a8bca92bdf678a720c6a4607f71fcbc840d",
+        "run_number": 220,
+        "created_at": "2026-07-29T10:27:34Z",
+        "updated_at": "2026-07-29T10:27:45Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30443743456"
+      },
+      {
+        "name": "Deploy production",
+        "display_title": "Deploy production",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_branch": "main",
+        "head_sha": "1fbb8a8bca92bdf678a720c6a4607f71fcbc840d",
+        "run_number": 107,
+        "created_at": "2026-07-29T10:17:53Z",
+        "updated_at": "2026-07-29T10:27:29Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30443115652"
       },
       {
         "name": "Publish project status",
-        "display_title": "Merge pull request #11 from b8vipvip/agent/account-vault-scope",
-        "event": "push",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
         "status": "completed",
         "conclusion": "cancelled",
         "head_branch": "main",
-        "head_sha": "162f19d31bb3845478e33fef0c3911c87d8a3a32",
-        "run_number": 189,
-        "created_at": "2026-07-29T10:07:53Z",
-        "updated_at": "2026-07-29T10:08:33Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30442449157"
+        "head_sha": "1fbb8a8bca92bdf678a720c6a4607f71fcbc840d",
+        "run_number": 219,
+        "created_at": "2026-07-29T10:17:53Z",
+        "updated_at": "2026-07-29T10:27:40Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30443115570"
       },
       {
         "name": "CI",
-        "display_title": "Merge pull request #11 from b8vipvip/agent/account-vault-scope",
+        "display_title": "Merge pull request #12 from b8vipvip/agent/deterministic-memory-smoke",
         "event": "push",
         "status": "completed",
         "conclusion": "success",
         "head_branch": "main",
+        "head_sha": "1fbb8a8bca92bdf678a720c6a4607f71fcbc840d",
+        "run_number": 144,
+        "created_at": "2026-07-29T10:17:07Z",
+        "updated_at": "2026-07-29T10:17:50Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30443066465"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Merge pull request #12 from b8vipvip/agent/deterministic-memory-smoke",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "cancelled",
+        "head_branch": "main",
+        "head_sha": "1fbb8a8bca92bdf678a720c6a4607f71fcbc840d",
+        "run_number": 218,
+        "created_at": "2026-07-29T10:17:07Z",
+        "updated_at": "2026-07-29T10:18:03Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30443066374"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "cancelled",
+        "head_branch": "main",
         "head_sha": "162f19d31bb3845478e33fef0c3911c87d8a3a32",
-        "run_number": 130,
-        "created_at": "2026-07-29T10:07:53Z",
-        "updated_at": "2026-07-29T10:08:29Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30442449136"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "cancelled",
-        "head_branch": "main",
-        "head_sha": "efe82b75af73cc8366d99a309f24889c388a7cb8",
-        "run_number": 188,
-        "created_at": "2026-07-29T10:07:36Z",
-        "updated_at": "2026-07-29T10:07:54Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30442430707"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "cancelled",
-        "head_branch": "main",
-        "head_sha": "efe82b75af73cc8366d99a309f24889c388a7cb8",
-        "run_number": 187,
-        "created_at": "2026-07-29T10:07:34Z",
-        "updated_at": "2026-07-29T10:07:36Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30442428977"
+        "run_number": 217,
+        "created_at": "2026-07-29T10:16:47Z",
+        "updated_at": "2026-07-29T10:17:15Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30443045084"
       },
       {
         "name": "Deploy production",
@@ -227,11 +227,11 @@
         "status": "completed",
         "conclusion": "skipped",
         "head_branch": "main",
-        "head_sha": "efe82b75af73cc8366d99a309f24889c388a7cb8",
-        "run_number": 92,
-        "created_at": "2026-07-29T10:07:32Z",
-        "updated_at": "2026-07-29T10:07:33Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30442427304"
+        "head_sha": "162f19d31bb3845478e33fef0c3911c87d8a3a32",
+        "run_number": 106,
+        "created_at": "2026-07-29T10:16:44Z",
+        "updated_at": "2026-07-29T10:16:45Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30443041735"
       },
       {
         "name": "Publish project status",
@@ -240,11 +240,37 @@
         "status": "completed",
         "conclusion": "cancelled",
         "head_branch": "main",
-        "head_sha": "efe82b75af73cc8366d99a309f24889c388a7cb8",
-        "run_number": 186,
-        "created_at": "2026-07-29T10:07:32Z",
-        "updated_at": "2026-07-29T10:07:35Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30442427301"
+        "head_sha": "162f19d31bb3845478e33fef0c3911c87d8a3a32",
+        "run_number": 216,
+        "created_at": "2026-07-29T10:16:44Z",
+        "updated_at": "2026-07-29T10:16:48Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30443041721"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "cancelled",
+        "head_branch": "main",
+        "head_sha": "162f19d31bb3845478e33fef0c3911c87d8a3a32",
+        "run_number": 215,
+        "created_at": "2026-07-29T10:16:06Z",
+        "updated_at": "2026-07-29T10:16:56Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30442999486"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "cancelled",
+        "head_branch": "main",
+        "head_sha": "162f19d31bb3845478e33fef0c3911c87d8a3a32",
+        "run_number": 214,
+        "created_at": "2026-07-29T10:16:03Z",
+        "updated_at": "2026-07-29T10:16:08Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30442995802"
       },
       {
         "name": "Deploy production",
@@ -253,11 +279,11 @@
         "status": "completed",
         "conclusion": "skipped",
         "head_branch": "main",
-        "head_sha": "efe82b75af73cc8366d99a309f24889c388a7cb8",
-        "run_number": 91,
-        "created_at": "2026-07-29T10:07:21Z",
-        "updated_at": "2026-07-29T10:07:31Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30442415267"
+        "head_sha": "162f19d31bb3845478e33fef0c3911c87d8a3a32",
+        "run_number": 105,
+        "created_at": "2026-07-29T10:16:03Z",
+        "updated_at": "2026-07-29T10:16:04Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30442995449"
       },
       {
         "name": "Publish project status",
@@ -266,51 +292,25 @@
         "status": "completed",
         "conclusion": "cancelled",
         "head_branch": "main",
-        "head_sha": "efe82b75af73cc8366d99a309f24889c388a7cb8",
-        "run_number": 185,
-        "created_at": "2026-07-29T10:07:21Z",
-        "updated_at": "2026-07-29T10:07:34Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30442415239"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "cancelled",
-        "head_branch": "main",
-        "head_sha": "efe82b75af73cc8366d99a309f24889c388a7cb8",
-        "run_number": 184,
-        "created_at": "2026-07-29T10:07:09Z",
-        "updated_at": "2026-07-29T10:07:22Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30442402161"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "cancelled",
-        "head_branch": "main",
-        "head_sha": "efe82b75af73cc8366d99a309f24889c388a7cb8",
-        "run_number": 183,
-        "created_at": "2026-07-29T10:07:06Z",
-        "updated_at": "2026-07-29T10:07:10Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30442398982"
+        "head_sha": "162f19d31bb3845478e33fef0c3911c87d8a3a32",
+        "run_number": 213,
+        "created_at": "2026-07-29T10:15:51Z",
+        "updated_at": "2026-07-29T10:16:05Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30442982045"
       }
     ]
   },
   "collector": {
     "event_name": "workflow_run",
     "workflow": "Publish project status",
-    "run_id": "30442492832"
+    "run_id": "30443743456"
   },
   "freshness": {
-    "age_seconds_at_publish": 0,
+    "age_seconds_at_publish": 1,
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-29T18:09:06+08:00"
+    "generated_at": "2026-07-29T18:28:06+08:00"
   },
   "reliability": {
     "disk": {
@@ -320,16 +320,18 @@
       "minimum_free_bytes": 3221225472
     },
     "smoke_test": {
-      "schema_version": 2,
-      "generated_at": "2026-07-29T17:59:58+08:00",
-      "started_at": "2026-07-29T17:59:12+08:00",
-      "finished_at": "2026-07-29T17:59:58+08:00",
-      "duration_seconds": 46,
+      "schema_version": 3,
+      "generated_at": "2026-07-29T18:10:49+08:00",
+      "started_at": "2026-07-29T18:10:06+08:00",
+      "finished_at": "2026-07-29T18:10:49+08:00",
+      "duration_seconds": 43,
       "overall": "failure",
       "memory_provider": "mempalace-letta",
+      "test_scope": "service:sumeme-smoke/production-smoke",
       "checks": {
         "models": true,
         "chat": true,
+        "scope": true,
         "active_memory": false,
         "s3": true,
         "mempalace": false,
@@ -339,8 +341,7 @@
         "mempalace_recall_failed",
         "letta_recall_failed"
       ],
-      "test_user": "__sumeme_smoke__",
-      "age_seconds_at_publish": 548,
+      "age_seconds_at_publish": 1038,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }

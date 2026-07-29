@@ -1,10 +1,10 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-29T18:09:06+08:00
+- **采集时间：** 2026-07-29T18:28:06+08:00
 - **总体状态：** `healthy`
 - **开发阶段：** `deployment_behind_main`
 - **线上版本：** `fe9e4a37401cdda1288226990236536cba85288b`
-- **main 最新版本：** `162f19d31bb3845478e33fef0c3911c87d8a3a32`
+- **main 最新版本：** `1fbb8a8bca92bdf678a720c6a4607f71fcbc840d`
 - **线上与 main 同步：** 否
 - **开放 PR：** 0
 - **开放 Issue：** 3
@@ -14,15 +14,15 @@
 - 本地网关：`ok`
 - 公网入口：`ok`
 - 磁盘使用：`76.3%`，剩余 7.6 GiB
-- 内存使用：`54.2%`，可用 1.7 GiB
+- 内存使用：`54.6%`，可用 1.6 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| letta | running | healthy | Up 5 hours (healthy) |
+| letta | running | healthy | Up 6 hours (healthy) |
 | lobe | running | - | Up 5 hours |
-| memory-gateway | running | healthy | Up 8 minutes (healthy) |
+| memory-gateway | running | healthy | Up 17 minutes (healthy) |
 | postgresql | running | healthy | Up 6 hours (healthy) |
 | qdrant | running | healthy | Up 6 hours (healthy) |
 | redis | running | healthy | Up 6 hours (healthy) |
@@ -33,14 +33,14 @@
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Deploy production | queued | main | 2026-07-29T10:08:32Z |
-| Publish project status | in_progress | main | 2026-07-29T10:08:50Z |
-| Publish project status | cancelled | main | 2026-07-29T10:08:33Z |
-| CI | success | main | 2026-07-29T10:08:29Z |
-| Publish project status | cancelled | main | 2026-07-29T10:07:54Z |
-| Publish project status | cancelled | main | 2026-07-29T10:07:36Z |
-| Deploy production | skipped | main | 2026-07-29T10:07:33Z |
-| Publish project status | cancelled | main | 2026-07-29T10:07:35Z |
+| Publish project status | in_progress | main | 2026-07-29T10:27:45Z |
+| Deploy production | failure | main | 2026-07-29T10:27:29Z |
+| Publish project status | cancelled | main | 2026-07-29T10:27:40Z |
+| CI | success | main | 2026-07-29T10:17:50Z |
+| Publish project status | cancelled | main | 2026-07-29T10:18:03Z |
+| Publish project status | cancelled | main | 2026-07-29T10:17:15Z |
+| Deploy production | skipped | main | 2026-07-29T10:16:45Z |
+| Publish project status | cancelled | main | 2026-07-29T10:16:48Z |
 
 ## 开放 PR
 
@@ -61,7 +61,7 @@
 
 ## 可靠性信号
 
-- 状态快照发布时年龄：`0s`
+- 状态快照发布时年龄：`1s`
 - 状态快照过期：`no`（阈值 2100s）
 - 磁盘保护级别：`ok`
 - 最近 smoke test：`failure`
