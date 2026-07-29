@@ -1,19 +1,19 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-29T23:45:06+08:00
+- **采集时间：** 2026-07-30T00:08:57+08:00
 - **总体状态：** `healthy`
 - **开发阶段：** `deployment_behind_main`
 - **线上版本：** `fe9e4a37401cdda1288226990236536cba85288b`
-- **main 最新版本：** `dcf7cd9000007d0d2fa8f4c9e51799b24cf22d13`
+- **main 最新版本：** `3c955a64a87bcbdf67130675b321c31d07ee7ed7`
 - **线上与 main 同步：** 否
-- **开放 PR：** 1
+- **开放 PR：** 0
 - **开放 Issue：** 3
 
 ## 健康检查
 
 - 本地网关：`ok`
 - 公网入口：`ok`
-- 磁盘使用：`77.0%`，剩余 7.3 GiB
+- 磁盘使用：`77.1%`，剩余 7.3 GiB
 - 内存使用：`55.6%`，可用 1.6 GiB
 
 ## 容器服务
@@ -33,18 +33,18 @@
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-07-29T15:44:30Z |
+| Publish project status | in_progress | main | 2026-07-29T16:08:19Z |
+| CI | in_progress | main | 2026-07-29T16:08:12Z |
+| Publish project status | success | main | 2026-07-29T15:45:20Z |
 | CI | success | agent/skip-unchanged-gateway-build | 2026-07-29T15:44:51Z |
-| CI | in_progress | agent/skip-unchanged-gateway-build | 2026-07-29T15:44:21Z |
+| CI | success | agent/skip-unchanged-gateway-build | 2026-07-29T15:44:51Z |
 | CI | success | agent/skip-unchanged-gateway-build | 2026-07-29T15:44:43Z |
 | CI | success | agent/skip-unchanged-gateway-build | 2026-07-29T15:44:06Z |
 | CI | success | agent/diagnose-deploy-lock | 2026-07-29T15:42:33Z |
-| CI | success | agent/diagnose-deploy-lock | 2026-07-29T15:42:27Z |
-| CI | success | agent/diagnose-deploy-lock | 2026-07-29T15:41:37Z |
 
 ## 开放 PR
 
-- #21 Persist pip cache for memory gateway image builds (`agent/skip-unchanged-gateway-build` → `main`)
+- 无
 
 ## 开放 Issue
 
