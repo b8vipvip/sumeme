@@ -1,6 +1,6 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-29T19:41:04+08:00
+- **采集时间：** 2026-07-29T19:43:14+08:00
 - **总体状态：** `healthy`
 - **开发阶段：** `deployment_behind_main`
 - **线上版本：** `fe9e4a37401cdda1288226990236536cba85288b`
@@ -14,7 +14,7 @@
 - 本地网关：`ok`
 - 公网入口：`ok`
 - 磁盘使用：`76.3%`，剩余 7.6 GiB
-- 内存使用：`53.9%`，可用 1.7 GiB
+- 内存使用：`55.3%`，可用 1.6 GiB
 
 ## 容器服务
 
@@ -22,7 +22,7 @@
 |---|---|---|---|
 | letta | running | healthy | Up 7 hours (healthy) |
 | lobe | running | - | Up 7 hours |
-| memory-gateway | running | healthy | Up About an hour (healthy) |
+| memory-gateway | running | healthy | Up 2 hours (healthy) |
 | postgresql | running | healthy | Up 8 hours (healthy) |
 | qdrant | running | healthy | Up 8 hours (healthy) |
 | redis | running | healthy | Up 8 hours (healthy) |
@@ -33,14 +33,14 @@
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| CI | queued | agent/trusted-jwt-identity | 2026-07-29T11:40:57Z |
-| CI | queued | agent/trusted-jwt-identity | 2026-07-29T11:40:49Z |
-| Publish project status | in_progress | main | 2026-07-29T11:40:43Z |
-| Deploy production | skipped | main | 2026-07-29T11:40:34Z |
-| Publish project status | cancelled | main | 2026-07-29T11:40:38Z |
-| CI | in_progress | agent/trusted-jwt-identity | 2026-07-29T11:40:25Z |
-| CI | success | agent/trusted-jwt-identity | 2026-07-29T11:40:31Z |
-| Publish project status | success | main | 2026-07-29T10:29:29Z |
+| Publish project status | in_progress | main | 2026-07-29T11:42:50Z |
+| Publish project status | cancelled | main | 2026-07-29T11:42:42Z |
+| Deploy production | skipped | main | 2026-07-29T11:42:38Z |
+| CI | in_progress | agent/trusted-jwt-identity | 2026-07-29T11:42:44Z |
+| Publish project status | cancelled | main | 2026-07-29T11:42:46Z |
+| Deploy production | skipped | main | 2026-07-29T11:42:27Z |
+| Publish project status | cancelled | main | 2026-07-29T11:42:31Z |
+| CI | failure | agent/trusted-jwt-identity | 2026-07-29T11:42:35Z |
 
 ## 开放 PR
 
