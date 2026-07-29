@@ -1,6 +1,6 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-29T15:32:32+08:00
+- **采集时间：** 2026-07-29T15:33:14+08:00
 - **总体状态：** `healthy`
 - **开发阶段：** `development_in_progress`
 - **线上版本：** `fe9e4a37401cdda1288226990236536cba85288b`
@@ -14,7 +14,7 @@
 - 本地网关：`ok`
 - 公网入口：`ok`
 - 磁盘使用：`82.5%`，剩余 5.2 GiB
-- 内存使用：`60.0%`，可用 1.5 GiB
+- 内存使用：`60.6%`，可用 1.4 GiB
 
 ## 容器服务
 
@@ -33,14 +33,14 @@
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Plugin CI | in_progress | agent/autodevops-plugin | 2026-07-29T07:32:09Z |
-| CI | in_progress | agent/autodevops-plugin | 2026-07-29T07:32:04Z |
-| CI | in_progress | agent/autodevops-plugin | 2026-07-29T07:32:04Z |
-| Plugin CI | failure | agent/autodevops-plugin | 2026-07-29T07:32:20Z |
-| Publish project status | in_progress | main | 2026-07-29T07:32:11Z |
-| Publish project status | cancelled | main | 2026-07-29T07:31:38Z |
-| Deploy production | skipped | main | 2026-07-29T07:31:35Z |
-| Publish project status | cancelled | main | 2026-07-29T07:31:35Z |
+| CI | in_progress | agent/autodevops-plugin | 2026-07-29T07:33:01Z |
+| Plugin CI | in_progress | agent/autodevops-plugin | 2026-07-29T07:33:00Z |
+| Publish project status | in_progress | main | 2026-07-29T07:32:54Z |
+| CI | in_progress | agent/autodevops-plugin | 2026-07-29T07:33:00Z |
+| Plugin CI | in_progress | agent/autodevops-plugin | 2026-07-29T07:33:00Z |
+| Publish project status | cancelled | main | 2026-07-29T07:32:51Z |
+| Deploy production | skipped | main | 2026-07-29T07:32:46Z |
+| Publish project status | cancelled | main | 2026-07-29T07:32:46Z |
 
 ## 开放 PR
 
