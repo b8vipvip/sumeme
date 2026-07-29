@@ -5,6 +5,7 @@ from typing import Any
 
 from .config import Settings
 from .memory_provider import MemoryProvider, MemPalaceLettaProvider
+from .memory_result import MemoryWriteResult
 from .memory_scope import MemoryScope
 from .supermemory_provider import SupermemoryProvider
 
@@ -29,8 +30,8 @@ class MemoryCoordinator:
         conversation_id: str,
         request_payload: dict[str, Any],
         assistant_text: str,
-    ) -> None:
-        await self.provider.remember_exchange(
+    ) -> MemoryWriteResult:
+        return await self.provider.remember_exchange(
             scope=scope,
             conversation_id=conversation_id,
             request_payload=request_payload,
