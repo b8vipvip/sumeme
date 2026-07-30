@@ -10,30 +10,30 @@
     {
       "pid": 3578830,
       "ppid": 3578828,
-      "elapsed_seconds": 945,
+      "elapsed_seconds": 1070,
       "command": "bash"
     },
     {
       "pid": 3579786,
       "ppid": 3578830,
-      "elapsed_seconds": 930,
+      "elapsed_seconds": 1055,
       "command": "docker"
     },
     {
       "pid": 3579801,
       "ppid": 3579786,
-      "elapsed_seconds": 930,
+      "elapsed_seconds": 1055,
       "command": "docker-compose"
     }
   ],
   "containers": [
     {
       "name": "sumeme-letta",
-      "status": "Up 2 minutes (health: starting)"
+      "status": "Up 4 minutes (health: starting)"
     },
     {
       "name": "sumeme-ai-provider-proxy",
-      "status": "Up 2 minutes (healthy)"
+      "status": "Up 5 minutes (healthy)"
     },
     {
       "name": "sumeme-rustfs",
