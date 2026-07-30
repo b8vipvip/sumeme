@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import hashlib
 import io
 from datetime import UTC, datetime
@@ -14,7 +15,12 @@ from app.config import Settings
 from app.memory_scope import MemoryScope
 from app.object_api import build_object_router
 from app.object_config import ObjectAccessSettings
-from app.object_store import PresignedRequest, S3ObjectStore, VerifiedObject
+from app.object_store import (
+    ObjectStoreError,
+    PresignedRequest,
+    S3ObjectStore,
+    VerifiedObject,
+)
 from app.objects import ObjectRecord, ObjectRegistry
 from app.vaults import VaultPolicy
 
@@ -158,9 +164,9 @@ def test_s3_store_removes_invalid_upload(monkeypatch) -> None:
     internal = clients["http://rustfs:9000"]
     internal.objects[("sumeme-vaults", item.object_key)] = b"wrong"
 
-    with pytest.raises(Exception) as captured:
+    with pytest.raises(ObjectStoreError) as captured:
         store._verify_upload_sync(item)
-    assert str(captured.value) in {"object_sha256_mismatch", "object_size_mismatch"}
+    assert captured.value.code == "object_sha256_mismatch"
     assert ("sumeme-vaults", item.object_key) in internal.deleted
 
 
@@ -175,7 +181,6 @@ class FakeIdentity:
 
 class FakeVaults:
     async def ensure(self, scope, *, allow_create):
-        assert allow_create is True
         return VaultPolicy(
             scope=scope,
             storage_mode="cloud",
@@ -210,8 +215,6 @@ class FakeObjectStore:
 
 def test_object_api_hides_internal_key_and_enforces_scope(tmp_path) -> None:
     registry = ObjectRegistry(str(tmp_path / "objects.sqlite3"), 1024)
-    import asyncio
-
     asyncio.run(registry.initialize())
     application = FastAPI()
     application.state.identity = FakeIdentity()
@@ -275,7 +278,7 @@ def test_object_api_hides_internal_key_and_enforces_scope(tmp_path) -> None:
     assert cross_account.json()["detail"] == "object_not_found"
 
 
-def test_object_api_rejects_untrusted_legacy_account(tmp_path) -> None:
+def test_object_api_rejects_untrusted_legacy_account() -> None:
     application = FastAPI()
     application.state.identity = FakeIdentity()
     application.state.vaults = FakeVaults()
