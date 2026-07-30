@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "mode": "GHS",
-  "generated_at": "2026-07-30T08:18:36+00:00",
+  "generated_at": "2026-07-30T08:20:37+00:00",
   "workflow_source_sha": "e3dd018efa31c9da31e6c3579654e943fef79319",
   "deployment": {
     "current_sha": "fe9e4a37401cdda1288226990236536cba85288b",
@@ -10,27 +10,32 @@
   },
   "health": {
     "local_gateway": {
-      "ok": false,
-      "status": null,
-      "error": "URLError"
+      "ok": true,
+      "status": 200
     },
     "public": {
-      "ok": false,
-      "status": 502
+      "ok": true,
+      "status": 200
     }
   },
   "services": [
     {
       "service": "letta",
       "state": "running",
-      "health": "starting",
-      "status": "Up 4 minutes (health: starting)"
+      "health": "healthy",
+      "status": "Up 6 minutes (healthy)"
     },
     {
       "service": "lobe",
       "state": "running",
       "health": null,
       "status": "Up 27 hours"
+    },
+    {
+      "service": "memory-gateway",
+      "state": "running",
+      "health": "healthy",
+      "status": "Up About a minute (healthy)"
     },
     {
       "service": "postgresql",
