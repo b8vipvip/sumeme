@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+from contextlib import suppress
 from dataclasses import dataclass
 from typing import Any
 from urllib.parse import quote
@@ -152,10 +153,8 @@ class S3ObjectStore:
             raise self._translate_error(exc, "object_verify_failed") from exc
         finally:
             if body is not None:
-                try:
+                with suppress(Exception):
                     body.close()
-                except Exception:
-                    pass
 
     def _create_download_sync(self, record: ObjectRecord) -> PresignedRequest:
         try:
@@ -197,10 +196,8 @@ class S3ObjectStore:
             raise self._translate_error(exc, "object_delete_failed") from exc
 
     def _delete_quiet(self, record: ObjectRecord) -> None:
-        try:
+        with suppress(BotoCoreError, ClientError):
             self._internal.delete_object(Bucket=self.bucket, Key=record.object_key)
-        except Exception:
-            pass
 
     @staticmethod
     def _translate_error(exc: Exception, fallback: str) -> ObjectStoreError:
