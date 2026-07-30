@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "relay": {
+    "configured_embedding_model": "gpt-5.6-sol",
+    "models_status": 200,
+    "configured_model_listed": true,
+    "embedding_like_models": [],
+    "embedding_status": 404,
+    "embedding_error": {
+      "type": "bad_response_status_code",
+      "code": "bad_response_status_code"
+    }
+  },
+  "letta": {
+    "configured_model": "openai/replace_me",
+    "configured_embedding": "openai/text-embedding-3-small",
+    "models_status": 200,
+    "configured_model_listed": false,
+    "model_handles": [
+      "letta/letta-free",
+      "openai-proxy/codex-auto-review",
+      "openai-proxy/gpt-5.4",
+      "openai/gpt-5.4-fast",
+      "openai-proxy/gpt-5.4-openai-compact",
+      "openai-proxy/gpt-5.5",
+      "openai-proxy/gpt-5.6-luna",
+      "openai-proxy/gpt-5.6-sol",
+      "openai-proxy/gpt-5.6-terra"
+    ],
+    "embeddings_status": 200,
+    "configured_embedding_listed": true,
+    "embedding_handles": [
+      "letta/letta-free",
+      "openai/text-embedding-3-large",
+      "openai/text-embedding-3-small",
+      "openai/text-embedding-ada-002"
+    ]
+  }
+}
