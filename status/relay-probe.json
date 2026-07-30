@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "mode": "GHS",
+  "generated_at": "2026-07-30T08:17:53+00:00",
+  "configured_model": "gpt-5.6-sol",
+  "models": {
+    "status": 200,
+    "count": 7,
+    "configured_model_listed": true,
+    "ids": [
+      "codex-auto-review",
+      "gpt-5.4",
+      "gpt-5.4-openai-compact",
+      "gpt-5.5",
+      "gpt-5.6-luna",
+      "gpt-5.6-sol",
+      "gpt-5.6-terra"
+    ]
+  },
+  "chat": {
+    "status": 403,
+    "ok": false,
+    "response_format": "json",
+    "error_code": "bad_response_status_code",
+    "error_type": "bad_response_status_code",
+    "error_message": "Insufficient account balance"
+  }
+}
