@@ -8,6 +8,7 @@ SINCE="${3:-30m}"
 
 allowed_services=(
   lobe
+  ai-provider-proxy
   memory-gateway
   letta
   postgresql
@@ -40,12 +41,16 @@ if ! [[ "${SINCE}" =~ ^[0-9]+[smhd]$ ]]; then
   exit 2
 fi
 
+command -v docker >/dev/null 2>&1 || {
+  echo "Missing command: docker" >&2
+  exit 127
+}
+command -v python3 >/dev/null 2>&1 || {
+  echo "Missing command: python3" >&2
+  exit 127
+}
+
 cd "${DEPLOY_DIR}"
 
 docker compose logs --no-color --tail "${LINES}" --since "${SINCE}" "${SERVICE}" 2>&1 \
-  | sed -E \
-      -e 's/(Authorization:[[:space:]]*Bearer[[:space:]]+)[A-Za-z0-9._~+\/-]+/\1[REDACTED]/Ig' \
-      -e 's/(api[_-]?key["'"'=: ]+)[A-Za-z0-9._~+\/-]{8,}/\1[REDACTED]/Ig' \
-      -e 's/(password["'"'=: ]+)[^ ,}"'"']{6,}/\1[REDACTED]/Ig' \
-      -e 's/sk-[A-Za-z0-9_-]{10,}/sk-[REDACTED]/g' \
-      -e 's/(postgresql:\/\/[^:[:space:]]+:)[^@[:space:]]+@/\1[REDACTED]@/Ig'
+  | python3 scripts/redact-log-stream.py
