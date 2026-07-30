@@ -39,7 +39,9 @@ class Settings(BaseSettings):
     openai_relay_api_key: SecretStr
     openai_chat_model: str = ""
     openai_memory_model: str = ""
+    openai_embedding_model: str = "text-embedding-3-small"
     relay_timeout_seconds: float = 600
+    embedding_timeout_seconds: float = Field(default=120, ge=1, le=1800)
 
     gateway_api_key: SecretStr
     gateway_admin_token: SecretStr
@@ -69,6 +71,11 @@ class Settings(BaseSettings):
 
     mempalace_enabled: bool = True
     mempalace_recall_limit: int = Field(default=6, ge=1, le=30)
+    mempalace_qdrant_url: str = "http://qdrant:6333"
+    mempalace_qdrant_namespace: str = "sumeme"
+    mempalace_remote_db_path: str = "/data/gateway/mempalace-remote.sqlite3"
+    mempalace_embedding_max_chars: int = Field(default=12000, ge=256, le=100000)
+    mempalace_qdrant_timeout_seconds: float = Field(default=30, ge=1, le=300)
 
     letta_enabled: bool = True
     letta_base_url: str = "http://letta:8283"
@@ -112,6 +119,31 @@ class Settings(BaseSettings):
                 "MEMORY_PROVIDER must be mempalace-letta or supermemory"
             )
         self.memory_provider = normalized
+
+        if normalized == "mempalace-letta" and self.mempalace_enabled:
+            if not self.openai_embedding_model.strip():
+                raise ValueError(
+                    "OPENAI_EMBEDDING_MODEL is required for remote MemPalace embeddings"
+                )
+            qdrant_url = self.mempalace_qdrant_url.strip().rstrip("/")
+            if not qdrant_url.startswith(("http://", "https://")):
+                raise ValueError("MEMPALACE_QDRANT_URL must use HTTP or HTTPS")
+            self.mempalace_qdrant_url = qdrant_url
+
+            namespace = self.mempalace_qdrant_namespace.strip().lower()
+            if not namespace or len(namespace) > 48 or any(
+                character not in "abcdefghijklmnopqrstuvwxyz0123456789_-"
+                for character in namespace
+            ):
+                raise ValueError(
+                    "MEMPALACE_QDRANT_NAMESPACE must use lowercase letters, digits, _ or -"
+                )
+            self.mempalace_qdrant_namespace = namespace
+
+            db_path = self.mempalace_remote_db_path.strip()
+            if not db_path.startswith("/"):
+                raise ValueError("MEMPALACE_REMOTE_DB_PATH must be an absolute path")
+            self.mempalace_remote_db_path = db_path
 
         if normalized == "supermemory":
             if not self.supermemory_base_url.strip():
@@ -248,6 +280,14 @@ class Settings(BaseSettings):
     @property
     def relay_models_url(self) -> str:
         return self._join_url(self.openai_relay_base_url, "/models")
+
+    @property
+    def relay_embeddings_url(self) -> str:
+        return self._join_url(self.openai_relay_base_url, "/embeddings")
+
+    @property
+    def mempalace_collection_name(self) -> str:
+        return f"{self.mempalace_qdrant_namespace}_mempalace_remote_v1"
 
     @property
     def supermemory_documents_url(self) -> str:

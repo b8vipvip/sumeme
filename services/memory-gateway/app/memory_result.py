@@ -3,6 +3,20 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 
+class MemoryOperationError(RuntimeError):
+    """A stable, content-free error category from a memory component."""
+
+    def __init__(self, code: str):
+        normalized = code.strip().lower()
+        if not normalized or any(
+            character not in "abcdefghijklmnopqrstuvwxyz0123456789_-"
+            for character in normalized
+        ):
+            raise ValueError("memory operation error code is invalid")
+        super().__init__(normalized)
+        self.code = normalized
+
+
 @dataclass(frozen=True, slots=True)
 class MemoryWriteResult:
     """Sanitized component-level outcome for one memory write.
