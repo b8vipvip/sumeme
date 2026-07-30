@@ -20,6 +20,14 @@ class GatewayDockerfileTests(unittest.TestCase):
         self.assertNotIn("PIP_NO_CACHE_DIR=1", dockerfile)
         self.assertIn("PIP_DISABLE_PIP_VERSION_CHECK=1", dockerfile)
 
+    def test_slow_package_downloads_are_retried_without_upgrading_pip(self) -> None:
+        dockerfile = DOCKERFILE.read_text(encoding="utf-8")
+
+        self.assertIn("PIP_DEFAULT_TIMEOUT=600", dockerfile)
+        self.assertIn("PIP_RETRIES=20", dockerfile)
+        self.assertIn("pip install --timeout 600 --retries 20 -r requirements.txt", dockerfile)
+        self.assertNotIn("pip install --upgrade pip", dockerfile)
+
 
 if __name__ == "__main__":
     unittest.main()
