@@ -1,28 +1,33 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-30T14:39:51+08:00
-- **总体状态：** `healthy`
-- **开发阶段：** `deployment_behind_main`
+- **采集时间：** 2026-07-30T15:08:25+08:00
+- **总体状态：** `unhealthy`
+- **开发阶段：** `deployed_unhealthy`
 - **线上版本：** `fe9e4a37401cdda1288226990236536cba85288b`
-- **main 最新版本：** `0c9ff6e21b5a80ed62cd53cd3aa23b9770a00afe`
+- **main 最新版本：** `9827490cd183a74d9fa33b66b489bf507f1d1045`
 - **线上与 main 同步：** 否
 - **开放 PR：** 0
 - **开放 Issue：** 3
 
+## 需要关注
+
+- 缺少关键服务: letta
+- 本地 memory-gateway 健康检查失败
+- 公网健康检查失败
+
 ## 健康检查
 
-- 本地网关：`ok`
-- 公网入口：`ok`
-- 磁盘使用：`82.7%`，剩余 5.1 GiB
-- 内存使用：`50.0%`，可用 1.8 GiB
+- 本地网关：`failed`
+- 公网入口：`failed`
+- 磁盘使用：`82.6%`，剩余 5.1 GiB
+- 内存使用：`41.7%`，可用 2.1 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| letta | running | healthy | Up 4 minutes (healthy) |
 | lobe | running | - | Up 26 hours |
-| memory-gateway | running | healthy | Up 52 seconds (healthy) |
+| memory-gateway | running | - | Up 3 minutes (healthy) |
 | postgresql | running | healthy | Up 27 hours (healthy) |
 | qdrant | running | healthy | Up 27 hours (healthy) |
 | redis | running | healthy | Up 27 hours (healthy) |
@@ -33,14 +38,14 @@
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-07-30T06:39:14Z |
-| Publish project status | success | main | 2026-07-30T06:26:12Z |
-| CI | failure | main | 2026-07-30T06:39:09Z |
-| Plugin CI | success | main | 2026-07-30T06:20:58Z |
-| CI | success | agent/sync-adob-directory | 2026-07-30T06:19:52Z |
-| Plugin CI | success | agent/sync-adob-directory | 2026-07-30T06:19:59Z |
-| CI | success | agent/sync-adob-directory | 2026-07-30T06:19:28Z |
-| Plugin CI | success | agent/sync-adob-directory | 2026-07-30T06:19:23Z |
+| Publish project status | in_progress | main | 2026-07-30T07:07:59Z |
+| CI | in_progress | main | 2026-07-30T07:00:30Z |
+| Plugin CI | success | main | 2026-07-30T07:00:44Z |
+| CI | success | agent/sync-vsr-ghs-modes | 2026-07-30T06:59:28Z |
+| Plugin CI | success | agent/sync-vsr-ghs-modes | 2026-07-30T06:59:31Z |
+| CI | success | agent/sync-vsr-ghs-modes | 2026-07-30T06:59:07Z |
+| Plugin CI | success | agent/sync-vsr-ghs-modes | 2026-07-30T06:59:10Z |
+| CI | success | agent/sync-vsr-ghs-modes | 2026-07-30T06:59:08Z |
 
 ## 开放 PR
 
@@ -61,7 +66,7 @@
 
 ## 可靠性信号
 
-- 状态快照发布时年龄：`1s`
+- 状态快照发布时年龄：`0s`
 - 状态快照过期：`no`（阈值 2100s）
 - 磁盘保护级别：`warning`
 - 最近 smoke test：`failure`

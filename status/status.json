@@ -1,10 +1,13 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-07-30T14:39:51+08:00",
+  "generated_at": "2026-07-30T15:08:25+08:00",
   "repository": "b8vipvip/sumeme",
-  "overall": "degraded",
-  "project_stage": "deployment_behind_main",
+  "overall": "unhealthy",
+  "project_stage": "deployed_unhealthy",
   "reasons": [
+    "缺少关键服务: letta",
+    "本地 memory-gateway 健康检查失败",
+    "公网健康检查失败",
     "磁盘使用率达到 80% 警戒线"
   ],
   "deployment_in_sync": false,
@@ -20,35 +23,17 @@
   },
   "health": {
     "local_gateway": {
-      "ok": true,
-      "status": 200,
-      "data": {
-        "status": "ok",
-        "mempalace_enabled": true,
-        "letta_enabled": true,
-        "relay_base_url": "https://apihost.cn"
-      }
+      "ok": false,
+      "status": null,
+      "error": "<urlopen error [Errno 111] Connection refused>"
     },
     "public": {
-      "ok": true,
-      "status": 200,
-      "data": {
-        "status": "ok",
-        "mempalace_enabled": true,
-        "letta_enabled": true,
-        "relay_base_url": "https://apihost.cn"
-      }
+      "ok": false,
+      "status": 502,
+      "error": "HTTP Error 502: Bad Gateway"
     }
   },
   "services": [
-    {
-      "service": "letta",
-      "name": "sumeme-letta",
-      "state": "running",
-      "health": "healthy",
-      "status": "Up 4 minutes (healthy)",
-      "critical": true
-    },
     {
       "service": "lobe",
       "name": "sumeme-lobehub",
@@ -61,8 +46,8 @@
       "service": "memory-gateway",
       "name": "sumeme-memory-gateway",
       "state": "running",
-      "health": "healthy",
-      "status": "Up 52 seconds (healthy)",
+      "health": "",
+      "status": "Up 3 minutes (healthy)",
       "critical": true
     },
     {
@@ -109,19 +94,19 @@
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 34861842432,
-      "free_bytes": 5452554240,
-      "used_percent": 82.7
+      "used_bytes": 34808721408,
+      "free_bytes": 5505675264,
+      "used_percent": 82.6
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1950670848,
-      "used_percent": 50.0
+      "available_bytes": 2275045376,
+      "used_percent": 41.7
     }
   },
   "github": {
     "default_branch": "main",
-    "latest_main_sha": "0c9ff6e21b5a80ed62cd53cd3aa23b9770a00afe",
+    "latest_main_sha": "9827490cd183a74d9fa33b66b489bf507f1d1045",
     "open_pull_requests": [],
     "open_issues": [
       {
@@ -147,172 +132,172 @@
       {
         "name": "Publish project status",
         "display_title": "Publish project status",
-        "event": "workflow_run",
+        "event": "schedule",
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
-        "head_sha": "0c9ff6e21b5a80ed62cd53cd3aa23b9770a00afe",
-        "run_number": 328,
-        "created_at": "2026-07-30T06:39:11Z",
-        "updated_at": "2026-07-30T06:39:14Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30520259931"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "0c9ff6e21b5a80ed62cd53cd3aa23b9770a00afe",
-        "run_number": 327,
-        "created_at": "2026-07-30T06:25:32Z",
-        "updated_at": "2026-07-30T06:26:12Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30519531750"
+        "head_sha": "9827490cd183a74d9fa33b66b489bf507f1d1045",
+        "run_number": 329,
+        "created_at": "2026-07-30T07:07:52Z",
+        "updated_at": "2026-07-30T07:07:59Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30521879401"
       },
       {
         "name": "CI",
-        "display_title": "Sync latest ADOB into the top-level ADOB directory",
+        "display_title": "Adopt explicit VSR and GHS deployment modes",
         "event": "push",
-        "status": "completed",
-        "conclusion": "failure",
+        "status": "in_progress",
+        "conclusion": null,
         "head_branch": "main",
-        "head_sha": "0c9ff6e21b5a80ed62cd53cd3aa23b9770a00afe",
-        "run_number": 419,
-        "created_at": "2026-07-30T06:20:18Z",
-        "updated_at": "2026-07-30T06:39:09Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30519261047"
+        "head_sha": "9827490cd183a74d9fa33b66b489bf507f1d1045",
+        "run_number": 437,
+        "created_at": "2026-07-30T06:59:50Z",
+        "updated_at": "2026-07-30T07:00:30Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30521390502"
       },
       {
         "name": "Plugin CI",
-        "display_title": "Sync latest ADOB into the top-level ADOB directory",
+        "display_title": "Adopt explicit VSR and GHS deployment modes",
         "event": "push",
         "status": "completed",
         "conclusion": "success",
         "head_branch": "main",
-        "head_sha": "0c9ff6e21b5a80ed62cd53cd3aa23b9770a00afe",
-        "run_number": 28,
-        "created_at": "2026-07-30T06:20:17Z",
-        "updated_at": "2026-07-30T06:20:58Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30519260682"
+        "head_sha": "9827490cd183a74d9fa33b66b489bf507f1d1045",
+        "run_number": 43,
+        "created_at": "2026-07-30T06:59:49Z",
+        "updated_at": "2026-07-30T07:00:44Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30521390110"
       },
       {
         "name": "CI",
-        "display_title": "Sync latest ADOB into the top-level ADOB directory",
+        "display_title": "Adopt explicit VSR and GHS deployment modes",
         "event": "pull_request",
         "status": "completed",
         "conclusion": "success",
-        "head_branch": "agent/sync-adob-directory",
-        "head_sha": "04156ce229af81acb62ae2fad4cfe0fb7d12cfd4",
-        "run_number": 418,
-        "created_at": "2026-07-30T06:19:16Z",
-        "updated_at": "2026-07-30T06:19:52Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30519209706"
+        "head_branch": "agent/sync-vsr-ghs-modes",
+        "head_sha": "e8d2e32918ea499dafb828824612d76c97378590",
+        "run_number": 436,
+        "created_at": "2026-07-30T06:58:51Z",
+        "updated_at": "2026-07-30T06:59:28Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30521335791"
       },
       {
         "name": "Plugin CI",
-        "display_title": "Sync latest ADOB into the top-level ADOB directory",
+        "display_title": "Adopt explicit VSR and GHS deployment modes",
         "event": "pull_request",
         "status": "completed",
         "conclusion": "success",
-        "head_branch": "agent/sync-adob-directory",
-        "head_sha": "04156ce229af81acb62ae2fad4cfe0fb7d12cfd4",
-        "run_number": 27,
-        "created_at": "2026-07-30T06:19:16Z",
-        "updated_at": "2026-07-30T06:19:59Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30519209320"
+        "head_branch": "agent/sync-vsr-ghs-modes",
+        "head_sha": "e8d2e32918ea499dafb828824612d76c97378590",
+        "run_number": 42,
+        "created_at": "2026-07-30T06:58:51Z",
+        "updated_at": "2026-07-30T06:59:31Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30521335281"
       },
       {
         "name": "CI",
-        "display_title": "ci: validate the synced ADOB directory",
+        "display_title": "ci: validate embedded ADOB mode contract",
         "event": "push",
         "status": "completed",
         "conclusion": "success",
-        "head_branch": "agent/sync-adob-directory",
-        "head_sha": "04156ce229af81acb62ae2fad4cfe0fb7d12cfd4",
-        "run_number": 417,
-        "created_at": "2026-07-30T06:18:42Z",
-        "updated_at": "2026-07-30T06:19:28Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30519181293"
+        "head_branch": "agent/sync-vsr-ghs-modes",
+        "head_sha": "e8d2e32918ea499dafb828824612d76c97378590",
+        "run_number": 435,
+        "created_at": "2026-07-30T06:58:32Z",
+        "updated_at": "2026-07-30T06:59:07Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30521318788"
       },
       {
         "name": "Plugin CI",
-        "display_title": "ci: validate the synced ADOB directory",
+        "display_title": "ci: validate embedded ADOB mode contract",
         "event": "push",
         "status": "completed",
         "conclusion": "success",
-        "head_branch": "agent/sync-adob-directory",
-        "head_sha": "04156ce229af81acb62ae2fad4cfe0fb7d12cfd4",
-        "run_number": 26,
-        "created_at": "2026-07-30T06:18:41Z",
-        "updated_at": "2026-07-30T06:19:23Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30519180978"
+        "head_branch": "agent/sync-vsr-ghs-modes",
+        "head_sha": "e8d2e32918ea499dafb828824612d76c97378590",
+        "run_number": 41,
+        "created_at": "2026-07-30T06:58:32Z",
+        "updated_at": "2026-07-30T06:59:10Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30521318377"
       },
       {
         "name": "CI",
-        "display_title": "chore: remove superseded ADOB skill",
+        "display_title": "ci: declare VSR and GHS for manual deployment",
         "event": "push",
         "status": "completed",
         "conclusion": "success",
-        "head_branch": "agent/sync-adob-directory",
-        "head_sha": "20c8e9268023348245e94c4132a639cd2e33d0e6",
-        "run_number": 416,
-        "created_at": "2026-07-30T06:18:30Z",
-        "updated_at": "2026-07-30T06:19:15Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30519171393"
-      },
-      {
-        "name": "Plugin CI",
-        "display_title": "chore: remove superseded ADOB skill",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/sync-adob-directory",
-        "head_sha": "20c8e9268023348245e94c4132a639cd2e33d0e6",
-        "run_number": 25,
-        "created_at": "2026-07-30T06:18:30Z",
-        "updated_at": "2026-07-30T06:18:39Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30519171145"
+        "head_branch": "agent/sync-vsr-ghs-modes",
+        "head_sha": "4b495753e468e83f5ad56c004893a523f6bc2b14",
+        "run_number": 434,
+        "created_at": "2026-07-30T06:58:14Z",
+        "updated_at": "2026-07-30T06:59:08Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30521302021"
       },
       {
         "name": "CI",
-        "display_title": "chore: remove superseded TypeScript config",
+        "display_title": "ci: declare VSR and GHS production modes",
         "event": "push",
         "status": "completed",
         "conclusion": "success",
-        "head_branch": "agent/sync-adob-directory",
-        "head_sha": "8b3c9626680297f9a0b477b87b8db21bcd89dbd8",
-        "run_number": 415,
-        "created_at": "2026-07-30T06:18:19Z",
-        "updated_at": "2026-07-30T06:19:10Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30519162465"
+        "head_branch": "agent/sync-vsr-ghs-modes",
+        "head_sha": "e955a0b6d0b2531d7dbc5999fe6866ed26d737bd",
+        "run_number": 433,
+        "created_at": "2026-07-30T06:58:04Z",
+        "updated_at": "2026-07-30T06:58:34Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30521291744"
+      },
+      {
+        "name": "CI",
+        "display_title": "sync(ADOB): teach ChatGPT VSR and GHS vocabulary",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/sync-vsr-ghs-modes",
+        "head_sha": "b36ba0892f8c9902eb78faadc6bed4c44e943b46",
+        "run_number": 432,
+        "created_at": "2026-07-30T06:57:47Z",
+        "updated_at": "2026-07-30T06:58:28Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30521276912"
       },
       {
         "name": "Plugin CI",
-        "display_title": "chore: remove superseded TypeScript config",
+        "display_title": "sync(ADOB): teach ChatGPT VSR and GHS vocabulary",
         "event": "push",
         "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/sync-adob-directory",
-        "head_sha": "8b3c9626680297f9a0b477b87b8db21bcd89dbd8",
-        "run_number": 24,
-        "created_at": "2026-07-30T06:18:19Z",
-        "updated_at": "2026-07-30T06:18:29Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30519162176"
+        "conclusion": "success",
+        "head_branch": "agent/sync-vsr-ghs-modes",
+        "head_sha": "b36ba0892f8c9902eb78faadc6bed4c44e943b46",
+        "run_number": 40,
+        "created_at": "2026-07-30T06:57:47Z",
+        "updated_at": "2026-07-30T06:58:37Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30521276489"
+      },
+      {
+        "name": "CI",
+        "display_title": "sync(ADOB): name the SSH transport GHS",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/sync-vsr-ghs-modes",
+        "head_sha": "f2ddc03675bf59d3873331e425e19e067fe17f52",
+        "run_number": 431,
+        "created_at": "2026-07-30T06:57:30Z",
+        "updated_at": "2026-07-30T06:58:16Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30521261284"
       }
     ]
   },
   "collector": {
-    "event_name": "workflow_run",
+    "event_name": "schedule",
     "workflow": "Publish project status",
-    "run_id": "30520259931"
+    "run_id": "30521879401"
   },
   "freshness": {
-    "age_seconds_at_publish": 1,
+    "age_seconds_at_publish": 0,
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-30T14:39:51+08:00"
+    "generated_at": "2026-07-30T15:08:25+08:00"
   },
   "reliability": {
     "disk": {
@@ -323,10 +308,10 @@
     },
     "smoke_test": {
       "schema_version": 5,
-      "generated_at": "2026-07-30T14:02:35+08:00",
-      "started_at": "2026-07-30T14:01:57+08:00",
-      "finished_at": "2026-07-30T14:02:35+08:00",
-      "duration_seconds": 38,
+      "generated_at": "2026-07-30T15:08:02+08:00",
+      "started_at": "2026-07-30T15:05:18+08:00",
+      "finished_at": "2026-07-30T15:08:02+08:00",
+      "duration_seconds": 164,
       "overall": "failure",
       "deployment_gate": "failure",
       "memory_provider": "mempalace-letta",
@@ -343,7 +328,7 @@
         "s3": true
       },
       "write_components": {
-        "mempalace": true,
+        "mempalace": false,
         "letta": false
       },
       "recall_components": {
@@ -351,12 +336,13 @@
         "letta": false
       },
       "error_codes": [
+        "mempalace_embedding_timeout",
         "letta_agent_create_failed",
         "memory_checkpoint_failed",
         "mempalace_recall_delayed",
         "letta_recall_delayed"
       ],
-      "age_seconds_at_publish": 2237,
+      "age_seconds_at_publish": 23,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }
