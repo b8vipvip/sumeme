@@ -29,7 +29,10 @@ class DeploymentFailureDiagnosticsTests(unittest.TestCase):
         self.assertIn('"${service}" 120 20m', script)
         self.assertIn('scripts/show-logs.sh', script)
         self.assertIn('for service in memory-gateway letta', script)
+        self.assertIn("== End sanitized deployment failure diagnostics ==", script)
         self.assertNotIn('cat "${DEPLOY_DIR}/.env"', script)
+        self.assertNotIn("OPENAI_RELAY_API_KEY", script)
+        self.assertNotIn("GATEWAY_API_KEY", script)
 
     def test_smoke_output_exposes_only_structured_status_fields(self) -> None:
         script = DEPLOY_SCRIPT.read_text(encoding="utf-8")
