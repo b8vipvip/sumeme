@@ -54,7 +54,7 @@ jobs:
     concurrency:
       group: sumeme-production
       cancel-in-progress: false
-    uses: b8vipvip/ADOB/.github/workflows/deploy-via-ssh.yml@621a5fc3d0876a5a33560468ae6073ec3ac640a4
+    uses: b8vipvip/ADOB/.github/workflows/deploy-via-ssh.yml@9fdc399498c7a42deb1e0dbff706cd08ac691617
     with:
       project_name: sumeme
       ssh_host: ${{ vars.SUMEME_VPS_HOST }}
