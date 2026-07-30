@@ -9,6 +9,7 @@ import anyio
 
 from .config import Settings
 from .content import flatten_content, safe_id
+from .memory_deadlines import MemoryDeadlines
 from .memory_scope import MemoryScope, coerce_scope
 
 logger = logging.getLogger(__name__)
@@ -17,6 +18,7 @@ logger = logging.getLogger(__name__)
 class LettaMemory:
     def __init__(self, settings: Settings):
         self.settings = settings
+        self.deadlines = MemoryDeadlines.from_environment()
         self._client: Any | None = None
         self._agent_ids: dict[str, str] = {}
         self._state_loaded = False
@@ -39,6 +41,12 @@ class LettaMemory:
 
     def _scope_key(self, value: MemoryScope | str) -> str:
         return self._scope(value).storage_key
+
+    def _request_timeout(self, operation_timeout: float | None) -> float:
+        configured = max(float(self.settings.letta_timeout_seconds), 0.1)
+        if operation_timeout is None:
+            return configured
+        return min(configured, max(float(operation_timeout), 0.1))
 
     def _load_state(self) -> None:
         if self._state_loaded:
@@ -97,7 +105,12 @@ class LettaMemory:
         )
         temporary.replace(self._state_file)
 
-    async def ensure_agent(self, scope: MemoryScope | str) -> str | None:
+    async def ensure_agent(
+        self,
+        scope: MemoryScope | str,
+        *,
+        timeout_seconds: float | None = None,
+    ) -> str | None:
         if not self.settings.letta_enabled:
             return None
 
@@ -114,6 +127,8 @@ class LettaMemory:
         async with self._agent_lock:
             if agent_id := self._agent_ids.get(scope_key):
                 return agent_id
+
+            request_timeout = self._request_timeout(timeout_seconds)
 
             def create() -> Any:
                 return self._get_client().agents.create(
@@ -141,10 +156,14 @@ class LettaMemory:
                             ),
                         },
                     ],
+                    request_options={"timeout_in_seconds": request_timeout},
                 )
 
             try:
-                agent = await anyio.to_thread.run_sync(create)
+                agent = await anyio.to_thread.run_sync(
+                    create,
+                    abandon_on_cancel=True,
+                )
                 agent_id = str(getattr(agent, "id", "") or "")
                 if not agent_id:
                     logger.error(
@@ -169,7 +188,11 @@ class LettaMemory:
 
     async def recall(self, query: str, scope: MemoryScope | str) -> str:
         resolved = self._scope(scope)
-        agent_id = await self.ensure_agent(resolved)
+        timeout_seconds = self.deadlines.recall_seconds
+        agent_id = await self.ensure_agent(
+            resolved,
+            timeout_seconds=timeout_seconds,
+        )
         if not agent_id or not query.strip():
             return ""
 
@@ -181,12 +204,15 @@ class LettaMemory:
             "Do not answer the question itself. Never use another scope.\n\n"
             f"Current question:\n{query[:12000]}"
         )
+        request_timeout = self._request_timeout(timeout_seconds)
         try:
             response = await anyio.to_thread.run_sync(
                 lambda: self._get_client().agents.messages.create(
                     agent_id=agent_id,
                     input=prompt,
-                )
+                    request_options={"timeout_in_seconds": request_timeout},
+                ),
+                abandon_on_cancel=True,
             )
             return self._extract_text(response)
         except Exception:
@@ -207,7 +233,11 @@ class LettaMemory:
             return True
 
         resolved = self._scope(scope)
-        agent_id = await self.ensure_agent(resolved)
+        timeout_seconds = self.deadlines.write_seconds
+        agent_id = await self.ensure_agent(
+            resolved,
+            timeout_seconds=timeout_seconds,
+        )
         if not agent_id:
             return False
 
@@ -222,12 +252,15 @@ class LettaMemory:
             f"USER:\n{user_text[:30000]}\n\n"
             f"ASSISTANT:\n{assistant_text[:30000]}"
         )
+        request_timeout = self._request_timeout(timeout_seconds)
         try:
             await anyio.to_thread.run_sync(
                 lambda: self._get_client().agents.messages.create(
                     agent_id=agent_id,
                     input=prompt,
-                )
+                    request_options={"timeout_in_seconds": request_timeout},
+                ),
+                abandon_on_cancel=True,
             )
             return True
         except Exception:
