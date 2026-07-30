@@ -1,10 +1,10 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-30T16:03:26+08:00
+- **采集时间：** 2026-07-30T16:19:38+08:00
 - **总体状态：** `healthy`
 - **开发阶段：** `deployment_behind_main`
 - **线上版本：** `fe9e4a37401cdda1288226990236536cba85288b`
-- **main 最新版本：** `67e1099e10ff27f7cb52e3cd9de4936ed5c4cd07`
+- **main 最新版本：** `fa4097b6139a00dcbead61d455eaab5c4294d912`
 - **线上与 main 同步：** 否
 - **开放 PR：** 1
 - **开放 Issue：** 3
@@ -13,34 +13,34 @@
 
 - 本地网关：`ok`
 - 公网入口：`ok`
-- 磁盘使用：`82.6%`，剩余 5.1 GiB
-- 内存使用：`49.6%`，可用 1.8 GiB
+- 磁盘使用：`82.8%`，剩余 5.0 GiB
+- 内存使用：`49.9%`，可用 1.8 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| letta | running | healthy | Up 6 minutes (healthy) |
+| letta | running | healthy | Up 5 minutes (healthy) |
 | lobe | running | - | Up 27 hours |
-| memory-gateway | running | healthy | Up 3 minutes (healthy) |
+| memory-gateway | running | healthy | Up 35 seconds (healthy) |
 | postgresql | running | healthy | Up 28 hours (healthy) |
 | qdrant | running | healthy | Up 28 hours (healthy) |
 | redis | running | healthy | Up 28 hours (healthy) |
-| rustfs | running | healthy | Up 3 hours (healthy) |
+| rustfs | running | healthy | Up 4 hours (healthy) |
 | searxng | running | - | Up 28 hours |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| CI | in_progress | agent/fix-memory-degraded-ci | 2026-07-30T08:03:00Z |
-| CI | failure | agent/ghs-live-diagnose | 2026-07-30T08:01:38Z |
-| Publish project status | in_progress | main | 2026-07-30T08:00:39Z |
-| CI | failure | agent/ghs-live-diagnose | 2026-07-30T08:00:16Z |
-| CI | failure | agent/ghs-live-diagnose | 2026-07-30T07:59:31Z |
-| CI | success | agent/ghs-emergency-diagnose | 2026-07-30T07:56:51Z |
-| GHS emergency diagnostics | success | agent/ghs-emergency-diagnose | 2026-07-30T07:56:46Z |
-| Publish project status | success | main | 2026-07-30T07:55:44Z |
+| CI | queued | agent/fix-redacted-log-stream | 2026-07-30T08:19:23Z |
+| Publish project status | in_progress | main | 2026-07-30T08:19:17Z |
+| CI | in_progress | agent/fix-redacted-log-stream | 2026-07-30T08:19:08Z |
+| CI | in_progress | agent/fix-redacted-log-stream | 2026-07-30T08:19:07Z |
+| CI | success | agent/fix-redacted-log-stream | 2026-07-30T08:19:10Z |
+| CI | success | agent/ghs-emergency-diagnose | 2026-07-30T08:18:23Z |
+| GHS relay capability probe | success | agent/ghs-emergency-diagnose | 2026-07-30T08:17:58Z |
+| CI | success | agent/ghs-emergency-diagnose | 2026-07-30T08:17:10Z |
 
 ## 开放 PR
 

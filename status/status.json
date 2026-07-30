@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-07-30T16:03:26+08:00",
+  "generated_at": "2026-07-30T16:19:38+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "degraded",
   "project_stage": "deployment_behind_main",
@@ -46,7 +46,7 @@
       "name": "sumeme-letta",
       "state": "running",
       "health": "healthy",
-      "status": "Up 6 minutes (healthy)",
+      "status": "Up 5 minutes (healthy)",
       "critical": true
     },
     {
@@ -62,7 +62,7 @@
       "name": "sumeme-memory-gateway",
       "state": "running",
       "health": "healthy",
-      "status": "Up 3 minutes (healthy)",
+      "status": "Up 35 seconds (healthy)",
       "critical": true
     },
     {
@@ -94,7 +94,7 @@
       "name": "sumeme-rustfs",
       "state": "running",
       "health": "healthy",
-      "status": "Up 3 hours (healthy)",
+      "status": "Up 4 hours (healthy)",
       "critical": true
     },
     {
@@ -109,19 +109,19 @@
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 34804150272,
-      "free_bytes": 5510246400,
-      "used_percent": 82.6
+      "used_bytes": 34897018880,
+      "free_bytes": 5417377792,
+      "used_percent": 82.8
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1969008640,
-      "used_percent": 49.6
+      "available_bytes": 1954070528,
+      "used_percent": 49.9
     }
   },
   "github": {
     "default_branch": "main",
-    "latest_main_sha": "67e1099e10ff27f7cb52e3cd9de4936ed5c4cd07",
+    "latest_main_sha": "fa4097b6139a00dcbead61d455eaab5c4294d912",
     "open_pull_requests": [
       {
         "number": 36,
@@ -156,29 +156,16 @@
     "recent_workflows": [
       {
         "name": "CI",
-        "display_title": "Recover production with pinned Letta and observable degraded memory",
+        "display_title": "test(logs): verify bounded secret redaction",
         "event": "push",
-        "status": "in_progress",
+        "status": "queued",
         "conclusion": null,
-        "head_branch": "agent/fix-memory-degraded-ci",
-        "head_sha": "67e1099e10ff27f7cb52e3cd9de4936ed5c4cd07",
-        "run_number": 468,
-        "created_at": "2026-07-30T08:02:48Z",
-        "updated_at": "2026-07-30T08:03:00Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30525091491"
-      },
-      {
-        "name": "CI",
-        "display_title": "Run one-shot read-only GHS production diagnosis",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/ghs-live-diagnose",
-        "head_sha": "b85c15b3f2d582220f4197863ea9df70dca2c911",
-        "run_number": 467,
-        "created_at": "2026-07-30T08:00:55Z",
-        "updated_at": "2026-07-30T08:01:38Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30524958021"
+        "head_branch": "agent/fix-redacted-log-stream",
+        "head_sha": "c716b92855bb579b7ce334ee75e6f02c116606d1",
+        "run_number": 480,
+        "created_at": "2026-07-30T08:19:23Z",
+        "updated_at": "2026-07-30T08:19:23Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30526234557"
       },
       {
         "name": "Publish project status",
@@ -187,142 +174,155 @@
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
-        "head_sha": "67e1099e10ff27f7cb52e3cd9de4936ed5c4cd07",
-        "run_number": 333,
-        "created_at": "2026-07-30T08:00:33Z",
-        "updated_at": "2026-07-30T08:00:39Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30524929070"
+        "head_sha": "fa4097b6139a00dcbead61d455eaab5c4294d912",
+        "run_number": 334,
+        "created_at": "2026-07-30T08:19:11Z",
+        "updated_at": "2026-07-30T08:19:17Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30526221599"
       },
       {
         "name": "CI",
-        "display_title": "ops(ghs): add one-shot read-only production diagnosis",
+        "display_title": "fix(logs): replace fragile sed quoting with stream redactor",
+        "event": "push",
+        "status": "in_progress",
+        "conclusion": null,
+        "head_branch": "agent/fix-redacted-log-stream",
+        "head_sha": "b9dbb96575280db19bd546f89b7b9c327f1cda5f",
+        "run_number": 479,
+        "created_at": "2026-07-30T08:19:04Z",
+        "updated_at": "2026-07-30T08:19:08Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30526213206"
+      },
+      {
+        "name": "CI",
+        "display_title": "ops(logs): add tested streaming secret redactor",
+        "event": "push",
+        "status": "in_progress",
+        "conclusion": null,
+        "head_branch": "agent/fix-redacted-log-stream",
+        "head_sha": "aed0fe3fdeca42a45d490bf599110aeac516941e",
+        "run_number": 478,
+        "created_at": "2026-07-30T08:18:54Z",
+        "updated_at": "2026-07-30T08:19:07Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30526202191"
+      },
+      {
+        "name": "CI",
+        "display_title": "Fix degraded-memory CI fixtures",
         "event": "push",
         "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/ghs-live-diagnose",
-        "head_sha": "b85c15b3f2d582220f4197863ea9df70dca2c911",
-        "run_number": 466,
-        "created_at": "2026-07-30T07:59:29Z",
-        "updated_at": "2026-07-30T08:00:16Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30524854832"
+        "conclusion": "success",
+        "head_branch": "agent/fix-redacted-log-stream",
+        "head_sha": "fa4097b6139a00dcbead61d455eaab5c4294d912",
+        "run_number": 477,
+        "created_at": "2026-07-30T08:18:39Z",
+        "updated_at": "2026-07-30T08:19:10Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30526185831"
       },
       {
         "name": "CI",
-        "display_title": "Recover production with pinned Letta and observable degraded memory",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/ghs-live-diagnose",
-        "head_sha": "67e1099e10ff27f7cb52e3cd9de4936ed5c4cd07",
-        "run_number": 465,
-        "created_at": "2026-07-30T07:58:57Z",
-        "updated_at": "2026-07-30T07:59:31Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30524821057"
-      },
-      {
-        "name": "CI",
-        "display_title": "ops(ghs): publish sanitized emergency status branch",
+        "display_title": "ops(ghs): inspect relay model availability safely",
         "event": "push",
         "status": "completed",
         "conclusion": "success",
         "head_branch": "agent/ghs-emergency-diagnose",
-        "head_sha": "e3dd018efa31c9da31e6c3579654e943fef79319",
-        "run_number": 464,
-        "created_at": "2026-07-30T07:56:15Z",
-        "updated_at": "2026-07-30T07:56:51Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30524657857"
+        "head_sha": "880d9e0952779921f586ec1daeaff022c440d009",
+        "run_number": 476,
+        "created_at": "2026-07-30T08:17:45Z",
+        "updated_at": "2026-07-30T08:18:23Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30526128265"
+      },
+      {
+        "name": "GHS relay capability probe",
+        "display_title": "ops(ghs): inspect relay model availability safely",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/ghs-emergency-diagnose",
+        "head_sha": "880d9e0952779921f586ec1daeaff022c440d009",
+        "run_number": 1,
+        "created_at": "2026-07-30T08:17:37Z",
+        "updated_at": "2026-07-30T08:17:58Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30526119457"
+      },
+      {
+        "name": "CI",
+        "display_title": "ops(ghs): classify relay and gateway chat failures",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/ghs-emergency-diagnose",
+        "head_sha": "43e6c95be8f22e45ce3f94401409becdb59603ce",
+        "run_number": 475,
+        "created_at": "2026-07-30T08:16:26Z",
+        "updated_at": "2026-07-30T08:17:10Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30526041288"
       },
       {
         "name": "GHS emergency diagnostics",
-        "display_title": "ops(ghs): publish sanitized emergency status branch",
+        "display_title": "ops(ghs): classify relay and gateway chat failures",
         "event": "push",
         "status": "completed",
         "conclusion": "success",
         "head_branch": "agent/ghs-emergency-diagnose",
-        "head_sha": "e3dd018efa31c9da31e6c3579654e943fef79319",
-        "run_number": 2,
-        "created_at": "2026-07-30T07:56:15Z",
-        "updated_at": "2026-07-30T07:56:46Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30524657270"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "67e1099e10ff27f7cb52e3cd9de4936ed5c4cd07",
-        "run_number": 332,
-        "created_at": "2026-07-30T07:55:14Z",
-        "updated_at": "2026-07-30T07:55:44Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30524594170"
+        "head_sha": "43e6c95be8f22e45ce3f94401409becdb59603ce",
+        "run_number": 3,
+        "created_at": "2026-07-30T08:16:26Z",
+        "updated_at": "2026-07-30T08:16:48Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30526040522"
       },
       {
         "name": "CI",
-        "display_title": "Recover production with pinned Letta and observable degraded memory",
+        "display_title": "Fix degraded-memory CI fixtures",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_branch": "main",
+        "head_sha": "fa4097b6139a00dcbead61d455eaab5c4294d912",
+        "run_number": 474,
+        "created_at": "2026-07-30T08:05:59Z",
+        "updated_at": "2026-07-30T08:19:10Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30525336076"
+      },
+      {
+        "name": "CI",
+        "display_title": "Fix degraded-memory CI fixtures",
         "event": "pull_request",
         "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/recover-ghs-mempalace-degraded",
-        "head_sha": "8267504d95f421962e4c739f8587b8e158cd368d",
-        "run_number": 463,
-        "created_at": "2026-07-30T07:54:53Z",
-        "updated_at": "2026-07-30T07:55:33Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30524572824"
+        "conclusion": "success",
+        "head_branch": "agent/fix-memory-degraded-ci",
+        "head_sha": "d2287755309901e7a46f75000f4ea46fe9c84130",
+        "run_number": 473,
+        "created_at": "2026-07-30T08:04:57Z",
+        "updated_at": "2026-07-30T08:05:31Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30525260376"
       },
       {
         "name": "CI",
-        "display_title": "Recover production with pinned Letta and observable degraded memory",
+        "display_title": "test(memory): assert degraded write result contract",
         "event": "push",
         "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "main",
-        "head_sha": "67e1099e10ff27f7cb52e3cd9de4936ed5c4cd07",
-        "run_number": 462,
-        "created_at": "2026-07-30T07:54:31Z",
-        "updated_at": "2026-07-30T07:55:12Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30524550701"
-      },
-      {
-        "name": "CI",
-        "display_title": "fix(config): preserve identity and provider validation",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/recover-ghs-mempalace-degraded",
-        "head_sha": "8267504d95f421962e4c739f8587b8e158cd368d",
-        "run_number": 461,
-        "created_at": "2026-07-30T07:53:17Z",
-        "updated_at": "2026-07-30T07:54:04Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30524474322"
-      },
-      {
-        "name": "CI",
-        "display_title": "test(deploy): lock Letta version and degraded policy",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/recover-ghs-mempalace-degraded",
-        "head_sha": "c01b8f345d6a5787b7ba01c604e773158e64c4ad",
-        "run_number": 460,
-        "created_at": "2026-07-30T07:51:55Z",
-        "updated_at": "2026-07-30T07:52:44Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30524387587"
+        "conclusion": "success",
+        "head_branch": "agent/fix-memory-degraded-ci",
+        "head_sha": "d2287755309901e7a46f75000f4ea46fe9c84130",
+        "run_number": 472,
+        "created_at": "2026-07-30T08:04:52Z",
+        "updated_at": "2026-07-30T08:05:31Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30525252657"
       }
     ]
   },
   "collector": {
     "event_name": "workflow_run",
     "workflow": "Publish project status",
-    "run_id": "30524929070"
+    "run_id": "30526221599"
   },
   "freshness": {
     "age_seconds_at_publish": 0,
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-30T16:03:26+08:00"
+    "generated_at": "2026-07-30T16:19:38+08:00"
   },
   "reliability": {
     "disk": {
@@ -333,10 +333,10 @@
     },
     "smoke_test": {
       "schema_version": 5,
-      "generated_at": "2026-07-30T15:56:32+08:00",
-      "started_at": "2026-07-30T15:54:19+08:00",
-      "finished_at": "2026-07-30T15:56:32+08:00",
-      "duration_seconds": 133,
+      "generated_at": "2026-07-30T16:13:39+08:00",
+      "started_at": "2026-07-30T16:13:37+08:00",
+      "finished_at": "2026-07-30T16:13:39+08:00",
+      "duration_seconds": 2,
       "overall": "failure",
       "deployment_gate": "failure",
       "memory_provider": "mempalace-letta",
@@ -346,14 +346,14 @@
       "require_recall": false,
       "checks": {
         "models": true,
-        "chat": true,
-        "scope": true,
+        "chat": false,
+        "scope": false,
         "memory_write": false,
         "memory_recall": false,
         "s3": true
       },
       "write_components": {
-        "mempalace": true,
+        "mempalace": false,
         "letta": false
       },
       "recall_components": {
@@ -361,12 +361,12 @@
         "letta": false
       },
       "error_codes": [
-        "letta_agent_create_failed",
-        "memory_checkpoint_failed",
+        "chat_http_403",
         "mempalace_recall_delayed",
-        "letta_recall_delayed"
+        "letta_recall_delayed",
+        "service_scope_verification_failed"
       ],
-      "age_seconds_at_publish": 414,
+      "age_seconds_at_publish": 359,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }
