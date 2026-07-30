@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-07-30T13:13:20+08:00",
+  "generated_at": "2026-07-30T14:25:58+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "degraded",
   "project_stage": "deployment_behind_main",
@@ -46,7 +46,7 @@
       "name": "sumeme-letta",
       "state": "running",
       "health": "healthy",
-      "status": "Up 24 hours (healthy)",
+      "status": "Up 8 minutes (healthy)",
       "critical": true
     },
     {
@@ -54,7 +54,7 @@
       "name": "sumeme-lobehub",
       "state": "running",
       "health": "",
-      "status": "Up 24 hours",
+      "status": "Up 25 hours",
       "critical": true
     },
     {
@@ -62,7 +62,7 @@
       "name": "sumeme-memory-gateway",
       "state": "running",
       "health": "healthy",
-      "status": "Up 41 seconds (healthy)",
+      "status": "Up 32 seconds (healthy)",
       "critical": true
     },
     {
@@ -70,7 +70,7 @@
       "name": "sumeme-postgres",
       "state": "running",
       "health": "healthy",
-      "status": "Up 25 hours (healthy)",
+      "status": "Up 26 hours (healthy)",
       "critical": true
     },
     {
@@ -78,7 +78,7 @@
       "name": "sumeme-qdrant",
       "state": "running",
       "health": "healthy",
-      "status": "Up 25 hours (healthy)",
+      "status": "Up 26 hours (healthy)",
       "critical": true
     },
     {
@@ -86,7 +86,7 @@
       "name": "sumeme-redis",
       "state": "running",
       "health": "healthy",
-      "status": "Up 25 hours (healthy)",
+      "status": "Up 26 hours (healthy)",
       "critical": true
     },
     {
@@ -94,7 +94,7 @@
       "name": "sumeme-rustfs",
       "state": "running",
       "health": "healthy",
-      "status": "Up 31 minutes (healthy)",
+      "status": "Up 2 hours (healthy)",
       "critical": true
     },
     {
@@ -102,26 +102,26 @@
       "name": "sumeme-searxng",
       "state": "running",
       "health": "",
-      "status": "Up 25 hours",
+      "status": "Up 26 hours",
       "critical": true
     }
   ],
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 34708385792,
-      "free_bytes": 5606010880,
-      "used_percent": 82.3
+      "used_bytes": 34859712512,
+      "free_bytes": 5454684160,
+      "used_percent": 82.7
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 2255409152,
-      "used_percent": 42.2
+      "available_bytes": 1862447104,
+      "used_percent": 52.3
     }
   },
   "github": {
     "default_branch": "main",
-    "latest_main_sha": "f0432ba1a41dd0aedd4ba5e1c26feac43654c96c",
+    "latest_main_sha": "0c9ff6e21b5a80ed62cd53cd3aa23b9770a00afe",
     "open_pull_requests": [],
     "open_issues": [
       {
@@ -151,168 +151,168 @@
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
-        "head_sha": "f0432ba1a41dd0aedd4ba5e1c26feac43654c96c",
-        "run_number": 325,
-        "created_at": "2026-07-30T05:12:47Z",
-        "updated_at": "2026-07-30T05:12:54Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30515993046"
-      },
-      {
-        "name": "CI",
-        "display_title": "chore: observe remote memory deployment",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/observe-main-deploy-2",
-        "head_sha": "03a55661302cd45b5fdaaf43fb28b3401a61590c",
-        "run_number": 329,
-        "created_at": "2026-07-30T05:10:46Z",
-        "updated_at": "2026-07-30T05:11:28Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30515897282"
-      },
-      {
-        "name": "Observe main deployment once",
-        "display_title": "chore: observe remote memory deployment",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/observe-main-deploy-2",
-        "head_sha": "03a55661302cd45b5fdaaf43fb28b3401a61590c",
-        "run_number": 8,
-        "created_at": "2026-07-30T05:10:46Z",
-        "updated_at": "2026-07-30T05:11:01Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30515897060"
-      },
-      {
-        "name": "Read sanitized production smoke once",
-        "display_title": "chore: observe remote memory deployment",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/observe-main-deploy-2",
-        "head_sha": "03a55661302cd45b5fdaaf43fb28b3401a61590c",
-        "run_number": 2,
-        "created_at": "2026-07-30T05:10:46Z",
-        "updated_at": "2026-07-30T05:10:58Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30515897048"
-      },
-      {
-        "name": "CI",
-        "display_title": "Route MemPalace embeddings through the remote API only",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "main",
-        "head_sha": "f0432ba1a41dd0aedd4ba5e1c26feac43654c96c",
-        "run_number": 328,
-        "created_at": "2026-07-30T05:10:30Z",
-        "updated_at": "2026-07-30T05:12:45Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30515885122"
-      },
-      {
-        "name": "CI",
-        "display_title": "Route MemPalace embeddings through the remote API only",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/remote-mempalace-provider",
-        "head_sha": "2dc8097c8d60388f4e1509a00065764b55826f2b",
+        "head_sha": "0c9ff6e21b5a80ed62cd53cd3aa23b9770a00afe",
         "run_number": 327,
-        "created_at": "2026-07-30T05:09:34Z",
-        "updated_at": "2026-07-30T05:09:54Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30515840542"
+        "created_at": "2026-07-30T06:25:32Z",
+        "updated_at": "2026-07-30T06:25:40Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30519531750"
       },
       {
         "name": "CI",
-        "display_title": "test: inspect actual imports for local model dependencies",
+        "display_title": "Sync latest ADOB into the top-level ADOB directory",
+        "event": "push",
+        "status": "in_progress",
+        "conclusion": null,
+        "head_branch": "main",
+        "head_sha": "0c9ff6e21b5a80ed62cd53cd3aa23b9770a00afe",
+        "run_number": 419,
+        "created_at": "2026-07-30T06:20:18Z",
+        "updated_at": "2026-07-30T06:25:31Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30519261047"
+      },
+      {
+        "name": "Plugin CI",
+        "display_title": "Sync latest ADOB into the top-level ADOB directory",
         "event": "push",
         "status": "completed",
         "conclusion": "success",
-        "head_branch": "agent/remote-mempalace-provider",
-        "head_sha": "2dc8097c8d60388f4e1509a00065764b55826f2b",
-        "run_number": 326,
-        "created_at": "2026-07-30T05:09:30Z",
-        "updated_at": "2026-07-30T05:10:00Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30515838008"
+        "head_branch": "main",
+        "head_sha": "0c9ff6e21b5a80ed62cd53cd3aa23b9770a00afe",
+        "run_number": 28,
+        "created_at": "2026-07-30T06:20:17Z",
+        "updated_at": "2026-07-30T06:20:58Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30519260682"
       },
       {
         "name": "CI",
-        "display_title": "Route MemPalace embeddings through the remote API only",
+        "display_title": "Sync latest ADOB into the top-level ADOB directory",
         "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/sync-adob-directory",
+        "head_sha": "04156ce229af81acb62ae2fad4cfe0fb7d12cfd4",
+        "run_number": 418,
+        "created_at": "2026-07-30T06:19:16Z",
+        "updated_at": "2026-07-30T06:19:52Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30519209706"
+      },
+      {
+        "name": "Plugin CI",
+        "display_title": "Sync latest ADOB into the top-level ADOB directory",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/sync-adob-directory",
+        "head_sha": "04156ce229af81acb62ae2fad4cfe0fb7d12cfd4",
+        "run_number": 27,
+        "created_at": "2026-07-30T06:19:16Z",
+        "updated_at": "2026-07-30T06:19:59Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30519209320"
+      },
+      {
+        "name": "CI",
+        "display_title": "ci: validate the synced ADOB directory",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/sync-adob-directory",
+        "head_sha": "04156ce229af81acb62ae2fad4cfe0fb7d12cfd4",
+        "run_number": 417,
+        "created_at": "2026-07-30T06:18:42Z",
+        "updated_at": "2026-07-30T06:19:28Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30519181293"
+      },
+      {
+        "name": "Plugin CI",
+        "display_title": "ci: validate the synced ADOB directory",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/sync-adob-directory",
+        "head_sha": "04156ce229af81acb62ae2fad4cfe0fb7d12cfd4",
+        "run_number": 26,
+        "created_at": "2026-07-30T06:18:41Z",
+        "updated_at": "2026-07-30T06:19:23Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30519180978"
+      },
+      {
+        "name": "CI",
+        "display_title": "chore: remove superseded ADOB skill",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/sync-adob-directory",
+        "head_sha": "20c8e9268023348245e94c4132a639cd2e33d0e6",
+        "run_number": 416,
+        "created_at": "2026-07-30T06:18:30Z",
+        "updated_at": "2026-07-30T06:19:15Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30519171393"
+      },
+      {
+        "name": "Plugin CI",
+        "display_title": "chore: remove superseded ADOB skill",
+        "event": "push",
         "status": "completed",
         "conclusion": "failure",
-        "head_branch": "agent/remote-mempalace-provider",
-        "head_sha": "8b9e56f2c72f28fb008d093a1c7affed8f8cf238",
-        "run_number": 325,
-        "created_at": "2026-07-30T05:07:04Z",
-        "updated_at": "2026-07-30T05:07:26Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30515722382"
+        "head_branch": "agent/sync-adob-directory",
+        "head_sha": "20c8e9268023348245e94c4132a639cd2e33d0e6",
+        "run_number": 25,
+        "created_at": "2026-07-30T06:18:30Z",
+        "updated_at": "2026-07-30T06:18:39Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30519171145"
       },
       {
         "name": "CI",
-        "display_title": "test: prevent local MemPalace model dependency regressions",
+        "display_title": "chore: remove superseded TypeScript config",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/sync-adob-directory",
+        "head_sha": "8b3c9626680297f9a0b477b87b8db21bcd89dbd8",
+        "run_number": 415,
+        "created_at": "2026-07-30T06:18:19Z",
+        "updated_at": "2026-07-30T06:19:10Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30519162465"
+      },
+      {
+        "name": "Plugin CI",
+        "display_title": "chore: remove superseded TypeScript config",
         "event": "push",
         "status": "completed",
         "conclusion": "failure",
-        "head_branch": "agent/remote-mempalace-provider",
-        "head_sha": "8b9e56f2c72f28fb008d093a1c7affed8f8cf238",
-        "run_number": 324,
-        "created_at": "2026-07-30T05:07:01Z",
-        "updated_at": "2026-07-30T05:07:41Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30515719839"
+        "head_branch": "agent/sync-adob-directory",
+        "head_sha": "8b3c9626680297f9a0b477b87b8db21bcd89dbd8",
+        "run_number": 24,
+        "created_at": "2026-07-30T06:18:19Z",
+        "updated_at": "2026-07-30T06:18:29Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30519162176"
       },
       {
         "name": "CI",
-        "display_title": "Route MemPalace embeddings through the remote API only",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/remote-mempalace-provider",
-        "head_sha": "77958ed85c636846ebe738bf369102fadc729995",
-        "run_number": 323,
-        "created_at": "2026-07-30T05:05:42Z",
-        "updated_at": "2026-07-30T05:06:12Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30515656798"
-      },
-      {
-        "name": "CI",
-        "display_title": "docs: describe remote-AI MemPalace adapter",
+        "display_title": "chore: remove superseded MCP server source",
         "event": "push",
         "status": "completed",
         "conclusion": "success",
-        "head_branch": "agent/remote-mempalace-provider",
-        "head_sha": "77958ed85c636846ebe738bf369102fadc729995",
-        "run_number": 322,
-        "created_at": "2026-07-30T05:05:39Z",
-        "updated_at": "2026-07-30T05:06:12Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30515654643"
-      },
-      {
-        "name": "CI",
-        "display_title": "Route MemPalace embeddings through the remote API only",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/remote-mempalace-provider",
-        "head_sha": "9b10ed8f59e3577d2ca4d903c996afdc9476f9af",
-        "run_number": 321,
-        "created_at": "2026-07-30T05:05:22Z",
-        "updated_at": "2026-07-30T05:05:51Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30515640678"
+        "head_branch": "agent/sync-adob-directory",
+        "head_sha": "54975ba3ad49bdc6af854a5aed7153bfb5ed2b64",
+        "run_number": 414,
+        "created_at": "2026-07-30T06:18:10Z",
+        "updated_at": "2026-07-30T06:18:51Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30519155808"
       }
     ]
   },
   "collector": {
     "event_name": "workflow_run",
     "workflow": "Publish project status",
-    "run_id": "30515993046"
+    "run_id": "30519531750"
   },
   "freshness": {
     "age_seconds_at_publish": 0,
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-30T13:13:20+08:00"
+    "generated_at": "2026-07-30T14:25:58+08:00"
   },
   "reliability": {
     "disk": {
@@ -323,10 +323,10 @@
     },
     "smoke_test": {
       "schema_version": 5,
-      "generated_at": "2026-07-30T13:12:24+08:00",
-      "started_at": "2026-07-30T13:12:06+08:00",
-      "finished_at": "2026-07-30T13:12:24+08:00",
-      "duration_seconds": 18,
+      "generated_at": "2026-07-30T14:02:35+08:00",
+      "started_at": "2026-07-30T14:01:57+08:00",
+      "finished_at": "2026-07-30T14:02:35+08:00",
+      "duration_seconds": 38,
       "overall": "failure",
       "deployment_gate": "failure",
       "memory_provider": "mempalace-letta",
@@ -343,7 +343,7 @@
         "s3": true
       },
       "write_components": {
-        "mempalace": false,
+        "mempalace": true,
         "letta": false
       },
       "recall_components": {
@@ -351,13 +351,12 @@
         "letta": false
       },
       "error_codes": [
-        "mempalace_embedding_rejected",
         "letta_agent_create_failed",
         "memory_checkpoint_failed",
         "mempalace_recall_delayed",
         "letta_recall_delayed"
       ],
-      "age_seconds_at_publish": 56,
+      "age_seconds_at_publish": 1403,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }
