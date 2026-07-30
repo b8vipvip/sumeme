@@ -9,7 +9,7 @@ from .config import Settings
 from .content import flatten_content, latest_user_message
 from .letta_memory import LettaMemory
 from .memory_deadlines import MemoryDeadlines
-from .memory_result import MemoryWriteResult
+from .memory_result import MemoryOperationError, MemoryWriteResult
 from .memory_scope import MemoryScope
 from .mempalace_store import MemPalaceStore
 
@@ -133,6 +133,13 @@ class MemPalaceLettaProvider:
                 self.deadlines.recall_seconds,
             )
             return default
+        except MemoryOperationError as exc:
+            logger.warning(
+                "Memory recall unavailable component=%s code=%s",
+                name,
+                exc.code,
+            )
+            return default
         except Exception:
             logger.exception("Memory recall failed component=%s", name)
             return default
@@ -154,6 +161,13 @@ class MemPalaceLettaProvider:
                 self.deadlines.write_seconds,
             )
             return name, False, f"{name}_write_timeout"
+        except MemoryOperationError as exc:
+            logger.warning(
+                "Memory write unavailable component=%s code=%s",
+                name,
+                exc.code,
+            )
+            return name, False, exc.code
         except Exception:
             logger.exception("Memory write failed component=%s", name)
             return name, False, f"{name}_write_exception"
@@ -163,4 +177,4 @@ class MemPalaceLettaProvider:
         return name, False, f"{name}_write_rejected"
 
     async def aclose(self) -> None:
-        return None
+        await self.mempalace.aclose()
