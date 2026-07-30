@@ -79,6 +79,94 @@ jobs:
           cp .env.example .env
           docker compose config >/dev/null
 
+  ghs-relay-revalidate:
+    name: Revalidate relay chat HTTP (GHS, read-only)
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.head_ref == 'agent/ghs-relay-revalidate-min'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Configure pinned GHS connection
+        shell: bash
+        env:
+          SSH_HOST: ${{ vars.SUMEME_VPS_HOST }}
+          SSH_PORT: ${{ vars.SUMEME_VPS_PORT || '22' }}
+          SSH_USER: ${{ vars.SUMEME_VPS_USER || 'sumeme-runner' }}
+          SSH_PRIVATE_KEY: ${{ secrets.SUMEME_SSH_PRIVATE_KEY }}
+          SSH_HOST_KEY: ${{ secrets.SUMEME_SSH_HOST_KEY }}
+        run: |
+          set -euo pipefail
+          [[ "${SSH_HOST}" =~ ^[A-Za-z0-9.-]+$ ]]
+          [[ "${SSH_PORT}" =~ ^[0-9]{1,5}$ ]] && (( SSH_PORT >= 1 && SSH_PORT <= 65535 ))
+          [[ "${SSH_USER}" =~ ^[a-z_][a-z0-9_-]*$ ]]
+          test -n "${SSH_PRIVATE_KEY}"
+          test -n "${SSH_HOST_KEY}"
+          install -d -m 700 "${HOME}/.ssh"
+          printf '%s\n' "${SSH_PRIVATE_KEY}" | tr -d '\r' > "${HOME}/.ssh/adob_deploy"
+          printf '%s\n' "${SSH_HOST_KEY}" | tr -d '\r' > "${HOME}/.ssh/known_hosts"
+          chmod 600 "${HOME}/.ssh/adob_deploy" "${HOME}/.ssh/known_hosts"
+          cat > "${HOME}/.ssh/config" <<EOF
+          Host adob-production
+            HostName ${SSH_HOST}
+            Port ${SSH_PORT}
+            User ${SSH_USER}
+            IdentityFile ${HOME}/.ssh/adob_deploy
+            IdentitiesOnly yes
+            BatchMode yes
+            StrictHostKeyChecking yes
+            UserKnownHostsFile ${HOME}/.ssh/known_hosts
+            ConnectTimeout 20
+            ServerAliveInterval 30
+            ServerAliveCountMax 4
+          EOF
+          chmod 600 "${HOME}/.ssh/config"
+          ssh adob-production 'printf "ghs-minimal-relay-probe-ready\n"'
+
+      - name: Require relay chat HTTP 2xx
+        shell: bash
+        run: |
+          set -euo pipefail
+          ssh adob-production 'bash -s' <<'REMOTE'
+          set -euo pipefail
+          cd /opt/sumeme
+          read_env() {
+            local key="$1"
+            local value
+            value="$(grep -m1 -E "^${key}=" .env 2>/dev/null | cut -d= -f2- || true)"
+            value="${value%\"}"
+            value="${value#\"}"
+            value="${value%\'}"
+            value="${value#\'}"
+            printf '%s' "${value}"
+          }
+          base_url="$(read_env OPENAI_RELAY_BASE_URL)"
+          api_key="$(read_env OPENAI_RELAY_API_KEY)"
+          model="$(read_env OPENAI_CHAT_MODEL)"
+          test -n "${base_url}"
+          test -n "${api_key}"
+          test -n "${model}"
+          payload="$(python3 - "${model}" <<'PY'
+          import json
+          import sys
+          print(json.dumps({
+              "model": sys.argv[1],
+              "stream": False,
+              "messages": [{"role": "user", "content": "Reply with RELAY_PROBE_OK only."}],
+          }))
+          PY
+          )"
+          http_code="$(curl --silent --show-error --max-time 60 \
+            --output /dev/null \
+            --write-out '%{http_code}' \
+            --header "Authorization: Bearer ${api_key}" \
+            --header 'Content-Type: application/json' \
+            --data-binary "${payload}" \
+            "${base_url%/}/chat/completions" || true)"
+          echo "relay_chat_http=${http_code:-000}"
+          [[ "${http_code}" =~ ^2[0-9][0-9]$ ]]
+          REMOTE
+
   deploy-production-self-hosted:
     name: Deploy production (VSR fallback)
     if: >-
