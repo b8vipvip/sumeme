@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "mode": "GHS",
-  "generated_at": "2026-07-30T08:10:30+00:00",
+  "generated_at": "2026-07-30T08:12:13+00:00",
   "workflow_source_sha": "e3dd018efa31c9da31e6c3579654e943fef79319",
   "deployment": {
     "current_sha": "fe9e4a37401cdda1288226990236536cba85288b",
@@ -24,13 +24,13 @@
       "service": "ai-provider-proxy",
       "state": "running",
       "health": "healthy",
-      "status": "Up 2 minutes (healthy)"
+      "status": "Up 4 minutes (healthy)"
     },
     {
       "service": "letta",
       "state": "running",
       "health": "starting",
-      "status": "Up 2 minutes (health: starting)"
+      "status": "Up 4 minutes (health: starting)"
     },
     {
       "service": "lobe",
@@ -60,7 +60,7 @@
       "service": "rustfs",
       "state": "running",
       "health": "healthy",
-      "status": "Up 3 hours (healthy)"
+      "status": "Up 4 hours (healthy)"
     },
     {
       "service": "searxng",
