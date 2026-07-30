@@ -73,7 +73,8 @@ class MemPalaceStore:
                     query=query,
                     limit=self.settings.mempalace_recall_limit,
                     wing=wing,
-                )
+                ),
+                abandon_on_cancel=True,
             )
             return list((result or {}).get("results") or [])
         except Exception:
@@ -141,7 +142,8 @@ class MemPalaceStore:
                     items=items,
                     dedup_threshold=0.995,
                     added_by="sumeme-memory-gateway",
-                )
+                ),
+                abandon_on_cancel=True,
             )
             return True
         except Exception:

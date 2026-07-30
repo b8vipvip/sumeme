@@ -1,14 +1,19 @@
 from __future__ import annotations
 
 import asyncio
+import logging
+from collections.abc import Awaitable
 from typing import Any, Protocol
 
 from .config import Settings
 from .content import flatten_content, latest_user_message
 from .letta_memory import LettaMemory
+from .memory_deadlines import MemoryDeadlines
 from .memory_result import MemoryWriteResult
 from .memory_scope import MemoryScope
 from .mempalace_store import MemPalaceStore
+
+logger = logging.getLogger(__name__)
 
 
 class MemoryProvider(Protocol):
@@ -33,13 +38,23 @@ class MemPalaceLettaProvider:
 
     def __init__(self, settings: Settings):
         self.settings = settings
+        self.deadlines = MemoryDeadlines.from_environment()
         self.mempalace = MemPalaceStore(settings)
         self.letta = LettaMemory(settings)
 
     async def recall(self, query: str, scope: MemoryScope) -> str:
-        raw_task = asyncio.create_task(self.mempalace.search(query, scope))
-        structured_task = asyncio.create_task(self.letta.recall(query, scope))
-        raw_results, structured = await asyncio.gather(raw_task, structured_task)
+        raw_results, structured = await asyncio.gather(
+            self._recall_component(
+                "mempalace",
+                self.mempalace.search(query, scope),
+                [],
+            ),
+            self._recall_component(
+                "letta",
+                self.letta.recall(query, scope),
+                "",
+            ),
+        )
 
         sections: list[str] = []
         if raw_results:
@@ -67,37 +82,85 @@ class MemPalaceLettaProvider:
         message = latest_user_message(request_payload.get("messages") or [])
         user_text = flatten_content((message or {}).get("content"))
         outcomes = await asyncio.gather(
-            self.mempalace.add_exchange(
-                scope=scope,
-                conversation_id=conversation_id,
-                request_payload=request_payload,
-                assistant=assistant_text,
+            self._write_component(
+                "mempalace",
+                self.mempalace.add_exchange(
+                    scope=scope,
+                    conversation_id=conversation_id,
+                    request_payload=request_payload,
+                    assistant=assistant_text,
+                ),
             ),
-            self.letta.remember(
-                scope=scope,
-                user_text=user_text,
-                assistant_text=assistant_text,
-                conversation_id=conversation_id,
+            self._write_component(
+                "letta",
+                self.letta.remember(
+                    scope=scope,
+                    user_text=user_text,
+                    assistant_text=assistant_text,
+                    conversation_id=conversation_id,
+                ),
             ),
-            return_exceptions=True,
         )
 
-        names = ("mempalace", "letta")
         components: dict[str, bool] = {}
         error_codes: list[str] = []
-        for name, outcome in zip(names, outcomes, strict=True):
-            accepted = outcome is True
+        for name, accepted, error_code in outcomes:
             components[name] = accepted
-            if isinstance(outcome, BaseException):
-                error_codes.append(f"{name}_write_exception")
-            elif not accepted:
-                error_codes.append(f"{name}_write_rejected")
+            if error_code:
+                error_codes.append(error_code)
 
         return MemoryWriteResult(
             provider=self.name,
             components=components,
             error_codes=tuple(error_codes),
         )
+
+    async def _recall_component(
+        self,
+        name: str,
+        operation: Awaitable[Any],
+        default: Any,
+    ) -> Any:
+        try:
+            return await asyncio.wait_for(
+                operation,
+                timeout=self.deadlines.recall_seconds,
+            )
+        except TimeoutError:
+            logger.warning(
+                "Memory recall timed out component=%s timeout_seconds=%s",
+                name,
+                self.deadlines.recall_seconds,
+            )
+            return default
+        except Exception:
+            logger.exception("Memory recall failed component=%s", name)
+            return default
+
+    async def _write_component(
+        self,
+        name: str,
+        operation: Awaitable[bool],
+    ) -> tuple[str, bool, str | None]:
+        try:
+            accepted = await asyncio.wait_for(
+                operation,
+                timeout=self.deadlines.write_seconds,
+            )
+        except TimeoutError:
+            logger.warning(
+                "Memory write timed out component=%s timeout_seconds=%s",
+                name,
+                self.deadlines.write_seconds,
+            )
+            return name, False, f"{name}_write_timeout"
+        except Exception:
+            logger.exception("Memory write failed component=%s", name)
+            return name, False, f"{name}_write_exception"
+
+        if accepted is True:
+            return name, True, None
+        return name, False, f"{name}_write_rejected"
 
     async def aclose(self) -> None:
         return None
