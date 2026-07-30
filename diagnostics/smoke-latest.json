@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
-  "generated_at": "2026-07-30T12:44:54+08:00",
-  "duration_seconds": 203,
+  "generated_at": "2026-07-30T13:12:24+08:00",
+  "duration_seconds": 18,
   "overall": "failure",
   "deployment_gate": "failure",
   "memory_provider": "mempalace-letta",
@@ -25,8 +25,8 @@
     "letta": false
   },
   "error_codes": [
-    "mempalace_write_timeout",
-    "letta_write_rejected",
+    "mempalace_embedding_rejected",
+    "letta_agent_create_failed",
     "memory_checkpoint_failed",
     "mempalace_recall_delayed",
     "letta_recall_delayed"
