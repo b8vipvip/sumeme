@@ -42,7 +42,10 @@ async def test_registry_keys_include_principal_account_and_vault(tmp_path) -> No
         service.scope.storage_key,
     }
     assert len(keys) == 4
-    assert all(policy.storage_mode == "cloud" for policy in [personal, work, other_user, service])
+    assert all(
+        policy.storage_mode == "cloud"
+        for policy in [personal, work, other_user, service]
+    )
 
 
 @pytest.mark.asyncio
@@ -119,7 +122,7 @@ def test_storage_mode_aliases_are_normalized_and_invalid_values_fail() -> None:
     assert captured.value.code == "vault_storage_mode_invalid"
 
 
-def test_auto_registration_rules_keep_named_lobehub_vaults_admin_controlled() -> None:
+def test_auto_registration_rules_keep_unverified_named_vaults_admin_controlled() -> None:
     default = MemoryScope.account("alice", "default")
     named = MemoryScope.account("alice", "work")
     service = MemoryScope.service("smoke", "production")
@@ -127,5 +130,14 @@ def test_auto_registration_rules_keep_named_lobehub_vaults_admin_controlled() ->
     assert should_auto_register_vault(default, "trusted-openai-user") is True
     assert should_auto_register_vault(named, "trusted-openai-user") is False
     assert should_auto_register_vault(named, "jwt-required") is True
+    assert should_auto_register_vault(named, "jwt-preferred") is False
+    assert (
+        should_auto_register_vault(
+            named,
+            "jwt-preferred",
+            verified_identity=True,
+        )
+        is True
+    )
     assert should_auto_register_vault(named, "legacy-client-asserted") is True
     assert should_auto_register_vault(service, "trusted-openai-user") is True
