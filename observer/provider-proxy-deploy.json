@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-07-30T05:53:41.355Z",
+  "generated_at": "2026-07-30T06:08:07.031Z",
   "target_sha": "9e14dc225588fbc6c0b88ebb1c2552e30f1fca6e",
   "run": {
     "id": 30517299619,
     "number": 368,
-    "status": "in_progress",
-    "conclusion": null,
+    "status": "completed",
+    "conclusion": "failure",
     "created_at": "2026-07-30T05:40:53Z"
   },
   "jobs": [
@@ -41,9 +41,14 @@
     {
       "id": 90790028603,
       "name": "Deploy production (ADOB SSH) / Deploy sumeme via SSH",
-      "status": "in_progress",
-      "conclusion": null,
-      "failed_steps": []
+      "status": "completed",
+      "conclusion": "failure",
+      "failed_steps": [
+        {
+          "name": "Execute allow-listed project deployment script",
+          "conclusion": "failure"
+        }
+      ]
     },
     {
       "id": 90790028902,
