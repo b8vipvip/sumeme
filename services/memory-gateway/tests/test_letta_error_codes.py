@@ -55,6 +55,8 @@ async def test_missing_letta_configuration_returns_sanitized_error(tmp_path) -> 
         make_settings(
             letta_model="",
             letta_embedding="",
+            openai_chat_model="replace_me",
+            openai_memory_model="replace_me",
         )
     )
     memory._state_file = tmp_path / "state.json"
@@ -62,7 +64,7 @@ async def test_missing_letta_configuration_returns_sanitized_error(tmp_path) -> 
     with pytest.raises(MemoryOperationError) as error:
         await memory.ensure_agent(MemoryScope.account("account-a", "personal"))
 
-    assert error.value.code == "letta_configuration_missing"
+    assert error.value.code == "letta_model_unavailable"
 
 
 @pytest.mark.asyncio
