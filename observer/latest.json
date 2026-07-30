@@ -1,11 +1,43 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-07-30T04:47:16.726Z",
+  "generated_at": "2026-07-30T05:10:50.188Z",
   "workflows": [
     {
       "label": "CI",
       "workflow_id": "ci.yml",
       "runs": [
+        {
+          "run_number": 328,
+          "run_id": 30515885122,
+          "sha": "f0432ba1a41dd0aedd4ba5e1c26feac43654c96c",
+          "event": "push",
+          "status": "in_progress",
+          "conclusion": null,
+          "created_at": "2026-07-30T05:10:30Z",
+          "jobs": [
+            {
+              "id": 90785470562,
+              "name": "reliability",
+              "status": "completed",
+              "conclusion": "success",
+              "failed_steps": []
+            },
+            {
+              "id": 90785470591,
+              "name": "gateway",
+              "status": "in_progress",
+              "conclusion": null,
+              "failed_steps": []
+            },
+            {
+              "id": 90785470599,
+              "name": "compose",
+              "status": "completed",
+              "conclusion": "success",
+              "failed_steps": []
+            }
+          ]
+        },
         {
           "run_number": 294,
           "run_id": 30514478194,
@@ -459,57 +491,6 @@
               "failed_steps": []
             }
           ]
-        },
-        {
-          "run_number": 200,
-          "run_id": 30459243861,
-          "sha": "9cce75a5cb2c038130bc96c84a573ca560b48a2f",
-          "event": "push",
-          "status": "completed",
-          "conclusion": "cancelled",
-          "created_at": "2026-07-29T14:06:42Z",
-          "jobs": [
-            {
-              "id": 90600696696,
-              "name": "reliability",
-              "status": "completed",
-              "conclusion": "success",
-              "failed_steps": []
-            },
-            {
-              "id": 90600696810,
-              "name": "gateway",
-              "status": "completed",
-              "conclusion": "success",
-              "failed_steps": []
-            },
-            {
-              "id": 90600696944,
-              "name": "compose",
-              "status": "completed",
-              "conclusion": "success",
-              "failed_steps": []
-            },
-            {
-              "id": 90600865076,
-              "name": "Deploy production (ADOB SSH) / Deploy sumeme via SSH",
-              "status": "completed",
-              "conclusion": "cancelled",
-              "failed_steps": [
-                {
-                  "name": "Execute allow-listed project deployment script",
-                  "conclusion": "cancelled"
-                }
-              ]
-            },
-            {
-              "id": 90600866025,
-              "name": "Deploy production (self-hosted fallback)",
-              "status": "completed",
-              "conclusion": "skipped",
-              "failed_steps": []
-            }
-          ]
         }
       ]
     },
@@ -684,8 +665,8 @@
           "run_id": 30514731442,
           "sha": "2419cf12398c2368facf1dc0321f6203a661ed42",
           "event": "workflow_run",
-          "status": "in_progress",
-          "conclusion": null,
+          "status": "completed",
+          "conclusion": "cancelled",
           "created_at": "2026-07-30T04:45:27Z",
           "jobs": []
         },
