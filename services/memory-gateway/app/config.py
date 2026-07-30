@@ -48,6 +48,8 @@ class Settings(BaseSettings):
     memory_provider: str = "mempalace-letta"
     memory_recall_limit: int = Field(default=6, ge=1, le=30)
     memory_context_max_chars: int = Field(default=24000, ge=1000, le=200000)
+    memory_recall_timeout_seconds: float = Field(default=30, ge=1, le=300)
+    memory_write_timeout_seconds: float = Field(default=180, ge=5, le=900)
     store_assistant_verbatim: bool = True
 
     vault_registry_path: str = "/data/gateway/vaults.sqlite3"
@@ -77,7 +79,7 @@ class Settings(BaseSettings):
     letta_agent_name: str = "sumeme-personal-memory"
     letta_model: str = ""
     letta_embedding: str = ""
-    letta_timeout_seconds: float = 180
+    letta_timeout_seconds: float = Field(default=180, ge=5, le=900)
 
     supermemory_base_url: str = ""
     supermemory_api_key: SecretStr = SecretStr("")
