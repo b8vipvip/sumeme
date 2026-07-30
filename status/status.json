@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-07-30T23:41:52+08:00",
+  "generated_at": "2026-07-31T00:57:49+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "unhealthy",
   "project_stage": "deployed_unhealthy",
@@ -43,14 +43,14 @@
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 35153596416,
-      "free_bytes": 5160800256,
+      "used_bytes": 35170492416,
+      "free_bytes": 5143904256,
       "used_percent": 83.4
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 2620014592,
-      "used_percent": 32.9
+      "available_bytes": 2635538432,
+      "used_percent": 32.5
     }
   },
   "github": {
@@ -83,14 +83,27 @@
       {
         "name": "Publish project status",
         "display_title": "Publish project status",
-        "event": "workflow_run",
+        "event": "schedule",
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
         "head_sha": "f8de54d84553526c9a10b79cc21ea0f01b1bb0fc",
+        "run_number": 347,
+        "created_at": "2026-07-30T16:57:26Z",
+        "updated_at": "2026-07-30T16:57:30Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30563813951"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "f8de54d84553526c9a10b79cc21ea0f01b1bb0fc",
         "run_number": 346,
         "created_at": "2026-07-30T15:41:16Z",
-        "updated_at": "2026-07-30T15:41:27Z",
+        "updated_at": "2026-07-30T15:42:13Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30557906615"
       },
       {
@@ -222,19 +235,6 @@
         "created_at": "2026-07-30T14:27:57Z",
         "updated_at": "2026-07-30T14:28:35Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30551822470"
-      },
-      {
-        "name": "CI",
-        "display_title": "Fail closed on Letta agent ownership collisions",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/letta-agent-ownership",
-        "head_sha": "017ddad2cb7733a40104b1a7b4f3b810fe165417",
-        "run_number": 614,
-        "created_at": "2026-07-30T14:26:20Z",
-        "updated_at": "2026-07-30T14:26:54Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30551692300"
       }
     ]
   },
@@ -243,16 +243,16 @@
     "workflow": null,
     "run_id": null
   },
-  "age_seconds": 0,
+  "age_seconds": 1,
   "stale": false,
   "freshness": {
-    "age_seconds": 0,
+    "age_seconds": 1,
     "stale": false,
-    "age_seconds_at_publish": 0,
+    "age_seconds_at_publish": 1,
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-30T23:41:52+08:00"
+    "generated_at": "2026-07-31T00:57:49+08:00"
   },
   "deployment_consistency": {
     "state": "idle",
@@ -303,7 +303,7 @@
         "letta_recall_delayed",
         "service_scope_verification_failed"
       ],
-      "age_seconds_at_publish": 24264,
+      "age_seconds_at_publish": 28822,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }
