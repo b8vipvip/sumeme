@@ -1,0 +1,77 @@
+name: Observe main 2419cf deployment
+
+on:
+  push:
+    branches: [agent/observe-2419cf-deploy]
+
+permissions:
+  actions: read
+  issues: write
+  contents: read
+
+jobs:
+  observe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Wait for exact main CI and report sanitized jobs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          TARGET_SHA: 2419cf12398c2368facf1dc0321f6203a661ed42
+        shell: bash
+        run: |
+          set -euo pipefail
+          run_id=""
+          run_status=""
+          run_conclusion=""
+
+          for _ in $(seq 1 105); do
+            runs="$(gh api \
+              -H 'Accept: application/vnd.github+json' \
+              "/repos/${REPO}/actions/runs?head_sha=${TARGET_SHA}&branch=main&event=push&per_page=20")"
+            run_id="$(jq -r '.workflow_runs[] | select(.name == "CI") | .id' <<<"${runs}" | head -n1)"
+            if [[ -n "${run_id}" && "${run_id}" != "null" ]]; then
+              run_status="$(jq -r --argjson id "${run_id}" '.workflow_runs[] | select(.id == $id) | .status' <<<"${runs}")"
+              run_conclusion="$(jq -r --argjson id "${run_id}" '.workflow_runs[] | select(.id == $id) | (.conclusion // "pending")' <<<"${runs}")"
+              [[ "${run_status}" == "completed" ]] && break
+            fi
+            sleep 20
+          done
+
+          if [[ -z "${run_id}" || "${run_id}" == "null" ]]; then
+            body=$(cat <<EOF
+          <!-- sumeme-observer-2419cf -->
+          ## Main 部署观察：未找到运行
+
+          - SHA: \`${TARGET_SHA}\`
+          - 结果：在观察窗口内未找到对应 main push CI
+          EOF
+          )
+          else
+            jobs="$(gh api "/repos/${REPO}/actions/runs/${run_id}/jobs?per_page=100")"
+            job_lines="$(jq -r '.jobs[] | "- " + .name + ": `" + .status + "` / `" + (.conclusion // "pending") + "`"' <<<"${jobs}")"
+            failed_steps="$(jq -r '[.jobs[] | .steps[]? | select(.conclusion == "failure" or .conclusion == "cancelled") | "- " + .name] | unique | .[]?' <<<"${jobs}")"
+            body=$(cat <<EOF
+          <!-- sumeme-observer-2419cf -->
+          ## Main CI / ADOB SSH 部署观察
+
+          - SHA: \`${TARGET_SHA}\`
+          - run id: \`${run_id}\`
+          - status: \`${run_status:-unknown}\`
+          - conclusion: \`${run_conclusion:-pending}\`
+
+          ### Jobs
+          ${job_lines}
+
+          ### 失败或取消步骤
+          ${failed_steps:-无}
+          EOF
+          )
+          fi
+
+          gh api \
+            --method POST \
+            -H 'Accept: application/vnd.github+json' \
+            "/repos/${REPO}/issues/4/comments" \
+            -f body="${body}" >/dev/null
