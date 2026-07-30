@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import math
+import os
 from typing import Any
 
 import httpx
@@ -14,6 +15,16 @@ class RemoteEmbeddingClient:
 
     def __init__(self, settings: Settings):
         self.settings = settings
+        self._base_url = os.getenv(
+            "EMBEDDING_API_BASE_URL",
+            settings.openai_relay_base_url,
+        ).strip().rstrip("/")
+        configured_key = os.getenv("EMBEDDING_API_KEY", "").strip()
+        self._api_key = configured_key or settings.openai_relay_api_key.get_secret_value()
+        if not self._base_url.startswith(("http://", "https://")):
+            raise ValueError("EMBEDDING_API_BASE_URL must use HTTP or HTTPS")
+        if not self._api_key:
+            raise ValueError("EMBEDDING_API_KEY is required")
         self._client = httpx.AsyncClient(
             timeout=httpx.Timeout(settings.embedding_timeout_seconds),
             follow_redirects=True,
@@ -36,18 +47,14 @@ class RemoteEmbeddingClient:
         )
         try:
             response = await self._client.post(
-                self.settings.relay_embeddings_url,
+                f"{self._base_url}/embeddings",
                 headers={
-                    "Authorization": (
-                        "Bearer "
-                        f"{self.settings.openai_relay_api_key.get_secret_value()}"
-                    ),
+                    "Authorization": f"Bearer {self._api_key}",
                     "Content-Type": "application/json",
                 },
                 json={
                     "model": self.settings.openai_embedding_model,
                     "input": texts,
-                    "encoding_format": "float",
                 },
                 timeout=timeout,
             )
