@@ -20,40 +20,116 @@ permissions:
 
 jobs:
   smoke:
-    runs-on: [self-hosted, linux, x64, sumeme-production]
-    timeout-minutes: 20
+    name: Smoke production (GHS)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
-      - name: Check out trusted smoke scripts
+      - name: Check out trusted workflow revision
         uses: actions/checkout@v4
         with:
           ref: main
           persist-credentials: false
 
-      - name: Run production smoke test
+      - name: Configure pinned SSH trust
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SUMEME_SSH_PRIVATE_KEY }}
+          SSH_HOST_KEY: ${{ secrets.SUMEME_SSH_HOST_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "${SSH_PRIVATE_KEY}"
+          test -n "${SSH_HOST_KEY}"
+          install -m 700 -d "${HOME}/.ssh"
+          printf '%s\n' "${SSH_PRIVATE_KEY}" > "${HOME}/.ssh/id_ed25519"
+          chmod 600 "${HOME}/.ssh/id_ed25519"
+          printf '%s\n' "${SSH_HOST_KEY}" > "${HOME}/.ssh/known_hosts"
+          chmod 600 "${HOME}/.ssh/known_hosts"
+
+      - name: Run scoped private-object and application smoke through GHS
         id: smoke
         continue-on-error: ${{ github.event_name == 'schedule' || inputs.required == false }}
         env:
-          DEPLOY_DIR: /opt/sumeme
-        run: bash scripts/smoke-test.sh
+          SSH_HOST: ${{ vars.SUMEME_VPS_HOST }}
+          SSH_PORT: ${{ vars.SUMEME_VPS_PORT || '22' }}
+          SSH_USER: ${{ vars.SUMEME_VPS_USER || 'sumeme-runner' }}
+        run: |
+          set -euo pipefail
+          test -n "${SSH_HOST}"
+          test -n "${SSH_PORT}"
+          test -n "${SSH_USER}"
+
+          ssh \
+            -i "${HOME}/.ssh/id_ed25519" \
+            -p "${SSH_PORT}" \
+            -o BatchMode=yes \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes \
+            -o UserKnownHostsFile="${HOME}/.ssh/known_hosts" \
+            "${SSH_USER}@${SSH_HOST}" \
+            'cd /opt/sumeme &&
+             DEPLOY_DIR=/opt/sumeme bash scripts/smoke-private-object.sh &&
+             DEPLOY_DIR=/opt/sumeme bash scripts/smoke-test.sh'
+
+      - name: Fetch sanitized smoke reports
+        if: always()
+        env:
+          SSH_HOST: ${{ vars.SUMEME_VPS_HOST }}
+          SSH_PORT: ${{ vars.SUMEME_VPS_PORT || '22' }}
+          SSH_USER: ${{ vars.SUMEME_VPS_USER || 'sumeme-runner' }}
+        run: |
+          set -euo pipefail
+          fetch_report() {
+            local remote_path="$1"
+            local local_path="$2"
+            scp \
+              -i "${HOME}/.ssh/id_ed25519" \
+              -P "${SSH_PORT}" \
+              -o BatchMode=yes \
+              -o IdentitiesOnly=yes \
+              -o StrictHostKeyChecking=yes \
+              -o UserKnownHostsFile="${HOME}/.ssh/known_hosts" \
+              "${SSH_USER}@${SSH_HOST}:${remote_path}" \
+              "${local_path}" >/dev/null 2>&1 || true
+          }
+
+          fetch_report \
+            /opt/sumeme/.deploy/smoke/latest.json \
+            "${RUNNER_TEMP}/smoke-latest.json"
+          fetch_report \
+            /opt/sumeme/.deploy/smoke/private-object.json \
+            "${RUNNER_TEMP}/smoke-private-object.json"
 
       - name: Print sanitized result
         if: always()
         run: |
           python3 - <<'PY'
           import json
+          import os
           from pathlib import Path
 
-          path = Path('/opt/sumeme/.deploy/smoke/latest.json')
-          if not path.exists():
-              print('No smoke result was written.')
-              raise SystemExit(0)
-          value = json.loads(path.read_text(encoding='utf-8'))
-          print(json.dumps({
-              'generated_at': value.get('generated_at'),
-              'duration_seconds': value.get('duration_seconds'),
-              'overall': value.get('overall'),
-              'checks': value.get('checks'),
-              'error_codes': value.get('error_codes'),
-          }, ensure_ascii=False, indent=2))
+          root = Path(os.environ["RUNNER_TEMP"])
+          reports = {
+              "application": root / "smoke-latest.json",
+              "private_object": root / "smoke-private-object.json",
+          }
+          output = {}
+          for name, path in reports.items():
+              if not path.exists():
+                  output[name] = {"available": False}
+                  continue
+              try:
+                  value = json.loads(path.read_text(encoding="utf-8"))
+              except (OSError, json.JSONDecodeError):
+                  output[name] = {"available": False, "invalid": True}
+                  continue
+              output[name] = {
+                  "available": True,
+                  "generated_at": value.get("generated_at"),
+                  "duration_seconds": value.get("duration_seconds"),
+                  "overall": value.get("overall"),
+                  "scope": value.get("scope") or value.get("test_scope"),
+                  "checks": value.get("checks"),
+                  "error_codes": value.get("error_codes"),
+              }
+          print(json.dumps(output, ensure_ascii=False, indent=2))
           PY

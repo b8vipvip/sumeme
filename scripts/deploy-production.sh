@@ -172,14 +172,18 @@ rollback_on_error() {
     echo "Restoring previous code release ${CURRENT_SHA}..."
     restore_snapshot "${CURRENT_SHA}" || true
     cd "${DEPLOY_DIR}"
-    docker compose build memory-gateway || true
+    docker compose build memory-gateway ai-provider-proxy || true
     docker compose up -d --remove-orphans || true
     DEPLOY_DIR="${DEPLOY_DIR}" bash scripts/health-check.sh || true
     printf '%s\n' "${CURRENT_SHA}" > "${STATE_DIR}/current_sha"
+    printf '%s rollback target=%s failed=%s\n' \
+      "$(date --iso-8601=seconds)" "${CURRENT_SHA}" "${TARGET_SHA}" \
+      >> "${STATE_DIR}/history.log"
   else
     echo "No previous code snapshot is available for automatic rollback."
   fi
 
+  rm -f "${STATE_DIR}/deploying_sha"
   echo "Important: code rollback does not reverse database migrations." >&2
   exit "${exit_code}"
 }
@@ -228,7 +232,7 @@ cd "${DEPLOY_DIR}"
 
 docker compose config >/dev/null
 docker compose pull
-docker compose build memory-gateway
+docker compose build memory-gateway ai-provider-proxy
 docker compose up -d --remove-orphans
 
 DEPLOY_DIR="${DEPLOY_DIR}" bash scripts/health-check.sh
@@ -240,10 +244,12 @@ case "${SMOKE_TEST_MODE}" in
     ;;
   warn|required)
     set +e
+    DEPLOY_DIR="${DEPLOY_DIR}" bash scripts/smoke-private-object.sh
+    private_object_status=$?
     DEPLOY_DIR="${DEPLOY_DIR}" bash scripts/smoke-test.sh
     smoke_status=$?
     set -e
-    if (( smoke_status != 0 )); then
+    if (( private_object_status != 0 || smoke_status != 0 )); then
       if [[ "${SMOKE_TEST_MODE}" == "required" ]]; then
         echo "Required production smoke test failed." >&2
         false

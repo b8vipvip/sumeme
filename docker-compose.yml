@@ -99,8 +99,6 @@ services:
         condition: service_healthy
       qdrant:
         condition: service_healthy
-      letta:
-        condition: service_healthy
     healthcheck:
       test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=5)"]
       interval: 10s
@@ -258,7 +256,7 @@ services:
 
 networks:
   sumeme:
-    driver: bridge
+    name: sumeme
 
 volumes:
   postgres-data:

@@ -26,8 +26,9 @@ permissions:
 
 jobs:
   publish:
-    runs-on: [self-hosted, linux, x64, sumeme-production]
-    timeout-minutes: 10
+    name: Publish project status (GHS)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
       - name: Check out trusted status collector
@@ -36,19 +37,131 @@ jobs:
           ref: main
           persist-credentials: false
 
-      - name: Collect sanitized project status
+      - name: Build sanitized GitHub metadata snapshot locally
         env:
-          DEPLOY_DIR: /opt/sumeme
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python3 scripts/collect-project-status.py \
-            --json "${RUNNER_TEMP}/status.json" \
-            --markdown "${RUNNER_TEMP}/STATUS.md"
+          set -euo pipefail
+          python3 scripts/github-status-snapshot.py \
+            --output "${RUNNER_TEMP}/github-status.json"
 
-          python3 scripts/enrich-project-status.py \
-            --json "${RUNNER_TEMP}/status.json" \
-            --markdown "${RUNNER_TEMP}/STATUS.md" \
-            --smoke "/opt/sumeme/.deploy/smoke/latest.json"
+      - name: Configure pinned SSH trust
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SUMEME_SSH_PRIVATE_KEY }}
+          SSH_HOST_KEY: ${{ secrets.SUMEME_SSH_HOST_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "${SSH_PRIVATE_KEY}"
+          test -n "${SSH_HOST_KEY}"
+          install -m 700 -d "${HOME}/.ssh"
+          printf '%s\n' "${SSH_PRIVATE_KEY}" > "${HOME}/.ssh/id_ed25519"
+          chmod 600 "${HOME}/.ssh/id_ed25519"
+          printf '%s\n' "${SSH_HOST_KEY}" > "${HOME}/.ssh/known_hosts"
+          chmod 600 "${HOME}/.ssh/known_hosts"
+
+      - name: Upload bounded status collector bundle
+        env:
+          SSH_HOST: ${{ vars.SUMEME_VPS_HOST }}
+          SSH_PORT: ${{ vars.SUMEME_VPS_PORT || '22' }}
+          SSH_USER: ${{ vars.SUMEME_VPS_USER || 'sumeme-runner' }}
+        run: |
+          set -euo pipefail
+          test -n "${SSH_HOST}"
+          test -n "${SSH_PORT}"
+          test -n "${SSH_USER}"
+
+          remote_dir="/tmp/sumeme-status-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          printf 'REMOTE_STATUS_DIR=%s\n' "${remote_dir}" >> "${GITHUB_ENV}"
+
+          ssh \
+            -i "${HOME}/.ssh/id_ed25519" \
+            -p "${SSH_PORT}" \
+            -o BatchMode=yes \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes \
+            -o UserKnownHostsFile="${HOME}/.ssh/known_hosts" \
+            "${SSH_USER}@${SSH_HOST}" \
+            "rm -rf '${remote_dir}' && install -d -m 700 '${remote_dir}'"
+
+          scp \
+            -i "${HOME}/.ssh/id_ed25519" \
+            -P "${SSH_PORT}" \
+            -o BatchMode=yes \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes \
+            -o UserKnownHostsFile="${HOME}/.ssh/known_hosts" \
+            scripts/collect-project-status.py \
+            scripts/collect-project-status-ghs.py \
+            scripts/enrich-project-status.py \
+            "${RUNNER_TEMP}/github-status.json" \
+            "${SSH_USER}@${SSH_HOST}:${remote_dir}/"
+
+      - name: Collect sanitized production status through GHS
+        env:
+          SSH_HOST: ${{ vars.SUMEME_VPS_HOST }}
+          SSH_PORT: ${{ vars.SUMEME_VPS_PORT || '22' }}
+          SSH_USER: ${{ vars.SUMEME_VPS_USER || 'sumeme-runner' }}
+        run: |
+          set -euo pipefail
+
+          ssh \
+            -i "${HOME}/.ssh/id_ed25519" \
+            -p "${SSH_PORT}" \
+            -o BatchMode=yes \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes \
+            -o UserKnownHostsFile="${HOME}/.ssh/known_hosts" \
+            "${SSH_USER}@${SSH_HOST}" \
+            "DEPLOY_DIR=/opt/sumeme python3 '${REMOTE_STATUS_DIR}/collect-project-status-ghs.py' \
+               --github-snapshot '${REMOTE_STATUS_DIR}/github-status.json' \
+               --collector '${REMOTE_STATUS_DIR}/collect-project-status.py' \
+               --json '${REMOTE_STATUS_DIR}/status.json' \
+               --markdown '${REMOTE_STATUS_DIR}/STATUS.md' && \
+             DEPLOY_DIR=/opt/sumeme python3 '${REMOTE_STATUS_DIR}/enrich-project-status.py' \
+               --json '${REMOTE_STATUS_DIR}/status.json' \
+               --markdown '${REMOTE_STATUS_DIR}/STATUS.md' \
+               --smoke '/opt/sumeme/.deploy/smoke/latest.json' \
+               --deploy-dir /opt/sumeme"
+
+          scp \
+            -i "${HOME}/.ssh/id_ed25519" \
+            -P "${SSH_PORT}" \
+            -o BatchMode=yes \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes \
+            -o UserKnownHostsFile="${HOME}/.ssh/known_hosts" \
+            "${SSH_USER}@${SSH_HOST}:${REMOTE_STATUS_DIR}/status.json" \
+            "${RUNNER_TEMP}/status.json"
+
+          scp \
+            -i "${HOME}/.ssh/id_ed25519" \
+            -P "${SSH_PORT}" \
+            -o BatchMode=yes \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes \
+            -o UserKnownHostsFile="${HOME}/.ssh/known_hosts" \
+            "${SSH_USER}@${SSH_HOST}:${REMOTE_STATUS_DIR}/STATUS.md" \
+            "${RUNNER_TEMP}/STATUS.md"
+
+      - name: Remove remote temporary collector bundle
+        if: always()
+        env:
+          SSH_HOST: ${{ vars.SUMEME_VPS_HOST }}
+          SSH_PORT: ${{ vars.SUMEME_VPS_PORT || '22' }}
+          SSH_USER: ${{ vars.SUMEME_VPS_USER || 'sumeme-runner' }}
+        run: |
+          set +e
+          if [[ -n "${REMOTE_STATUS_DIR:-}" && -n "${SSH_HOST:-}" && -n "${SSH_USER:-}" ]]; then
+            ssh \
+              -i "${HOME}/.ssh/id_ed25519" \
+              -p "${SSH_PORT}" \
+              -o BatchMode=yes \
+              -o IdentitiesOnly=yes \
+              -o StrictHostKeyChecking=yes \
+              -o UserKnownHostsFile="${HOME}/.ssh/known_hosts" \
+              "${SSH_USER}@${SSH_HOST}" \
+              "rm -rf '${REMOTE_STATUS_DIR}'"
+          fi
 
       - name: Publish snapshot to ops-status branch
         env:
@@ -90,6 +203,7 @@ jobs:
       - name: Print summary
         if: always()
         run: |
+          echo "ADOB mode: GHS"
           echo "Status branch: ops-status"
           echo "Machine-readable: status/status.json"
           echo "Human-readable: status/STATUS.md"
