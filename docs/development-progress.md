@@ -7,6 +7,7 @@ Updated: 2026-07-30
 - Production deployment mode: **GHS — GitHub-hosted SSH**.
 - VSR remains a declared fallback workflow but must not be selected or used silently.
 - Every code change must pass real GitHub Actions steps before merge when it affects executable code, deployment or production workflows.
+- GitHub Actions is asynchronous: after a push, allow a reasonable queue/start window and continue independent work before deciding that a run is blocked.
 - All AI, embedding, OCR, vision, transcription and memory extraction must use the configured OpenAI-compatible relay or an explicitly approved vendor API. Local model runtimes and model weights are forbidden.
 - `mempalace-letta` is the default memory provider. `supermemory` is an explicit alternative only; no automatic failover or dual-write.
 - Secrets, `.env`, user memory text and raw provider responses must not be committed or printed.
@@ -89,6 +90,41 @@ Merge status: **open and blocked until real CI steps pass**.
 - update `docs/architecture.md` for identity, Vault policies, MemPalace SQLite/Qdrant, optional Letta, Provider Proxy and GHS;
 - maintain this file as the resumable development and blocker ledger.
 
+## Active stacked isolation pull request
+
+Pull request: `#44`  
+Branch: `agent/scoped-object-access-api`  
+Base: `agent/ghs-reliability-next` / PR #43  
+Merge status: **open; PR #43 must merge first and PR #44 must then be retargeted to `main`**.
+
+### Implemented on the stacked branch
+
+- isolated object-access configuration with HTTPS, credential, bucket, TTL and single-PUT size validation;
+- short-lived SigV4 upload URLs for server-generated, account/Vault-scoped object keys;
+- short-lived download URLs only for `ready` objects in the resolved scope;
+- server-mediated physical deletion followed by registry soft deletion;
+- server-side streaming byte-count and SHA-256 verification before `reserved → ready`;
+- automatic removal of blobs whose actual size or hash does not match the reservation;
+- no internal object key, bucket credential or raw RustFS response in API output;
+- ordinary account object access rejected in `legacy-client-asserted` mode;
+- verified JWT, trusted LobeHub upstream identity and verified service identity support;
+- current Vault policy rechecked before completion and download, preventing a cloud reservation from bypassing a later `local-only` or stricter `hybrid` policy;
+- cross-account/cross-Vault lookup returns `object_not_found`;
+- composed gateway entrypoint preserving the existing chat/memory lifespan;
+- configuration, signing, hash-verification, route isolation and production-entry contract tests;
+- protocol and limitation documentation in `docs/architecture/scoped-object-access.md`.
+
+### Remaining acceptance for PR #44
+
+- gateway Ruff, pytest and compileall must execute real steps and pass;
+- the gateway container must build with boto3 and `app.entry:app`;
+- after PR #43 merges, retarget PR #44 to `main` and rerun all checks;
+- after merge, deploy only through GHS;
+- verify reserve/upload/complete/download/delete against the private production bucket;
+- verify deployed cross-account and cross-Vault negative cases;
+- add cleanup for abandoned `reserved` rows after signed URLs expire;
+- add multipart upload only if files above the bounded single-PUT limit are required.
+
 ## Blocked or deferred stages
 
 ### GitHub Actions zero-step startup failure
@@ -98,8 +134,11 @@ PR #43 produced these workflow runs:
 - `30540407563`
 - `30540470236`
 - `30540713100`
+- `30541223754`
 
 Each run created the expected `gateway`, `provider-proxy`, `reliability` and `compose` jobs, but all four jobs failed before GitHub reported any executed steps. The job log endpoint had no log blob. GHS and VSR deployment jobs were correctly skipped for the pull request.
+
+Run `30541223754` was not judged immediately. Independent object-isolation work continued, then the failed jobs were retried after the waiting window. The retry again completed with no reported steps or log blobs. This confirms the recorded startup/control-plane symptom without treating a newly queued run as failed.
 
 This does not prove that the code or tests failed, and it does not count as a successful build.
 
@@ -138,7 +177,7 @@ Until then:
 
 ### Private-object production acceptance
 
-Scoped private-bucket upload/read/delete logic is implemented on PR #43, but it has not passed CI or a production GHS run. Do not mark private-object storage as production-accepted until both gates complete.
+Private-bucket roundtrip smoke is implemented on PR #43. Scoped application object APIs are implemented on stacked PR #44. Neither layer is production-accepted until its real CI gates pass and the resulting main revision completes a GHS deployment and production negative tests.
 
 ### Full local-only and hybrid clients
 
@@ -162,8 +201,10 @@ The server-side Vault policy exists, but encrypted local Vault storage, local se
 - [ ] Move production away from `legacy-client-asserted` identity.
 - [ ] Complete LobeHub trusted server-injected user integration or require verified JWT.
 - [ ] Enforce Letta agent ownership by `account_id + vault_id`.
-- [ ] Add signed upload/download/delete APIs on top of the scoped Object Registry.
-- [ ] Add cross-account negative tests for read, write, search, delete, export and restore.
+- [x] Implement scoped signed upload/download and authenticated delete APIs in PR #44.
+- [ ] Pass CI, retarget and merge PR #44 after PR #43.
+- [ ] Add abandoned reservation cleanup and production negative acceptance.
+- [ ] Add cross-account negative tests for memory read/write/search/delete/export/restore.
 - [ ] Implement encrypted local Vault and hybrid sanitized synchronization.
 
 ### Phase 2 multimodal ingestion
@@ -182,6 +223,6 @@ When continuing automated development:
 
 1. read this file and current open pull requests;
 2. state that production mode is GHS;
-3. inspect CI before merging;
+3. inspect CI before merging, but allow queued/new runs time to start while doing independent work;
 4. when a stage is externally blocked but does not invalidate later independent work, record it here and continue;
 5. never silently weaken security, smoke gates, account isolation or secret redaction to make a deployment appear successful.
