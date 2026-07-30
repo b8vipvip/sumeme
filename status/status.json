@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-07-30T22:24:23+08:00",
+  "generated_at": "2026-07-30T22:30:31+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "degraded",
   "project_stage": "deployment_in_progress",
@@ -58,7 +58,7 @@
       "name": "sumeme-lobehub",
       "state": "running",
       "health": "",
-      "status": "Up 33 hours",
+      "status": "Up 34 hours",
       "critical": true
     },
     {
@@ -113,21 +113,21 @@
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 35162705920,
-      "free_bytes": 5151690752,
+      "used_bytes": 35169959936,
+      "free_bytes": 5144436736,
       "used_percent": 83.4
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1744953344,
-      "used_percent": 55.3
+      "available_bytes": 1733849088,
+      "used_percent": 55.6
     }
   },
   "github": {
     "schema_version": 1,
     "source": "github-hosted-runner",
     "default_branch": "main",
-    "latest_main_sha": "94d639b2fbb180f681d823931782be21b834ef0c",
+    "latest_main_sha": "407d1391bd09aab30faf97c8e9818dc399f6b48c",
     "open_pull_requests": [
       {
         "number": 47,
@@ -135,17 +135,8 @@
         "draft": false,
         "head": "agent/isolation-negative-matrix",
         "base": "agent/letta-agent-ownership",
-        "updated_at": "2026-07-30T12:53:27Z",
+        "updated_at": "2026-07-30T14:26:14Z",
         "html_url": "https://github.com/b8vipvip/sumeme/pull/47"
-      },
-      {
-        "number": 46,
-        "title": "Fail closed on Letta agent ownership collisions",
-        "draft": false,
-        "head": "agent/letta-agent-ownership",
-        "base": "agent/object-reservation-cleanup",
-        "updated_at": "2026-07-30T14:20:27Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/pull/46"
       }
     ],
     "open_issues": [
@@ -176,23 +167,101 @@
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
+        "head_sha": "407d1391bd09aab30faf97c8e9818dc399f6b48c",
+        "run_number": 342,
+        "created_at": "2026-07-30T14:29:54Z",
+        "updated_at": "2026-07-30T14:30:03Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30551983599"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "cancelled",
+        "head_branch": "main",
+        "head_sha": "407d1391bd09aab30faf97c8e9818dc399f6b48c",
+        "run_number": 341,
+        "created_at": "2026-07-30T14:29:51Z",
+        "updated_at": "2026-07-30T14:29:55Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30551979604"
+      },
+      {
+        "name": "Smoke production",
+        "display_title": "Smoke production",
+        "event": "schedule",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "407d1391bd09aab30faf97c8e9818dc399f6b48c",
+        "run_number": 5,
+        "created_at": "2026-07-30T14:29:14Z",
+        "updated_at": "2026-07-30T14:29:49Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30551928931"
+      },
+      {
+        "name": "CI",
+        "display_title": "Merge pull request #46 from b8vipvip/agent/letta-agent-ownership",
+        "event": "push",
+        "status": "pending",
+        "conclusion": null,
+        "head_branch": "main",
+        "head_sha": "407d1391bd09aab30faf97c8e9818dc399f6b48c",
+        "run_number": 616,
+        "created_at": "2026-07-30T14:29:06Z",
+        "updated_at": "2026-07-30T14:29:50Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30551918191"
+      },
+      {
+        "name": "CI",
+        "display_title": "Fail closed on Letta agent ownership collisions",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/letta-agent-ownership",
+        "head_sha": "463860af3c43b842f743cad90dd2e6227862b4a2",
+        "run_number": 615,
+        "created_at": "2026-07-30T14:27:57Z",
+        "updated_at": "2026-07-30T14:28:35Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30551822470"
+      },
+      {
+        "name": "CI",
+        "display_title": "Fail closed on Letta agent ownership collisions",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_branch": "agent/letta-agent-ownership",
+        "head_sha": "017ddad2cb7733a40104b1a7b4f3b810fe165417",
+        "run_number": 614,
+        "created_at": "2026-07-30T14:26:20Z",
+        "updated_at": "2026-07-30T14:26:54Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30551692300"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
         "head_sha": "94d639b2fbb180f681d823931782be21b834ef0c",
         "run_number": 340,
         "created_at": "2026-07-30T14:23:57Z",
-        "updated_at": "2026-07-30T14:24:01Z",
+        "updated_at": "2026-07-30T14:24:46Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30551496270"
       },
       {
         "name": "CI",
         "display_title": "Merge pull request #45 from b8vipvip/agent/object-reservation-cleanup",
         "event": "push",
-        "status": "pending",
-        "conclusion": null,
+        "status": "completed",
+        "conclusion": "cancelled",
         "head_branch": "main",
         "head_sha": "94d639b2fbb180f681d823931782be21b834ef0c",
         "run_number": 613,
         "created_at": "2026-07-30T14:23:18Z",
-        "updated_at": "2026-07-30T14:23:54Z",
+        "updated_at": "2026-07-30T14:29:51Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30551443261"
       },
       {
@@ -246,84 +315,6 @@
         "created_at": "2026-07-30T14:09:13Z",
         "updated_at": "2026-07-30T14:09:45Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30550308065"
-      },
-      {
-        "name": "CI",
-        "display_title": "Apply Ruff import spacing",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/scoped-object-access-api",
-        "head_sha": "03fdefd27cceff0afb68edd0bd28532608971629",
-        "run_number": 608,
-        "created_at": "2026-07-30T14:09:10Z",
-        "updated_at": "2026-07-30T14:09:53Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30550303159"
-      },
-      {
-        "name": "CI",
-        "display_title": "Add scoped signed private-object access API",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/scoped-object-access-api",
-        "head_sha": "b690d45793a610328ccd59b059946599406d5833",
-        "run_number": 607,
-        "created_at": "2026-07-30T14:06:42Z",
-        "updated_at": "2026-07-30T14:07:14Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30550108921"
-      },
-      {
-        "name": "CI",
-        "display_title": "Fix object access contract import order",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/scoped-object-access-api",
-        "head_sha": "b690d45793a610328ccd59b059946599406d5833",
-        "run_number": 606,
-        "created_at": "2026-07-30T14:06:35Z",
-        "updated_at": "2026-07-30T14:07:10Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30550100158"
-      },
-      {
-        "name": "CI",
-        "display_title": "Add scoped signed private-object access API",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/scoped-object-access-api",
-        "head_sha": "34cd66a5bc22d3f706b9ff86096fcb3bd34920b1",
-        "run_number": 605,
-        "created_at": "2026-07-30T14:06:30Z",
-        "updated_at": "2026-07-30T14:06:58Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30550093909"
-      },
-      {
-        "name": "CI",
-        "display_title": "Fix object store cleanup lint",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/scoped-object-access-api",
-        "head_sha": "34cd66a5bc22d3f706b9ff86096fcb3bd34920b1",
-        "run_number": 604,
-        "created_at": "2026-07-30T14:06:24Z",
-        "updated_at": "2026-07-30T14:07:00Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30550085306"
-      },
-      {
-        "name": "CI",
-        "display_title": "Merge pull request #43 from b8vipvip/agent/ghs-reliability-next",
-        "event": "push",
-        "status": "in_progress",
-        "conclusion": null,
-        "head_branch": "main",
-        "head_sha": "d80e539434df8d6f89a198a45a067b332addcb3b",
-        "run_number": 603,
-        "created_at": "2026-07-30T14:02:50Z",
-        "updated_at": "2026-07-30T14:03:36Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30549795861"
       }
     ]
   },
@@ -341,14 +332,14 @@
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-30T22:24:23+08:00"
+    "generated_at": "2026-07-30T22:30:31+08:00"
   },
   "deployment_consistency": {
     "state": "in_progress",
     "marker_consistent": true,
     "current_matches_main": false,
     "deploying_matches_main": false,
-    "main_sha": "94d639b2fbb180f681d823931782be21b834ef0c"
+    "main_sha": "407d1391bd09aab30faf97c8e9818dc399f6b48c"
   },
   "reliability": {
     "disk": {
@@ -392,7 +383,7 @@
         "letta_recall_delayed",
         "service_scope_verification_failed"
       ],
-      "age_seconds_at_publish": 19615,
+      "age_seconds_at_publish": 19983,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }
