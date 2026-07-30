@@ -1,14 +1,10 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-07-30T15:38:37+08:00",
+  "generated_at": "2026-07-30T15:55:29+08:00",
   "repository": "b8vipvip/sumeme",
-  "overall": "unhealthy",
-  "project_stage": "deployed_unhealthy",
+  "overall": "degraded",
+  "project_stage": "deployment_behind_main",
   "reasons": [
-    "缺少关键服务: memory-gateway",
-    "关键服务异常: letta(running/unhealthy)",
-    "本地 memory-gateway 健康检查失败",
-    "公网健康检查失败",
     "磁盘使用率达到 80% 警戒线"
   ],
   "deployment_in_sync": false,
@@ -24,23 +20,61 @@
   },
   "health": {
     "local_gateway": {
-      "ok": false,
-      "status": null,
-      "error": "<urlopen error [Errno 111] Connection refused>"
+      "ok": true,
+      "status": 200,
+      "data": {
+        "status": "ok",
+        "memory_provider": "mempalace-letta",
+        "memory_scope_schema": 2,
+        "vault_registry": "sqlite",
+        "default_storage_mode": "cloud",
+        "identity_enforcement": "legacy-client-asserted",
+        "identity_account_source": "client-asserted",
+        "identity_vault_authorization": "legacy-registry-autocreate",
+        "identity_jwks_source": "none",
+        "service_identity_configured": false,
+        "memory_checkpoint": true,
+        "mempalace_enabled": true,
+        "letta_enabled": true,
+        "relay_base_url": "https://apihost.cn"
+      }
     },
     "public": {
-      "ok": false,
-      "status": 502,
-      "error": "HTTP Error 502: Bad Gateway"
+      "ok": true,
+      "status": 200,
+      "data": {
+        "status": "ok",
+        "memory_provider": "mempalace-letta",
+        "memory_scope_schema": 2,
+        "vault_registry": "sqlite",
+        "default_storage_mode": "cloud",
+        "identity_enforcement": "legacy-client-asserted",
+        "identity_account_source": "client-asserted",
+        "identity_vault_authorization": "legacy-registry-autocreate",
+        "identity_jwks_source": "none",
+        "service_identity_configured": false,
+        "memory_checkpoint": true,
+        "mempalace_enabled": true,
+        "letta_enabled": true,
+        "relay_base_url": "https://apihost.cn"
+      }
     }
   },
   "services": [
     {
+      "service": "ai-provider-proxy",
+      "name": "sumeme-ai-provider-proxy",
+      "state": "running",
+      "health": "healthy",
+      "status": "Up 7 minutes (healthy)",
+      "critical": false
+    },
+    {
       "service": "letta",
       "name": "sumeme-letta",
       "state": "running",
-      "health": "unhealthy",
-      "status": "Up 9 minutes (unhealthy)",
+      "health": "healthy",
+      "status": "Up 7 minutes (healthy)",
       "critical": true
     },
     {
@@ -49,6 +83,14 @@
       "state": "running",
       "health": "",
       "status": "Up 27 hours",
+      "critical": true
+    },
+    {
+      "service": "memory-gateway",
+      "name": "sumeme-memory-gateway",
+      "state": "running",
+      "health": "healthy",
+      "status": "Up About a minute (healthy)",
       "critical": true
     },
     {
@@ -95,19 +137,19 @@
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 34785234944,
-      "free_bytes": 5529161728,
-      "used_percent": 82.5
+      "used_bytes": 34414051328,
+      "free_bytes": 5900345344,
+      "used_percent": 81.6
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 2012078080,
-      "used_percent": 48.5
+      "available_bytes": 1906118656,
+      "used_percent": 51.2
     }
   },
   "github": {
     "default_branch": "main",
-    "latest_main_sha": "20386d84bb6b403be15d37e19a67081b1aad4349",
+    "latest_main_sha": "67e1099e10ff27f7cb52e3cd9de4936ed5c4cd07",
     "open_pull_requests": [],
     "open_issues": [
       {
@@ -137,168 +179,168 @@
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
-        "head_sha": "20386d84bb6b403be15d37e19a67081b1aad4349",
-        "run_number": 331,
-        "created_at": "2026-07-30T07:37:55Z",
-        "updated_at": "2026-07-30T07:38:02Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30523574109"
+        "head_sha": "67e1099e10ff27f7cb52e3cd9de4936ed5c4cd07",
+        "run_number": 332,
+        "created_at": "2026-07-30T07:55:14Z",
+        "updated_at": "2026-07-30T07:55:18Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30524594170"
       },
       {
         "name": "CI",
-        "display_title": "Fix GHS production memory smoke configuration",
+        "display_title": "Recover production with pinned Letta and observable degraded memory",
+        "event": "pull_request",
+        "status": "in_progress",
+        "conclusion": null,
+        "head_branch": "agent/recover-ghs-mempalace-degraded",
+        "head_sha": "8267504d95f421962e4c739f8587b8e158cd368d",
+        "run_number": 463,
+        "created_at": "2026-07-30T07:54:53Z",
+        "updated_at": "2026-07-30T07:55:05Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30524572824"
+      },
+      {
+        "name": "CI",
+        "display_title": "Recover production with pinned Letta and observable degraded memory",
         "event": "push",
         "status": "completed",
         "conclusion": "failure",
         "head_branch": "main",
-        "head_sha": "20386d84bb6b403be15d37e19a67081b1aad4349",
-        "run_number": 443,
-        "created_at": "2026-07-30T07:19:11Z",
-        "updated_at": "2026-07-30T07:37:53Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30522553569"
+        "head_sha": "67e1099e10ff27f7cb52e3cd9de4936ed5c4cd07",
+        "run_number": 462,
+        "created_at": "2026-07-30T07:54:31Z",
+        "updated_at": "2026-07-30T07:55:12Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30524550701"
       },
       {
         "name": "CI",
-        "display_title": "Fix GHS production memory smoke configuration",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/fix-ghs-memory-smoke",
-        "head_sha": "8237c835e39b048a87fdee8debef9e89286bd39e",
-        "run_number": 442,
-        "created_at": "2026-07-30T07:17:57Z",
-        "updated_at": "2026-07-30T07:18:31Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30522479751"
-      },
-      {
-        "name": "CI",
-        "display_title": "docs(config): make remote semantic embeddings the production default",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/fix-ghs-memory-smoke",
-        "head_sha": "8237c835e39b048a87fdee8debef9e89286bd39e",
-        "run_number": 441,
-        "created_at": "2026-07-30T07:17:33Z",
-        "updated_at": "2026-07-30T07:18:07Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30522454887"
-      },
-      {
-        "name": "CI",
-        "display_title": "test(deploy): lock production memory provider handles",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/fix-ghs-memory-smoke",
-        "head_sha": "e651fe5c6b8a3684b6ba4756b4cb9230eecb25e1",
-        "run_number": 440,
-        "created_at": "2026-07-30T07:17:11Z",
-        "updated_at": "2026-07-30T07:17:44Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30522432593"
-      },
-      {
-        "name": "CI",
-        "display_title": "fix(deploy): pin remote semantic embeddings and valid Letta handles",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/fix-ghs-memory-smoke",
-        "head_sha": "04cd3bb6bb2af9885790a74360a41730fb26980f",
-        "run_number": 439,
-        "created_at": "2026-07-30T07:17:01Z",
-        "updated_at": "2026-07-30T07:17:45Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30522422975"
-      },
-      {
-        "name": "CI",
-        "display_title": "Adopt explicit VSR and GHS deployment modes",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/fix-ghs-memory-smoke",
-        "head_sha": "9827490cd183a74d9fa33b66b489bf507f1d1045",
-        "run_number": 438,
-        "created_at": "2026-07-30T07:16:31Z",
-        "updated_at": "2026-07-30T07:17:02Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30522393735"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "9827490cd183a74d9fa33b66b489bf507f1d1045",
-        "run_number": 330,
-        "created_at": "2026-07-30T07:13:49Z",
-        "updated_at": "2026-07-30T07:20:21Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30522230694"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "schedule",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "9827490cd183a74d9fa33b66b489bf507f1d1045",
-        "run_number": 329,
-        "created_at": "2026-07-30T07:07:52Z",
-        "updated_at": "2026-07-30T07:08:39Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30521879401"
-      },
-      {
-        "name": "CI",
-        "display_title": "Adopt explicit VSR and GHS deployment modes",
+        "display_title": "fix(config): preserve identity and provider validation",
         "event": "push",
         "status": "completed",
         "conclusion": "failure",
-        "head_branch": "main",
-        "head_sha": "9827490cd183a74d9fa33b66b489bf507f1d1045",
-        "run_number": 437,
-        "created_at": "2026-07-30T06:59:50Z",
-        "updated_at": "2026-07-30T07:13:47Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30521390502"
-      },
-      {
-        "name": "Plugin CI",
-        "display_title": "Adopt explicit VSR and GHS deployment modes",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "9827490cd183a74d9fa33b66b489bf507f1d1045",
-        "run_number": 43,
-        "created_at": "2026-07-30T06:59:49Z",
-        "updated_at": "2026-07-30T07:00:44Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30521390110"
+        "head_branch": "agent/recover-ghs-mempalace-degraded",
+        "head_sha": "8267504d95f421962e4c739f8587b8e158cd368d",
+        "run_number": 461,
+        "created_at": "2026-07-30T07:53:17Z",
+        "updated_at": "2026-07-30T07:54:04Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30524474322"
       },
       {
         "name": "CI",
-        "display_title": "Adopt explicit VSR and GHS deployment modes",
-        "event": "pull_request",
+        "display_title": "test(deploy): lock Letta version and degraded policy",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_branch": "agent/recover-ghs-mempalace-degraded",
+        "head_sha": "c01b8f345d6a5787b7ba01c604e773158e64c4ad",
+        "run_number": 460,
+        "created_at": "2026-07-30T07:51:55Z",
+        "updated_at": "2026-07-30T07:52:44Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30524387587"
+      },
+      {
+        "name": "CI",
+        "display_title": "test(memory): cover required and optional component outcomes",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_branch": "agent/recover-ghs-mempalace-degraded",
+        "head_sha": "92a58a7adf7ee0047f75bdd4d0d4cdabe03024c5",
+        "run_number": 459,
+        "created_at": "2026-07-30T07:51:43Z",
+        "updated_at": "2026-07-30T07:52:22Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30524374706"
+      },
+      {
+        "name": "CI",
+        "display_title": "docs(config): document pinned Letta and degraded component policy",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_branch": "agent/recover-ghs-mempalace-degraded",
+        "head_sha": "960a462e52f63565418034c50e2c877b98a67031",
+        "run_number": 458,
+        "created_at": "2026-07-30T07:51:21Z",
+        "updated_at": "2026-07-30T07:51:59Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30524351095"
+      },
+      {
+        "name": "CI",
+        "display_title": "fix(production): pin Letta runtime and allow visible degraded mode",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_branch": "agent/recover-ghs-mempalace-degraded",
+        "head_sha": "0ca969945781a09e405a25c9e7dddfbcf80e5918",
+        "run_number": 457,
+        "created_at": "2026-07-30T07:50:52Z",
+        "updated_at": "2026-07-30T07:51:36Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30524321674"
+      },
+      {
+        "name": "CI",
+        "display_title": "feat(memory): keep optional Letta failures observable but non-blocking",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_branch": "agent/recover-ghs-mempalace-degraded",
+        "head_sha": "40d2e5edcecfff1b80d363e43fcb75b7ecc4b554",
+        "run_number": 456,
+        "created_at": "2026-07-30T07:50:19Z",
+        "updated_at": "2026-07-30T07:51:00Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30524289067"
+      },
+      {
+        "name": "CI",
+        "display_title": "feat(memory): distinguish required and optional components",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_branch": "agent/recover-ghs-mempalace-degraded",
+        "head_sha": "e2b6cffeb39034ec16ddc1b05e3517aaf7009fc6",
+        "run_number": 455,
+        "created_at": "2026-07-30T07:50:01Z",
+        "updated_at": "2026-07-30T07:50:46Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30524268009"
+      },
+      {
+        "name": "CI",
+        "display_title": "feat(memory): declare whether Letta is a required write component",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_branch": "agent/recover-ghs-mempalace-degraded",
+        "head_sha": "21bda29fe34f6e96d8fe828dae07d5912b7435ca",
+        "run_number": 454,
+        "created_at": "2026-07-30T07:49:49Z",
+        "updated_at": "2026-07-30T07:50:28Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30524254604"
+      },
+      {
+        "name": "CI",
+        "display_title": "fix(letta): pin current Python SDK compatible with server",
+        "event": "push",
         "status": "completed",
         "conclusion": "success",
-        "head_branch": "agent/sync-vsr-ghs-modes",
-        "head_sha": "e8d2e32918ea499dafb828824612d76c97378590",
-        "run_number": 436,
-        "created_at": "2026-07-30T06:58:51Z",
-        "updated_at": "2026-07-30T06:59:28Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30521335791"
+        "head_branch": "agent/recover-ghs-mempalace-degraded",
+        "head_sha": "498c66135e8f7d66325f3ccb3e2afe15660501c5",
+        "run_number": 453,
+        "created_at": "2026-07-30T07:49:22Z",
+        "updated_at": "2026-07-30T07:50:02Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30524227821"
       }
     ]
   },
   "collector": {
     "event_name": "workflow_run",
     "workflow": "Publish project status",
-    "run_id": "30523574109"
+    "run_id": "30524594170"
   },
   "freshness": {
     "age_seconds_at_publish": 0,
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-30T15:38:37+08:00"
+    "generated_at": "2026-07-30T15:55:29+08:00"
   },
   "reliability": {
     "disk": {
@@ -342,7 +384,7 @@
         "mempalace_recall_delayed",
         "letta_recall_delayed"
       ],
-      "age_seconds_at_publish": 567,
+      "age_seconds_at_publish": 1579,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }

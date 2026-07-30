@@ -1,34 +1,29 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-30T15:38:37+08:00
-- **总体状态：** `unhealthy`
-- **开发阶段：** `deployed_unhealthy`
+- **采集时间：** 2026-07-30T15:55:29+08:00
+- **总体状态：** `healthy`
+- **开发阶段：** `deployment_behind_main`
 - **线上版本：** `fe9e4a37401cdda1288226990236536cba85288b`
-- **main 最新版本：** `20386d84bb6b403be15d37e19a67081b1aad4349`
+- **main 最新版本：** `67e1099e10ff27f7cb52e3cd9de4936ed5c4cd07`
 - **线上与 main 同步：** 否
 - **开放 PR：** 0
 - **开放 Issue：** 3
 
-## 需要关注
-
-- 缺少关键服务: memory-gateway
-- 关键服务异常: letta(running/unhealthy)
-- 本地 memory-gateway 健康检查失败
-- 公网健康检查失败
-
 ## 健康检查
 
-- 本地网关：`failed`
-- 公网入口：`failed`
-- 磁盘使用：`82.5%`，剩余 5.1 GiB
-- 内存使用：`48.5%`，可用 1.9 GiB
+- 本地网关：`ok`
+- 公网入口：`ok`
+- 磁盘使用：`81.6%`，剩余 5.5 GiB
+- 内存使用：`51.2%`，可用 1.8 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| letta | running | unhealthy | Up 9 minutes (unhealthy) |
+| ai-provider-proxy | running | healthy | Up 7 minutes (healthy) |
+| letta | running | healthy | Up 7 minutes (healthy) |
 | lobe | running | - | Up 27 hours |
+| memory-gateway | running | healthy | Up About a minute (healthy) |
 | postgresql | running | healthy | Up 28 hours (healthy) |
 | qdrant | running | healthy | Up 28 hours (healthy) |
 | redis | running | healthy | Up 28 hours (healthy) |
@@ -39,14 +34,14 @@
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-07-30T07:38:02Z |
-| CI | failure | main | 2026-07-30T07:37:53Z |
-| CI | success | agent/fix-ghs-memory-smoke | 2026-07-30T07:18:31Z |
-| CI | success | agent/fix-ghs-memory-smoke | 2026-07-30T07:18:07Z |
-| CI | success | agent/fix-ghs-memory-smoke | 2026-07-30T07:17:44Z |
-| CI | success | agent/fix-ghs-memory-smoke | 2026-07-30T07:17:45Z |
-| CI | success | agent/fix-ghs-memory-smoke | 2026-07-30T07:17:02Z |
-| Publish project status | success | main | 2026-07-30T07:20:21Z |
+| Publish project status | in_progress | main | 2026-07-30T07:55:18Z |
+| CI | in_progress | agent/recover-ghs-mempalace-degraded | 2026-07-30T07:55:05Z |
+| CI | failure | main | 2026-07-30T07:55:12Z |
+| CI | failure | agent/recover-ghs-mempalace-degraded | 2026-07-30T07:54:04Z |
+| CI | failure | agent/recover-ghs-mempalace-degraded | 2026-07-30T07:52:44Z |
+| CI | failure | agent/recover-ghs-mempalace-degraded | 2026-07-30T07:52:22Z |
+| CI | failure | agent/recover-ghs-mempalace-degraded | 2026-07-30T07:51:59Z |
+| CI | failure | agent/recover-ghs-mempalace-degraded | 2026-07-30T07:51:36Z |
 
 ## 开放 PR
 
