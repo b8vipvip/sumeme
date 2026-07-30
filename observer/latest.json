@@ -1,11 +1,50 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-07-30T05:17:47.529Z",
+  "generated_at": "2026-07-30T05:41:09.531Z",
   "workflows": [
     {
       "label": "CI",
       "workflow_id": "ci.yml",
       "runs": [
+        {
+          "run_number": 368,
+          "run_id": 30517299619,
+          "sha": "9e14dc225588fbc6c0b88ebb1c2552e30f1fca6e",
+          "event": "push",
+          "status": "in_progress",
+          "conclusion": null,
+          "created_at": "2026-07-30T05:40:53Z",
+          "jobs": [
+            {
+              "id": 90789902807,
+              "name": "reliability",
+              "status": "completed",
+              "conclusion": "success",
+              "failed_steps": []
+            },
+            {
+              "id": 90789902817,
+              "name": "gateway",
+              "status": "in_progress",
+              "conclusion": null,
+              "failed_steps": []
+            },
+            {
+              "id": 90789902828,
+              "name": "compose",
+              "status": "completed",
+              "conclusion": "success",
+              "failed_steps": []
+            },
+            {
+              "id": 90789902841,
+              "name": "provider-proxy",
+              "status": "in_progress",
+              "conclusion": null,
+              "failed_steps": []
+            }
+          ]
+        },
         {
           "run_number": 328,
           "run_id": 30515885122,
@@ -456,57 +495,6 @@
               "name": "gateway",
               "status": "completed",
               "conclusion": "success",
-              "failed_steps": []
-            }
-          ]
-        },
-        {
-          "run_number": 205,
-          "run_id": 30459713248,
-          "sha": "dcf7cd9000007d0d2fa8f4c9e51799b24cf22d13",
-          "event": "push",
-          "status": "completed",
-          "conclusion": "cancelled",
-          "created_at": "2026-07-29T14:12:23Z",
-          "jobs": [
-            {
-              "id": 90602292820,
-              "name": "gateway",
-              "status": "completed",
-              "conclusion": "success",
-              "failed_steps": []
-            },
-            {
-              "id": 90602292891,
-              "name": "compose",
-              "status": "completed",
-              "conclusion": "success",
-              "failed_steps": []
-            },
-            {
-              "id": 90602292896,
-              "name": "reliability",
-              "status": "completed",
-              "conclusion": "success",
-              "failed_steps": []
-            },
-            {
-              "id": 90602512223,
-              "name": "Deploy production (ADOB SSH) / Deploy sumeme via SSH",
-              "status": "completed",
-              "conclusion": "cancelled",
-              "failed_steps": [
-                {
-                  "name": "Execute allow-listed project deployment script",
-                  "conclusion": "cancelled"
-                }
-              ]
-            },
-            {
-              "id": 90602512372,
-              "name": "Deploy production (self-hosted fallback)",
-              "status": "completed",
-              "conclusion": "skipped",
               "failed_steps": []
             }
           ]
