@@ -4,11 +4,11 @@ import asyncio
 import logging
 import sqlite3
 import uuid
+from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from typing import AsyncIterator
 
 import anyio
 
