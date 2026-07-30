@@ -1,50 +1,48 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-30T22:30:31+08:00
-- **总体状态：** `healthy`
-- **开发阶段：** `deployment_behind_main`
+- **采集时间：** 2026-07-30T22:34:12+08:00
+- **总体状态：** `unhealthy`
+- **开发阶段：** `deployed_unhealthy`
 - **线上版本：** `fe9e4a37401cdda1288226990236536cba85288b`
-- **main 最新版本：** `407d1391bd09aab30faf97c8e9818dc399f6b48c`
+- **main 最新版本：** `f8de54d84553526c9a10b79cc21ea0f01b1bb0fc`
 - **线上与 main 同步：** 否
-- **开放 PR：** 1
+- **开放 PR：** 0
 - **开放 Issue：** 3
+
+## 需要关注
+
+- 缺少关键服务: letta, lobe, memory-gateway, postgresql, qdrant, redis, rustfs, searxng
+- 本地 memory-gateway 健康检查失败
+- 公网健康检查失败
 
 ## 健康检查
 
-- 本地网关：`ok`
-- 公网入口：`ok`
-- 磁盘使用：`83.4%`，剩余 4.8 GiB
-- 内存使用：`55.6%`，可用 1.6 GiB
+- 本地网关：`failed`
+- 公网入口：`failed`
+- 磁盘使用：`82.3%`，剩余 5.3 GiB
+- 内存使用：`32.9%`，可用 2.4 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| letta | running | healthy | Up 6 hours (healthy) |
-| lobe | running | - | Up 34 hours |
-| memory-gateway | running | healthy | Up 6 hours (healthy) |
-| postgresql | running | healthy | Up 34 hours (healthy) |
-| qdrant | running | healthy | Up 34 hours (healthy) |
-| redis | running | healthy | Up 34 hours (healthy) |
-| rustfs | running | healthy | Up 10 hours (healthy) |
-| searxng | running | - | Up 34 hours |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-07-30T14:30:03Z |
+| Publish project status | in_progress | main | 2026-07-30T14:33:48Z |
+| Publish project status | cancelled | main | 2026-07-30T14:33:45Z |
+| CI | in_progress | main | 2026-07-30T14:33:33Z |
+| CI | success | agent/isolation-negative-matrix | 2026-07-30T14:31:09Z |
+| Publish project status | success | main | 2026-07-30T14:30:51Z |
 | Publish project status | cancelled | main | 2026-07-30T14:29:55Z |
 | Smoke production | success | main | 2026-07-30T14:29:49Z |
-| CI | pending | main | 2026-07-30T14:29:50Z |
-| CI | success | agent/letta-agent-ownership | 2026-07-30T14:28:35Z |
-| CI | failure | agent/letta-agent-ownership | 2026-07-30T14:26:54Z |
-| Publish project status | success | main | 2026-07-30T14:24:46Z |
-| CI | cancelled | main | 2026-07-30T14:29:51Z |
+| CI | cancelled | main | 2026-07-30T14:32:47Z |
 
 ## 开放 PR
 
-- #47 Add cross-scope object isolation negative matrix (`agent/isolation-negative-matrix` → `agent/letta-agent-ownership`)
+- 无
 
 ## 开放 Issue
 
@@ -54,6 +52,7 @@
 
 ## 最近部署
 
+- `2026-07-30T22:33:25+08:00 rollback target=fe9e4a37401cdda1288226990236536cba85288b failed=d80e539434df8d6f89a198a45a067b332addcb3b`
 - `2026-07-29T15:03:24+08:00 fe9e4a37401cdda1288226990236536cba85288b`
 - `2026-07-29T15:01:16+08:00 985f62c95ecff62417e9f515c3a683e369fdaf8d`
 - `2026-07-29T15:00:27+08:00 efe5b594b0b0d05509a1e7717f2eadc95adabf84`
@@ -65,8 +64,8 @@
 - 状态快照过期：`no`（阈值 2100s）
 - 部署状态：`in_progress`
 - 当前版本与 main 一致：`no`
-- deploying SHA：`d80e539434df8d6f89a198a45a067b332addcb3b`
-- 最近发布结果：`success`
+- deploying SHA：`f8de54d84553526c9a10b79cc21ea0f01b1bb0fc`
+- 最近发布结果：`rollback`
 - 磁盘保护级别：`warning`
 - 最近 smoke test：`failure`
 - 自动清理不会删除 Docker 数据卷、数据库或用户附件。

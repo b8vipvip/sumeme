@@ -1,10 +1,13 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-07-30T22:30:31+08:00",
+  "generated_at": "2026-07-30T22:34:12+08:00",
   "repository": "b8vipvip/sumeme",
-  "overall": "degraded",
+  "overall": "unhealthy",
   "project_stage": "deployment_in_progress",
   "reasons": [
+    "缺少关键服务: letta, lobe, memory-gateway, postgresql, qdrant, redis, rustfs, searxng",
+    "本地 memory-gateway 健康检查失败",
+    "公网健康检查失败",
     "磁盘使用率达到 80% 警戒线"
   ],
   "deployment_in_sync": false,
@@ -15,130 +18,46 @@
       "2026-07-29T14:35:43+08:00 b2b0ab82a712af7e2a1aeda930989f368522caf7",
       "2026-07-29T15:00:27+08:00 efe5b594b0b0d05509a1e7717f2eadc95adabf84",
       "2026-07-29T15:01:16+08:00 985f62c95ecff62417e9f515c3a683e369fdaf8d",
-      "2026-07-29T15:03:24+08:00 fe9e4a37401cdda1288226990236536cba85288b"
+      "2026-07-29T15:03:24+08:00 fe9e4a37401cdda1288226990236536cba85288b",
+      "2026-07-30T22:33:25+08:00 rollback target=fe9e4a37401cdda1288226990236536cba85288b failed=d80e539434df8d6f89a198a45a067b332addcb3b"
     ],
-    "deploying_sha": "d80e539434df8d6f89a198a45a067b332addcb3b",
-    "last_result": "success",
-    "last_history_entry": "2026-07-29T15:03:24+08:00 fe9e4a37401cdda1288226990236536cba85288b",
+    "deploying_sha": "f8de54d84553526c9a10b79cc21ea0f01b1bb0fc",
+    "last_result": "rollback",
+    "last_history_entry": "2026-07-30T22:33:25+08:00 rollback target=fe9e4a37401cdda1288226990236536cba85288b failed=d80e539434df8d6f89a198a45a067b332addcb3b",
     "state": "in_progress"
   },
   "health": {
     "local_gateway": {
-      "ok": true,
-      "status": 200,
-      "data": {
-        "status": "ok",
-        "mempalace_enabled": true,
-        "letta_enabled": true,
-        "relay_base_url": "https://apihost.cn"
-      }
+      "ok": false,
+      "status": null,
+      "error": "<urlopen error [Errno 111] Connection refused>"
     },
     "public": {
-      "ok": true,
-      "status": 200,
-      "data": {
-        "status": "ok",
-        "mempalace_enabled": true,
-        "letta_enabled": true,
-        "relay_base_url": "https://apihost.cn"
-      }
+      "ok": false,
+      "status": 502,
+      "error": "HTTP Error 502: Bad Gateway"
     }
   },
-  "services": [
-    {
-      "service": "letta",
-      "name": "sumeme-letta",
-      "state": "running",
-      "health": "healthy",
-      "status": "Up 6 hours (healthy)",
-      "critical": true
-    },
-    {
-      "service": "lobe",
-      "name": "sumeme-lobehub",
-      "state": "running",
-      "health": "",
-      "status": "Up 34 hours",
-      "critical": true
-    },
-    {
-      "service": "memory-gateway",
-      "name": "sumeme-memory-gateway",
-      "state": "running",
-      "health": "healthy",
-      "status": "Up 6 hours (healthy)",
-      "critical": true
-    },
-    {
-      "service": "postgresql",
-      "name": "sumeme-postgres",
-      "state": "running",
-      "health": "healthy",
-      "status": "Up 34 hours (healthy)",
-      "critical": true
-    },
-    {
-      "service": "qdrant",
-      "name": "sumeme-qdrant",
-      "state": "running",
-      "health": "healthy",
-      "status": "Up 34 hours (healthy)",
-      "critical": true
-    },
-    {
-      "service": "redis",
-      "name": "sumeme-redis",
-      "state": "running",
-      "health": "healthy",
-      "status": "Up 34 hours (healthy)",
-      "critical": true
-    },
-    {
-      "service": "rustfs",
-      "name": "sumeme-rustfs",
-      "state": "running",
-      "health": "healthy",
-      "status": "Up 10 hours (healthy)",
-      "critical": true
-    },
-    {
-      "service": "searxng",
-      "name": "sumeme-searxng",
-      "state": "running",
-      "health": "",
-      "status": "Up 34 hours",
-      "critical": true
-    }
-  ],
+  "services": [],
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 35169959936,
-      "free_bytes": 5144436736,
-      "used_percent": 83.4
+      "used_bytes": 34675920896,
+      "free_bytes": 5638475776,
+      "used_percent": 82.3
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1733849088,
-      "used_percent": 55.6
+      "available_bytes": 2618363904,
+      "used_percent": 32.9
     }
   },
   "github": {
     "schema_version": 1,
     "source": "github-hosted-runner",
     "default_branch": "main",
-    "latest_main_sha": "407d1391bd09aab30faf97c8e9818dc399f6b48c",
-    "open_pull_requests": [
-      {
-        "number": 47,
-        "title": "Add cross-scope object isolation negative matrix",
-        "draft": false,
-        "head": "agent/isolation-negative-matrix",
-        "base": "agent/letta-agent-ownership",
-        "updated_at": "2026-07-30T14:26:14Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/pull/47"
-      }
-    ],
+    "latest_main_sha": "f8de54d84553526c9a10b79cc21ea0f01b1bb0fc",
+    "open_pull_requests": [],
     "open_issues": [
       {
         "number": 10,
@@ -167,10 +86,62 @@
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
+        "head_sha": "f8de54d84553526c9a10b79cc21ea0f01b1bb0fc",
+        "run_number": 344,
+        "created_at": "2026-07-30T14:33:34Z",
+        "updated_at": "2026-07-30T14:33:48Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30552292127"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "cancelled",
+        "head_branch": "main",
+        "head_sha": "f8de54d84553526c9a10b79cc21ea0f01b1bb0fc",
+        "run_number": 343,
+        "created_at": "2026-07-30T14:32:50Z",
+        "updated_at": "2026-07-30T14:33:45Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30552230404"
+      },
+      {
+        "name": "CI",
+        "display_title": "Merge pull request #47 from b8vipvip/agent/isolation-negative-matrix",
+        "event": "push",
+        "status": "in_progress",
+        "conclusion": null,
+        "head_branch": "main",
+        "head_sha": "f8de54d84553526c9a10b79cc21ea0f01b1bb0fc",
+        "run_number": 618,
+        "created_at": "2026-07-30T14:32:05Z",
+        "updated_at": "2026-07-30T14:33:33Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30552168764"
+      },
+      {
+        "name": "CI",
+        "display_title": "Add cross-scope object isolation negative matrix",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/isolation-negative-matrix",
+        "head_sha": "f63cef1ad09539fb437d9b082144646fd4d1cfe7",
+        "run_number": 617,
+        "created_at": "2026-07-30T14:30:34Z",
+        "updated_at": "2026-07-30T14:31:09Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30552043097"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
         "head_sha": "407d1391bd09aab30faf97c8e9818dc399f6b48c",
         "run_number": 342,
         "created_at": "2026-07-30T14:29:54Z",
-        "updated_at": "2026-07-30T14:30:03Z",
+        "updated_at": "2026-07-30T14:30:51Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30551983599"
       },
       {
@@ -203,13 +174,13 @@
         "name": "CI",
         "display_title": "Merge pull request #46 from b8vipvip/agent/letta-agent-ownership",
         "event": "push",
-        "status": "pending",
-        "conclusion": null,
+        "status": "completed",
+        "conclusion": "cancelled",
         "head_branch": "main",
         "head_sha": "407d1391bd09aab30faf97c8e9818dc399f6b48c",
         "run_number": 616,
         "created_at": "2026-07-30T14:29:06Z",
-        "updated_at": "2026-07-30T14:29:50Z",
+        "updated_at": "2026-07-30T14:32:47Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30551918191"
       },
       {
@@ -263,58 +234,6 @@
         "created_at": "2026-07-30T14:23:18Z",
         "updated_at": "2026-07-30T14:29:51Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30551443261"
-      },
-      {
-        "name": "CI",
-        "display_title": "Clean expired object reservations with SQLite leases",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/object-reservation-cleanup",
-        "head_sha": "105a80d43405411a5d4e55b39a3da0a32e9cd312",
-        "run_number": 612,
-        "created_at": "2026-07-30T14:22:03Z",
-        "updated_at": "2026-07-30T14:22:48Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30551340137"
-      },
-      {
-        "name": "CI",
-        "display_title": "Clean expired object reservations with SQLite leases",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/object-reservation-cleanup",
-        "head_sha": "571e7dd1086725d67f7e7646764eb358f3767d35",
-        "run_number": 611,
-        "created_at": "2026-07-30T14:20:37Z",
-        "updated_at": "2026-07-30T14:21:05Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30551224117"
-      },
-      {
-        "name": "CI",
-        "display_title": "Merge pull request #44 from b8vipvip/agent/scoped-object-access-api",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "cancelled",
-        "head_branch": "main",
-        "head_sha": "78f2b4c27a64bf76c98cb4b107cdd5b4975451ca",
-        "run_number": 610,
-        "created_at": "2026-07-30T14:10:37Z",
-        "updated_at": "2026-07-30T14:23:55Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30550418035"
-      },
-      {
-        "name": "CI",
-        "display_title": "Add scoped signed private-object access API",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/scoped-object-access-api",
-        "head_sha": "03fdefd27cceff0afb68edd0bd28532608971629",
-        "run_number": 609,
-        "created_at": "2026-07-30T14:09:13Z",
-        "updated_at": "2026-07-30T14:09:45Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30550308065"
       }
     ]
   },
@@ -332,14 +251,14 @@
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-30T22:30:31+08:00"
+    "generated_at": "2026-07-30T22:34:12+08:00"
   },
   "deployment_consistency": {
     "state": "in_progress",
     "marker_consistent": true,
     "current_matches_main": false,
-    "deploying_matches_main": false,
-    "main_sha": "407d1391bd09aab30faf97c8e9818dc399f6b48c"
+    "deploying_matches_main": true,
+    "main_sha": "f8de54d84553526c9a10b79cc21ea0f01b1bb0fc"
   },
   "reliability": {
     "disk": {
@@ -383,7 +302,7 @@
         "letta_recall_delayed",
         "service_scope_verification_failed"
       ],
-      "age_seconds_at_publish": 19983,
+      "age_seconds_at_publish": 20204,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }
