@@ -42,7 +42,6 @@ jobs:
               });
               jobs = response.data.jobs;
             }
-
             const result = {
               schema_version: 1,
               generated_at: new Date().toISOString(),
@@ -61,32 +60,134 @@ jobs:
                 conclusion: job.conclusion,
                 failed_steps: (job.steps || [])
                   .filter((step) => step.conclusion && !['success', 'skipped'].includes(step.conclusion))
-                  .map((step) => ({
-                    name: step.name,
-                    conclusion: step.conclusion,
-                  })),
+                  .map((step) => ({name: step.name, conclusion: step.conclusion})),
               })),
             };
-
             const path = 'observer/provider-proxy-deploy.json';
             let sha;
             try {
-              const current = await github.rest.repos.getContent({
-                owner,
-                repo,
-                path,
-                ref: 'ops-status',
-              });
+              const current = await github.rest.repos.getContent({owner, repo, path, ref: 'ops-status'});
               if (!Array.isArray(current.data)) sha = current.data.sha;
             } catch (error) {
               if (error.status !== 404) throw error;
             }
             await github.rest.repos.createOrUpdateFileContents({
-              owner,
-              repo,
-              path,
-              branch: 'ops-status',
+              owner, repo, path, branch: 'ops-status',
               message: 'observer: record provider proxy deployment snapshot',
               content: Buffer.from(JSON.stringify(result, null, 2) + '\n').toString('base64'),
+              sha,
+            });
+
+      - name: Configure pinned SSH trust
+        env:
+          SSH_HOST: ${{ vars.SUMEME_VPS_HOST }}
+          SSH_PORT: ${{ vars.SUMEME_VPS_PORT || '22' }}
+          SSH_USER: ${{ vars.SUMEME_VPS_USER || 'sumeme-runner' }}
+          SSH_PRIVATE_KEY: ${{ secrets.SUMEME_SSH_PRIVATE_KEY }}
+          SSH_HOST_KEY: ${{ secrets.SUMEME_SSH_HOST_KEY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          install -d -m 700 "${HOME}/.ssh"
+          printf '%s\n' "${SSH_PRIVATE_KEY}" | tr -d '\r' > "${HOME}/.ssh/sumeme_observe"
+          printf '%s\n' "${SSH_HOST_KEY}" | tr -d '\r' > "${HOME}/.ssh/known_hosts"
+          chmod 600 "${HOME}/.ssh/sumeme_observe" "${HOME}/.ssh/known_hosts"
+          cat > "${HOME}/.ssh/config" <<EOF
+          Host sumeme-production
+            HostName ${SSH_HOST}
+            Port ${SSH_PORT}
+            User ${SSH_USER}
+            IdentityFile ${HOME}/.ssh/sumeme_observe
+            IdentitiesOnly yes
+            BatchMode yes
+            StrictHostKeyChecking yes
+            UserKnownHostsFile ${HOME}/.ssh/known_hosts
+            ConnectTimeout 20
+          EOF
+          chmod 600 "${HOME}/.ssh/config"
+
+      - name: Read sanitized runtime state
+        shell: bash
+        run: |
+          set -euo pipefail
+          ssh sumeme-production 'python3 -' > /tmp/runtime.json <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+
+          deploy = Path('/opt/sumeme/.deploy')
+          result = {
+              'schema_version': 1,
+              'current_sha': None,
+              'lock_owner': {},
+              'containers': [],
+              'smoke': None,
+          }
+          current = deploy / 'current_sha'
+          if current.exists():
+              result['current_sha'] = current.read_text(encoding='utf-8').strip()
+          owner = deploy / 'deploy.lock.owner'
+          if owner.exists():
+              for line in owner.read_text(encoding='utf-8').splitlines():
+                  if '=' not in line:
+                      continue
+                  key, value = line.split('=', 1)
+                  if key in {'pid', 'target_sha', 'started_at'}:
+                      result['lock_owner'][key] = value[:120]
+          completed = subprocess.run(
+              ['docker', 'ps', '--format', '{{json .}}'],
+              check=False,
+              capture_output=True,
+              text=True,
+          )
+          for line in completed.stdout.splitlines():
+              try:
+                  item = json.loads(line)
+              except json.JSONDecodeError:
+                  continue
+              name = str(item.get('Names') or '')
+              if name.startswith('sumeme-'):
+                  result['containers'].append({
+                      'name': name,
+                      'status': str(item.get('Status') or '')[:160],
+                  })
+          smoke = deploy / 'smoke' / 'latest.json'
+          if smoke.exists():
+              try:
+                  data = json.loads(smoke.read_text(encoding='utf-8'))
+                  result['smoke'] = {
+                      'generated_at': data.get('generated_at'),
+                      'overall': data.get('overall'),
+                      'deployment_gate': data.get('deployment_gate'),
+                      'checks': data.get('checks'),
+                      'write_components': data.get('write_components'),
+                      'error_codes': data.get('error_codes'),
+                  }
+              except (OSError, json.JSONDecodeError):
+                  result['smoke'] = {'read_error': True}
+          print(json.dumps(result, ensure_ascii=False, indent=2))
+          PY
+          python -m json.tool /tmp/runtime.json >/dev/null
+
+      - name: Publish sanitized runtime state
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const path = 'observer/provider-proxy-runtime.json';
+            const content = fs.readFileSync('/tmp/runtime.json');
+            let sha;
+            try {
+              const current = await github.rest.repos.getContent({owner, repo, path, ref: 'ops-status'});
+              if (!Array.isArray(current.data)) sha = current.data.sha;
+            } catch (error) {
+              if (error.status !== 404) throw error;
+            }
+            await github.rest.repos.createOrUpdateFileContents({
+              owner, repo, path, branch: 'ops-status',
+              message: 'observer: record sanitized provider proxy runtime',
+              content: content.toString('base64'),
               sha,
             });
