@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-07-30T05:44:05.015Z",
+  "target_sha": "9e14dc225588fbc6c0b88ebb1c2552e30f1fca6e",
+  "run": {
+    "id": 30517299619,
+    "number": 368,
+    "status": "in_progress",
+    "conclusion": null,
+    "created_at": "2026-07-30T05:40:53Z"
+  },
+  "jobs": [
+    {
+      "id": 90789902807,
+      "name": "reliability",
+      "status": "completed",
+      "conclusion": "success",
+      "failed_steps": []
+    },
+    {
+      "id": 90789902817,
+      "name": "gateway",
+      "status": "completed",
+      "conclusion": "success",
+      "failed_steps": []
+    },
+    {
+      "id": 90789902828,
+      "name": "compose",
+      "status": "completed",
+      "conclusion": "success",
+      "failed_steps": []
+    },
+    {
+      "id": 90789902841,
+      "name": "provider-proxy",
+      "status": "completed",
+      "conclusion": "success",
+      "failed_steps": []
+    },
+    {
+      "id": 90790028603,
+      "name": "Deploy production (ADOB SSH) / Deploy sumeme via SSH",
+      "status": "in_progress",
+      "conclusion": null,
+      "failed_steps": []
+    },
+    {
+      "id": 90790028902,
+      "name": "Deploy production (self-hosted fallback)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "failed_steps": []
+    }
+  ]
+}
