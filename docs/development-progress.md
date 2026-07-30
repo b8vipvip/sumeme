@@ -108,11 +108,15 @@ Merge status: **open; PR #43 must merge first and PR #44 must then be retargeted
 - no internal object key, bucket credential or raw RustFS response in API output;
 - ordinary account object access rejected in `legacy-client-asserted` mode;
 - verified JWT, trusted LobeHub upstream identity and verified service identity support;
-- current Vault policy rechecked before completion and download, preventing a cloud reservation from bypassing a later `local-only` or stricter `hybrid` policy;
+- current Vault policy rechecked before completion and download;
 - cross-account/cross-Vault lookup returns `object_not_found`;
 - composed gateway entrypoint preserving the existing chat/memory lifespan;
 - configuration, signing, hash-verification, route isolation and production-entry contract tests;
-- protocol and limitation documentation in `docs/architecture/scoped-object-access.md`.
+- protocol documentation in `docs/architecture/scoped-object-access.md`.
+
+### CI status for PR #44
+
+Workflow run `30542774984` was first observed as `queued`. Development continued on the independent cleanup layer before the run was checked again. After that waiting window, the run was `completed/failure`, but `gateway`, `provider-proxy`, `reliability` and `compose` still contained no reported steps or log blobs. This is recorded as the same Actions startup symptom, not as an immediate queue failure and not as a code-test result.
 
 ### Remaining acceptance for PR #44
 
@@ -122,8 +126,40 @@ Merge status: **open; PR #43 must merge first and PR #44 must then be retargeted
 - after merge, deploy only through GHS;
 - verify reserve/upload/complete/download/delete against the private production bucket;
 - verify deployed cross-account and cross-Vault negative cases;
-- add cleanup for abandoned `reserved` rows after signed URLs expire;
 - add multipart upload only if files above the bounded single-PUT limit are required.
+
+## Active stacked reservation cleanup pull request
+
+Pull request: `#45`  
+Branch: `agent/object-reservation-cleanup`  
+Base: `agent/scoped-object-access-api` / PR #44  
+Merge status: **open; PR #43 and PR #44 must merge first**.
+
+### Implemented on the cleanup branch
+
+- configurable reservation TTL, cleanup interval, cleanup batch size and operation lease duration;
+- reservation TTL cannot be shorter than the presigned URL lifetime;
+- two-hour default operation lease for slow verification of large objects;
+- a cleanup task owned by the gateway lifespan and cancelled/awaited during shutdown;
+- bounded selection of expired `reserved` rows only;
+- scoped record reload and state/timestamp recheck immediately before deletion;
+- physical blob deletion followed by registry soft deletion;
+- failed RustFS deletion leaves the reservation retryable for a later cycle;
+- completion, authenticated deletion and expiration cleanup serialized through one SQLite lease table;
+- atomic acquisition with `BEGIN IMMEDIATE`;
+- unique lease ownership token so an expired owner cannot release a replacement lease;
+- bounded lease expiry for recovery after process failure;
+- API conflict code `object_operation_in_progress`;
+- tests for expired/fresh/ready records, lease competition, complete/delete transitions, lease ownership replacement, configuration and lifecycle ownership.
+
+### Remaining acceptance for PR #45
+
+- allow its newly created Actions run time to leave the queue and start real steps;
+- pass gateway Ruff, pytest and compileall;
+- after PR #44 merges, retarget to `main` and rerun checks;
+- deploy only through GHS after the full stack is merged;
+- verify expired reservations are cleaned without touching active or ready production objects;
+- add cleanup metrics to sanitized status after production behavior is measured.
 
 ## Blocked or deferred stages
 
@@ -138,16 +174,18 @@ PR #43 produced these workflow runs:
 
 Each run created the expected `gateway`, `provider-proxy`, `reliability` and `compose` jobs, but all four jobs failed before GitHub reported any executed steps. The job log endpoint had no log blob. GHS and VSR deployment jobs were correctly skipped for the pull request.
 
-Run `30541223754` was not judged immediately. Independent object-isolation work continued, then the failed jobs were retried after the waiting window. The retry again completed with no reported steps or log blobs. This confirms the recorded startup/control-plane symptom without treating a newly queued run as failed.
+Run `30541223754` was not judged immediately. Independent object-isolation work continued, then the failed jobs were retried after the waiting window. The retry again completed with no reported steps or log blobs.
 
-This does not prove that the code or tests failed, and it does not count as a successful build.
+PR #44 run `30542774984` was also allowed to queue while PR #45 development continued. Its later completed result showed the same no-step/no-log condition.
+
+These results do not prove that the code or tests failed, and they do not count as successful builds.
 
 Handling:
 
-- keep PR #43 open and unmerged;
-- retry after Actions can execute real steps;
-- require all four test jobs to pass before merge;
-- continue independent code/design work that does not rely on a successful production deployment;
+- keep PR #43, PR #44 and PR #45 open and unmerged;
+- allow new runs a real queue/start window before interpreting them;
+- require the relevant test jobs to execute steps and pass before merge;
+- continue independent code/design work that does not rely on production deployment;
 - never bypass the build gate for production code or workflows.
 
 ### Main-branch Actions status visibility
@@ -177,7 +215,7 @@ Until then:
 
 ### Private-object production acceptance
 
-Private-bucket roundtrip smoke is implemented on PR #43. Scoped application object APIs are implemented on stacked PR #44. Neither layer is production-accepted until its real CI gates pass and the resulting main revision completes a GHS deployment and production negative tests.
+Private-bucket roundtrip smoke is implemented on PR #43. Scoped application object APIs are implemented on PR #44. Abandoned reservation cleanup is implemented on PR #45. None is production-accepted until real CI gates pass and the resulting main revision completes a GHS deployment and production negative tests.
 
 ### Full local-only and hybrid clients
 
@@ -202,8 +240,9 @@ The server-side Vault policy exists, but encrypted local Vault storage, local se
 - [ ] Complete LobeHub trusted server-injected user integration or require verified JWT.
 - [ ] Enforce Letta agent ownership by `account_id + vault_id`.
 - [x] Implement scoped signed upload/download and authenticated delete APIs in PR #44.
-- [ ] Pass CI, retarget and merge PR #44 after PR #43.
-- [ ] Add abandoned reservation cleanup and production negative acceptance.
+- [x] Implement leased cleanup of abandoned upload reservations in PR #45.
+- [ ] Pass CI and merge the stacked PRs in order: #43 → #44 → #45.
+- [ ] Add production cross-account negative acceptance for object operations.
 - [ ] Add cross-account negative tests for memory read/write/search/delete/export/restore.
 - [ ] Implement encrypted local Vault and hybrid sanitized synchronization.
 
