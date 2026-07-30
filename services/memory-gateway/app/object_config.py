@@ -26,6 +26,10 @@ class ObjectAccessSettings(BaseSettings):
         le=5 * 1024**3,
     )
     object_presign_ttl_seconds: int = Field(default=600, ge=60, le=3600)
+    object_reservation_ttl_seconds: int = Field(default=3600, ge=300, le=7 * 24 * 3600)
+    object_cleanup_interval_seconds: int = Field(default=300, ge=60, le=24 * 3600)
+    object_cleanup_batch_size: int = Field(default=100, ge=1, le=1000)
+    object_operation_lease_seconds: int = Field(default=3600, ge=60, le=24 * 3600)
     object_allow_insecure_public_endpoint: bool = False
 
     rustfs_internal_endpoint: str = "http://rustfs:9000"
@@ -42,6 +46,17 @@ class ObjectAccessSettings(BaseSettings):
         if not path.startswith("/"):
             raise ValueError("OBJECT_REGISTRY_PATH must be an absolute path")
         self.object_registry_path = path
+
+        if self.object_reservation_ttl_seconds < self.object_presign_ttl_seconds:
+            raise ValueError(
+                "OBJECT_RESERVATION_TTL_SECONDS must be greater than or equal to "
+                "OBJECT_PRESIGN_TTL_SECONDS"
+            )
+        if self.object_operation_lease_seconds < self.object_presign_ttl_seconds:
+            raise ValueError(
+                "OBJECT_OPERATION_LEASE_SECONDS must be greater than or equal to "
+                "OBJECT_PRESIGN_TTL_SECONDS"
+            )
 
         bucket = self.rustfs_private_bucket.strip().lower()
         if not _BUCKET.fullmatch(bucket) or ".." in bucket:
