@@ -143,30 +143,135 @@ jobs:
             error_codes
           }' /tmp/smoke.json > /tmp/smoke-sanitized.json
 
-      - name: Publish sanitized smoke result
+      - name: Probe remote embedding and Letta model capabilities
+        shell: bash
+        run: |
+          set -euo pipefail
+          ssh sumeme-production 'docker exec -i sumeme-memory-gateway python -' > /tmp/provider-capabilities.json <<'PY'
+          import json
+          import os
+          import httpx
+
+          def error_shape(response):
+              try:
+                  payload = response.json()
+              except Exception:
+                  return {"type": None, "code": None}
+              error = payload.get("error") if isinstance(payload, dict) else None
+              if not isinstance(error, dict):
+                  return {"type": None, "code": None}
+              return {
+                  "type": str(error.get("type") or "")[:80] or None,
+                  "code": str(error.get("code") or "")[:80] or None,
+              }
+
+          def handles(payload):
+              if isinstance(payload, dict):
+                  values = payload.get("data") or payload.get("models") or payload.get("items") or payload.get("result") or []
+              else:
+                  values = payload
+              if not isinstance(values, list):
+                  return []
+              result = []
+              for item in values:
+                  if not isinstance(item, dict):
+                      continue
+                  value = item.get("handle") or item.get("id") or item.get("name")
+                  if isinstance(value, str) and value and value not in result:
+                      result.append(value)
+              return result
+
+          result = {
+              "schema_version": 1,
+              "relay": {},
+              "letta": {},
+          }
+
+          relay_base = os.environ.get("OPENAI_RELAY_BASE_URL", "").rstrip("/")
+          relay_key = os.environ.get("OPENAI_RELAY_API_KEY", "")
+          embedding_model = os.environ.get("OPENAI_EMBEDDING_MODEL", "")
+          relay_headers = {"Authorization": f"Bearer {relay_key}"}
+          result["relay"]["configured_embedding_model"] = embedding_model
+          try:
+              with httpx.Client(timeout=30, follow_redirects=True) as client:
+                  models_response = client.get(f"{relay_base}/models", headers=relay_headers)
+                  result["relay"]["models_status"] = models_response.status_code
+                  model_handles = handles(models_response.json()) if models_response.status_code < 400 else []
+                  result["relay"]["configured_model_listed"] = embedding_model in model_handles
+                  result["relay"]["embedding_like_models"] = [
+                      value for value in model_handles
+                      if "embed" in value.lower()
+                  ][:20]
+
+                  embedding_response = client.post(
+                      f"{relay_base}/embeddings",
+                      headers={**relay_headers, "Content-Type": "application/json"},
+                      json={"model": embedding_model, "input": ["sumeme capability probe"]},
+                  )
+                  result["relay"]["embedding_status"] = embedding_response.status_code
+                  result["relay"]["embedding_error"] = error_shape(embedding_response)
+          except Exception as exc:
+              result["relay"]["probe_exception"] = type(exc).__name__
+
+          letta_base = os.environ.get("LETTA_BASE_URL", "http://letta:8283").rstrip("/")
+          letta_key = os.environ.get("LETTA_SERVER_PASSWORD", "")
+          letta_model = os.environ.get("LETTA_MODEL", "")
+          letta_embedding = os.environ.get("LETTA_EMBEDDING", "")
+          letta_headers = {"Authorization": f"Bearer {letta_key}"} if letta_key else {}
+          result["letta"]["configured_model"] = letta_model
+          result["letta"]["configured_embedding"] = letta_embedding
+          try:
+              with httpx.Client(timeout=30, follow_redirects=True) as client:
+                  model_response = client.get(f"{letta_base}/v1/models/", headers=letta_headers)
+                  result["letta"]["models_status"] = model_response.status_code
+                  model_handles = handles(model_response.json()) if model_response.status_code < 400 else []
+                  result["letta"]["configured_model_listed"] = letta_model in model_handles
+                  result["letta"]["model_handles"] = model_handles[:30]
+
+                  embedding_response = client.get(
+                      f"{letta_base}/v1/models/embedding",
+                      headers=letta_headers,
+                  )
+                  result["letta"]["embeddings_status"] = embedding_response.status_code
+                  embedding_handles = handles(embedding_response.json()) if embedding_response.status_code < 400 else []
+                  result["letta"]["configured_embedding_listed"] = letta_embedding in embedding_handles
+                  result["letta"]["embedding_handles"] = embedding_handles[:30]
+          except Exception as exc:
+              result["letta"]["probe_exception"] = type(exc).__name__
+
+          print(json.dumps(result, ensure_ascii=False, indent=2))
+          PY
+          python -m json.tool /tmp/provider-capabilities.json >/dev/null
+
+      - name: Publish sanitized diagnostics
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
             const owner = context.repo.owner;
             const repo = context.repo.repo;
-            const path = 'diagnostics/smoke-latest.json';
-            const content = fs.readFileSync('/tmp/smoke-sanitized.json');
-            let sha;
-            try {
-              const current = await github.rest.repos.getContent({
-                owner, repo, path, ref: 'ops-status',
+            const files = [
+              ['diagnostics/smoke-latest.json', '/tmp/smoke-sanitized.json', 'diagnostics: update sanitized smoke result'],
+              ['diagnostics/provider-capabilities.json', '/tmp/provider-capabilities.json', 'diagnostics: update provider capability probe'],
+            ];
+            for (const [path, source, message] of files) {
+              const content = fs.readFileSync(source);
+              let sha;
+              try {
+                const current = await github.rest.repos.getContent({
+                  owner, repo, path, ref: 'ops-status',
+                });
+                if (!Array.isArray(current.data)) sha = current.data.sha;
+              } catch (error) {
+                if (error.status !== 404) throw error;
+              }
+              await github.rest.repos.createOrUpdateFileContents({
+                owner,
+                repo,
+                path,
+                branch: 'ops-status',
+                message,
+                content: content.toString('base64'),
+                sha,
               });
-              if (!Array.isArray(current.data)) sha = current.data.sha;
-            } catch (error) {
-              if (error.status !== 404) throw error;
             }
-            await github.rest.repos.createOrUpdateFileContents({
-              owner,
-              repo,
-              path,
-              branch: 'ops-status',
-              message: 'diagnostics: update sanitized smoke result',
-              content: content.toString('base64'),
-              sha,
-            });
