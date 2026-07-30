@@ -54,26 +54,18 @@ const sharedSecret = process.env.MCP_SHARED_SECRET?.trim() ?? "";
 
 function loadProjects(): Project[] {
   const raw = process.env.AUTODEVOPS_PROJECTS_JSON?.trim();
-  if (!raw) {
-    return [];
-  }
-
+  if (!raw) return [];
   const parsed: unknown = JSON.parse(raw);
   return z.array(ProjectSchema).parse(parsed);
 }
 
 function requireProject(projectId: string): Project {
   const project = projectMap.get(projectId);
-  if (!project) {
-    throw new Error(`Unknown project_id: ${projectId}`);
-  }
+  if (!project) throw new Error(`Unknown project_id: ${projectId}`);
   return project;
 }
 
-async function githubRequest<T>(
-  path: string,
-  init: RequestInit = {},
-): Promise<T> {
+async function githubRequest<T>(path: string, init: RequestInit = {}): Promise<T> {
   if (!githubToken) {
     throw new Error("GITHUB_TOKEN is not configured on the MCP server");
   }
@@ -95,17 +87,20 @@ async function githubRequest<T>(
     throw new Error(`GitHub API ${response.status} for ${path}: ${body}`);
   }
 
-  if (response.status === 204) {
-    return undefined as T;
-  }
-
+  if (response.status === 204) return undefined as T;
   return (await response.json()) as T;
+}
+
+function encodePath(path: string): string {
+  return path
+    .split("/")
+    .map((part) => encodeURIComponent(part))
+    .join("/");
 }
 
 async function readProjectStatus(project: Project): Promise<Record<string, unknown>> {
   const path = `/repos/${project.repo}/contents/${encodePath(project.statusPath)}?ref=${encodeURIComponent(project.statusBranch)}`;
   const file = await githubRequest<GitHubContent>(path);
-
   if (file.type !== "file" || file.encoding !== "base64") {
     throw new Error(`Unexpected status object for ${project.id}`);
   }
@@ -141,21 +136,9 @@ async function dispatchWorkflow(
   );
 }
 
-function encodePath(path: string): string {
-  return path
-    .split("/")
-    .map((part) => encodeURIComponent(part))
-    .join("/");
-}
-
 function textResult(value: unknown) {
   return {
-    content: [
-      {
-        type: "text" as const,
-        text: JSON.stringify(value, null, 2),
-      },
-    ],
+    content: [{ type: "text" as const, text: JSON.stringify(value, null, 2) }],
     structuredContent: value as Record<string, unknown>,
   };
 }
@@ -169,10 +152,7 @@ function errorResult(error: unknown) {
 }
 
 function createMcpServer(): McpServer {
-  const server = new McpServer({
-    name: "autodevops-bridge",
-    version: "0.1.0",
-  });
+  const server = new McpServer({ name: "autodevops-bridge", version: "0.1.0" });
 
   server.registerTool(
     "list_projects",
@@ -260,7 +240,10 @@ function createMcpServer(): McpServer {
         "Trigger the allow-listed production deployment workflow for a registered project. This does not execute arbitrary commands.",
       inputSchema: {
         project_id: z.string().describe("Registered project identifier"),
-        ref: z.string().optional().describe("Trusted branch or commit; defaults to the configured production branch"),
+        ref: z
+          .string()
+          .optional()
+          .describe("Trusted branch or commit; defaults to the configured production branch"),
       },
       annotations: {
         readOnlyHint: false,
@@ -334,7 +317,11 @@ function createMcpServer(): McpServer {
       inputSchema: {
         project_id: z.string().describe("Registered project identifier"),
         confirm: z.literal("ROLLBACK"),
-        release_sha: z.string().max(64).optional().describe("Optional target SHA; blank lets the workflow choose the previous release"),
+        release_sha: z
+          .string()
+          .max(64)
+          .optional()
+          .describe("Optional target SHA; blank lets the workflow choose the previous release"),
       },
       annotations: {
         readOnlyHint: false,
@@ -387,9 +374,14 @@ function allowedHost(req: Request, res: Response, next: NextFunction): void {
     return;
   }
 
-  const allowed = new Set(raw.split(",").map((value) => value.trim().toLowerCase()).filter(Boolean));
+  const allowed = new Set(
+    raw
+      .split(",")
+      .map((value) => value.trim().toLowerCase())
+      .filter(Boolean),
+  );
   const host = (req.header("host") ?? "").toLowerCase();
-  const hostname = host.startsWith("[") ? host : host.split(":", 1)[0] ?? host;
+  const hostname = host.startsWith("[") ? host : (host.split(":", 1)[0] ?? host);
   if (!allowed.has(host) && !allowed.has(hostname)) {
     res.status(403).json({ error: "host_not_allowed" });
     return;
@@ -422,9 +414,7 @@ async function startHttp(): Promise<void> {
           },
         });
         transport.onclose = () => {
-          if (transport?.sessionId) {
-            transports.delete(transport.sessionId);
-          }
+          if (transport?.sessionId) transports.delete(transport.sessionId);
         };
         const server = createMcpServer();
         await server.connect(transport);
@@ -438,9 +428,7 @@ async function startHttp(): Promise<void> {
       await transport.handleRequest(req, res, req.body);
     } catch (error) {
       const message = error instanceof Error ? error.message : "unknown_error";
-      if (!res.headersSent) {
-        res.status(500).json({ error: message });
-      }
+      if (!res.headersSent) res.status(500).json({ error: message });
     }
   });
 
@@ -466,7 +454,7 @@ async function main(): Promise<void> {
 }
 
 main().catch((error: unknown) => {
-  const message = error instanceof Error ? error.stack ?? error.message : String(error);
+  const message = error instanceof Error ? (error.stack ?? error.message) : String(error);
   console.error(message);
   process.exit(1);
 });

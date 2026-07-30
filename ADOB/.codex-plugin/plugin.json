@@ -4,10 +4,10 @@
   "description": "Reusable GitHub Runner-based development, deployment, diagnostics, status, and rollback workflows for ChatGPT and Codex.",
   "author": {
     "name": "b8vipvip",
-    "url": "https://sumeme.mv3.cn"
+    "url": "https://github.com/b8vipvip"
   },
-  "homepage": "https://sumeme.mv3.cn/autodevops",
-  "repository": "https://github.com/b8vipvip/sumeme/tree/main/plugins/autodevops-bridge",
+  "homepage": "https://github.com/b8vipvip/ADOB",
+  "repository": "https://github.com/b8vipvip/ADOB",
   "license": "MIT",
   "keywords": [
     "devops",
@@ -26,9 +26,7 @@
     "developerName": "b8vipvip",
     "category": "Productivity",
     "capabilities": ["Read", "Write"],
-    "websiteURL": "https://sumeme.mv3.cn/autodevops",
-    "privacyPolicyURL": "https://sumeme.mv3.cn/autodevops/privacy",
-    "termsOfServiceURL": "https://sumeme.mv3.cn/autodevops/terms",
+    "websiteURL": "https://github.com/b8vipvip/ADOB",
     "defaultPrompt": [
       "Check the current health and deployment state of my project.",
       "Diagnose the latest failed deployment and explain the likely cause.",

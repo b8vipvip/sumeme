@@ -4,6 +4,7 @@ This repository contains the technical plugin package. Public listing still requ
 
 ## Technical readiness
 
+- [x] Dedicated public repository.
 - [x] Plugin manifest at `.codex-plugin/plugin.json`.
 - [x] Reusable Skill under `skills/`.
 - [x] MCP server supporting stdio and Streamable HTTP.
@@ -15,7 +16,7 @@ This repository contains the technical plugin package. Public listing still requ
 - [ ] Rate limits and abuse protection.
 - [ ] Durable audit database.
 - [ ] Public production deployment and monitoring.
-- [ ] Registered remote MCP connection metadata (`.app.json`) after the MCP service is registered.
+- [ ] Registered remote MCP connection metadata after the MCP service is registered.
 
 ## Listing assets
 
@@ -31,7 +32,7 @@ This repository contains the technical plugin package. Public listing still requ
 ## Review materials
 
 - [ ] Explain the GitHub Runner architecture and why SSH keys are not collected.
-- [ ] Provide demo/test GitHub account or a review repository.
+- [ ] Provide a demo/test GitHub account or review repository.
 - [ ] Provide at least five successful user scenarios.
 - [ ] Provide at least three negative/error scenarios.
 - [ ] Document every OAuth scope and why it is necessary.
@@ -49,29 +50,26 @@ This repository contains the technical plugin package. Public listing still requ
 ## Suggested negative review scenarios
 
 1. Request an unknown project ID; the tool returns a bounded error and performs no action.
-2. Request rollback without the literal `ROLLBACK` value; schema validation rejects the call.
+2. Request rollback without literal `ROLLBACK`; schema validation rejects the call.
 3. Attempt to specify an arbitrary workflow or shell command; no such tool or parameter exists.
-4. Use an expired/revoked OAuth token; the server rejects access.
+4. Use an expired or revoked OAuth token; the server rejects access.
 5. Request status from a repository outside the user's authorization; the server denies access.
 
 ## Publication sequence
 
 1. Complete private end-to-end testing against SuMeMe.
-2. Extract the plugin into a dedicated public repository.
-3. Deploy the OAuth-enabled MCP service under a verified public domain.
-4. Create the production policies and support pages.
-5. Register/test the remote MCP connection in ChatGPT.
-6. Produce screenshots and reviewer test credentials.
-7. Submit through the OpenAI plugin/app submission process.
-8. Address review feedback without weakening the security model.
+2. Deploy the OAuth-enabled MCP service under a verified public domain.
+3. Create production policies and support pages.
+4. Register and test the remote MCP connection in ChatGPT.
+5. Produce screenshots and reviewer test credentials.
+6. Submit through the OpenAI plugin/app submission process.
+7. Address review feedback without weakening the security model.
 
-## Actions that require the developer account owner
-
-The following cannot be delegated entirely to code automation:
+## Actions requiring the developer account owner
 
 - accepting platform terms;
 - identity or business verification;
 - proving control of the public domain;
 - authorizing OAuth applications;
 - submitting legal representations;
-- pressing the final public submission control in the developer account when required.
+- pressing the final public submission control when required.

@@ -45,11 +45,8 @@ cleanup() {
 }
 trap cleanup EXIT
 
-curl --fail --location --retry 5 --retry-delay 2 \
-  --output "${archive}" "${RUNNER_ARCHIVE_URL}"
-
+curl --fail --location --retry 5 --retry-delay 2 --output "${archive}" "${RUNNER_ARCHIVE_URL}"
 echo "${RUNNER_ARCHIVE_SHA256}  ${archive}" | sha256sum -c -
-
 tar -xzf "${archive}" -C "${RUNNER_HOME}"
 chown -R "${RUNNER_USER}:${RUNNER_USER}" "${RUNNER_HOME}"
 
@@ -65,13 +62,13 @@ fi
 
 sudo -u "${RUNNER_USER}" --preserve-env=RUNNER_TOKEN bash -c "
   cd '${RUNNER_HOME}'
-  ./config.sh \\
-    --url 'https://github.com/${GITHUB_REPOSITORY}' \\
-    --token \"\${RUNNER_TOKEN}\" \\
-    --name '${RUNNER_NAME}' \\
-    --labels '${RUNNER_LABELS}' \\
-    --work '_work' \\
-    --unattended \\
+  ./config.sh \
+    --url 'https://github.com/${GITHUB_REPOSITORY}' \
+    --token \"\${RUNNER_TOKEN}\" \
+    --name '${RUNNER_NAME}' \
+    --labels '${RUNNER_LABELS}' \
+    --work '_work' \
+    --unattended \
     --replace
 "
 

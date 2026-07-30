@@ -42,15 +42,13 @@ The installer securely prompts for the short-lived runner token when `RUNNER_TOK
 
 ## Recommended GitHub repository variables
 
-These values are not secrets and can be repository variables:
-
 ```text
 AUTODEVOPS_DEPLOY_DIR=/opt/project
 AUTODEVOPS_RUNNER_LABEL=autodevops-production
 AUTODEVOPS_PUBLIC_HEALTH_URL=https://project.example/health
 ```
 
-Secrets such as application keys stay in the server's protected `.env`, not in the repository.
+Secrets stay in the server's protected `.env`, not in the repository.
 
 ## Repository contract
 
@@ -111,4 +109,4 @@ ChatGPT verifies the deployed SHA and health
 
 ## Boundaries
 
-The plugin cannot safely automate ownership proofs, account verification, CAPTCHA, payment, domain registrar access, or the initial privileged installation without an authorized human or server bootstrap mechanism. It should clearly identify these as one-time user actions rather than requesting routine SSH log copying.
+The plugin cannot safely automate ownership proofs, account verification, CAPTCHA, payment, domain registrar access, or the initial privileged installation without an authorized human or server bootstrap mechanism. It should identify these as one-time user actions rather than requesting routine SSH log copying.
