@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "mode": "GHS",
-  "generated_at": "2026-07-30T08:12:13+00:00",
+  "generated_at": "2026-07-30T08:14:06+00:00",
   "workflow_source_sha": "e3dd018efa31c9da31e6c3579654e943fef79319",
   "deployment": {
     "current_sha": "fe9e4a37401cdda1288226990236536cba85288b",
@@ -21,16 +21,10 @@
   },
   "services": [
     {
-      "service": "ai-provider-proxy",
-      "state": "running",
-      "health": "healthy",
-      "status": "Up 4 minutes (healthy)"
-    },
-    {
       "service": "letta",
       "state": "running",
       "health": "starting",
-      "status": "Up 4 minutes (health: starting)"
+      "status": "Up 15 seconds (health: starting)"
     },
     {
       "service": "lobe",
@@ -70,19 +64,19 @@
     }
   ],
   "smoke": {
-    "generated_at": "2026-07-30T15:56:32+08:00",
+    "generated_at": "2026-07-30T16:13:39+08:00",
     "overall": "failure",
     "deployment_gate": "failure",
     "checks": {
       "models": true,
-      "chat": true,
-      "scope": true,
+      "chat": false,
+      "scope": false,
       "memory_write": false,
       "memory_recall": false,
       "s3": true
     },
     "write_components": {
-      "mempalace": true,
+      "mempalace": false,
       "letta": false
     },
     "recall_components": {
@@ -90,10 +84,10 @@
       "letta": false
     },
     "error_codes": [
-      "letta_agent_create_failed",
-      "memory_checkpoint_failed",
+      "chat_http_403",
       "mempalace_recall_delayed",
-      "letta_recall_delayed"
+      "letta_recall_delayed",
+      "service_scope_verification_failed"
     ]
   }
 }
