@@ -10,6 +10,7 @@ import anyio
 from .config import Settings
 from .content import flatten_content, safe_id
 from .memory_deadlines import MemoryDeadlines
+from .memory_result import MemoryOperationError
 from .memory_scope import MemoryScope, coerce_scope
 
 logger = logging.getLogger(__name__)
@@ -80,7 +81,6 @@ class LettaMemory:
                         self._agent_ids.setdefault(scope_key, agent_id)
                 return
 
-            # Backward compatibility with the Phase 1 single-agent state file.
             legacy = str(data.get("agent_id") or "").strip()
             if legacy:
                 self._agent_ids.setdefault(default_scope.storage_key, legacy)
@@ -121,8 +121,7 @@ class LettaMemory:
             return agent_id
 
         if not self.settings.letta_model or not self.settings.letta_embedding:
-            logger.warning("Letta model/embedding missing; structured memory disabled")
-            return None
+            raise MemoryOperationError("letta_configuration_missing")
 
         async with self._agent_lock:
             if agent_id := self._agent_ids.get(scope_key):
@@ -164,27 +163,20 @@ class LettaMemory:
                     create,
                     abandon_on_cancel=True,
                 )
-                agent_id = str(getattr(agent, "id", "") or "")
-                if not agent_id:
-                    logger.error(
-                        "Letta created an agent without an id for scope %s",
-                        resolved.display_key,
-                    )
-                    return None
-                self._agent_ids[scope_key] = agent_id
-                self._persist_state()
-                logger.info(
-                    "Created Letta agent %s for scope %s",
-                    agent_id,
-                    resolved.display_key,
-                )
-                return agent_id
-            except Exception:
-                logger.exception(
-                    "Letta agent creation failed for scope %s",
-                    resolved.display_key,
-                )
-                return None
+            except Exception as exc:
+                raise self._operation_error(exc, "agent_create") from exc
+
+            agent_id = str(getattr(agent, "id", "") or "")
+            if not agent_id:
+                raise MemoryOperationError("letta_invalid_response")
+            self._agent_ids[scope_key] = agent_id
+            self._persist_state()
+            logger.info(
+                "Created Letta agent %s for scope %s",
+                agent_id,
+                resolved.display_key,
+            )
+            return agent_id
 
     async def recall(self, query: str, scope: MemoryScope | str) -> str:
         resolved = self._scope(scope)
@@ -214,10 +206,9 @@ class LettaMemory:
                 ),
                 abandon_on_cancel=True,
             )
-            return self._extract_text(response)
-        except Exception:
-            logger.exception("Letta recall failed for scope %s", resolved.display_key)
-            return ""
+        except Exception as exc:
+            raise self._operation_error(exc, "recall") from exc
+        return self._extract_text(response)
 
     async def remember(
         self,
@@ -239,7 +230,7 @@ class LettaMemory:
             timeout_seconds=timeout_seconds,
         )
         if not agent_id:
-            return False
+            raise MemoryOperationError("letta_agent_unavailable")
 
         prompt = (
             "[MEMORY_UPDATE]\n"
@@ -262,13 +253,40 @@ class LettaMemory:
                 ),
                 abandon_on_cancel=True,
             )
-            return True
-        except Exception:
-            logger.exception(
-                "Letta memory update failed for scope %s",
-                resolved.display_key,
-            )
-            return False
+        except Exception as exc:
+            raise self._operation_error(exc, "write") from exc
+        return True
+
+    @staticmethod
+    def _operation_error(exc: Exception, operation: str) -> MemoryOperationError:
+        if isinstance(exc, MemoryOperationError):
+            return exc
+
+        status = getattr(exc, "status_code", None)
+        if status is None:
+            response = getattr(exc, "response", None)
+            status = getattr(response, "status_code", None)
+        try:
+            status_code = int(status) if status is not None else None
+        except (TypeError, ValueError):
+            status_code = None
+
+        name = type(exc).__name__.lower()
+        if isinstance(exc, TimeoutError) or "timeout" in name:
+            return MemoryOperationError("letta_timeout")
+        if status_code in {401, 403}:
+            return MemoryOperationError("letta_auth_failed")
+        if status_code == 404:
+            return MemoryOperationError("letta_agent_not_found")
+        if status_code == 429:
+            return MemoryOperationError("letta_rate_limited")
+        if status_code is not None and status_code >= 500:
+            return MemoryOperationError("letta_server_error")
+        if status_code is not None and status_code >= 400:
+            return MemoryOperationError(f"letta_{operation}_rejected")
+        if "connection" in name or "connect" in name:
+            return MemoryOperationError("letta_unavailable")
+        return MemoryOperationError(f"letta_{operation}_failed")
 
     @staticmethod
     def _extract_text(response: Any) -> str:
