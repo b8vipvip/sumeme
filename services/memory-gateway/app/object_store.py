@@ -10,7 +10,7 @@ import boto3
 from botocore.client import Config
 from botocore.exceptions import BotoCoreError, ClientError
 
-from .config import Settings
+from .object_config import ObjectAccessSettings
 from .objects import ObjectRecord
 
 
@@ -51,7 +51,7 @@ class S3ObjectStore:
     gateway never trusts a client-supplied completion result.
     """
 
-    def __init__(self, settings: Settings):
+    def __init__(self, settings: ObjectAccessSettings):
         self.bucket = settings.rustfs_private_bucket
         self.expires_in_seconds = settings.object_presign_ttl_seconds
         self.max_size_bytes = settings.object_max_size_bytes
@@ -116,7 +116,6 @@ class S3ObjectStore:
         )
 
     def _verify_upload_sync(self, record: ObjectRecord) -> VerifiedObject:
-        response: dict[str, Any] | None = None
         body: Any = None
         try:
             response = self._internal.get_object(
@@ -188,7 +187,9 @@ class S3ObjectStore:
         try:
             self._internal.delete_object(Bucket=self.bucket, Key=record.object_key)
         except ClientError as exc:
-            status = int((exc.response.get("ResponseMetadata") or {}).get("HTTPStatusCode") or 0)
+            status = int(
+                (exc.response.get("ResponseMetadata") or {}).get("HTTPStatusCode") or 0
+            )
             if status == 404:
                 return
             raise self._translate_error(exc, "object_delete_failed") from exc
@@ -204,7 +205,9 @@ class S3ObjectStore:
     @staticmethod
     def _translate_error(exc: Exception, fallback: str) -> ObjectStoreError:
         if isinstance(exc, ClientError):
-            status = int((exc.response.get("ResponseMetadata") or {}).get("HTTPStatusCode") or 0)
+            status = int(
+                (exc.response.get("ResponseMetadata") or {}).get("HTTPStatusCode") or 0
+            )
             code = str((exc.response.get("Error") or {}).get("Code") or "").lower()
             if status == 404 or code in {"nosuchkey", "notfound", "nosuchbucket"}:
                 return ObjectStoreError("object_blob_not_found", status_code=404)
