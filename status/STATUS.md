@@ -1,6 +1,6 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-30T16:19:38+08:00
+- **采集时间：** 2026-07-30T16:58:21+08:00
 - **总体状态：** `healthy`
 - **开发阶段：** `deployment_behind_main`
 - **线上版本：** `fe9e4a37401cdda1288226990236536cba85288b`
@@ -14,37 +14,37 @@
 - 本地网关：`ok`
 - 公网入口：`ok`
 - 磁盘使用：`82.8%`，剩余 5.0 GiB
-- 内存使用：`49.9%`，可用 1.8 GiB
+- 内存使用：`51.6%`，可用 1.8 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| letta | running | healthy | Up 5 minutes (healthy) |
-| lobe | running | - | Up 27 hours |
-| memory-gateway | running | healthy | Up 35 seconds (healthy) |
-| postgresql | running | healthy | Up 28 hours (healthy) |
-| qdrant | running | healthy | Up 28 hours (healthy) |
-| redis | running | healthy | Up 28 hours (healthy) |
+| letta | running | healthy | Up 44 minutes (healthy) |
+| lobe | running | - | Up 28 hours |
+| memory-gateway | running | healthy | Up 39 minutes (healthy) |
+| postgresql | running | healthy | Up 29 hours (healthy) |
+| qdrant | running | healthy | Up 29 hours (healthy) |
+| redis | running | healthy | Up 29 hours (healthy) |
 | rustfs | running | healthy | Up 4 hours (healthy) |
-| searxng | running | - | Up 28 hours |
+| searxng | running | - | Up 29 hours |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| CI | queued | agent/fix-redacted-log-stream | 2026-07-30T08:19:23Z |
-| Publish project status | in_progress | main | 2026-07-30T08:19:17Z |
-| CI | in_progress | agent/fix-redacted-log-stream | 2026-07-30T08:19:08Z |
-| CI | in_progress | agent/fix-redacted-log-stream | 2026-07-30T08:19:07Z |
-| CI | success | agent/fix-redacted-log-stream | 2026-07-30T08:19:10Z |
-| CI | success | agent/ghs-emergency-diagnose | 2026-07-30T08:18:23Z |
-| GHS relay capability probe | success | agent/ghs-emergency-diagnose | 2026-07-30T08:17:58Z |
-| CI | success | agent/ghs-emergency-diagnose | 2026-07-30T08:17:10Z |
+| Publish project status | in_progress | main | 2026-07-30T08:57:51Z |
+| CI | failure | agent/ghs-emergency-diagnose | 2026-07-30T08:53:15Z |
+| GHS emergency diagnostics | failure | agent/ghs-emergency-diagnose | 2026-07-30T08:53:06Z |
+| GHS emergency diagnostics | failure | agent/ghs-emergency-diagnose | 2026-07-30T08:50:48Z |
+| CI | failure | agent/ghs-emergency-diagnose | 2026-07-30T08:50:56Z |
+| GHS relay capability probe | failure | agent/ghs-emergency-diagnose | 2026-07-30T08:50:46Z |
+| CI | failure | agent/ghs-emergency-diagnose | 2026-07-30T08:50:34Z |
+| Smoke production | success | main | 2026-07-30T08:57:40Z |
 
 ## 开放 PR
 
-- #36 Run one-shot read-only GHS production diagnosis (`agent/ghs-live-diagnose` → `main`)
+- #38 Fix bounded redacted production log streaming (`agent/fix-redacted-log-stream` → `main`)
 
 ## 开放 Issue
 
