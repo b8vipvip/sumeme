@@ -1,10 +1,12 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-07-30T11:27:35+08:00",
+  "generated_at": "2026-07-30T11:36:32+08:00",
   "repository": "b8vipvip/sumeme",
-  "overall": "healthy",
+  "overall": "degraded",
   "project_stage": "deployment_behind_main",
-  "reasons": [],
+  "reasons": [
+    "磁盘使用率达到 80% 警戒线"
+  ],
   "deployment_in_sync": false,
   "deployment": {
     "current_sha": "fe9e4a37401cdda1288226990236536cba85288b",
@@ -52,7 +54,7 @@
       "name": "sumeme-lobehub",
       "state": "running",
       "health": "",
-      "status": "Up 22 hours",
+      "status": "Up 23 hours",
       "critical": true
     },
     {
@@ -60,7 +62,7 @@
       "name": "sumeme-memory-gateway",
       "state": "running",
       "health": "healthy",
-      "status": "Up 34 seconds (healthy)",
+      "status": "Up 26 seconds (healthy)",
       "critical": true
     },
     {
@@ -92,7 +94,7 @@
       "name": "sumeme-rustfs",
       "state": "running",
       "health": "healthy",
-      "status": "Up 29 minutes (healthy)",
+      "status": "Up 38 minutes (healthy)",
       "critical": true
     },
     {
@@ -107,19 +109,19 @@
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 33673900032,
-      "free_bytes": 6640496640,
-      "used_percent": 79.9
+      "used_bytes": 34290180096,
+      "free_bytes": 6024216576,
+      "used_percent": 81.3
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 2199064576,
-      "used_percent": 43.7
+      "available_bytes": 2237333504,
+      "used_percent": 42.7
     }
   },
   "github": {
     "default_branch": "main",
-    "latest_main_sha": "7e0eb3a682f83919030b5e164198a68fe63ce8ff",
+    "latest_main_sha": "9244676f94a67cadb05d6ccc61811476209f1f12",
     "open_pull_requests": [],
     "open_issues": [
       {
@@ -143,29 +145,94 @@
     ],
     "recent_workflows": [
       {
-        "name": "CI",
-        "display_title": "test: enforce private vault bucket policy",
-        "event": "push",
-        "status": "queued",
-        "conclusion": null,
-        "head_branch": "agent/private-vault-object-bucket",
-        "head_sha": "5cb16f338cb67da3f5afd3167d89d4073a96f312",
-        "run_number": 247,
-        "created_at": "2026-07-30T03:27:25Z",
-        "updated_at": "2026-07-30T03:27:25Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511230541"
-      },
-      {
         "name": "Publish project status",
         "display_title": "Publish project status",
         "event": "workflow_run",
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
+        "head_sha": "9244676f94a67cadb05d6ccc61811476209f1f12",
+        "run_number": 319,
+        "created_at": "2026-07-30T03:36:16Z",
+        "updated_at": "2026-07-30T03:36:20Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511626078"
+      },
+      {
+        "name": "CI",
+        "display_title": "Add a private RustFS bucket for scoped vault objects",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/align-smoke-relay-timeouts",
+        "head_sha": "9244676f94a67cadb05d6ccc61811476209f1f12",
+        "run_number": 251,
+        "created_at": "2026-07-30T03:35:30Z",
+        "updated_at": "2026-07-30T03:36:16Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511592370"
+      },
+      {
+        "name": "CI",
+        "display_title": "Add a private RustFS bucket for scoped vault objects",
+        "event": "push",
+        "status": "in_progress",
+        "conclusion": null,
+        "head_branch": "main",
+        "head_sha": "9244676f94a67cadb05d6ccc61811476209f1f12",
+        "run_number": 250,
+        "created_at": "2026-07-30T03:31:56Z",
+        "updated_at": "2026-07-30T03:36:15Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511431534"
+      },
+      {
+        "name": "CI",
+        "display_title": "Add a private RustFS bucket for scoped vault objects",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/private-vault-object-bucket",
+        "head_sha": "99547b2583c22c6bbdcab15ce4bde30dff4fbe0c",
+        "run_number": 249,
+        "created_at": "2026-07-30T03:28:55Z",
+        "updated_at": "2026-07-30T03:29:37Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511294742"
+      },
+      {
+        "name": "CI",
+        "display_title": "docs: define private vault object storage migration",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/private-vault-object-bucket",
+        "head_sha": "99547b2583c22c6bbdcab15ce4bde30dff4fbe0c",
+        "run_number": 248,
+        "created_at": "2026-07-30T03:28:17Z",
+        "updated_at": "2026-07-30T03:28:53Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511267019"
+      },
+      {
+        "name": "CI",
+        "display_title": "test: enforce private vault bucket policy",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/private-vault-object-bucket",
+        "head_sha": "5cb16f338cb67da3f5afd3167d89d4073a96f312",
+        "run_number": 247,
+        "created_at": "2026-07-30T03:27:25Z",
+        "updated_at": "2026-07-30T03:28:07Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511230541"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
         "head_sha": "7e0eb3a682f83919030b5e164198a68fe63ce8ff",
         "run_number": 318,
         "created_at": "2026-07-30T03:27:11Z",
-        "updated_at": "2026-07-30T03:27:23Z",
+        "updated_at": "2026-07-30T03:27:47Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511220749"
       },
       {
@@ -185,13 +252,13 @@
         "name": "CI",
         "display_title": "docs: configure private vault object bucket",
         "event": "push",
-        "status": "in_progress",
-        "conclusion": null,
+        "status": "completed",
+        "conclusion": "success",
         "head_branch": "agent/private-vault-object-bucket",
         "head_sha": "387f98b896f1e743d7cfa67fc9243be7e286b708",
         "run_number": 246,
         "created_at": "2026-07-30T03:26:52Z",
-        "updated_at": "2026-07-30T03:27:02Z",
+        "updated_at": "2026-07-30T03:27:34Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511206167"
       },
       {
@@ -232,99 +299,34 @@
         "created_at": "2026-07-30T03:24:46Z",
         "updated_at": "2026-07-30T03:25:26Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511113445"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "7e0eb3a682f83919030b5e164198a68fe63ce8ff",
-        "run_number": 316,
-        "created_at": "2026-07-30T03:18:24Z",
-        "updated_at": "2026-07-30T03:18:56Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30510825275"
-      },
-      {
-        "name": "CI",
-        "display_title": "ci: refresh one-time deployment observation",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/observe-main-deploy-2",
-        "head_sha": "9355dbb8f9d49b8c4e2a86b8f016fe8cde4cf482",
-        "run_number": 243,
-        "created_at": "2026-07-30T03:18:19Z",
-        "updated_at": "2026-07-30T03:19:11Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30510821909"
-      },
-      {
-        "name": "Observe main deployment once",
-        "display_title": "ci: refresh one-time deployment observation",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/observe-main-deploy-2",
-        "head_sha": "9355dbb8f9d49b8c4e2a86b8f016fe8cde4cf482",
-        "run_number": 3,
-        "created_at": "2026-07-30T03:18:18Z",
-        "updated_at": "2026-07-30T03:18:34Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30510821588"
-      },
-      {
-        "name": "CI",
-        "display_title": "Add persistent vault ownership and storage policies",
-        "event": "push",
-        "status": "in_progress",
-        "conclusion": null,
-        "head_branch": "main",
-        "head_sha": "7e0eb3a682f83919030b5e164198a68fe63ce8ff",
-        "run_number": 242,
-        "created_at": "2026-07-30T03:17:35Z",
-        "updated_at": "2026-07-30T03:27:12Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30510789861"
-      },
-      {
-        "name": "CI",
-        "display_title": "Add persistent vault ownership and storage policies",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/vault-registry-storage-policy",
-        "head_sha": "bb118982b9a06f513d49127dfe149366f6b0e690",
-        "run_number": 241,
-        "created_at": "2026-07-30T03:16:04Z",
-        "updated_at": "2026-07-30T03:16:40Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30510723606"
       }
     ]
   },
   "collector": {
     "event_name": "workflow_run",
     "workflow": "Publish project status",
-    "run_id": "30511220749"
+    "run_id": "30511626078"
   },
   "freshness": {
     "age_seconds_at_publish": 0,
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-30T11:27:35+08:00"
+    "generated_at": "2026-07-30T11:36:32+08:00"
   },
   "reliability": {
     "disk": {
-      "level": "ok",
+      "level": "warning",
       "warning_percent": 80.0,
       "failure_percent": 90.0,
       "minimum_free_bytes": 3221225472
     },
     "smoke_test": {
       "schema_version": 5,
-      "generated_at": "2026-07-30T11:26:55+08:00",
-      "started_at": "2026-07-30T11:25:16+08:00",
-      "finished_at": "2026-07-30T11:26:55+08:00",
-      "duration_seconds": 99,
+      "generated_at": "2026-07-30T11:35:43+08:00",
+      "started_at": "2026-07-30T11:32:41+08:00",
+      "finished_at": "2026-07-30T11:35:43+08:00",
+      "duration_seconds": 182,
       "overall": "failure",
       "deployment_gate": "failure",
       "memory_provider": "mempalace-letta",
@@ -354,7 +356,7 @@
         "letta_recall_delayed",
         "service_scope_verification_failed"
       ],
-      "age_seconds_at_publish": 40,
+      "age_seconds_at_publish": 49,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }
