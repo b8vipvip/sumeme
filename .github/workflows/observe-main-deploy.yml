@@ -5,7 +5,6 @@ on:
     branches: [agent/observe-main-deploy-2]
 
 permissions:
-  actions: read
   contents: write
 
 jobs:
@@ -13,71 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Publish current exact main CI jobs
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const owner = context.repo.owner;
-            const repo = context.repo.repo;
-            const targetSha = '9e14dc225588fbc6c0b88ebb1c2552e30f1fca6e';
-            const runs = await github.rest.actions.listWorkflowRuns({
-              owner,
-              repo,
-              workflow_id: 'ci.yml',
-              branch: 'main',
-              event: 'push',
-              per_page: 30,
-            });
-            const selectedRun = runs.data.workflow_runs.find(
-              (run) => run.head_sha === targetSha,
-            ) || null;
-            let jobs = [];
-            if (selectedRun) {
-              const response = await github.rest.actions.listJobsForWorkflowRun({
-                owner,
-                repo,
-                run_id: selectedRun.id,
-                per_page: 100,
-                filter: 'latest',
-              });
-              jobs = response.data.jobs;
-            }
-            const result = {
-              schema_version: 1,
-              generated_at: new Date().toISOString(),
-              target_sha: targetSha,
-              run: selectedRun ? {
-                id: selectedRun.id,
-                number: selectedRun.run_number,
-                status: selectedRun.status,
-                conclusion: selectedRun.conclusion,
-                created_at: selectedRun.created_at,
-              } : null,
-              jobs: jobs.map((job) => ({
-                id: job.id,
-                name: job.name,
-                status: job.status,
-                conclusion: job.conclusion,
-                failed_steps: (job.steps || [])
-                  .filter((step) => step.conclusion && !['success', 'skipped'].includes(step.conclusion))
-                  .map((step) => ({name: step.name, conclusion: step.conclusion})),
-              })),
-            };
-            const path = 'observer/provider-proxy-deploy.json';
-            let sha;
-            try {
-              const current = await github.rest.repos.getContent({owner, repo, path, ref: 'ops-status'});
-              if (!Array.isArray(current.data)) sha = current.data.sha;
-            } catch (error) {
-              if (error.status !== 404) throw error;
-            }
-            await github.rest.repos.createOrUpdateFileContents({
-              owner, repo, path, branch: 'ops-status',
-              message: 'observer: record provider proxy deployment snapshot',
-              content: Buffer.from(JSON.stringify(result, null, 2) + '\n').toString('base64'),
-              sha,
-            });
-
       - name: Configure pinned SSH trust
         env:
           SSH_HOST: ${{ vars.SUMEME_VPS_HOST }}
@@ -106,7 +40,7 @@ jobs:
           EOF
           chmod 600 "${HOME}/.ssh/config"
 
-      - name: Read sanitized runtime state
+      - name: Read sanitized runtime and process state
         shell: bash
         run: |
           set -euo pipefail
@@ -117,9 +51,10 @@ jobs:
 
           deploy = Path('/opt/sumeme/.deploy')
           result = {
-              'schema_version': 1,
+              'schema_version': 2,
               'current_sha': None,
               'lock_owner': {},
+              'processes': [],
               'containers': [],
               'smoke': None,
           }
@@ -134,6 +69,41 @@ jobs:
                   key, value = line.split('=', 1)
                   if key in {'pid', 'target_sha', 'started_at'}:
                       result['lock_owner'][key] = value[:120]
+
+          owner_pid = int(result['lock_owner'].get('pid') or 0)
+          completed = subprocess.run(
+              ['ps', '-eo', 'pid=,ppid=,etimes=,comm='],
+              check=False,
+              capture_output=True,
+              text=True,
+          )
+          rows = []
+          for line in completed.stdout.splitlines():
+              parts = line.split(None, 3)
+              if len(parts) != 4:
+                  continue
+              try:
+                  pid, ppid, elapsed = map(int, parts[:3])
+              except ValueError:
+                  continue
+              rows.append((pid, ppid, elapsed, parts[3][:80]))
+          descendants = {owner_pid} if owner_pid else set()
+          changed = True
+          while changed:
+              changed = False
+              for pid, ppid, _elapsed, _command in rows:
+                  if ppid in descendants and pid not in descendants:
+                      descendants.add(pid)
+                      changed = True
+          for pid, ppid, elapsed, command in rows:
+              if pid in descendants:
+                  result['processes'].append({
+                      'pid': pid,
+                      'ppid': ppid,
+                      'elapsed_seconds': elapsed,
+                      'command': command,
+                  })
+
           completed = subprocess.run(
               ['docker', 'ps', '--format', '{{json .}}'],
               check=False,
