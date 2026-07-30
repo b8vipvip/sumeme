@@ -242,45 +242,76 @@ class Settings(BaseSettings):
         ):
             raise ValueError(
                 "IDENTITY_JWKS_URL must use HTTPS unless explicitly allowed "
-                "for local testing"
+                "for development"
             )
+        if jwks_json:
+            try:
+                value = json.loads(jwks_json)
+            except json.JSONDecodeError as exc:
+                raise ValueError("IDENTITY_JWKS_JSON must be valid JSON") from exc
+            keys = value.get("keys") if isinstance(value, dict) else None
+            if not isinstance(keys, list) or not keys:
+                raise ValueError(
+                    "IDENTITY_JWKS_JSON must contain a non-empty keys array"
+                )
+            private_fields = ("d", "p", "q", "dp", "dq", "qi")
+            if any(
+                isinstance(key, dict)
+                and any(field in key for field in private_fields)
+                for key in keys
+            ):
+                raise ValueError(
+                    "IDENTITY_JWKS_JSON must contain public keys only"
+                )
+
+        if not self.identity_vaults_claim.strip():
+            raise ValueError("IDENTITY_VAULTS_CLAIM cannot be empty")
+        if not self.identity_default_vault_claim.strip():
+            raise ValueError("IDENTITY_DEFAULT_VAULT_CLAIM cannot be empty")
 
     @property
-    def identity_algorithm_list(self) -> tuple[str, ...]:
-        return tuple(
+    def identity_algorithm_list(self) -> list[str]:
+        return [
             algorithm.strip()
             for algorithm in self.identity_allowed_algorithms.split(",")
             if algorithm.strip()
-        )
+        ]
 
     @property
     def relay_chat_url(self) -> str:
-        return f"{self.openai_relay_base_url.rstrip('/')}/chat/completions"
+        return self._join_url(self.openai_relay_base_url, "/chat/completions")
 
     @property
     def relay_models_url(self) -> str:
-        return f"{self.openai_relay_base_url.rstrip('/')}/models"
+        return self._join_url(self.openai_relay_base_url, "/models")
+
+    @property
+    def relay_embeddings_url(self) -> str:
+        return self._join_url(self.openai_relay_base_url, "/embeddings")
+
+    @property
+    def mempalace_collection_name(self) -> str:
+        return f"{self.mempalace_qdrant_namespace}_mempalace_remote_v1"
 
     @property
     def supermemory_documents_url(self) -> str:
-        return (
-            f"{self.supermemory_base_url.rstrip('/')}"
-            f"/{self.supermemory_documents_path.lstrip('/')}"
+        return self._join_url(
+            self.supermemory_base_url,
+            self.supermemory_documents_path,
         )
 
     @property
     def supermemory_search_url(self) -> str:
-        return (
-            f"{self.supermemory_base_url.rstrip('/')}"
-            f"/{self.supermemory_search_path.lstrip('/')}"
+        return self._join_url(
+            self.supermemory_base_url,
+            self.supermemory_search_path,
         )
 
-    @property
-    def static_jwks(self) -> dict[str, object] | None:
-        value = self.identity_jwks_json.get_secret_value().strip()
-        return json.loads(value) if value else None
+    @staticmethod
+    def _join_url(base_url: str, path: str) -> str:
+        return f"{base_url.rstrip('/')}/{path.lstrip('/')}"
 
 
-@lru_cache(maxsize=1)
+@lru_cache
 def get_settings() -> Settings:
     return Settings()
