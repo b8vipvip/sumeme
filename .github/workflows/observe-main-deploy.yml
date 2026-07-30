@@ -27,8 +27,8 @@ jobs:
             ];
 
             const lines = [
-              '<!-- sumeme-main-deploy-observer-2-direct -->',
-              '## Main CI/部署一次性直接观察结果',
+              '<!-- sumeme-main-deploy-observer-3-direct -->',
+              '## Main CI/部署一次性直接观察结果（第三次）',
               '',
               `观察时间：${new Date().toISOString()}`,
               '',
@@ -43,7 +43,7 @@ jobs:
                   repo,
                   workflow_id: workflowId,
                   branch: 'main',
-                  per_page: 8,
+                  per_page: 10,
                 });
                 runs = response.data.workflow_runs;
               } catch (error) {
