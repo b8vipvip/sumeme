@@ -17,6 +17,14 @@ _SAFE_IDENTITY_ALGORITHMS = {
     "ES384",
     "EdDSA",
 }
+_STORAGE_MODE_ALIASES = {
+    "local": "local-only",
+    "local_only": "local-only",
+    "localonly": "local-only",
+    "server": "cloud",
+    "remote": "cloud",
+    "mixed": "hybrid",
+}
 
 
 class Settings(BaseSettings):
@@ -41,6 +49,9 @@ class Settings(BaseSettings):
     memory_recall_limit: int = Field(default=6, ge=1, le=30)
     memory_context_max_chars: int = Field(default=24000, ge=1000, le=200000)
     store_assistant_verbatim: bool = True
+
+    vault_registry_path: str = "/data/gateway/vaults.sqlite3"
+    default_storage_mode: str = "cloud"
 
     identity_mode: str = "legacy-client-asserted"
     identity_trusted_upstream_issuer: str = "lobehub-internal"
@@ -83,6 +94,7 @@ class Settings(BaseSettings):
     @model_validator(mode="after")
     def validate_runtime_modes(self) -> Settings:
         self._validate_memory_provider()
+        self._validate_storage()
         self._validate_identity()
         return self
 
@@ -115,6 +127,20 @@ class Settings(BaseSettings):
             raise ValueError(
                 "SUPERMEMORY_SEARCH_MODE must be hybrid, memories, or documents"
             )
+
+    def _validate_storage(self) -> None:
+        raw_mode = self.default_storage_mode.strip().lower()
+        mode = _STORAGE_MODE_ALIASES.get(raw_mode, raw_mode)
+        if mode not in {"local-only", "cloud", "hybrid"}:
+            raise ValueError(
+                "DEFAULT_STORAGE_MODE must be local-only, cloud, or hybrid"
+            )
+        self.default_storage_mode = mode
+
+        path = self.vault_registry_path.strip()
+        if not path or not path.startswith("/"):
+            raise ValueError("VAULT_REGISTRY_PATH must be an absolute path")
+        self.vault_registry_path = path
 
     def _validate_identity(self) -> None:
         aliases = {

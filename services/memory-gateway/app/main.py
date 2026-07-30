@@ -18,6 +18,12 @@ from .content import assistant_text, flatten_content, latest_user_message, safe_
 from .identity import IdentityError, IdentityResolver
 from .memory import MemoryCoordinator
 from .memory_scope import MemoryScope
+from .vaults import (
+    VaultPolicy,
+    VaultRegistry,
+    VaultRegistryError,
+    should_auto_register_vault,
+)
 
 settings = get_settings()
 
@@ -36,6 +42,11 @@ async def lifespan(app: FastAPI):
     )
     app.state.memory = MemoryCoordinator(settings)
     app.state.identity = IdentityResolver(settings)
+    app.state.vaults = VaultRegistry(
+        settings.vault_registry_path,
+        settings.default_storage_mode,
+    )
+    await app.state.vaults.initialize()
     try:
         yield
     finally:
@@ -43,7 +54,7 @@ async def lifespan(app: FastAPI):
         await app.state.http.aclose()
 
 
-app = FastAPI(title="SuMeMe Memory Gateway", version="0.6.0", lifespan=lifespan)
+app = FastAPI(title="SuMeMe Memory Gateway", version="0.7.0", lifespan=lifespan)
 
 
 def _bearer_token(authorization: str | None) -> str:
@@ -90,6 +101,16 @@ def resolve_admin_scope(body: dict[str, Any]) -> MemoryScope:
     )
 
 
+async def resolve_vault_policy(scope: MemoryScope) -> VaultPolicy:
+    try:
+        return await app.state.vaults.ensure(
+            scope,
+            allow_create=should_auto_register_vault(scope, settings.identity_mode),
+        )
+    except VaultRegistryError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=exc.code) from exc
+
+
 def resolve_conversation_id(request: Request, payload: dict[str, Any]) -> str:
     metadata = payload.get("metadata") or {}
     return safe_id(
@@ -113,18 +134,20 @@ async def health() -> dict[str, Any]:
 
     if jwt_mode:
         account_source = "verified-sub"
-        vault_authorization = "claim-enforced"
+        vault_authorization = "claim-and-registry-enforced"
     elif trusted_user_mode:
         account_source = "gateway-authenticated-openai-user"
-        vault_authorization = "account-owned-namespace"
+        vault_authorization = "registry-enforced"
     else:
         account_source = "client-asserted"
-        vault_authorization = "client-asserted"
+        vault_authorization = "legacy-registry-autocreate"
 
     return {
         "status": "ok",
         "memory_provider": app.state.memory.provider_name,
-        "memory_scope_schema": 1,
+        "memory_scope_schema": 2,
+        "vault_registry": "sqlite",
+        "default_storage_mode": settings.default_storage_mode,
         "identity_enforcement": mode,
         "identity_account_source": account_source,
         "identity_vault_authorization": vault_authorization,
@@ -168,12 +191,15 @@ async def chat_completions(
         scope = await app.state.identity.resolve_chat_scope(request.headers, payload)
     except IdentityError as exc:
         raise HTTPException(status_code=exc.status_code, detail=exc.code) from exc
+    policy = await resolve_vault_policy(scope)
 
     conversation_id = resolve_conversation_id(request, payload)
     latest = latest_user_message(messages)
     query = flatten_content((latest or {}).get("content"))
 
-    memory_context = await app.state.memory.recall(query, scope)
+    memory_context = ""
+    if policy.allows_cloud_recall:
+        memory_context = await app.state.memory.recall(query, scope)
     enriched = app.state.memory.inject_context(payload, memory_context)
 
     if payload.get("stream"):
@@ -182,10 +208,15 @@ async def chat_completions(
                 request_payload=payload,
                 enriched_payload=enriched,
                 scope=scope,
+                policy=policy,
                 conversation_id=conversation_id,
             ),
             media_type="text/event-stream",
-            headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+            headers={
+                "Cache-Control": "no-cache",
+                "X-Accel-Buffering": "no",
+                **_vault_policy_headers(policy),
+            },
         )
 
     try:
@@ -198,7 +229,7 @@ async def chat_completions(
         raise HTTPException(status_code=502, detail=f"relay unavailable: {exc}") from exc
 
     data = _json_or_error(response)
-    if 200 <= response.status_code < 300:
+    if 200 <= response.status_code < 300 and policy.allows_automatic_cloud_write:
         asyncio.create_task(
             _remember_background(
                 scope=scope,
@@ -207,11 +238,48 @@ async def chat_completions(
                 assistant_output=assistant_text(data),
             )
         )
+    response_headers = _safe_response_headers(response)
+    response_headers.update(_vault_policy_headers(policy))
     return JSONResponse(
         status_code=response.status_code,
         content=data,
-        headers=_safe_response_headers(response),
+        headers=response_headers,
     )
+
+
+@app.put("/api/vaults/policy")
+async def upsert_vault_policy(
+    request: Request,
+    authorization: str | None = Header(default=None),
+):
+    require_admin_auth(authorization)
+    body = await request.json()
+    scope = resolve_admin_scope(body)
+    storage_mode = str(body.get("storage_mode") or "")
+    try:
+        policy = await app.state.vaults.upsert(scope, storage_mode)
+    except VaultRegistryError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=exc.code) from exc
+    return {"vault": policy.as_dict()}
+
+
+@app.post("/api/vaults/list")
+async def list_vault_policies(
+    request: Request,
+    authorization: str | None = Header(default=None),
+):
+    require_admin_auth(authorization)
+    body = await request.json()
+    principal_type = str(body.get("principal_type") or "").strip() or None
+    account_id = str(body.get("account_id") or "").strip() or None
+    try:
+        policies = await app.state.vaults.list(
+            principal_type=principal_type,
+            account_id=account_id,
+        )
+    except VaultRegistryError as exc:
+        raise HTTPException(status_code=exc.status_code, detail=exc.code) from exc
+    return {"vaults": [policy.as_dict() for policy in policies]}
 
 
 @app.post("/api/memory/checkpoint")
@@ -224,6 +292,15 @@ async def memory_checkpoint(
     require_admin_auth(authorization)
     body = await request.json()
     scope = resolve_admin_scope(body)
+    policy = await resolve_vault_policy(scope)
+    if policy.is_local_only:
+        raise HTTPException(status_code=409, detail="vault_local_only")
+    if policy.requires_sanitized_cloud_write and body.get("sanitized_for_cloud") is not True:
+        raise HTTPException(
+            status_code=409,
+            detail="vault_sanitized_cloud_write_required",
+        )
+
     request_payload = body.get("request_payload")
     if not isinstance(request_payload, dict):
         raise HTTPException(status_code=400, detail="request_payload must be an object")
@@ -246,6 +323,7 @@ async def memory_checkpoint(
     )
     return {
         "scope": scope.display_key,
+        "storage_mode": policy.storage_mode,
         "write": result.as_dict(),
     }
 
@@ -259,11 +337,16 @@ async def memory_search(
     body = await request.json()
     query = str(body.get("query") or "")
     scope = resolve_admin_scope(body)
+    policy = await resolve_vault_policy(scope)
 
+    context = ""
+    if policy.allows_cloud_recall:
+        context = await app.state.memory.recall(query, scope)
     return {
         "provider": app.state.memory.provider_name,
         "scope": scope.display_key,
-        "context": await app.state.memory.recall(query, scope),
+        "storage_mode": policy.storage_mode,
+        "context": context,
     }
 
 
@@ -301,6 +384,7 @@ async def _stream_relay(
     request_payload: dict[str, Any],
     enriched_payload: dict[str, Any],
     scope: MemoryScope,
+    policy: VaultPolicy,
     conversation_id: str,
 ) -> AsyncIterator[bytes]:
     assistant_parts: list[str] = []
@@ -339,14 +423,15 @@ async def _stream_relay(
         yield b"data: [DONE]\n\n"
         return
 
-    asyncio.create_task(
-        _remember_background(
-            scope=scope,
-            conversation_id=conversation_id,
-            request_payload=request_payload,
-            assistant_output="".join(assistant_parts),
+    if policy.allows_automatic_cloud_write:
+        asyncio.create_task(
+            _remember_background(
+                scope=scope,
+                conversation_id=conversation_id,
+                request_payload=request_payload,
+                assistant_output="".join(assistant_parts),
+            )
         )
-    )
 
 
 def _capture_sse_text(line: bytes, parts: list[str]) -> None:
@@ -388,3 +473,15 @@ def _safe_response_headers(response: httpx.Response) -> dict[str, str]:
         if value := response.headers.get(key):
             allowed[key] = value
     return allowed
+
+
+def _vault_policy_headers(policy: VaultPolicy) -> dict[str, str]:
+    write_policy = "automatic"
+    if policy.is_local_only:
+        write_policy = "disabled-local-only"
+    elif policy.requires_sanitized_cloud_write:
+        write_policy = "explicit-sanitized-only"
+    return {
+        "X-SuMeMe-Storage-Mode": policy.storage_mode,
+        "X-SuMeMe-Memory-Write": write_policy,
+    }
