@@ -74,6 +74,7 @@ jobs:
           import datetime as dt
           import json
           import os
+          import re
           import subprocess
           import urllib.error
           import urllib.request
@@ -87,6 +88,23 @@ jobs:
                   return path.read_text(encoding='utf-8').strip()
               except OSError:
                   return ''
+
+          def read_environment(path: Path) -> dict[str, str]:
+              values: dict[str, str] = {}
+              try:
+                  lines = path.read_text(encoding='utf-8').splitlines()
+              except OSError:
+                  return values
+              for raw in lines:
+                  line = raw.strip()
+                  if not line or line.startswith('#') or '=' not in line:
+                      continue
+                  key, value = line.split('=', 1)
+                  value = value.strip()
+                  if len(value) >= 2 and value[0] == value[-1] and value[0] in {'"', "'"}:
+                      value = value[1:-1]
+                  values[key.strip()] = value
+              return values
 
           def run(command: list[str]) -> dict[str, object]:
               try:
@@ -113,6 +131,50 @@ jobs:
                       return {'ok': 200 <= response.status < 300, 'status': response.status}
               except urllib.error.HTTPError as exc:
                   return {'ok': False, 'status': exc.code}
+              except Exception as exc:
+                  return {'ok': False, 'status': None, 'error': type(exc).__name__}
+
+          def safe_token(value: object) -> str | None:
+              text = str(value or '').strip()
+              return text if re.fullmatch(r'[A-Za-z0-9._:-]{1,120}', text) else None
+
+          def classify_body(body: bytes) -> dict[str, str]:
+              try:
+                  value = json.loads(body.decode('utf-8', errors='replace'))
+              except (json.JSONDecodeError, UnicodeDecodeError):
+                  return {}
+              if not isinstance(value, dict):
+                  return {}
+              result: dict[str, str] = {}
+              detail = safe_token(value.get('detail'))
+              if detail:
+                  result['detail'] = detail
+              error = value.get('error')
+              if isinstance(error, dict):
+                  code = safe_token(error.get('code'))
+                  error_type = safe_token(error.get('type'))
+                  if code:
+                      result['error_code'] = code
+                  if error_type:
+                      result['error_type'] = error_type
+              return result
+
+          def post_json(url: str, headers: dict[str, str], payload: dict[str, object]) -> dict[str, object]:
+              body = json.dumps(payload, ensure_ascii=False).encode('utf-8')
+              request = urllib.request.Request(url, data=body, method='POST')
+              for key, value in headers.items():
+                  request.add_header(key, value)
+              try:
+                  with urllib.request.urlopen(request, timeout=45) as response:
+                      response_body = response.read(10000)
+                      return {
+                          'ok': 200 <= response.status < 300,
+                          'status': response.status,
+                          **classify_body(response_body),
+                      }
+              except urllib.error.HTTPError as exc:
+                  response_body = exc.read(10000)
+                  return {'ok': False, 'status': exc.code, **classify_body(response_body)}
               except Exception as exc:
                   return {'ok': False, 'status': None, 'error': type(exc).__name__}
 
@@ -157,8 +219,42 @@ jobs:
           except (OSError, json.JSONDecodeError):
               smoke = {'status': 'missing_or_invalid'}
 
+          environment = read_environment(deploy_dir / '.env')
+          relay_base = environment.get('OPENAI_RELAY_BASE_URL', '').rstrip('/')
+          relay_key = environment.get('OPENAI_RELAY_API_KEY', '')
+          gateway_key = environment.get('GATEWAY_API_KEY', '')
+          model = environment.get('OPENAI_CHAT_MODEL', '')
+          probe_payload = {
+              'model': model,
+              'stream': False,
+              'user': '__sumeme_smoke__',
+              'metadata': {
+                  'conversation_id': 'sumeme-ghs-diagnostic',
+                  'vault_id': 'production-smoke',
+                  'device_id': 'ghs-diagnostic',
+              },
+              'messages': [{'role': 'user', 'content': 'Reply with GHS_DIAGNOSTIC_OK only.'}],
+          }
+          probes: dict[str, object] = {}
+          if relay_base and relay_key and model:
+              probes['direct_relay_chat'] = post_json(
+                  f'{relay_base}/chat/completions',
+                  {'Authorization': f'Bearer {relay_key}', 'Content-Type': 'application/json'},
+                  probe_payload,
+              )
+          else:
+              probes['direct_relay_chat'] = {'ok': False, 'status': None, 'error': 'configuration_missing'}
+          if gateway_key and model:
+              probes['local_gateway_chat'] = post_json(
+                  'http://127.0.0.1:8010/v1/chat/completions',
+                  {'Authorization': f'Bearer {gateway_key}', 'Content-Type': 'application/json'},
+                  probe_payload,
+              )
+          else:
+              probes['local_gateway_chat'] = {'ok': False, 'status': None, 'error': 'configuration_missing'}
+
           status = {
-              'schema_version': 1,
+              'schema_version': 2,
               'mode': 'GHS',
               'generated_at': dt.datetime.now(dt.timezone.utc).isoformat(timespec='seconds'),
               'workflow_source_sha': os.environ.get('EXPECTED_MAIN_SHA', ''),
@@ -172,6 +268,7 @@ jobs:
                   'public': http('https://sumeme.mv3.cn/sumeme-health'),
               },
               'services': sorted(services, key=lambda item: str(item.get('service') or '')),
+              'probes': probes,
               'smoke': smoke,
           }
           print(json.dumps(status, ensure_ascii=False, indent=2))
