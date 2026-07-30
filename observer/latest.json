@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-07-30T04:43:34.708Z",
+  "generated_at": "2026-07-30T04:47:16.726Z",
   "workflows": [
     {
       "label": "CI",
@@ -11,8 +11,8 @@
           "run_id": 30514478194,
           "sha": "2419cf12398c2368facf1dc0321f6203a661ed42",
           "event": "push",
-          "status": "in_progress",
-          "conclusion": null,
+          "status": "completed",
+          "conclusion": "failure",
           "created_at": "2026-07-30T04:39:52Z",
           "jobs": [
             {
@@ -39,9 +39,14 @@
             {
               "id": 90781237823,
               "name": "Deploy production (ADOB SSH) / Deploy sumeme via SSH",
-              "status": "in_progress",
-              "conclusion": null,
-              "failed_steps": []
+              "status": "completed",
+              "conclusion": "failure",
+              "failed_steps": [
+                {
+                  "name": "Execute allow-listed project deployment script",
+                  "conclusion": "failure"
+                }
+              ]
             },
             {
               "id": 90781237981,
@@ -675,6 +680,16 @@
       "workflow_id": "publish-status.yml",
       "runs": [
         {
+          "run_number": 324,
+          "run_id": 30514731442,
+          "sha": "2419cf12398c2368facf1dc0321f6203a661ed42",
+          "event": "workflow_run",
+          "status": "in_progress",
+          "conclusion": null,
+          "created_at": "2026-07-30T04:45:27Z",
+          "jobs": []
+        },
+        {
           "run_number": 323,
           "run_id": 30513475427,
           "sha": "a6217df0d2c4e1da6deae642892a72a4d7428c99",
@@ -762,16 +777,6 @@
           "status": "completed",
           "conclusion": "failure",
           "created_at": "2026-07-30T02:58:27Z",
-          "jobs": []
-        },
-        {
-          "run_number": 314,
-          "run_id": 30504434405,
-          "sha": "3c955a64a87bcbdf67130675b321c31d07ee7ed7",
-          "event": "schedule",
-          "status": "completed",
-          "conclusion": "success",
-          "created_at": "2026-07-30T01:01:16Z",
           "jobs": []
         }
       ]
