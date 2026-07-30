@@ -243,8 +243,8 @@ class MemPalaceStore:
         items: list[dict[str, Any]] = []
         for role, content, search_text in raw_items:
             content_hash = hashlib.sha256(content.encode("utf-8")).hexdigest()
-            identity = "\n".join(
-                (scope.storage_key, conversation_id, role, content_hash)
+            identity = (
+                f"{scope.storage_key}\n{conversation_id}\n{role}\n{content_hash}"
             )
             point_uuid = uuid.uuid5(uuid.NAMESPACE_URL, f"sumeme:mempalace:{identity}")
             items.append(
