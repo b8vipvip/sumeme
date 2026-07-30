@@ -40,16 +40,33 @@ Finish the production reliability and isolation work needed before Phase 2 attac
 
 ## Active reliability change
 
+Pull request: `#43`  
 Branch: `agent/ghs-reliability-next`
 
-Changes in progress:
+Implemented on the branch:
 
 - rebuild both `memory-gateway` and `ai-provider-proxy` during normal deployment and rollback;
 - remove the Compose startup dependency that made optional Letta block memory-gateway startup;
 - clear `.deploy/deploying_sha` after rollback and append a rollback history record;
 - add contract tests that lock these behaviors and keep the production workflow explicitly GHS.
 
+Merge status: **blocked pending a real CI run**. Do not merge based on the current zero-step failure.
+
 ## Blocked or deferred stages
+
+### GitHub Actions zero-step startup failure
+
+PR #43 workflow run `30540407563` created all expected jobs, but `gateway`, `provider-proxy`, `reliability` and `compose` failed before GitHub reported any executed steps. The job-log endpoint had no log blob. Both production jobs were correctly skipped for the pull request.
+
+This failure does not prove that the code or tests failed; it also does not count as a successful build.
+
+Handling:
+
+- keep PR #43 open and unmerged;
+- retry when GitHub Actions can start real steps;
+- require all four test jobs to pass before merge;
+- continue independent documentation and design work on separate branches;
+- never bypass the build gate for production deployment code.
 
 ### Main-branch Actions status visibility
 
@@ -83,7 +100,7 @@ The server-side Vault policy exists, but encrypted local Vault storage, local se
 
 ### Phase 1.5 reliability
 
-- [ ] Verify the pull-request CI for `agent/ghs-reliability-next`.
+- [ ] Re-run PR #43 when Actions can execute real steps.
 - [ ] Merge only after gateway, provider-proxy, reliability and Compose jobs pass.
 - [ ] Verify the merge commit's main workflow when a readable run is available.
 - [ ] Deploy through GHS and verify exact production SHA, empty `deploying_sha`, local/public HTTP 200 and new runtime images.
