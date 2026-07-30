@@ -13,7 +13,7 @@ from typing import AsyncIterator
 import anyio
 
 from .object_store import S3ObjectStore
-from .objects import ObjectRecord, ObjectRegistry, ObjectRegistryError
+from .objects import ObjectRecord, ObjectRegistry
 
 logger = logging.getLogger(__name__)
 
