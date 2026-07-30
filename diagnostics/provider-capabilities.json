@@ -5,11 +5,7 @@
     "models_status": 200,
     "configured_model_listed": true,
     "embedding_like_models": [],
-    "embedding_status": 404,
-    "embedding_error": {
-      "type": "bad_response_status_code",
-      "code": "bad_response_status_code"
-    }
+    "probe_exception": "ReadTimeout"
   },
   "letta": {
     "configured_model": "openai/replace_me",
