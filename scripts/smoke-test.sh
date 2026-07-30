@@ -43,6 +43,9 @@ OPENAI_CHAT_MODEL="$(read_env OPENAI_CHAT_MODEL)"
 MEMORY_PROVIDER="$(read_env MEMORY_PROVIDER mempalace-letta)"
 IDENTITY_MODE="$(read_env IDENTITY_MODE legacy-client-asserted)"
 SMOKE_REQUIRE_RECALL="$(read_env SMOKE_REQUIRE_RECALL false)"
+RELAY_TIMEOUT_SECONDS="$(read_env RELAY_TIMEOUT_SECONDS 600)"
+SMOKE_CHAT_TIMEOUT_SECONDS="$(read_env SMOKE_CHAT_TIMEOUT_SECONDS "${RELAY_TIMEOUT_SECONDS}")"
+SMOKE_MEMORY_TIMEOUT_SECONDS="$(read_env SMOKE_MEMORY_TIMEOUT_SECONDS "${RELAY_TIMEOUT_SECONDS}")"
 RUSTFS_ACCESS_KEY="$(read_env RUSTFS_ACCESS_KEY)"
 RUSTFS_SECRET_KEY="$(read_env RUSTFS_SECRET_KEY)"
 RUSTFS_LOBE_BUCKET="$(read_env RUSTFS_LOBE_BUCKET lobe)"
@@ -92,6 +95,15 @@ case "${SMOKE_REQUIRE_RECALL,,}" in
     exit 64
     ;;
 esac
+
+for timeout_name in SMOKE_CHAT_TIMEOUT_SECONDS SMOKE_MEMORY_TIMEOUT_SECONDS; do
+  timeout_value="${!timeout_name}"
+  if [[ ! "${timeout_value}" =~ ^[0-9]+$ ]] || \
+     (( timeout_value < 30 || timeout_value > 1800 )); then
+    echo "Invalid ${timeout_name}=${timeout_value}; expected 30-1800 seconds" >&2
+    exit 64
+  fi
+done
 
 for key in GATEWAY_API_KEY GATEWAY_ADMIN_TOKEN OPENAI_CHAT_MODEL RUSTFS_ACCESS_KEY RUSTFS_SECRET_KEY; do
   if [[ -z "${!key}" ]]; then
@@ -198,7 +210,7 @@ if [[ -n "${GATEWAY_SERVICE_TOKEN}" ]]; then
   service_identity_used=true
 fi
 
-http_code="$(curl --silent --show-error --max-time 180 \
+http_code="$(curl --silent --show-error --max-time "${SMOKE_CHAT_TIMEOUT_SECONDS}" \
   --output "${temp_dir}/chat-response.json" \
   --write-out '%{http_code}' \
   "${chat_headers[@]}" \
@@ -251,7 +263,7 @@ with open(output_path, "w", encoding="utf-8") as handle:
     json.dump(body, handle, ensure_ascii=False)
 PY
 
-  http_code="$(curl --silent --show-error --max-time 360 \
+  http_code="$(curl --silent --show-error --max-time "${SMOKE_MEMORY_TIMEOUT_SECONDS}" \
     --output "${temp_dir}/checkpoint-response.json" \
     --write-out '%{http_code}' \
     --header "Authorization: Bearer ${GATEWAY_ADMIN_TOKEN}" \
@@ -321,7 +333,7 @@ with open(path, "w", encoding="utf-8") as handle:
         ensure_ascii=False,
     )
 PY
-    http_code="$(curl --silent --show-error --max-time 180 \
+    http_code="$(curl --silent --show-error --max-time "${SMOKE_MEMORY_TIMEOUT_SECONDS}" \
       --output "${temp_dir}/memory-response.json" \
       --write-out '%{http_code}' \
       --header "Authorization: Bearer ${GATEWAY_ADMIN_TOKEN}" \
