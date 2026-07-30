@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-07-30T14:25:58+08:00",
+  "generated_at": "2026-07-30T14:39:51+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "degraded",
   "project_stage": "deployment_behind_main",
@@ -46,7 +46,7 @@
       "name": "sumeme-letta",
       "state": "running",
       "health": "healthy",
-      "status": "Up 8 minutes (healthy)",
+      "status": "Up 4 minutes (healthy)",
       "critical": true
     },
     {
@@ -54,7 +54,7 @@
       "name": "sumeme-lobehub",
       "state": "running",
       "health": "",
-      "status": "Up 25 hours",
+      "status": "Up 26 hours",
       "critical": true
     },
     {
@@ -62,7 +62,7 @@
       "name": "sumeme-memory-gateway",
       "state": "running",
       "health": "healthy",
-      "status": "Up 32 seconds (healthy)",
+      "status": "Up 52 seconds (healthy)",
       "critical": true
     },
     {
@@ -70,7 +70,7 @@
       "name": "sumeme-postgres",
       "state": "running",
       "health": "healthy",
-      "status": "Up 26 hours (healthy)",
+      "status": "Up 27 hours (healthy)",
       "critical": true
     },
     {
@@ -78,7 +78,7 @@
       "name": "sumeme-qdrant",
       "state": "running",
       "health": "healthy",
-      "status": "Up 26 hours (healthy)",
+      "status": "Up 27 hours (healthy)",
       "critical": true
     },
     {
@@ -86,7 +86,7 @@
       "name": "sumeme-redis",
       "state": "running",
       "health": "healthy",
-      "status": "Up 26 hours (healthy)",
+      "status": "Up 27 hours (healthy)",
       "critical": true
     },
     {
@@ -102,21 +102,21 @@
       "name": "sumeme-searxng",
       "state": "running",
       "health": "",
-      "status": "Up 26 hours",
+      "status": "Up 27 hours",
       "critical": true
     }
   ],
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 34859712512,
-      "free_bytes": 5454684160,
+      "used_bytes": 34861842432,
+      "free_bytes": 5452554240,
       "used_percent": 82.7
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1862447104,
-      "used_percent": 52.3
+      "available_bytes": 1950670848,
+      "used_percent": 50.0
     }
   },
   "github": {
@@ -152,22 +152,35 @@
         "conclusion": null,
         "head_branch": "main",
         "head_sha": "0c9ff6e21b5a80ed62cd53cd3aa23b9770a00afe",
+        "run_number": 328,
+        "created_at": "2026-07-30T06:39:11Z",
+        "updated_at": "2026-07-30T06:39:14Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30520259931"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "0c9ff6e21b5a80ed62cd53cd3aa23b9770a00afe",
         "run_number": 327,
         "created_at": "2026-07-30T06:25:32Z",
-        "updated_at": "2026-07-30T06:25:40Z",
+        "updated_at": "2026-07-30T06:26:12Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30519531750"
       },
       {
         "name": "CI",
         "display_title": "Sync latest ADOB into the top-level ADOB directory",
         "event": "push",
-        "status": "in_progress",
-        "conclusion": null,
+        "status": "completed",
+        "conclusion": "failure",
         "head_branch": "main",
         "head_sha": "0c9ff6e21b5a80ed62cd53cd3aa23b9770a00afe",
         "run_number": 419,
         "created_at": "2026-07-30T06:20:18Z",
-        "updated_at": "2026-07-30T06:25:31Z",
+        "updated_at": "2026-07-30T06:39:09Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30519261047"
       },
       {
@@ -286,33 +299,20 @@
         "created_at": "2026-07-30T06:18:19Z",
         "updated_at": "2026-07-30T06:18:29Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30519162176"
-      },
-      {
-        "name": "CI",
-        "display_title": "chore: remove superseded MCP server source",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/sync-adob-directory",
-        "head_sha": "54975ba3ad49bdc6af854a5aed7153bfb5ed2b64",
-        "run_number": 414,
-        "created_at": "2026-07-30T06:18:10Z",
-        "updated_at": "2026-07-30T06:18:51Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30519155808"
       }
     ]
   },
   "collector": {
     "event_name": "workflow_run",
     "workflow": "Publish project status",
-    "run_id": "30519531750"
+    "run_id": "30520259931"
   },
   "freshness": {
-    "age_seconds_at_publish": 0,
+    "age_seconds_at_publish": 1,
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-30T14:25:58+08:00"
+    "generated_at": "2026-07-30T14:39:51+08:00"
   },
   "reliability": {
     "disk": {
@@ -356,7 +356,7 @@
         "mempalace_recall_delayed",
         "letta_recall_delayed"
       ],
-      "age_seconds_at_publish": 1403,
+      "age_seconds_at_publish": 2237,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }
