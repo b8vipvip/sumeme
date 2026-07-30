@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-07-30T11:47:14+08:00",
+  "generated_at": "2026-07-30T11:59:52+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "degraded",
   "project_stage": "deployment_behind_main",
@@ -94,7 +94,7 @@
       "name": "sumeme-rustfs",
       "state": "running",
       "health": "healthy",
-      "status": "Up 49 minutes (healthy)",
+      "status": "Up About an hour (healthy)",
       "critical": true
     },
     {
@@ -109,30 +109,20 @@
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 34293977088,
-      "free_bytes": 6020419584,
-      "used_percent": 81.3
+      "used_bytes": 34297114624,
+      "free_bytes": 6017282048,
+      "used_percent": 81.4
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 2233184256,
-      "used_percent": 42.8
+      "available_bytes": 2263293952,
+      "used_percent": 42.0
     }
   },
   "github": {
     "default_branch": "main",
-    "latest_main_sha": "43bdbd14851ce74bd6ece93a9f0d3259aaeac8f9",
-    "open_pull_requests": [
-      {
-        "number": 27,
-        "title": "Add scoped object metadata and lifecycle rules",
-        "draft": false,
-        "head": "agent/scoped-object-metadata",
-        "base": "main",
-        "updated_at": "2026-07-30T03:46:26Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/pull/27"
-      }
-    ],
+    "latest_main_sha": "a6217df0d2c4e1da6deae642892a72a4d7428c99",
+    "open_pull_requests": [],
     "open_issues": [
       {
         "number": 10,
@@ -143,13 +133,13 @@
       {
         "number": 7,
         "title": "基础架构：严格账户隔离与本地/云端/混合三种记忆存储模式",
-        "updated_at": "2026-07-29T10:23:06Z",
+        "updated_at": "2026-07-30T03:54:09Z",
         "html_url": "https://github.com/b8vipvip/sumeme/issues/7"
       },
       {
         "number": 4,
         "title": "Phase 1.5：端到端验证、状态新鲜度与磁盘保护",
-        "updated_at": "2026-07-30T03:18:31Z",
+        "updated_at": "2026-07-30T03:48:29Z",
         "html_url": "https://github.com/b8vipvip/sumeme/issues/4"
       }
     ],
@@ -161,23 +151,101 @@
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
+        "head_sha": "a6217df0d2c4e1da6deae642892a72a4d7428c99",
+        "run_number": 322,
+        "created_at": "2026-07-30T03:59:38Z",
+        "updated_at": "2026-07-30T03:59:42Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30512639080"
+      },
+      {
+        "name": "CI",
+        "display_title": "ci: publish temporary deployment observation artifact",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/observe-main-deploy-2",
+        "head_sha": "5d04bcf646484831a8cedd8111f796f2fa08020b",
+        "run_number": 264,
+        "created_at": "2026-07-30T03:50:05Z",
+        "updated_at": "2026-07-30T03:50:50Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30512228600"
+      },
+      {
+        "name": "Observe main deployment once",
+        "display_title": "ci: publish temporary deployment observation artifact",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/observe-main-deploy-2",
+        "head_sha": "5d04bcf646484831a8cedd8111f796f2fa08020b",
+        "run_number": 5,
+        "created_at": "2026-07-30T03:50:04Z",
+        "updated_at": "2026-07-30T03:50:20Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30512228279"
+      },
+      {
+        "name": "CI",
+        "display_title": "ci: observe latest main deployment queue",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/observe-main-deploy-2",
+        "head_sha": "b3576b3a39d705a9c7d9ccd982ba20332698ba85",
+        "run_number": 263,
+        "created_at": "2026-07-30T03:48:10Z",
+        "updated_at": "2026-07-30T03:49:02Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30512147226"
+      },
+      {
+        "name": "Observe main deployment once",
+        "display_title": "ci: observe latest main deployment queue",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/observe-main-deploy-2",
+        "head_sha": "b3576b3a39d705a9c7d9ccd982ba20332698ba85",
+        "run_number": 4,
+        "created_at": "2026-07-30T03:48:10Z",
+        "updated_at": "2026-07-30T03:48:32Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30512146857"
+      },
+      {
+        "name": "CI",
+        "display_title": "Add scoped object metadata and lifecycle rules",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_branch": "main",
+        "head_sha": "a6217df0d2c4e1da6deae642892a72a4d7428c99",
+        "run_number": 262,
+        "created_at": "2026-07-30T03:47:40Z",
+        "updated_at": "2026-07-30T03:59:36Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30512125327"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
         "head_sha": "43bdbd14851ce74bd6ece93a9f0d3259aaeac8f9",
         "run_number": 321,
         "created_at": "2026-07-30T03:46:59Z",
-        "updated_at": "2026-07-30T03:47:03Z",
+        "updated_at": "2026-07-30T03:47:26Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30512095874"
       },
       {
         "name": "CI",
         "display_title": "Add scoped object metadata and lifecycle rules",
         "event": "pull_request",
-        "status": "in_progress",
-        "conclusion": null,
+        "status": "completed",
+        "conclusion": "success",
         "head_branch": "agent/scoped-object-metadata",
         "head_sha": "262574d0c124e80f6d0aa1bb71e63b74cbeec5e2",
         "run_number": 261,
         "created_at": "2026-07-30T03:46:30Z",
-        "updated_at": "2026-07-30T03:46:41Z",
+        "updated_at": "2026-07-30T03:47:19Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30512074470"
       },
       {
@@ -231,98 +299,20 @@
         "created_at": "2026-07-30T03:44:21Z",
         "updated_at": "2026-07-30T03:44:56Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511976151"
-      },
-      {
-        "name": "CI",
-        "display_title": "Align production smoke timeouts with the relay",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "main",
-        "head_sha": "43bdbd14851ce74bd6ece93a9f0d3259aaeac8f9",
-        "run_number": 256,
-        "created_at": "2026-07-30T03:43:19Z",
-        "updated_at": "2026-07-30T03:46:57Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511930261"
-      },
-      {
-        "name": "CI",
-        "display_title": "Align production smoke timeouts with the relay",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/align-smoke-relay-timeouts",
-        "head_sha": "db22d57f313eab36293da16a97b9fddf25c2a03b",
-        "run_number": 255,
-        "created_at": "2026-07-30T03:42:12Z",
-        "updated_at": "2026-07-30T03:42:49Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511880933"
-      },
-      {
-        "name": "CI",
-        "display_title": "test: require smoke timeouts to follow relay configuration",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/align-smoke-relay-timeouts",
-        "head_sha": "db22d57f313eab36293da16a97b9fddf25c2a03b",
-        "run_number": 254,
-        "created_at": "2026-07-30T03:40:40Z",
-        "updated_at": "2026-07-30T03:41:25Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511815375"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "main",
-        "head_sha": "9244676f94a67cadb05d6ccc61811476209f1f12",
-        "run_number": 320,
-        "created_at": "2026-07-30T03:40:30Z",
-        "updated_at": "2026-07-30T03:44:44Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511808695"
-      },
-      {
-        "name": "CI",
-        "display_title": "docs: configure production smoke request timeouts",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/align-smoke-relay-timeouts",
-        "head_sha": "e914eafb84434c3c0a511d6a8e434a65b012f7be",
-        "run_number": 253,
-        "created_at": "2026-07-30T03:40:07Z",
-        "updated_at": "2026-07-30T03:40:44Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511790115"
-      },
-      {
-        "name": "CI",
-        "display_title": "ops: align smoke request timeouts with relay settings",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/align-smoke-relay-timeouts",
-        "head_sha": "74603846573022fb89fe1a90a199b59d258490ab",
-        "run_number": 252,
-        "created_at": "2026-07-30T03:38:53Z",
-        "updated_at": "2026-07-30T03:39:29Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511738778"
       }
     ]
   },
   "collector": {
     "event_name": "workflow_run",
     "workflow": "Publish project status",
-    "run_id": "30512095874"
+    "run_id": "30512639080"
   },
   "freshness": {
     "age_seconds_at_publish": 0,
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-30T11:47:14+08:00"
+    "generated_at": "2026-07-30T11:59:52+08:00"
   },
   "reliability": {
     "disk": {
@@ -333,10 +323,10 @@
     },
     "smoke_test": {
       "schema_version": 5,
-      "generated_at": "2026-07-30T11:46:36+08:00",
-      "started_at": "2026-07-30T11:44:53+08:00",
-      "finished_at": "2026-07-30T11:46:36+08:00",
-      "duration_seconds": 103,
+      "generated_at": "2026-07-30T11:59:05+08:00",
+      "started_at": "2026-07-30T11:49:03+08:00",
+      "finished_at": "2026-07-30T11:59:05+08:00",
+      "duration_seconds": 602,
       "overall": "failure",
       "deployment_gate": "failure",
       "memory_provider": "mempalace-letta",
@@ -346,14 +336,14 @@
       "require_recall": false,
       "checks": {
         "models": true,
-        "chat": true,
-        "scope": true,
+        "chat": false,
+        "scope": false,
         "memory_write": false,
         "memory_recall": false,
         "s3": true
       },
       "write_components": {
-        "mempalace": true,
+        "mempalace": false,
         "letta": false
       },
       "recall_components": {
@@ -361,12 +351,12 @@
         "letta": false
       },
       "error_codes": [
-        "letta_write_rejected",
-        "memory_checkpoint_failed",
+        "chat_http_000",
         "mempalace_recall_delayed",
-        "letta_recall_delayed"
+        "letta_recall_delayed",
+        "service_scope_verification_failed"
       ],
-      "age_seconds_at_publish": 38,
+      "age_seconds_at_publish": 47,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }
