@@ -39,7 +39,7 @@ class Settings(BaseSettings):
     openai_relay_api_key: SecretStr
     openai_chat_model: str = ""
     openai_memory_model: str = ""
-    openai_embedding_model: str = ""
+    openai_embedding_model: str = "text-embedding-3-small"
     relay_timeout_seconds: float = 600
     embedding_timeout_seconds: float = Field(default=120, ge=1, le=1800)
 
