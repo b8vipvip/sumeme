@@ -24,6 +24,7 @@ def make_settings(tmp_path: Path, **overrides) -> Settings:
         "mempalace_qdrant_namespace": "test",
         "mempalace_remote_db_path": str(tmp_path / "drawers.sqlite3"),
         "letta_enabled": False,
+        "letta_required": False,
     }
     values.update(overrides)
     return Settings(**values)
