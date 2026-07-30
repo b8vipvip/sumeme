@@ -13,50 +13,70 @@ jobs:
   observe:
     runs-on: ubuntu-latest
     steps:
-      - name: Inspect recent main workflows and deployment jobs
+      - name: Inspect CI and deployment workflows directly
         uses: actions/github-script@v7
         with:
           script: |
             const owner = context.repo.owner;
             const repo = context.repo.repo;
-            const runs = await github.paginate(github.rest.actions.listWorkflowRunsForRepo, {
-              owner,
-              repo,
-              branch: 'main',
-              per_page: 100,
-            });
-
-            const recent = runs
-              .filter((run) => ['CI', 'Deploy production', 'Publish project status', 'Smoke production'].includes(run.name))
-              .slice(0, 12);
+            const workflowFiles = [
+              ['CI', 'ci.yml'],
+              ['Deploy production', 'deploy-production.yml'],
+              ['Smoke production', 'smoke-production.yml'],
+              ['Publish project status', 'publish-status.yml'],
+            ];
 
             const lines = [
-              '<!-- sumeme-main-deploy-observer-2 -->',
-              '## Main 部署一次性观察结果',
+              '<!-- sumeme-main-deploy-observer-2-direct -->',
+              '## Main CI/部署一次性直接观察结果',
               '',
               `观察时间：${new Date().toISOString()}`,
               '',
-              '| Workflow | Run | SHA | Status | Conclusion | Created |',
-              '|---|---:|---|---|---|---|',
             ];
 
-            for (const run of recent) {
-              lines.push(`| ${run.name} | #${run.run_number} | \`${run.head_sha.slice(0, 12)}\` | ${run.status} | ${run.conclusion || '-'} | ${run.created_at} |`);
-              if (run.name === 'CI' || run.name === 'Deploy production') {
-                const jobs = await github.paginate(github.rest.actions.listJobsForWorkflowRun, {
+            for (const [label, workflowId] of workflowFiles) {
+              lines.push(`### ${label} (${workflowId})`);
+              let runs;
+              try {
+                const response = await github.rest.actions.listWorkflowRuns({
                   owner,
                   repo,
-                  run_id: run.id,
-                  per_page: 100,
+                  workflow_id: workflowId,
+                  branch: 'main',
+                  per_page: 8,
                 });
-                for (const job of jobs) {
-                  lines.push(`  - ${run.name} #${run.run_number} / ${job.name}: \`${job.status}\` / \`${job.conclusion || '-'}\` (job ${job.id})`);
-                  const failedSteps = (job.steps || []).filter((step) => step.conclusion && step.conclusion !== 'success' && step.conclusion !== 'skipped');
-                  for (const step of failedSteps) {
-                    lines.push(`    - failed step: ${step.name} — \`${step.conclusion}\``);
+                runs = response.data.workflow_runs;
+              } catch (error) {
+                lines.push(`- 查询失败：${error.status || 'unknown'}`);
+                continue;
+              }
+
+              if (!runs.length) {
+                lines.push('- 没有 main 运行记录');
+                continue;
+              }
+
+              for (const run of runs) {
+                lines.push(`- #${run.run_number} run_id=${run.id} SHA=\`${run.head_sha.slice(0, 12)}\` event=${run.event} status=\`${run.status}\` conclusion=\`${run.conclusion || '-'}\` created=${run.created_at}`);
+                if (label === 'CI' || label === 'Deploy production') {
+                  const jobsResponse = await github.rest.actions.listJobsForWorkflowRun({
+                    owner,
+                    repo,
+                    run_id: run.id,
+                    per_page: 100,
+                    filter: 'latest',
+                  });
+                  for (const job of jobsResponse.data.jobs) {
+                    lines.push(`  - job ${job.id} ${job.name}: \`${job.status}\` / \`${job.conclusion || '-'}\``);
+                    for (const step of (job.steps || [])) {
+                      if (step.conclusion && !['success', 'skipped'].includes(step.conclusion)) {
+                        lines.push(`    - failed step: ${step.name} — \`${step.conclusion}\``);
+                      }
+                    }
                   }
                 }
               }
+              lines.push('');
             }
 
             await github.rest.issues.createComment({
