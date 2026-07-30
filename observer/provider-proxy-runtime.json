@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "current_sha": "fe9e4a37401cdda1288226990236536cba85288b",
+  "lock_owner": {
+    "pid": "3578830",
+    "target_sha": "9e14dc225588fbc6c0b88ebb1c2552e30f1fca6e",
+    "started_at": "2026-07-30T13:42:08+08:00"
+  },
+  "containers": [
+    {
+      "name": "sumeme-memory-gateway",
+      "status": "Up 37 minutes (healthy)"
+    },
+    {
+      "name": "sumeme-rustfs",
+      "status": "Up About an hour (healthy)"
+    },
+    {
+      "name": "sumeme-lobehub",
+      "status": "Up 25 hours"
+    },
+    {
+      "name": "sumeme-letta",
+      "status": "Up 25 hours (healthy)"
+    },
+    {
+      "name": "sumeme-redis",
+      "status": "Up 26 hours (healthy)"
+    },
+    {
+      "name": "sumeme-postgres",
+      "status": "Up 26 hours (healthy)"
+    },
+    {
+      "name": "sumeme-qdrant",
+      "status": "Up 26 hours (healthy)"
+    },
+    {
+      "name": "sumeme-searxng",
+      "status": "Up 26 hours"
+    }
+  ],
+  "smoke": {
+    "generated_at": "2026-07-30T13:12:24+08:00",
+    "overall": "failure",
+    "deployment_gate": "failure",
+    "checks": {
+      "models": true,
+      "chat": true,
+      "scope": true,
+      "memory_write": false,
+      "memory_recall": false,
+      "s3": true
+    },
+    "write_components": {
+      "mempalace": false,
+      "letta": false
+    },
+    "error_codes": [
+      "mempalace_embedding_rejected",
+      "letta_agent_create_failed",
+      "memory_checkpoint_failed",
+      "mempalace_recall_delayed",
+      "letta_recall_delayed"
+    ]
+  }
+}
