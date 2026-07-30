@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-07-30T09:01:31+08:00",
+  "generated_at": "2026-07-30T11:18:44+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "healthy",
   "project_stage": "deployment_behind_main",
@@ -44,7 +44,7 @@
       "name": "sumeme-letta",
       "state": "running",
       "health": "healthy",
-      "status": "Up 20 hours (healthy)",
+      "status": "Up 22 hours (healthy)",
       "critical": true
     },
     {
@@ -52,7 +52,7 @@
       "name": "sumeme-lobehub",
       "state": "running",
       "health": "",
-      "status": "Up 20 hours",
+      "status": "Up 22 hours",
       "critical": true
     },
     {
@@ -60,7 +60,7 @@
       "name": "sumeme-memory-gateway",
       "state": "running",
       "health": "healthy",
-      "status": "Up 15 hours (healthy)",
+      "status": "Up 20 minutes (healthy)",
       "critical": true
     },
     {
@@ -68,7 +68,7 @@
       "name": "sumeme-postgres",
       "state": "running",
       "health": "healthy",
-      "status": "Up 21 hours (healthy)",
+      "status": "Up 23 hours (healthy)",
       "critical": true
     },
     {
@@ -76,7 +76,7 @@
       "name": "sumeme-qdrant",
       "state": "running",
       "health": "healthy",
-      "status": "Up 21 hours (healthy)",
+      "status": "Up 23 hours (healthy)",
       "critical": true
     },
     {
@@ -84,7 +84,7 @@
       "name": "sumeme-redis",
       "state": "running",
       "health": "healthy",
-      "status": "Up 21 hours (healthy)",
+      "status": "Up 23 hours (healthy)",
       "critical": true
     },
     {
@@ -92,7 +92,7 @@
       "name": "sumeme-rustfs",
       "state": "running",
       "health": "healthy",
-      "status": "Up 21 hours (healthy)",
+      "status": "Up 20 minutes (healthy)",
       "critical": true
     },
     {
@@ -100,26 +100,26 @@
       "name": "sumeme-searxng",
       "state": "running",
       "health": "",
-      "status": "Up 21 hours",
+      "status": "Up 23 hours",
       "critical": true
     }
   ],
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 32939028480,
-      "free_bytes": 7375368192,
-      "used_percent": 78.1
+      "used_bytes": 33155440640,
+      "free_bytes": 7158956032,
+      "used_percent": 78.6
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1886117888,
-      "used_percent": 51.7
+      "available_bytes": 2012782592,
+      "used_percent": 48.4
     }
   },
   "github": {
     "default_branch": "main",
-    "latest_main_sha": "3c955a64a87bcbdf67130675b321c31d07ee7ed7",
+    "latest_main_sha": "7e0eb3a682f83919030b5e164198a68fe63ce8ff",
     "open_pull_requests": [],
     "open_issues": [
       {
@@ -137,7 +137,7 @@
       {
         "number": 4,
         "title": "Phase 1.5：端到端验证、状态新鲜度与磁盘保护",
-        "updated_at": "2026-07-29T13:12:57Z",
+        "updated_at": "2026-07-30T03:18:31Z",
         "html_url": "https://github.com/b8vipvip/sumeme/issues/4"
       }
     ],
@@ -145,172 +145,172 @@
       {
         "name": "Publish project status",
         "display_title": "Publish project status",
-        "event": "schedule",
+        "event": "workflow_run",
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
-        "head_sha": "3c955a64a87bcbdf67130675b321c31d07ee7ed7",
-        "run_number": 314,
-        "created_at": "2026-07-30T01:01:16Z",
-        "updated_at": "2026-07-30T01:01:20Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30504434405"
+        "head_sha": "7e0eb3a682f83919030b5e164198a68fe63ce8ff",
+        "run_number": 316,
+        "created_at": "2026-07-30T03:18:24Z",
+        "updated_at": "2026-07-30T03:18:29Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30510825275"
       },
       {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "schedule",
+        "name": "CI",
+        "display_title": "ci: refresh one-time deployment observation",
+        "event": "push",
+        "status": "in_progress",
+        "conclusion": null,
+        "head_branch": "agent/observe-main-deploy-2",
+        "head_sha": "9355dbb8f9d49b8c4e2a86b8f016fe8cde4cf482",
+        "run_number": 243,
+        "created_at": "2026-07-30T03:18:19Z",
+        "updated_at": "2026-07-30T03:18:31Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30510821909"
+      },
+      {
+        "name": "Observe main deployment once",
+        "display_title": "ci: refresh one-time deployment observation",
+        "event": "push",
         "status": "completed",
         "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "3c955a64a87bcbdf67130675b321c31d07ee7ed7",
-        "run_number": 313,
-        "created_at": "2026-07-29T23:39:36Z",
-        "updated_at": "2026-07-29T23:40:03Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30500231453"
+        "head_branch": "agent/observe-main-deploy-2",
+        "head_sha": "9355dbb8f9d49b8c4e2a86b8f016fe8cde4cf482",
+        "run_number": 3,
+        "created_at": "2026-07-30T03:18:18Z",
+        "updated_at": "2026-07-30T03:18:34Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30510821588"
       },
       {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "schedule",
-        "status": "completed",
-        "conclusion": "failure",
+        "name": "CI",
+        "display_title": "Add persistent vault ownership and storage policies",
+        "event": "push",
+        "status": "pending",
+        "conclusion": null,
         "head_branch": "main",
-        "head_sha": "3c955a64a87bcbdf67130675b321c31d07ee7ed7",
-        "run_number": 312,
-        "created_at": "2026-07-29T22:36:58Z",
-        "updated_at": "2026-07-29T22:40:07Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30496759285"
+        "head_sha": "7e0eb3a682f83919030b5e164198a68fe63ce8ff",
+        "run_number": 242,
+        "created_at": "2026-07-30T03:17:35Z",
+        "updated_at": "2026-07-30T03:18:21Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30510789861"
       },
       {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "schedule",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "3c955a64a87bcbdf67130675b321c31d07ee7ed7",
-        "run_number": 311,
-        "created_at": "2026-07-29T21:33:42Z",
-        "updated_at": "2026-07-29T21:34:08Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30492842559"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "schedule",
+        "name": "CI",
+        "display_title": "Add persistent vault ownership and storage policies",
+        "event": "pull_request",
         "status": "completed",
         "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "3c955a64a87bcbdf67130675b321c31d07ee7ed7",
-        "run_number": 310,
-        "created_at": "2026-07-29T20:34:27Z",
-        "updated_at": "2026-07-29T20:34:51Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30488980016"
+        "head_branch": "agent/vault-registry-storage-policy",
+        "head_sha": "bb118982b9a06f513d49127dfe149366f6b0e690",
+        "run_number": 241,
+        "created_at": "2026-07-30T03:16:04Z",
+        "updated_at": "2026-07-30T03:16:40Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30510723606"
       },
       {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
+        "name": "CI",
+        "display_title": "test: distinguish verified JWT from preferred-mode fallback",
+        "event": "push",
         "status": "completed",
         "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "3c955a64a87bcbdf67130675b321c31d07ee7ed7",
-        "run_number": 309,
-        "created_at": "2026-07-29T19:41:08Z",
-        "updated_at": "2026-07-29T19:41:36Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30485498138"
+        "head_branch": "agent/vault-registry-storage-policy",
+        "head_sha": "bb118982b9a06f513d49127dfe149366f6b0e690",
+        "run_number": 240,
+        "created_at": "2026-07-30T03:16:01Z",
+        "updated_at": "2026-07-30T03:16:39Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30510721400"
       },
       {
-        "name": "Smoke production",
-        "display_title": "Smoke production",
-        "event": "schedule",
+        "name": "CI",
+        "display_title": "Add persistent vault ownership and storage policies",
+        "event": "pull_request",
         "status": "completed",
         "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "3c955a64a87bcbdf67130675b321c31d07ee7ed7",
-        "run_number": 2,
-        "created_at": "2026-07-29T19:40:44Z",
-        "updated_at": "2026-07-29T19:41:06Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30485468298"
+        "head_branch": "agent/vault-registry-storage-policy",
+        "head_sha": "09795917992a32017dec892f1a9392d436749536",
+        "run_number": 239,
+        "created_at": "2026-07-30T03:15:07Z",
+        "updated_at": "2026-07-30T03:15:49Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30510678654"
       },
       {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "schedule",
+        "name": "CI",
+        "display_title": "security: distinguish verified JWT from preferred-mode fallback",
+        "event": "push",
         "status": "completed",
         "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "3c955a64a87bcbdf67130675b321c31d07ee7ed7",
-        "run_number": 308,
-        "created_at": "2026-07-29T19:40:16Z",
-        "updated_at": "2026-07-29T19:40:42Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30485430007"
+        "head_branch": "agent/vault-registry-storage-policy",
+        "head_sha": "09795917992a32017dec892f1a9392d436749536",
+        "run_number": 238,
+        "created_at": "2026-07-30T03:15:04Z",
+        "updated_at": "2026-07-30T03:15:39Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30510675649"
       },
       {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "schedule",
+        "name": "CI",
+        "display_title": "Add persistent vault ownership and storage policies",
+        "event": "pull_request",
         "status": "completed",
         "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "3c955a64a87bcbdf67130675b321c31d07ee7ed7",
-        "run_number": 307,
-        "created_at": "2026-07-29T18:05:53Z",
-        "updated_at": "2026-07-29T18:12:12Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30478357759"
+        "head_branch": "agent/vault-registry-storage-policy",
+        "head_sha": "3bf72064ffae268dacfdcce4c37677b5d1555a89",
+        "run_number": 237,
+        "created_at": "2026-07-30T03:12:04Z",
+        "updated_at": "2026-07-30T03:13:32Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30510537793"
       },
       {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
+        "name": "CI",
+        "display_title": "docs: reorder roadmap around identity and storage policies",
+        "event": "push",
         "status": "completed",
         "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "3c955a64a87bcbdf67130675b321c31d07ee7ed7",
-        "run_number": 306,
-        "created_at": "2026-07-29T17:08:34Z",
-        "updated_at": "2026-07-29T17:09:24Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30473978295"
+        "head_branch": "agent/vault-registry-storage-policy",
+        "head_sha": "3bf72064ffae268dacfdcce4c37677b5d1555a89",
+        "run_number": 236,
+        "created_at": "2026-07-30T03:12:02Z",
+        "updated_at": "2026-07-30T03:12:43Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30510535788"
       },
       {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "schedule",
+        "name": "CI",
+        "display_title": "Add persistent vault ownership and storage policies",
+        "event": "pull_request",
         "status": "completed",
         "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "3c955a64a87bcbdf67130675b321c31d07ee7ed7",
-        "run_number": 305,
-        "created_at": "2026-07-29T16:58:03Z",
-        "updated_at": "2026-07-29T16:58:38Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30473167415"
+        "head_branch": "agent/vault-registry-storage-policy",
+        "head_sha": "bbaa571e08be7136b3a0c37b4907e2a743acf1ce",
+        "run_number": 235,
+        "created_at": "2026-07-30T03:10:58Z",
+        "updated_at": "2026-07-30T03:11:36Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30510487109"
       },
       {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
+        "name": "CI",
+        "display_title": "docs: define vault ownership and three storage modes",
+        "event": "push",
         "status": "completed",
         "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "3c955a64a87bcbdf67130675b321c31d07ee7ed7",
-        "run_number": 304,
-        "created_at": "2026-07-29T16:08:12Z",
-        "updated_at": "2026-07-29T16:09:13Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30469293514"
+        "head_branch": "agent/vault-registry-storage-policy",
+        "head_sha": "bbaa571e08be7136b3a0c37b4907e2a743acf1ce",
+        "run_number": 234,
+        "created_at": "2026-07-30T03:10:42Z",
+        "updated_at": "2026-07-30T03:11:16Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30510475105"
       }
     ]
   },
   "collector": {
-    "event_name": "schedule",
+    "event_name": "workflow_run",
     "workflow": "Publish project status",
-    "run_id": "30504434405"
+    "run_id": "30510825275"
   },
   "freshness": {
     "age_seconds_at_publish": 0,
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-30T09:01:31+08:00"
+    "generated_at": "2026-07-30T11:18:44+08:00"
   },
   "reliability": {
     "disk": {
@@ -354,7 +354,7 @@
         "letta_recall_delayed",
         "service_scope_verification_failed"
       ],
-      "age_seconds_at_publish": 19235,
+      "age_seconds_at_publish": 27468,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }
