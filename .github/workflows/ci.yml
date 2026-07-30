@@ -1,9 +1,12 @@
 name: CI
 
 on:
+  # Feature branches are validated by pull_request below. Running both push and
+  # pull_request for an open agent/* branch duplicates every GitHub-hosted job.
   push:
-    branches: [main, "agent/**"]
+    branches: [main]
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -11,6 +14,7 @@ permissions:
 jobs:
   gateway:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     defaults:
       run:
         working-directory: services/memory-gateway
@@ -28,6 +32,7 @@ jobs:
 
   provider-proxy:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     defaults:
       run:
         working-directory: services/ai-provider-proxy
@@ -47,6 +52,7 @@ jobs:
 
   reliability:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -72,6 +78,7 @@ jobs:
 
   compose:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - name: Validate Compose
