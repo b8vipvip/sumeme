@@ -1,10 +1,14 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-07-30T15:19:30+08:00",
+  "generated_at": "2026-07-30T15:38:37+08:00",
   "repository": "b8vipvip/sumeme",
-  "overall": "degraded",
-  "project_stage": "deployment_behind_main",
+  "overall": "unhealthy",
+  "project_stage": "deployed_unhealthy",
   "reasons": [
+    "缺少关键服务: memory-gateway",
+    "关键服务异常: letta(running/unhealthy)",
+    "本地 memory-gateway 健康检查失败",
+    "公网健康检查失败",
     "磁盘使用率达到 80% 警戒线"
   ],
   "deployment_in_sync": false,
@@ -20,24 +24,14 @@
   },
   "health": {
     "local_gateway": {
-      "ok": true,
-      "status": 200,
-      "data": {
-        "status": "ok",
-        "mempalace_enabled": true,
-        "letta_enabled": true,
-        "relay_base_url": "https://apihost.cn"
-      }
+      "ok": false,
+      "status": null,
+      "error": "<urlopen error [Errno 111] Connection refused>"
     },
     "public": {
-      "ok": true,
-      "status": 200,
-      "data": {
-        "status": "ok",
-        "mempalace_enabled": true,
-        "letta_enabled": true,
-        "relay_base_url": "https://apihost.cn"
-      }
+      "ok": false,
+      "status": 502,
+      "error": "HTTP Error 502: Bad Gateway"
     }
   },
   "services": [
@@ -45,8 +39,8 @@
       "service": "letta",
       "name": "sumeme-letta",
       "state": "running",
-      "health": "healthy",
-      "status": "Up 11 minutes (healthy)",
+      "health": "unhealthy",
+      "status": "Up 9 minutes (unhealthy)",
       "critical": true
     },
     {
@@ -54,15 +48,7 @@
       "name": "sumeme-lobehub",
       "state": "running",
       "health": "",
-      "status": "Up 26 hours",
-      "critical": true
-    },
-    {
-      "service": "memory-gateway",
-      "name": "sumeme-memory-gateway",
-      "state": "running",
-      "health": "healthy",
-      "status": "Up 5 minutes (healthy)",
+      "status": "Up 27 hours",
       "critical": true
     },
     {
@@ -70,7 +56,7 @@
       "name": "sumeme-postgres",
       "state": "running",
       "health": "healthy",
-      "status": "Up 27 hours (healthy)",
+      "status": "Up 28 hours (healthy)",
       "critical": true
     },
     {
@@ -78,7 +64,7 @@
       "name": "sumeme-qdrant",
       "state": "running",
       "health": "healthy",
-      "status": "Up 27 hours (healthy)",
+      "status": "Up 28 hours (healthy)",
       "critical": true
     },
     {
@@ -86,7 +72,7 @@
       "name": "sumeme-redis",
       "state": "running",
       "health": "healthy",
-      "status": "Up 27 hours (healthy)",
+      "status": "Up 28 hours (healthy)",
       "critical": true
     },
     {
@@ -102,21 +88,21 @@
       "name": "sumeme-searxng",
       "state": "running",
       "health": "",
-      "status": "Up 27 hours",
+      "status": "Up 28 hours",
       "critical": true
     }
   ],
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 34802491392,
-      "free_bytes": 5511905280,
-      "used_percent": 82.6
+      "used_bytes": 34785234944,
+      "free_bytes": 5529161728,
+      "used_percent": 82.5
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1969680384,
-      "used_percent": 49.5
+      "available_bytes": 2012078080,
+      "used_percent": 48.5
     }
   },
   "github": {
@@ -145,16 +131,29 @@
     ],
     "recent_workflows": [
       {
-        "name": "CI",
-        "display_title": "Fix GHS production memory smoke configuration",
-        "event": "push",
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
         "head_sha": "20386d84bb6b403be15d37e19a67081b1aad4349",
+        "run_number": 331,
+        "created_at": "2026-07-30T07:37:55Z",
+        "updated_at": "2026-07-30T07:38:02Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30523574109"
+      },
+      {
+        "name": "CI",
+        "display_title": "Fix GHS production memory smoke configuration",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_branch": "main",
+        "head_sha": "20386d84bb6b403be15d37e19a67081b1aad4349",
         "run_number": 443,
         "created_at": "2026-07-30T07:19:11Z",
-        "updated_at": "2026-07-30T07:19:23Z",
+        "updated_at": "2026-07-30T07:37:53Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30522553569"
       },
       {
@@ -226,13 +225,13 @@
         "name": "Publish project status",
         "display_title": "Publish project status",
         "event": "workflow_run",
-        "status": "in_progress",
-        "conclusion": null,
+        "status": "completed",
+        "conclusion": "success",
         "head_branch": "main",
         "head_sha": "9827490cd183a74d9fa33b66b489bf507f1d1045",
         "run_number": 330,
         "created_at": "2026-07-30T07:13:49Z",
-        "updated_at": "2026-07-30T07:13:54Z",
+        "updated_at": "2026-07-30T07:20:21Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30522230694"
       },
       {
@@ -286,33 +285,20 @@
         "created_at": "2026-07-30T06:58:51Z",
         "updated_at": "2026-07-30T06:59:28Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30521335791"
-      },
-      {
-        "name": "Plugin CI",
-        "display_title": "Adopt explicit VSR and GHS deployment modes",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/sync-vsr-ghs-modes",
-        "head_sha": "e8d2e32918ea499dafb828824612d76c97378590",
-        "run_number": 42,
-        "created_at": "2026-07-30T06:58:51Z",
-        "updated_at": "2026-07-30T06:59:31Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30521335281"
       }
     ]
   },
   "collector": {
     "event_name": "workflow_run",
     "workflow": "Publish project status",
-    "run_id": "30522230694"
+    "run_id": "30523574109"
   },
   "freshness": {
     "age_seconds_at_publish": 0,
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-30T15:19:30+08:00"
+    "generated_at": "2026-07-30T15:38:37+08:00"
   },
   "reliability": {
     "disk": {
@@ -323,10 +309,10 @@
     },
     "smoke_test": {
       "schema_version": 5,
-      "generated_at": "2026-07-30T15:08:02+08:00",
-      "started_at": "2026-07-30T15:05:18+08:00",
-      "finished_at": "2026-07-30T15:08:02+08:00",
-      "duration_seconds": 164,
+      "generated_at": "2026-07-30T15:29:10+08:00",
+      "started_at": "2026-07-30T15:27:02+08:00",
+      "finished_at": "2026-07-30T15:29:10+08:00",
+      "duration_seconds": 128,
       "overall": "failure",
       "deployment_gate": "failure",
       "memory_provider": "mempalace-letta",
@@ -343,7 +329,7 @@
         "s3": true
       },
       "write_components": {
-        "mempalace": false,
+        "mempalace": true,
         "letta": false
       },
       "recall_components": {
@@ -351,13 +337,12 @@
         "letta": false
       },
       "error_codes": [
-        "mempalace_embedding_timeout",
         "letta_agent_create_failed",
         "memory_checkpoint_failed",
         "mempalace_recall_delayed",
         "letta_recall_delayed"
       ],
-      "age_seconds_at_publish": 688,
+      "age_seconds_at_publish": 567,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }
