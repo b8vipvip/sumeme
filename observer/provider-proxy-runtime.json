@@ -1,15 +1,35 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "current_sha": "fe9e4a37401cdda1288226990236536cba85288b",
   "lock_owner": {
     "pid": "3578830",
     "target_sha": "9e14dc225588fbc6c0b88ebb1c2552e30f1fca6e",
     "started_at": "2026-07-30T13:42:08+08:00"
   },
+  "processes": [
+    {
+      "pid": 3578830,
+      "ppid": 3578828,
+      "elapsed_seconds": 759,
+      "command": "bash"
+    },
+    {
+      "pid": 3579786,
+      "ppid": 3578830,
+      "elapsed_seconds": 744,
+      "command": "docker"
+    },
+    {
+      "pid": 3579801,
+      "ppid": 3579786,
+      "elapsed_seconds": 744,
+      "command": "docker-compose"
+    }
+  ],
   "containers": [
     {
       "name": "sumeme-memory-gateway",
-      "status": "Up 41 minutes (healthy)"
+      "status": "Up 42 minutes (healthy)"
     },
     {
       "name": "sumeme-rustfs",
