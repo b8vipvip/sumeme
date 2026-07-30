@@ -244,10 +244,12 @@ case "${SMOKE_TEST_MODE}" in
     ;;
   warn|required)
     set +e
+    DEPLOY_DIR="${DEPLOY_DIR}" bash scripts/smoke-private-object.sh
+    private_object_status=$?
     DEPLOY_DIR="${DEPLOY_DIR}" bash scripts/smoke-test.sh
     smoke_status=$?
     set -e
-    if (( smoke_status != 0 )); then
+    if (( private_object_status != 0 || smoke_status != 0 )); then
       if [[ "${SMOKE_TEST_MODE}" == "required" ]]; then
         echo "Required production smoke test failed." >&2
         false
