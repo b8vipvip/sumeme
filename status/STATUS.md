@@ -1,50 +1,50 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-30T16:58:21+08:00
+- **采集时间：** 2026-07-30T17:34:31+08:00
 - **总体状态：** `healthy`
 - **开发阶段：** `deployment_behind_main`
 - **线上版本：** `fe9e4a37401cdda1288226990236536cba85288b`
-- **main 最新版本：** `fa4097b6139a00dcbead61d455eaab5c4294d912`
+- **main 最新版本：** `77dc4c7c020025c4a234add709f9b4fb10cbe5a6`
 - **线上与 main 同步：** 否
-- **开放 PR：** 1
+- **开放 PR：** 0
 - **开放 Issue：** 3
 
 ## 健康检查
 
 - 本地网关：`ok`
 - 公网入口：`ok`
-- 磁盘使用：`82.8%`，剩余 5.0 GiB
-- 内存使用：`51.6%`，可用 1.8 GiB
+- 磁盘使用：`82.9%`，剩余 5.0 GiB
+- 内存使用：`52.0%`，可用 1.7 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| letta | running | healthy | Up 44 minutes (healthy) |
-| lobe | running | - | Up 28 hours |
-| memory-gateway | running | healthy | Up 39 minutes (healthy) |
+| letta | running | healthy | Up About an hour (healthy) |
+| lobe | running | - | Up 29 hours |
+| memory-gateway | running | healthy | Up About an hour (healthy) |
 | postgresql | running | healthy | Up 29 hours (healthy) |
 | qdrant | running | healthy | Up 29 hours (healthy) |
 | redis | running | healthy | Up 29 hours (healthy) |
-| rustfs | running | healthy | Up 4 hours (healthy) |
+| rustfs | running | healthy | Up 5 hours (healthy) |
 | searxng | running | - | Up 29 hours |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-07-30T08:57:51Z |
-| CI | failure | agent/ghs-emergency-diagnose | 2026-07-30T08:53:15Z |
-| GHS emergency diagnostics | failure | agent/ghs-emergency-diagnose | 2026-07-30T08:53:06Z |
-| GHS emergency diagnostics | failure | agent/ghs-emergency-diagnose | 2026-07-30T08:50:48Z |
-| CI | failure | agent/ghs-emergency-diagnose | 2026-07-30T08:50:56Z |
-| GHS relay capability probe | failure | agent/ghs-emergency-diagnose | 2026-07-30T08:50:46Z |
-| CI | failure | agent/ghs-emergency-diagnose | 2026-07-30T08:50:34Z |
-| Smoke production | success | main | 2026-07-30T08:57:40Z |
+| Publish project status | in_progress | main | 2026-07-30T09:34:02Z |
+| CI | failure | main | 2026-07-30T09:33:55Z |
+| CI | failure | agent/ci-control-check | 2026-07-30T09:04:37Z |
+| CI | failure | agent/ci-control-check | 2026-07-30T09:04:02Z |
+| CI | failure | agent/ci-control-check | 2026-07-30T09:03:31Z |
+| CI | failure | agent/ghs-relay-revalidate-min | 2026-07-30T09:01:45Z |
+| CI | failure | agent/ghs-relay-revalidate-min | 2026-07-30T09:01:32Z |
+| CI | failure | agent/ghs-relay-revalidate-min | 2026-07-30T08:59:21Z |
 
 ## 开放 PR
 
-- #38 Fix bounded redacted production log streaming (`agent/fix-redacted-log-stream` → `main`)
+- 无
 
 ## 开放 Issue
 

@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-07-30T16:58:21+08:00",
+  "generated_at": "2026-07-30T17:34:31+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "degraded",
   "project_stage": "deployment_behind_main",
@@ -46,7 +46,7 @@
       "name": "sumeme-letta",
       "state": "running",
       "health": "healthy",
-      "status": "Up 44 minutes (healthy)",
+      "status": "Up About an hour (healthy)",
       "critical": true
     },
     {
@@ -54,7 +54,7 @@
       "name": "sumeme-lobehub",
       "state": "running",
       "health": "",
-      "status": "Up 28 hours",
+      "status": "Up 29 hours",
       "critical": true
     },
     {
@@ -62,7 +62,7 @@
       "name": "sumeme-memory-gateway",
       "state": "running",
       "health": "healthy",
-      "status": "Up 39 minutes (healthy)",
+      "status": "Up About an hour (healthy)",
       "critical": true
     },
     {
@@ -94,7 +94,7 @@
       "name": "sumeme-rustfs",
       "state": "running",
       "health": "healthy",
-      "status": "Up 4 hours (healthy)",
+      "status": "Up 5 hours (healthy)",
       "critical": true
     },
     {
@@ -109,30 +109,20 @@
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 34914660352,
-      "free_bytes": 5399736320,
-      "used_percent": 82.8
+      "used_bytes": 34959065088,
+      "free_bytes": 5355331584,
+      "used_percent": 82.9
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1887752192,
-      "used_percent": 51.6
+      "available_bytes": 1873518592,
+      "used_percent": 52.0
     }
   },
   "github": {
     "default_branch": "main",
-    "latest_main_sha": "fa4097b6139a00dcbead61d455eaab5c4294d912",
-    "open_pull_requests": [
-      {
-        "number": 38,
-        "title": "Fix bounded redacted production log streaming",
-        "draft": false,
-        "head": "agent/fix-redacted-log-stream",
-        "base": "main",
-        "updated_at": "2026-07-30T08:19:38Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/pull/38"
-      }
-    ],
+    "latest_main_sha": "77dc4c7c020025c4a234add709f9b4fb10cbe5a6",
+    "open_pull_requests": [],
     "open_issues": [
       {
         "number": 10,
@@ -149,7 +139,7 @@
       {
         "number": 4,
         "title": "Phase 1.5：端到端验证、状态新鲜度与磁盘保护",
-        "updated_at": "2026-07-30T08:21:39Z",
+        "updated_at": "2026-07-30T09:10:10Z",
         "html_url": "https://github.com/b8vipvip/sumeme/issues/4"
       }
     ],
@@ -161,10 +151,140 @@
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
+        "head_sha": "77dc4c7c020025c4a234add709f9b4fb10cbe5a6",
+        "run_number": 336,
+        "created_at": "2026-07-30T09:33:58Z",
+        "updated_at": "2026-07-30T09:34:02Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30531197335"
+      },
+      {
+        "name": "CI",
+        "display_title": "Merge PR #38: fix bounded redacted production log streaming",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_branch": "main",
+        "head_sha": "77dc4c7c020025c4a234add709f9b4fb10cbe5a6",
+        "run_number": 499,
+        "created_at": "2026-07-30T09:33:44Z",
+        "updated_at": "2026-07-30T09:33:55Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30531182666"
+      },
+      {
+        "name": "CI",
+        "display_title": "CI control check with unchanged workflow",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_branch": "agent/ci-control-check",
+        "head_sha": "c4720e22a65e712ba21ae46a411cef30b9977ab0",
+        "run_number": 498,
+        "created_at": "2026-07-30T09:04:26Z",
+        "updated_at": "2026-07-30T09:04:37Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30529221895"
+      },
+      {
+        "name": "CI",
+        "display_title": "test(ci): trigger unmodified workflow control run",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_branch": "agent/ci-control-check",
+        "head_sha": "c4720e22a65e712ba21ae46a411cef30b9977ab0",
+        "run_number": 497,
+        "created_at": "2026-07-30T09:03:51Z",
+        "updated_at": "2026-07-30T09:04:02Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30529181368"
+      },
+      {
+        "name": "CI",
+        "display_title": "Fix degraded-memory CI fixtures",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_branch": "agent/ci-control-check",
+        "head_sha": "fa4097b6139a00dcbead61d455eaab5c4294d912",
+        "run_number": 496,
+        "created_at": "2026-07-30T09:03:20Z",
+        "updated_at": "2026-07-30T09:03:31Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30529146087"
+      },
+      {
+        "name": "CI",
+        "display_title": "Run minimal GHS relay chat HTTP probe",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_branch": "agent/ghs-relay-revalidate-min",
+        "head_sha": "b387483af16f080ec84b68faba40ef3d759c3673",
+        "run_number": 495,
+        "created_at": "2026-07-30T09:01:32Z",
+        "updated_at": "2026-07-30T09:01:45Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30529018743"
+      },
+      {
+        "name": "CI",
+        "display_title": "ops(ghs): isolate relay probe from deployment workflow resolution",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_branch": "agent/ghs-relay-revalidate-min",
+        "head_sha": "b387483af16f080ec84b68faba40ef3d759c3673",
+        "run_number": 494,
+        "created_at": "2026-07-30T09:01:29Z",
+        "updated_at": "2026-07-30T09:01:32Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30529014368"
+      },
+      {
+        "name": "CI",
+        "display_title": "Run minimal GHS relay chat HTTP probe",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_branch": "agent/ghs-relay-revalidate-min",
+        "head_sha": "1b1047f98e97b72954f38fe46993b186f151f037",
+        "run_number": 493,
+        "created_at": "2026-07-30T08:59:09Z",
+        "updated_at": "2026-07-30T08:59:21Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30528848766"
+      },
+      {
+        "name": "CI",
+        "display_title": "ops(ghs): add minimal relay chat HTTP probe",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_branch": "agent/ghs-relay-revalidate-min",
+        "head_sha": "1b1047f98e97b72954f38fe46993b186f151f037",
+        "run_number": 492,
+        "created_at": "2026-07-30T08:58:52Z",
+        "updated_at": "2026-07-30T08:59:04Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30528830099"
+      },
+      {
+        "name": "CI",
+        "display_title": "Fix degraded-memory CI fixtures",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_branch": "agent/ghs-relay-revalidate-min",
+        "head_sha": "fa4097b6139a00dcbead61d455eaab5c4294d912",
+        "run_number": 491,
+        "created_at": "2026-07-30T08:58:27Z",
+        "updated_at": "2026-07-30T08:58:38Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30528800592"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
         "head_sha": "fa4097b6139a00dcbead61d455eaab5c4294d912",
         "run_number": 335,
         "created_at": "2026-07-30T08:57:44Z",
-        "updated_at": "2026-07-30T08:57:51Z",
+        "updated_at": "2026-07-30T08:59:07Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30528752659"
       },
       {
@@ -179,150 +299,20 @@
         "created_at": "2026-07-30T08:53:04Z",
         "updated_at": "2026-07-30T08:53:15Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30528436508"
-      },
-      {
-        "name": "GHS emergency diagnostics",
-        "display_title": "ops(ghs): rerun trusted production and relay diagnostics",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/ghs-emergency-diagnose",
-        "head_sha": "5af8249fc3b9580552f2c8fd7134e0bc3748d805",
-        "run_number": 5,
-        "created_at": "2026-07-30T08:53:03Z",
-        "updated_at": "2026-07-30T08:53:06Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30528435968"
-      },
-      {
-        "name": "GHS emergency diagnostics",
-        "display_title": "ops(ghs): expose relay revalidation as read-only PR check",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/ghs-emergency-diagnose",
-        "head_sha": "03aa23df474f379c8e42e5e02d76a4658ccdaf24",
-        "run_number": 4,
-        "created_at": "2026-07-30T08:50:45Z",
-        "updated_at": "2026-07-30T08:50:48Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30528286244"
-      },
-      {
-        "name": "CI",
-        "display_title": "ops(ghs): expose relay revalidation as read-only PR check",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/ghs-emergency-diagnose",
-        "head_sha": "03aa23df474f379c8e42e5e02d76a4658ccdaf24",
-        "run_number": 489,
-        "created_at": "2026-07-30T08:50:44Z",
-        "updated_at": "2026-07-30T08:50:56Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30528284865"
-      },
-      {
-        "name": "GHS relay capability probe",
-        "display_title": "ops(ghs): expose relay revalidation as read-only PR check",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/ghs-emergency-diagnose",
-        "head_sha": "03aa23df474f379c8e42e5e02d76a4658ccdaf24",
-        "run_number": 5,
-        "created_at": "2026-07-30T08:50:43Z",
-        "updated_at": "2026-07-30T08:50:46Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30528284171"
-      },
-      {
-        "name": "CI",
-        "display_title": "ops(ghs): publish sanitized emergency status branch",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/ghs-emergency-diagnose",
-        "head_sha": "e3dd018efa31c9da31e6c3579654e943fef79319",
-        "run_number": 488,
-        "created_at": "2026-07-30T08:50:26Z",
-        "updated_at": "2026-07-30T08:50:34Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30528264708"
-      },
-      {
-        "name": "Smoke production",
-        "display_title": "Smoke production",
-        "event": "schedule",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "fa4097b6139a00dcbead61d455eaab5c4294d912",
-        "run_number": 4,
-        "created_at": "2026-07-30T08:47:10Z",
-        "updated_at": "2026-07-30T08:57:40Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30528053030"
-      },
-      {
-        "name": "CI",
-        "display_title": "Run trusted GHS relay chat revalidation",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/ghs-relay-revalidate-ci",
-        "head_sha": "1926d3909ae4ecffd410b756c8bcc4225e23c0ed",
-        "run_number": 487,
-        "created_at": "2026-07-30T08:45:28Z",
-        "updated_at": "2026-07-30T08:47:50Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30527944082"
-      },
-      {
-        "name": "CI",
-        "display_title": "ops(ghs): add one-shot relay chat revalidation",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/ghs-relay-revalidate-ci",
-        "head_sha": "1926d3909ae4ecffd410b756c8bcc4225e23c0ed",
-        "run_number": 486,
-        "created_at": "2026-07-30T08:45:11Z",
-        "updated_at": "2026-07-30T08:45:22Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30527923540"
-      },
-      {
-        "name": "CI",
-        "display_title": "Fix degraded-memory CI fixtures",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/ghs-relay-revalidate-ci",
-        "head_sha": "fa4097b6139a00dcbead61d455eaab5c4294d912",
-        "run_number": 485,
-        "created_at": "2026-07-30T08:44:20Z",
-        "updated_at": "2026-07-30T08:44:32Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30527868062"
-      },
-      {
-        "name": "CI",
-        "display_title": "Revalidate relay chat through read-only GHS probe",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/ghs-emergency-diagnose",
-        "head_sha": "03aa23df474f379c8e42e5e02d76a4658ccdaf24",
-        "run_number": 484,
-        "created_at": "2026-07-30T08:42:08Z",
-        "updated_at": "2026-07-30T08:42:18Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30527725640"
       }
     ]
   },
   "collector": {
     "event_name": "workflow_run",
     "workflow": "Publish project status",
-    "run_id": "30528752659"
+    "run_id": "30531197335"
   },
   "freshness": {
     "age_seconds_at_publish": 0,
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-30T16:58:21+08:00"
+    "generated_at": "2026-07-30T17:34:31+08:00"
   },
   "reliability": {
     "disk": {
@@ -366,7 +356,7 @@
         "letta_recall_delayed",
         "service_scope_verification_failed"
       ],
-      "age_seconds_at_publish": 53,
+      "age_seconds_at_publish": 2223,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }
