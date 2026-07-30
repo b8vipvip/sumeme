@@ -1,13 +1,10 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-07-30T15:08:25+08:00",
+  "generated_at": "2026-07-30T15:19:30+08:00",
   "repository": "b8vipvip/sumeme",
-  "overall": "unhealthy",
-  "project_stage": "deployed_unhealthy",
+  "overall": "degraded",
+  "project_stage": "deployment_behind_main",
   "reasons": [
-    "缺少关键服务: letta",
-    "本地 memory-gateway 健康检查失败",
-    "公网健康检查失败",
     "磁盘使用率达到 80% 警戒线"
   ],
   "deployment_in_sync": false,
@@ -23,17 +20,35 @@
   },
   "health": {
     "local_gateway": {
-      "ok": false,
-      "status": null,
-      "error": "<urlopen error [Errno 111] Connection refused>"
+      "ok": true,
+      "status": 200,
+      "data": {
+        "status": "ok",
+        "mempalace_enabled": true,
+        "letta_enabled": true,
+        "relay_base_url": "https://apihost.cn"
+      }
     },
     "public": {
-      "ok": false,
-      "status": 502,
-      "error": "HTTP Error 502: Bad Gateway"
+      "ok": true,
+      "status": 200,
+      "data": {
+        "status": "ok",
+        "mempalace_enabled": true,
+        "letta_enabled": true,
+        "relay_base_url": "https://apihost.cn"
+      }
     }
   },
   "services": [
+    {
+      "service": "letta",
+      "name": "sumeme-letta",
+      "state": "running",
+      "health": "healthy",
+      "status": "Up 11 minutes (healthy)",
+      "critical": true
+    },
     {
       "service": "lobe",
       "name": "sumeme-lobehub",
@@ -46,8 +61,8 @@
       "service": "memory-gateway",
       "name": "sumeme-memory-gateway",
       "state": "running",
-      "health": "",
-      "status": "Up 3 minutes (healthy)",
+      "health": "healthy",
+      "status": "Up 5 minutes (healthy)",
       "critical": true
     },
     {
@@ -79,7 +94,7 @@
       "name": "sumeme-rustfs",
       "state": "running",
       "health": "healthy",
-      "status": "Up 2 hours (healthy)",
+      "status": "Up 3 hours (healthy)",
       "critical": true
     },
     {
@@ -94,19 +109,19 @@
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 34808721408,
-      "free_bytes": 5505675264,
+      "used_bytes": 34802491392,
+      "free_bytes": 5511905280,
       "used_percent": 82.6
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 2275045376,
-      "used_percent": 41.7
+      "available_bytes": 1969680384,
+      "used_percent": 49.5
     }
   },
   "github": {
     "default_branch": "main",
-    "latest_main_sha": "9827490cd183a74d9fa33b66b489bf507f1d1045",
+    "latest_main_sha": "20386d84bb6b403be15d37e19a67081b1aad4349",
     "open_pull_requests": [],
     "open_issues": [
       {
@@ -130,29 +145,120 @@
     ],
     "recent_workflows": [
       {
+        "name": "CI",
+        "display_title": "Fix GHS production memory smoke configuration",
+        "event": "push",
+        "status": "in_progress",
+        "conclusion": null,
+        "head_branch": "main",
+        "head_sha": "20386d84bb6b403be15d37e19a67081b1aad4349",
+        "run_number": 443,
+        "created_at": "2026-07-30T07:19:11Z",
+        "updated_at": "2026-07-30T07:19:23Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30522553569"
+      },
+      {
+        "name": "CI",
+        "display_title": "Fix GHS production memory smoke configuration",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/fix-ghs-memory-smoke",
+        "head_sha": "8237c835e39b048a87fdee8debef9e89286bd39e",
+        "run_number": 442,
+        "created_at": "2026-07-30T07:17:57Z",
+        "updated_at": "2026-07-30T07:18:31Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30522479751"
+      },
+      {
+        "name": "CI",
+        "display_title": "docs(config): make remote semantic embeddings the production default",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/fix-ghs-memory-smoke",
+        "head_sha": "8237c835e39b048a87fdee8debef9e89286bd39e",
+        "run_number": 441,
+        "created_at": "2026-07-30T07:17:33Z",
+        "updated_at": "2026-07-30T07:18:07Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30522454887"
+      },
+      {
+        "name": "CI",
+        "display_title": "test(deploy): lock production memory provider handles",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/fix-ghs-memory-smoke",
+        "head_sha": "e651fe5c6b8a3684b6ba4756b4cb9230eecb25e1",
+        "run_number": 440,
+        "created_at": "2026-07-30T07:17:11Z",
+        "updated_at": "2026-07-30T07:17:44Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30522432593"
+      },
+      {
+        "name": "CI",
+        "display_title": "fix(deploy): pin remote semantic embeddings and valid Letta handles",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/fix-ghs-memory-smoke",
+        "head_sha": "04cd3bb6bb2af9885790a74360a41730fb26980f",
+        "run_number": 439,
+        "created_at": "2026-07-30T07:17:01Z",
+        "updated_at": "2026-07-30T07:17:45Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30522422975"
+      },
+      {
+        "name": "CI",
+        "display_title": "Adopt explicit VSR and GHS deployment modes",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/fix-ghs-memory-smoke",
+        "head_sha": "9827490cd183a74d9fa33b66b489bf507f1d1045",
+        "run_number": 438,
+        "created_at": "2026-07-30T07:16:31Z",
+        "updated_at": "2026-07-30T07:17:02Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30522393735"
+      },
+      {
         "name": "Publish project status",
         "display_title": "Publish project status",
-        "event": "schedule",
+        "event": "workflow_run",
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
         "head_sha": "9827490cd183a74d9fa33b66b489bf507f1d1045",
+        "run_number": 330,
+        "created_at": "2026-07-30T07:13:49Z",
+        "updated_at": "2026-07-30T07:13:54Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30522230694"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "schedule",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "9827490cd183a74d9fa33b66b489bf507f1d1045",
         "run_number": 329,
         "created_at": "2026-07-30T07:07:52Z",
-        "updated_at": "2026-07-30T07:07:59Z",
+        "updated_at": "2026-07-30T07:08:39Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30521879401"
       },
       {
         "name": "CI",
         "display_title": "Adopt explicit VSR and GHS deployment modes",
         "event": "push",
-        "status": "in_progress",
-        "conclusion": null,
+        "status": "completed",
+        "conclusion": "failure",
         "head_branch": "main",
         "head_sha": "9827490cd183a74d9fa33b66b489bf507f1d1045",
         "run_number": 437,
         "created_at": "2026-07-30T06:59:50Z",
-        "updated_at": "2026-07-30T07:00:30Z",
+        "updated_at": "2026-07-30T07:13:47Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30521390502"
       },
       {
@@ -193,111 +299,20 @@
         "created_at": "2026-07-30T06:58:51Z",
         "updated_at": "2026-07-30T06:59:31Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30521335281"
-      },
-      {
-        "name": "CI",
-        "display_title": "ci: validate embedded ADOB mode contract",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/sync-vsr-ghs-modes",
-        "head_sha": "e8d2e32918ea499dafb828824612d76c97378590",
-        "run_number": 435,
-        "created_at": "2026-07-30T06:58:32Z",
-        "updated_at": "2026-07-30T06:59:07Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30521318788"
-      },
-      {
-        "name": "Plugin CI",
-        "display_title": "ci: validate embedded ADOB mode contract",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/sync-vsr-ghs-modes",
-        "head_sha": "e8d2e32918ea499dafb828824612d76c97378590",
-        "run_number": 41,
-        "created_at": "2026-07-30T06:58:32Z",
-        "updated_at": "2026-07-30T06:59:10Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30521318377"
-      },
-      {
-        "name": "CI",
-        "display_title": "ci: declare VSR and GHS for manual deployment",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/sync-vsr-ghs-modes",
-        "head_sha": "4b495753e468e83f5ad56c004893a523f6bc2b14",
-        "run_number": 434,
-        "created_at": "2026-07-30T06:58:14Z",
-        "updated_at": "2026-07-30T06:59:08Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30521302021"
-      },
-      {
-        "name": "CI",
-        "display_title": "ci: declare VSR and GHS production modes",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/sync-vsr-ghs-modes",
-        "head_sha": "e955a0b6d0b2531d7dbc5999fe6866ed26d737bd",
-        "run_number": 433,
-        "created_at": "2026-07-30T06:58:04Z",
-        "updated_at": "2026-07-30T06:58:34Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30521291744"
-      },
-      {
-        "name": "CI",
-        "display_title": "sync(ADOB): teach ChatGPT VSR and GHS vocabulary",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/sync-vsr-ghs-modes",
-        "head_sha": "b36ba0892f8c9902eb78faadc6bed4c44e943b46",
-        "run_number": 432,
-        "created_at": "2026-07-30T06:57:47Z",
-        "updated_at": "2026-07-30T06:58:28Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30521276912"
-      },
-      {
-        "name": "Plugin CI",
-        "display_title": "sync(ADOB): teach ChatGPT VSR and GHS vocabulary",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/sync-vsr-ghs-modes",
-        "head_sha": "b36ba0892f8c9902eb78faadc6bed4c44e943b46",
-        "run_number": 40,
-        "created_at": "2026-07-30T06:57:47Z",
-        "updated_at": "2026-07-30T06:58:37Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30521276489"
-      },
-      {
-        "name": "CI",
-        "display_title": "sync(ADOB): name the SSH transport GHS",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/sync-vsr-ghs-modes",
-        "head_sha": "f2ddc03675bf59d3873331e425e19e067fe17f52",
-        "run_number": 431,
-        "created_at": "2026-07-30T06:57:30Z",
-        "updated_at": "2026-07-30T06:58:16Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30521261284"
       }
     ]
   },
   "collector": {
-    "event_name": "schedule",
+    "event_name": "workflow_run",
     "workflow": "Publish project status",
-    "run_id": "30521879401"
+    "run_id": "30522230694"
   },
   "freshness": {
     "age_seconds_at_publish": 0,
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-30T15:08:25+08:00"
+    "generated_at": "2026-07-30T15:19:30+08:00"
   },
   "reliability": {
     "disk": {
@@ -342,7 +357,7 @@
         "mempalace_recall_delayed",
         "letta_recall_delayed"
       ],
-      "age_seconds_at_publish": 23,
+      "age_seconds_at_publish": 688,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }

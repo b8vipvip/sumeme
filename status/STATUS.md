@@ -1,51 +1,46 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-30T15:08:25+08:00
-- **总体状态：** `unhealthy`
-- **开发阶段：** `deployed_unhealthy`
+- **采集时间：** 2026-07-30T15:19:30+08:00
+- **总体状态：** `healthy`
+- **开发阶段：** `deployment_behind_main`
 - **线上版本：** `fe9e4a37401cdda1288226990236536cba85288b`
-- **main 最新版本：** `9827490cd183a74d9fa33b66b489bf507f1d1045`
+- **main 最新版本：** `20386d84bb6b403be15d37e19a67081b1aad4349`
 - **线上与 main 同步：** 否
 - **开放 PR：** 0
 - **开放 Issue：** 3
 
-## 需要关注
-
-- 缺少关键服务: letta
-- 本地 memory-gateway 健康检查失败
-- 公网健康检查失败
-
 ## 健康检查
 
-- 本地网关：`failed`
-- 公网入口：`failed`
+- 本地网关：`ok`
+- 公网入口：`ok`
 - 磁盘使用：`82.6%`，剩余 5.1 GiB
-- 内存使用：`41.7%`，可用 2.1 GiB
+- 内存使用：`49.5%`，可用 1.8 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
+| letta | running | healthy | Up 11 minutes (healthy) |
 | lobe | running | - | Up 26 hours |
-| memory-gateway | running | - | Up 3 minutes (healthy) |
+| memory-gateway | running | healthy | Up 5 minutes (healthy) |
 | postgresql | running | healthy | Up 27 hours (healthy) |
 | qdrant | running | healthy | Up 27 hours (healthy) |
 | redis | running | healthy | Up 27 hours (healthy) |
-| rustfs | running | healthy | Up 2 hours (healthy) |
+| rustfs | running | healthy | Up 3 hours (healthy) |
 | searxng | running | - | Up 27 hours |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-07-30T07:07:59Z |
-| CI | in_progress | main | 2026-07-30T07:00:30Z |
-| Plugin CI | success | main | 2026-07-30T07:00:44Z |
-| CI | success | agent/sync-vsr-ghs-modes | 2026-07-30T06:59:28Z |
-| Plugin CI | success | agent/sync-vsr-ghs-modes | 2026-07-30T06:59:31Z |
-| CI | success | agent/sync-vsr-ghs-modes | 2026-07-30T06:59:07Z |
-| Plugin CI | success | agent/sync-vsr-ghs-modes | 2026-07-30T06:59:10Z |
-| CI | success | agent/sync-vsr-ghs-modes | 2026-07-30T06:59:08Z |
+| CI | in_progress | main | 2026-07-30T07:19:23Z |
+| CI | success | agent/fix-ghs-memory-smoke | 2026-07-30T07:18:31Z |
+| CI | success | agent/fix-ghs-memory-smoke | 2026-07-30T07:18:07Z |
+| CI | success | agent/fix-ghs-memory-smoke | 2026-07-30T07:17:44Z |
+| CI | success | agent/fix-ghs-memory-smoke | 2026-07-30T07:17:45Z |
+| CI | success | agent/fix-ghs-memory-smoke | 2026-07-30T07:17:02Z |
+| Publish project status | in_progress | main | 2026-07-30T07:13:54Z |
+| Publish project status | success | main | 2026-07-30T07:08:39Z |
 
 ## 开放 PR
 
