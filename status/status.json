@@ -1,8 +1,8 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "mode": "GHS",
-  "generated_at": "2026-07-30T08:14:06+00:00",
-  "workflow_source_sha": "e3dd018efa31c9da31e6c3579654e943fef79319",
+  "generated_at": "2026-07-30T08:16:39+00:00",
+  "workflow_source_sha": "43e6c95be8f22e45ce3f94401409becdb59603ce",
   "deployment": {
     "current_sha": "fe9e4a37401cdda1288226990236536cba85288b",
     "previous_sha": "fe9e4a37401cdda1288226990236536cba85288b",
@@ -24,7 +24,7 @@
       "service": "letta",
       "state": "running",
       "health": "starting",
-      "status": "Up 15 seconds (health: starting)"
+      "status": "Up 2 minutes (health: starting)"
     },
     {
       "service": "lobe",
@@ -63,6 +63,19 @@
       "status": "Up 28 hours"
     }
   ],
+  "probes": {
+    "direct_relay_chat": {
+      "ok": false,
+      "status": 403,
+      "error_code": "bad_response_status_code",
+      "error_type": "bad_response_status_code"
+    },
+    "local_gateway_chat": {
+      "ok": false,
+      "status": null,
+      "error": "URLError"
+    }
+  },
   "smoke": {
     "generated_at": "2026-07-30T16:13:39+08:00",
     "overall": "failure",
