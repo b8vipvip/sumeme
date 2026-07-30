@@ -1,0 +1,38 @@
+name: Plugin CI
+
+on:
+  push:
+    branches: [main, "agent/**"]
+    paths:
+      - "plugins/autodevops-bridge/**"
+      - ".github/workflows/plugin-ci.yml"
+  pull_request:
+    paths:
+      - "plugins/autodevops-bridge/**"
+      - ".github/workflows/plugin-ci.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: plugins/autodevops-bridge/mcp-server
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install dependencies
+        run: npm install
+      - name: Type-check
+        run: npm run check
+      - name: Build
+        run: npm run build
+      - name: Validate plugin manifest
+        working-directory: plugins/autodevops-bridge
+        run: node -e "JSON.parse(require('fs').readFileSync('.codex-plugin/plugin.json','utf8')); JSON.parse(require('fs').readFileSync('.mcp.json','utf8'));"
+      - name: Build container
+        run: docker build -t autodevops-bridge:test .
