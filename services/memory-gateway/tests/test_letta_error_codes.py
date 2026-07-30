@@ -73,7 +73,7 @@ async def test_letta_write_error_reaches_provider_boundary(tmp_path) -> None:
     memory._state_file = tmp_path / "state.json"
     scope = MemoryScope.account("account-a", "personal")
     memory._state_loaded = True
-    memory._agent_ids[scope.storage_key] = "agent-existing"
+    assert memory._register_agent(scope.storage_key, "agent-existing") is True
 
     class Messages:
         def create(self, **_kwargs):

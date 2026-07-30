@@ -8,6 +8,7 @@ from pydantic import SecretStr
 
 from app.config import Settings
 from app.letta_memory import LettaMemory
+from app.memory_result import MemoryOperationError
 from app.memory_scope import MemoryScope
 
 
@@ -37,6 +38,17 @@ class FakeAgents:
         return SimpleNamespace(id=f"agent-{len(self.created_names)}")
 
 
+class ConstantAgents:
+    def __init__(self, agent_id: str) -> None:
+        self.agent_id = agent_id
+        self.created_names: list[str] = []
+        self.messages = SimpleNamespace(create=lambda **_kwargs: {})
+
+    def create(self, **kwargs):
+        self.created_names.append(kwargs["name"])
+        return SimpleNamespace(id=self.agent_id)
+
+
 @pytest.mark.asyncio
 async def test_legacy_agent_is_migrated_only_for_default_scope(tmp_path) -> None:
     state_file = tmp_path / "letta-agent.json"
@@ -58,7 +70,8 @@ async def test_legacy_agent_is_migrated_only_for_default_scope(tmp_path) -> None
     ]
 
     persisted = json.loads(state_file.read_text(encoding="utf-8"))
-    assert persisted["schema_version"] == 3
+    assert persisted["schema_version"] == 4
+    assert persisted["ownership"] == "one-agent-per-scope"
     assert persisted["agents"]["acct.default.vault.default"] == "legacy-agent"
     assert (
         persisted["agents"]["svc.sumeme-smoke.vault.production-smoke"]
@@ -92,6 +105,8 @@ async def test_schema_two_user_map_migrates_to_default_vault(tmp_path) -> None:
         await memory.ensure_agent(MemoryScope.service("sumeme-smoke", "production-smoke"))
         == "smoke-agent"
     )
+    persisted = json.loads(state_file.read_text(encoding="utf-8"))
+    assert persisted["schema_version"] == 4
 
 
 @pytest.mark.asyncio
@@ -147,3 +162,86 @@ async def test_account_and_vault_pairs_never_share_an_agent(tmp_path) -> None:
 
     assert agent_ids == ["agent-1", "agent-2", "agent-3", "agent-4"]
     assert len(set(agent_ids)) == len(scopes)
+
+
+@pytest.mark.asyncio
+async def test_duplicate_persisted_agent_is_invalidated_for_all_scopes(tmp_path) -> None:
+    state_file = tmp_path / "letta-agent.json"
+    state_file.write_text(
+        json.dumps(
+            {
+                "schema_version": 3,
+                "agents": {
+                    "acct.account-a.vault.personal": "shared-agent",
+                    "acct.account-b.vault.personal": "shared-agent",
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    memory = LettaMemory(make_settings())
+    memory._state_file = state_file
+    agents = FakeAgents()
+    memory._client = SimpleNamespace(agents=agents)
+
+    first = await memory.ensure_agent(MemoryScope.account("account-a", "personal"))
+    second = await memory.ensure_agent(MemoryScope.account("account-b", "personal"))
+
+    assert first == "agent-1"
+    assert second == "agent-2"
+    persisted = json.loads(state_file.read_text(encoding="utf-8"))
+    assert "shared-agent" not in persisted["agents"].values()
+    assert len(set(persisted["agents"].values())) == 2
+
+
+@pytest.mark.asyncio
+async def test_server_returning_existing_agent_id_fails_closed(tmp_path) -> None:
+    memory = LettaMemory(make_settings())
+    memory._state_file = tmp_path / "letta-agent.json"
+    agents = ConstantAgents("same-agent")
+    memory._client = SimpleNamespace(agents=agents)
+
+    assert (
+        await memory.ensure_agent(MemoryScope.account("account-a", "personal"))
+        == "same-agent"
+    )
+    with pytest.raises(MemoryOperationError) as captured:
+        await memory.ensure_agent(MemoryScope.account("account-b", "personal"))
+
+    assert captured.value.code == "letta_agent_ownership_conflict"
+    persisted = json.loads(memory._state_file.read_text(encoding="utf-8"))
+    assert persisted["agents"] == {}
+
+
+@pytest.mark.asyncio
+async def test_explicit_agent_ownership_survives_conflicting_state(tmp_path) -> None:
+    state_file = tmp_path / "letta-agent.json"
+    state_file.write_text(
+        json.dumps(
+            {
+                "schema_version": 3,
+                "agents": {
+                    "acct.default.vault.default": "stale-default-agent",
+                    "acct.other.vault.default": "configured-default-agent",
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    memory = LettaMemory(make_settings(letta_agent_id="configured-default-agent"))
+    memory._state_file = state_file
+    agents = FakeAgents()
+    memory._client = SimpleNamespace(agents=agents)
+
+    assert (
+        await memory.ensure_agent(MemoryScope.account("default"))
+        == "configured-default-agent"
+    )
+    assert await memory.ensure_agent(MemoryScope.account("other")) == "agent-1"
+
+    persisted = json.loads(state_file.read_text(encoding="utf-8"))
+    assert (
+        persisted["agents"]["acct.default.vault.default"]
+        == "configured-default-agent"
+    )
+    assert persisted["agents"]["acct.other.vault.default"] == "agent-1"
