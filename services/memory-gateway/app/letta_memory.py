@@ -15,6 +15,14 @@ from .memory_scope import MemoryScope, coerce_scope
 
 logger = logging.getLogger(__name__)
 
+_MODEL_PLACEHOLDERS = {
+    "",
+    "replace_me",
+    "+replace_me",
+    "openai/replace_me",
+    "openai-proxy/replace_me",
+}
+
 
 class LettaMemory:
     def __init__(self, settings: Settings):
@@ -48,6 +56,41 @@ class LettaMemory:
         if operation_timeout is None:
             return configured
         return min(configured, max(float(operation_timeout), 0.1))
+
+    def _resolved_model_handle(self) -> str:
+        configured = self.settings.letta_model.strip()
+        if configured.lower() not in _MODEL_PLACEHOLDERS:
+            return configured
+
+        fallback = self._first_remote_model(
+            self.settings.openai_memory_model,
+            self.settings.openai_chat_model,
+        )
+        if not fallback:
+            raise MemoryOperationError("letta_model_unavailable")
+        return f"openai-proxy/{fallback}"
+
+    def _resolved_embedding_handle(self) -> str:
+        configured = self.settings.letta_embedding.strip()
+        if configured.lower() not in _MODEL_PLACEHOLDERS:
+            return configured
+        model = self.settings.openai_embedding_model.strip()
+        if model.lower() in _MODEL_PLACEHOLDERS:
+            raise MemoryOperationError("letta_embedding_unavailable")
+        basename = model.split("/", 1)[-1]
+        return f"openai/{basename}"
+
+    @staticmethod
+    def _first_remote_model(*values: str) -> str:
+        for value in values:
+            candidate = value.strip()
+            if candidate.lower() in _MODEL_PLACEHOLDERS:
+                continue
+            if "/" in candidate:
+                candidate = candidate.split("/", 1)[1]
+            if candidate:
+                return candidate
+        return ""
 
     def _load_state(self) -> None:
         if self._state_loaded:
@@ -120,8 +163,8 @@ class LettaMemory:
         if agent_id := self._agent_ids.get(scope_key):
             return agent_id
 
-        if not self.settings.letta_model or not self.settings.letta_embedding:
-            raise MemoryOperationError("letta_configuration_missing")
+        model_handle = self._resolved_model_handle()
+        embedding_handle = self._resolved_embedding_handle()
 
         async with self._agent_lock:
             if agent_id := self._agent_ids.get(scope_key):
@@ -132,8 +175,8 @@ class LettaMemory:
             def create() -> Any:
                 return self._get_client().agents.create(
                     name=f"{self.settings.letta_agent_name}-{safe_id(scope_key)}",
-                    model=self.settings.letta_model,
-                    embedding=self.settings.letta_embedding,
+                    model=model_handle,
+                    embedding=embedding_handle,
                     memory_blocks=[
                         {
                             "label": "human",
