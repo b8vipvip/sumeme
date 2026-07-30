@@ -1,6 +1,6 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-30T17:34:31+08:00
+- **采集时间：** 2026-07-30T17:39:34+08:00
 - **总体状态：** `healthy`
 - **开发阶段：** `deployment_behind_main`
 - **线上版本：** `fe9e4a37401cdda1288226990236536cba85288b`
@@ -14,7 +14,7 @@
 - 本地网关：`ok`
 - 公网入口：`ok`
 - 磁盘使用：`82.9%`，剩余 5.0 GiB
-- 内存使用：`52.0%`，可用 1.7 GiB
+- 内存使用：`51.8%`，可用 1.8 GiB
 
 ## 容器服务
 
@@ -23,24 +23,24 @@
 | letta | running | healthy | Up About an hour (healthy) |
 | lobe | running | - | Up 29 hours |
 | memory-gateway | running | healthy | Up About an hour (healthy) |
-| postgresql | running | healthy | Up 29 hours (healthy) |
-| qdrant | running | healthy | Up 29 hours (healthy) |
-| redis | running | healthy | Up 29 hours (healthy) |
+| postgresql | running | healthy | Up 30 hours (healthy) |
+| qdrant | running | healthy | Up 30 hours (healthy) |
+| redis | running | healthy | Up 30 hours (healthy) |
 | rustfs | running | healthy | Up 5 hours (healthy) |
-| searxng | running | - | Up 29 hours |
+| searxng | running | - | Up 30 hours |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-07-30T09:34:02Z |
+| Publish project status | in_progress | main | 2026-07-30T09:39:16Z |
+| Publish project status | success | main | 2026-07-30T09:34:45Z |
 | CI | failure | main | 2026-07-30T09:33:55Z |
 | CI | failure | agent/ci-control-check | 2026-07-30T09:04:37Z |
 | CI | failure | agent/ci-control-check | 2026-07-30T09:04:02Z |
 | CI | failure | agent/ci-control-check | 2026-07-30T09:03:31Z |
 | CI | failure | agent/ghs-relay-revalidate-min | 2026-07-30T09:01:45Z |
 | CI | failure | agent/ghs-relay-revalidate-min | 2026-07-30T09:01:32Z |
-| CI | failure | agent/ghs-relay-revalidate-min | 2026-07-30T08:59:21Z |
 
 ## 开放 PR
 

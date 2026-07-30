@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-07-30T17:34:31+08:00",
+  "generated_at": "2026-07-30T17:39:34+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "degraded",
   "project_stage": "deployment_behind_main",
@@ -70,7 +70,7 @@
       "name": "sumeme-postgres",
       "state": "running",
       "health": "healthy",
-      "status": "Up 29 hours (healthy)",
+      "status": "Up 30 hours (healthy)",
       "critical": true
     },
     {
@@ -78,7 +78,7 @@
       "name": "sumeme-qdrant",
       "state": "running",
       "health": "healthy",
-      "status": "Up 29 hours (healthy)",
+      "status": "Up 30 hours (healthy)",
       "critical": true
     },
     {
@@ -86,7 +86,7 @@
       "name": "sumeme-redis",
       "state": "running",
       "health": "healthy",
-      "status": "Up 29 hours (healthy)",
+      "status": "Up 30 hours (healthy)",
       "critical": true
     },
     {
@@ -102,21 +102,21 @@
       "name": "sumeme-searxng",
       "state": "running",
       "health": "",
-      "status": "Up 29 hours",
+      "status": "Up 30 hours",
       "critical": true
     }
   ],
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 34959065088,
-      "free_bytes": 5355331584,
+      "used_bytes": 34966237184,
+      "free_bytes": 5348159488,
       "used_percent": 82.9
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1873518592,
-      "used_percent": 52.0
+      "available_bytes": 1880965120,
+      "used_percent": 51.8
     }
   },
   "github": {
@@ -147,14 +147,27 @@
       {
         "name": "Publish project status",
         "display_title": "Publish project status",
-        "event": "workflow_run",
+        "event": "schedule",
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
         "head_sha": "77dc4c7c020025c4a234add709f9b4fb10cbe5a6",
+        "run_number": 337,
+        "created_at": "2026-07-30T09:39:11Z",
+        "updated_at": "2026-07-30T09:39:16Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30531546031"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "77dc4c7c020025c4a234add709f9b4fb10cbe5a6",
         "run_number": 336,
         "created_at": "2026-07-30T09:33:58Z",
-        "updated_at": "2026-07-30T09:34:02Z",
+        "updated_at": "2026-07-30T09:34:45Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30531197335"
       },
       {
@@ -286,33 +299,20 @@
         "created_at": "2026-07-30T08:57:44Z",
         "updated_at": "2026-07-30T08:59:07Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30528752659"
-      },
-      {
-        "name": "CI",
-        "display_title": "ops(ghs): rerun trusted production and relay diagnostics",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/ghs-emergency-diagnose",
-        "head_sha": "5af8249fc3b9580552f2c8fd7134e0bc3748d805",
-        "run_number": 490,
-        "created_at": "2026-07-30T08:53:04Z",
-        "updated_at": "2026-07-30T08:53:15Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30528436508"
       }
     ]
   },
   "collector": {
-    "event_name": "workflow_run",
+    "event_name": "schedule",
     "workflow": "Publish project status",
-    "run_id": "30531197335"
+    "run_id": "30531546031"
   },
   "freshness": {
     "age_seconds_at_publish": 0,
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-30T17:34:31+08:00"
+    "generated_at": "2026-07-30T17:39:34+08:00"
   },
   "reliability": {
     "disk": {
@@ -356,7 +356,7 @@
         "letta_recall_delayed",
         "service_scope_verification_failed"
       ],
-      "age_seconds_at_publish": 2223,
+      "age_seconds_at_publish": 2526,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }
