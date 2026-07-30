@@ -319,3 +319,5 @@ jobs:
           fi
           git commit -m 'status(ghs): update production snapshot'
           git push origin HEAD:ghs-status
+
+# Trusted revalidation trigger: 2026-07-30T08:50Z
