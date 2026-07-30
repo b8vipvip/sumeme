@@ -1,18 +1,64 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-07-30T03:50:08.899Z",
+  "generated_at": "2026-07-30T04:43:34.708Z",
   "workflows": [
     {
       "label": "CI",
       "workflow_id": "ci.yml",
       "runs": [
         {
+          "run_number": 294,
+          "run_id": 30514478194,
+          "sha": "2419cf12398c2368facf1dc0321f6203a661ed42",
+          "event": "push",
+          "status": "in_progress",
+          "conclusion": null,
+          "created_at": "2026-07-30T04:39:52Z",
+          "jobs": [
+            {
+              "id": 90781164664,
+              "name": "compose",
+              "status": "completed",
+              "conclusion": "success",
+              "failed_steps": []
+            },
+            {
+              "id": 90781164673,
+              "name": "reliability",
+              "status": "completed",
+              "conclusion": "success",
+              "failed_steps": []
+            },
+            {
+              "id": 90781164691,
+              "name": "gateway",
+              "status": "completed",
+              "conclusion": "success",
+              "failed_steps": []
+            },
+            {
+              "id": 90781237823,
+              "name": "Deploy production (ADOB SSH) / Deploy sumeme via SSH",
+              "status": "in_progress",
+              "conclusion": null,
+              "failed_steps": []
+            },
+            {
+              "id": 90781237981,
+              "name": "Deploy production (self-hosted fallback)",
+              "status": "completed",
+              "conclusion": "skipped",
+              "failed_steps": []
+            }
+          ]
+        },
+        {
           "run_number": 262,
           "run_id": 30512125327,
           "sha": "a6217df0d2c4e1da6deae642892a72a4d7428c99",
           "event": "push",
-          "status": "in_progress",
-          "conclusion": null,
+          "status": "completed",
+          "conclusion": "failure",
           "created_at": "2026-07-30T03:47:40Z",
           "jobs": [
             {
@@ -39,9 +85,14 @@
             {
               "id": 90774335026,
               "name": "Deploy production (ADOB SSH) / Deploy sumeme via SSH",
-              "status": "in_progress",
-              "conclusion": null,
-              "failed_steps": []
+              "status": "completed",
+              "conclusion": "failure",
+              "failed_steps": [
+                {
+                  "name": "Execute allow-listed project deployment script",
+                  "conclusion": "failure"
+                }
+              ]
             },
             {
               "id": 90774335191,
@@ -454,57 +505,6 @@
               "failed_steps": []
             }
           ]
-        },
-        {
-          "run_number": 195,
-          "run_id": 30454945206,
-          "sha": "77b9bfe201c496678785f5a3e9bdcae4abe42854",
-          "event": "push",
-          "status": "completed",
-          "conclusion": "cancelled",
-          "created_at": "2026-07-29T13:12:19Z",
-          "jobs": [
-            {
-              "id": 90586018191,
-              "name": "gateway",
-              "status": "completed",
-              "conclusion": "success",
-              "failed_steps": []
-            },
-            {
-              "id": 90586018206,
-              "name": "compose",
-              "status": "completed",
-              "conclusion": "success",
-              "failed_steps": []
-            },
-            {
-              "id": 90586018354,
-              "name": "reliability",
-              "status": "completed",
-              "conclusion": "success",
-              "failed_steps": []
-            },
-            {
-              "id": 90586195175,
-              "name": "Deploy production (self-hosted fallback)",
-              "status": "completed",
-              "conclusion": "cancelled",
-              "failed_steps": [
-                {
-                  "name": "Deploy exact verified release to VPS",
-                  "conclusion": "cancelled"
-                }
-              ]
-            },
-            {
-              "id": 90586196128,
-              "name": "Deploy production (ADOB SSH)",
-              "status": "completed",
-              "conclusion": "skipped",
-              "failed_steps": []
-            }
-          ]
         }
       ]
     },
@@ -675,6 +675,26 @@
       "workflow_id": "publish-status.yml",
       "runs": [
         {
+          "run_number": 323,
+          "run_id": 30513475427,
+          "sha": "a6217df0d2c4e1da6deae642892a72a4d7428c99",
+          "event": "schedule",
+          "status": "completed",
+          "conclusion": "failure",
+          "created_at": "2026-07-30T04:17:19Z",
+          "jobs": []
+        },
+        {
+          "run_number": 322,
+          "run_id": 30512639080,
+          "sha": "a6217df0d2c4e1da6deae642892a72a4d7428c99",
+          "event": "workflow_run",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-07-30T03:59:38Z",
+          "jobs": []
+        },
+        {
           "run_number": 321,
           "run_id": 30512095874,
           "sha": "43bdbd14851ce74bd6ece93a9f0d3259aaeac8f9",
@@ -752,26 +772,6 @@
           "status": "completed",
           "conclusion": "success",
           "created_at": "2026-07-30T01:01:16Z",
-          "jobs": []
-        },
-        {
-          "run_number": 313,
-          "run_id": 30500231453,
-          "sha": "3c955a64a87bcbdf67130675b321c31d07ee7ed7",
-          "event": "schedule",
-          "status": "completed",
-          "conclusion": "success",
-          "created_at": "2026-07-29T23:39:36Z",
-          "jobs": []
-        },
-        {
-          "run_number": 312,
-          "run_id": 30496759285,
-          "sha": "3c955a64a87bcbdf67130675b321c31d07ee7ed7",
-          "event": "schedule",
-          "status": "completed",
-          "conclusion": "failure",
-          "created_at": "2026-07-29T22:36:58Z",
           "jobs": []
         }
       ]
