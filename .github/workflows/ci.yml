@@ -80,7 +80,7 @@ jobs:
           docker compose config >/dev/null
 
   deploy-production-self-hosted:
-    name: Deploy production (self-hosted fallback)
+    name: Deploy production (VSR fallback)
     if: >-
       github.event_name == 'push' &&
       github.ref == 'refs/heads/main' &&
@@ -105,10 +105,12 @@ jobs:
           set -euo pipefail
           actual="$(git rev-parse HEAD)"
           test "${actual}" = "${GITHUB_SHA}"
+          echo "ADOB mode: VSR"
           echo "Verified release SHA: ${actual}"
 
-      - name: Deploy exact verified release to VPS
+      - name: Deploy exact verified release to VPS using VSR
         env:
+          ADOB_MODE: VSR
           DEPLOY_DIR: /opt/sumeme
           SOURCE_DIR: ${{ github.workspace }}
         run: bash scripts/deploy-production.sh "${GITHUB_SHA}"
@@ -116,12 +118,13 @@ jobs:
       - name: Print deployment state
         if: always()
         run: |
+          echo "ADOB mode: VSR"
           echo "Expected release: ${GITHUB_SHA}"
           echo "Current release: $(cat /opt/sumeme/.deploy/current_sha 2>/dev/null || echo unknown)"
           tail -n 20 /opt/sumeme/.deploy/history.log 2>/dev/null || true
 
   deploy-production-ssh:
-    name: Deploy production (ADOB SSH)
+    name: Deploy production (GHS)
     if: >-
       github.event_name == 'push' &&
       github.ref == 'refs/heads/main' &&
@@ -130,8 +133,9 @@ jobs:
     concurrency:
       group: sumeme-production
       cancel-in-progress: false
-    uses: b8vipvip/ADOB/.github/workflows/deploy-via-ssh.yml@9fdc399498c7a42deb1e0dbff706cd08ac691617
+    uses: b8vipvip/ADOB/.github/workflows/deploy-via-ssh.yml@8d0858ccf534c8ee95cf14688ce8b2184dd2a197
     with:
+      adob_mode: GHS
       project_name: sumeme
       ssh_host: ${{ vars.SUMEME_VPS_HOST }}
       ssh_port: ${{ vars.SUMEME_VPS_PORT || '22' }}
