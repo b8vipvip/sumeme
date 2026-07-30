@@ -1,47 +1,42 @@
 {
   "schema_version": 1,
   "mode": "GHS",
-  "generated_at": "2026-07-30T07:56:38+00:00",
+  "generated_at": "2026-07-30T08:09:04+00:00",
   "workflow_source_sha": "e3dd018efa31c9da31e6c3579654e943fef79319",
   "deployment": {
     "current_sha": "fe9e4a37401cdda1288226990236536cba85288b",
     "previous_sha": "fe9e4a37401cdda1288226990236536cba85288b",
-    "deploying_sha": "d7f3168dec878878bbdfc5f4686ba3878450c7f9"
+    "deploying_sha": "fa4097b6139a00dcbead61d455eaab5c4294d912"
   },
   "health": {
     "local_gateway": {
-      "ok": true,
-      "status": 200
+      "ok": false,
+      "status": null,
+      "error": "URLError"
     },
     "public": {
-      "ok": true,
-      "status": 200
+      "ok": false,
+      "status": 502
     }
   },
   "services": [
     {
       "service": "ai-provider-proxy",
       "state": "running",
-      "health": null,
-      "status": "Up 8 minutes (healthy)"
+      "health": "healthy",
+      "status": "Up 58 seconds (healthy)"
     },
     {
       "service": "letta",
       "state": "running",
-      "health": "healthy",
-      "status": "Up 8 minutes (healthy)"
+      "health": "starting",
+      "status": "Up 52 seconds (health: starting)"
     },
     {
       "service": "lobe",
       "state": "running",
       "health": null,
       "status": "Up 27 hours"
-    },
-    {
-      "service": "memory-gateway",
-      "state": "running",
-      "health": "healthy",
-      "status": "Up 2 minutes (healthy)"
     },
     {
       "service": "postgresql",
