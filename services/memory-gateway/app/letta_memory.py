@@ -30,6 +30,10 @@ class LettaMemory:
         self.deadlines = MemoryDeadlines.from_environment()
         self._client: Any | None = None
         self._agent_ids: dict[str, str] = {}
+        self._agent_owners: dict[str, str] = {}
+        self._protected_scope_agents: dict[str, str] = {}
+        self._protected_agent_owners: dict[str, str] = {}
+        self._invalid_agent_ids: set[str] = set()
         self._state_loaded = False
         self._agent_lock = anyio.Lock()
         self._state_file = Path("/data/gateway/letta-agent.json")
@@ -97,10 +101,15 @@ class LettaMemory:
             return
         self._state_loaded = True
 
+        state_changed = False
         default_scope = MemoryScope.account(self.settings.sumeme_user_id)
         explicit = self.settings.letta_agent_id.strip()
         if explicit:
-            self._agent_ids[default_scope.storage_key] = explicit
+            if self._register_agent(default_scope.storage_key, explicit):
+                self._protected_scope_agents[default_scope.storage_key] = explicit
+                self._protected_agent_owners[explicit] = default_scope.storage_key
+            else:
+                state_changed = True
 
         if not self._state_file.exists():
             return
@@ -111,6 +120,7 @@ class LettaMemory:
                 for raw_scope, raw_agent in agents.items():
                     raw_key = str(raw_scope or "").strip()
                     if not raw_key:
+                        state_changed = True
                         continue
                     if raw_key.startswith(("acct.", "svc.")) and ".vault." in raw_key:
                         scope_key = safe_id(raw_key)
@@ -119,16 +129,99 @@ class LettaMemory:
                             raw_key,
                             self.settings.sumeme_user_id,
                         ).storage_key
+                        state_changed = True
                     agent_id = str(raw_agent or "").strip()
-                    if agent_id:
-                        self._agent_ids.setdefault(scope_key, agent_id)
+                    if not agent_id:
+                        state_changed = True
+                        continue
+                    if not self._register_agent(scope_key, agent_id):
+                        state_changed = True
+                try:
+                    schema_version = int(data.get("schema_version") or 0)
+                except (TypeError, ValueError):
+                    schema_version = 0
+                    state_changed = True
+                if schema_version < 4:
+                    state_changed = True
+                if state_changed:
+                    self._persist_state()
                 return
 
             legacy = str(data.get("agent_id") or "").strip()
             if legacy:
-                self._agent_ids.setdefault(default_scope.storage_key, legacy)
+                self._register_agent(default_scope.storage_key, legacy)
+                self._persist_state()
         except Exception:
             logger.warning("Could not read persisted Letta agent map", exc_info=True)
+
+    def _cached_agent(self, scope_key: str) -> str | None:
+        agent_id = self._agent_ids.get(scope_key)
+        if not agent_id:
+            return None
+        if (
+            agent_id in self._invalid_agent_ids
+            or self._agent_owners.get(agent_id) != scope_key
+        ):
+            self._agent_ids.pop(scope_key, None)
+            return None
+        return agent_id
+
+    def _register_agent(self, scope_key: str, agent_id: str) -> bool:
+        normalized_scope = safe_id(scope_key)
+        normalized_agent = agent_id.strip()
+        if not normalized_agent or normalized_agent in self._invalid_agent_ids:
+            return False
+
+        protected_agent = self._protected_scope_agents.get(normalized_scope)
+        if protected_agent and protected_agent != normalized_agent:
+            logger.warning(
+                "Rejected replacement of configured Letta agent scope=%s",
+                normalized_scope,
+            )
+            return False
+        protected_owner = self._protected_agent_owners.get(normalized_agent)
+        if protected_owner and protected_owner != normalized_scope:
+            logger.warning(
+                "Rejected configured Letta agent ownership collision agent_id=%s",
+                normalized_agent,
+            )
+            return False
+
+        existing_agent = self._agent_ids.get(normalized_scope)
+        if existing_agent and existing_agent != normalized_agent:
+            if self._agent_owners.get(existing_agent) == normalized_scope:
+                self._agent_owners.pop(existing_agent, None)
+            self._agent_ids.pop(normalized_scope, None)
+
+        existing_owner = self._agent_owners.get(normalized_agent)
+        if existing_owner and existing_owner != normalized_scope:
+            self._invalidate_agent(
+                normalized_agent,
+                conflicting_scopes=(existing_owner, normalized_scope),
+            )
+            return False
+
+        self._agent_ids[normalized_scope] = normalized_agent
+        self._agent_owners[normalized_agent] = normalized_scope
+        return True
+
+    def _invalidate_agent(
+        self,
+        agent_id: str,
+        *,
+        conflicting_scopes: tuple[str, str],
+    ) -> None:
+        self._invalid_agent_ids.add(agent_id)
+        self._agent_owners.pop(agent_id, None)
+        for scope_key, mapped_agent in list(self._agent_ids.items()):
+            if mapped_agent == agent_id:
+                self._agent_ids.pop(scope_key, None)
+        logger.warning(
+            "Rejected Letta agent ownership collision agent_id=%s scopes=%s,%s",
+            agent_id,
+            conflicting_scopes[0],
+            conflicting_scopes[1],
+        )
 
     def _persist_state(self) -> None:
         self._state_file.parent.mkdir(parents=True, exist_ok=True)
@@ -136,8 +229,9 @@ class LettaMemory:
         temporary.write_text(
             json.dumps(
                 {
-                    "schema_version": 3,
+                    "schema_version": 4,
                     "scope_format": "principal.account.vault",
+                    "ownership": "one-agent-per-scope",
                     "agents": dict(sorted(self._agent_ids.items())),
                 },
                 ensure_ascii=False,
@@ -160,14 +254,14 @@ class LettaMemory:
         resolved = self._scope(scope)
         scope_key = resolved.storage_key
         self._load_state()
-        if agent_id := self._agent_ids.get(scope_key):
+        if agent_id := self._cached_agent(scope_key):
             return agent_id
 
         model_handle = self._resolved_model_handle()
         embedding_handle = self._resolved_embedding_handle()
 
         async with self._agent_lock:
-            if agent_id := self._agent_ids.get(scope_key):
+            if agent_id := self._cached_agent(scope_key):
                 return agent_id
 
             request_timeout = self._request_timeout(timeout_seconds)
@@ -212,7 +306,9 @@ class LettaMemory:
             agent_id = str(getattr(agent, "id", "") or "")
             if not agent_id:
                 raise MemoryOperationError("letta_invalid_response")
-            self._agent_ids[scope_key] = agent_id
+            if not self._register_agent(scope_key, agent_id):
+                self._persist_state()
+                raise MemoryOperationError("letta_agent_ownership_conflict")
             self._persist_state()
             logger.info(
                 "Created Letta agent %s for scope %s",
