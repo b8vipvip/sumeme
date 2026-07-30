@@ -10,6 +10,7 @@ from .config import Settings
 from .identity import IdentityError
 from .memory_scope import MemoryScope
 from .object_config import ObjectAccessSettings
+from .object_reservations import ObjectReservationError
 from .object_store import ObjectStoreError
 from .objects import (
     ObjectRecord,
@@ -76,9 +77,12 @@ def build_object_router(
     def require_enabled(request: Request) -> None:
         if not object_settings.object_api_enabled:
             raise HTTPException(status_code=503, detail="object_api_disabled")
-        if not hasattr(request.app.state, "objects") or not hasattr(
-            request.app.state, "object_store"
-        ):
+        required_state = (
+            "objects",
+            "object_store",
+            "object_reservations",
+        )
+        if any(not hasattr(request.app.state, name) for name in required_state):
             raise HTTPException(status_code=503, detail="object_api_unavailable")
 
     async def resolve_scope_and_policy(
@@ -115,6 +119,9 @@ def build_object_router(
         raise HTTPException(status_code=exc.status_code, detail=exc.code) from exc
 
     def raise_store(exc: ObjectStoreError) -> None:
+        raise HTTPException(status_code=exc.status_code, detail=exc.code) from exc
+
+    def raise_reservation(exc: ObjectReservationError) -> None:
         raise HTTPException(status_code=exc.status_code, detail=exc.code) from exc
 
     def enforce_current_policy(policy: VaultPolicy, record: ObjectRecord) -> None:
@@ -181,13 +188,9 @@ def build_object_router(
             raise HTTPException(status_code=404, detail="object_not_found")
         enforce_current_policy(policy, record)
         try:
-            verified = await request.app.state.object_store.verify_upload(record)
-            completed = await request.app.state.objects.complete(
-                scope=scope,
-                object_id=record.object_id,
-                actual_size_bytes=verified.size_bytes,
-                actual_sha256=verified.sha256,
-            )
+            completed = await request.app.state.object_reservations.complete(record)
+        except ObjectReservationError as exc:
+            raise_reservation(exc)
         except ObjectStoreError as exc:
             raise_store(exc)
         except ObjectRegistryError as exc:
@@ -238,17 +241,14 @@ def build_object_router(
             raise_registry(exc)
         if record is None:
             raise HTTPException(status_code=404, detail="object_not_found")
-        if record.state != "deleted":
-            try:
-                await request.app.state.object_store.delete(record)
-                record = await request.app.state.objects.soft_delete(
-                    scope,
-                    record.object_id,
-                )
-            except ObjectStoreError as exc:
-                raise_store(exc)
-            except ObjectRegistryError as exc:
-                raise_registry(exc)
+        try:
+            record = await request.app.state.object_reservations.delete(record)
+        except ObjectReservationError as exc:
+            raise_reservation(exc)
+        except ObjectStoreError as exc:
+            raise_store(exc)
+        except ObjectRegistryError as exc:
+            raise_registry(exc)
         return {
             "scope": scope.display_key,
             "object": public_object(record),
