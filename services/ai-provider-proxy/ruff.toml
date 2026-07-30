@@ -1,0 +1,7 @@
+extend = "../../ruff.toml"
+
+# The semantic-tag response is syntactically valid JSON but violates the API's
+# schema. ValueError intentionally represents invalid provider data here rather
+# than a caller-side Python type contract.
+[lint.per-file-ignores]
+"app/main.py" = ["TRY004"]
