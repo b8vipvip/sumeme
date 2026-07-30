@@ -9,6 +9,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from .config import Settings
 from .identity import IdentityError
 from .memory_scope import MemoryScope
+from .object_config import ObjectAccessSettings
 from .object_store import ObjectStoreError
 from .objects import ObjectRecord, ObjectRegistryError
 from .vaults import VaultPolicy, VaultRegistryError, should_auto_register_vault
@@ -62,13 +63,14 @@ def public_object(record: ObjectRecord) -> dict[str, Any]:
 
 
 def build_object_router(
-    settings: Settings,
+    core_settings: Settings,
+    object_settings: ObjectAccessSettings,
     require_gateway_auth: Callable[[str | None], None],
 ) -> APIRouter:
     router = APIRouter(prefix="/api/objects", tags=["objects"])
 
     def require_enabled(request: Request) -> None:
-        if not settings.object_api_enabled:
+        if not object_settings.object_api_enabled:
             raise HTTPException(status_code=503, detail="object_api_disabled")
         if not hasattr(request.app.state, "objects") or not hasattr(
             request.app.state, "object_store"
@@ -80,7 +82,7 @@ def build_object_router(
         body: ObjectIdentityBody,
     ) -> tuple[MemoryScope, VaultPolicy]:
         service_token = str(request.headers.get("x-sumeme-service-token") or "").strip()
-        if settings.identity_mode == "legacy-client-asserted" and not service_token:
+        if core_settings.identity_mode == "legacy-client-asserted" and not service_token:
             raise HTTPException(
                 status_code=503,
                 detail="object_trusted_identity_required",
@@ -98,7 +100,7 @@ def build_object_router(
                 scope,
                 allow_create=should_auto_register_vault(
                     scope,
-                    settings.identity_mode,
+                    core_settings.identity_mode,
                 ),
             )
         except VaultRegistryError as exc:
