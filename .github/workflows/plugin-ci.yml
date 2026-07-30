@@ -4,11 +4,11 @@ on:
   push:
     branches: [main, "agent/**"]
     paths:
-      - "plugins/autodevops-bridge/**"
+      - "ADOB/**"
       - ".github/workflows/plugin-ci.yml"
   pull_request:
     paths:
-      - "plugins/autodevops-bridge/**"
+      - "ADOB/**"
       - ".github/workflows/plugin-ci.yml"
 
 permissions:
@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: plugins/autodevops-bridge/mcp-server
+        working-directory: ADOB/mcp-server
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -32,7 +32,21 @@ jobs:
       - name: Build
         run: npm run build
       - name: Validate plugin manifest
-        working-directory: plugins/autodevops-bridge
+        working-directory: ADOB
         run: node -e "JSON.parse(require('fs').readFileSync('.codex-plugin/plugin.json','utf8')); JSON.parse(require('fs').readFileSync('.mcp.json','utf8'));"
+      - name: Validate installer syntax
+        working-directory: ADOB
+        run: bash -n installer/*.sh
+      - name: Validate workflow YAML
+        working-directory: ADOB
+        run: ruby -e "require 'yaml'; Dir['.github/workflows/*.{yml,yaml}'].each { |f| YAML.load_file(f); puts f }"
+      - name: Enforce pinned SSH trust policy
+        working-directory: ADOB
+        run: |
+          grep -Fq 'StrictHostKeyChecking yes' .github/workflows/deploy-via-ssh.yml
+          if grep -Eq 'StrictHostKeyChecking[= ]no|ssh-keyscan' .github/workflows/deploy-via-ssh.yml; then
+            echo 'Unsafe SSH trust bypass found' >&2
+            exit 1
+          fi
       - name: Build container
         run: docker build -t autodevops-bridge:test .
