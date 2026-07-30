@@ -1,6 +1,6 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-30T23:23:42+08:00
+- **采集时间：** 2026-07-30T23:41:52+08:00
 - **总体状态：** `unhealthy`
 - **开发阶段：** `deployed_unhealthy`
 - **线上版本：** `fe9e4a37401cdda1288226990236536cba85288b`
@@ -19,8 +19,8 @@
 
 - 本地网关：`failed`
 - 公网入口：`failed`
-- 磁盘使用：`82.7%`，剩余 5.1 GiB
-- 内存使用：`36.0%`，可用 2.3 GiB
+- 磁盘使用：`83.4%`，剩余 4.8 GiB
+- 内存使用：`32.9%`，可用 2.4 GiB
 
 ## 容器服务
 
@@ -31,14 +31,14 @@
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-07-30T15:23:16Z |
+| Publish project status | in_progress | main | 2026-07-30T15:41:27Z |
+| Publish project status | success | main | 2026-07-30T15:24:03Z |
 | Publish project status | success | main | 2026-07-30T14:34:33Z |
 | Publish project status | cancelled | main | 2026-07-30T14:33:45Z |
-| CI | in_progress | main | 2026-07-30T14:33:33Z |
+| CI | failure | main | 2026-07-30T15:41:13Z |
 | CI | success | agent/isolation-negative-matrix | 2026-07-30T14:31:09Z |
 | Publish project status | success | main | 2026-07-30T14:30:51Z |
 | Publish project status | cancelled | main | 2026-07-30T14:29:55Z |
-| Smoke production | success | main | 2026-07-30T14:29:49Z |
 
 ## 开放 PR
 
@@ -52,6 +52,7 @@
 
 ## 最近部署
 
+- `2026-07-30T23:41:07+08:00 rollback target=fe9e4a37401cdda1288226990236536cba85288b failed=f8de54d84553526c9a10b79cc21ea0f01b1bb0fc`
 - `2026-07-30T22:33:25+08:00 rollback target=fe9e4a37401cdda1288226990236536cba85288b failed=d80e539434df8d6f89a198a45a067b332addcb3b`
 - `2026-07-29T15:03:24+08:00 fe9e4a37401cdda1288226990236536cba85288b`
 - `2026-07-29T15:01:16+08:00 985f62c95ecff62417e9f515c3a683e369fdaf8d`
@@ -62,9 +63,9 @@
 
 - 状态快照发布时年龄：`0s`
 - 状态快照过期：`no`（阈值 2100s）
-- 部署状态：`in_progress`
+- 部署状态：`idle`
 - 当前版本与 main 一致：`no`
-- deploying SHA：`f8de54d84553526c9a10b79cc21ea0f01b1bb0fc`
+- deploying SHA：`none`
 - 最近发布结果：`rollback`
 - 磁盘保护级别：`warning`
 - 最近 smoke test：`failure`

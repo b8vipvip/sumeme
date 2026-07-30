@@ -1,9 +1,9 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-07-30T23:23:42+08:00",
+  "generated_at": "2026-07-30T23:41:52+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "unhealthy",
-  "project_stage": "deployment_in_progress",
+  "project_stage": "deployed_unhealthy",
   "reasons": [
     "缺少关键服务: letta, lobe, memory-gateway, postgresql, qdrant, redis, rustfs, searxng",
     "本地 memory-gateway 健康检查失败",
@@ -19,12 +19,13 @@
       "2026-07-29T15:00:27+08:00 efe5b594b0b0d05509a1e7717f2eadc95adabf84",
       "2026-07-29T15:01:16+08:00 985f62c95ecff62417e9f515c3a683e369fdaf8d",
       "2026-07-29T15:03:24+08:00 fe9e4a37401cdda1288226990236536cba85288b",
-      "2026-07-30T22:33:25+08:00 rollback target=fe9e4a37401cdda1288226990236536cba85288b failed=d80e539434df8d6f89a198a45a067b332addcb3b"
+      "2026-07-30T22:33:25+08:00 rollback target=fe9e4a37401cdda1288226990236536cba85288b failed=d80e539434df8d6f89a198a45a067b332addcb3b",
+      "2026-07-30T23:41:07+08:00 rollback target=fe9e4a37401cdda1288226990236536cba85288b failed=f8de54d84553526c9a10b79cc21ea0f01b1bb0fc"
     ],
-    "deploying_sha": "f8de54d84553526c9a10b79cc21ea0f01b1bb0fc",
+    "deploying_sha": null,
     "last_result": "rollback",
-    "last_history_entry": "2026-07-30T22:33:25+08:00 rollback target=fe9e4a37401cdda1288226990236536cba85288b failed=d80e539434df8d6f89a198a45a067b332addcb3b",
-    "state": "in_progress"
+    "last_history_entry": "2026-07-30T23:41:07+08:00 rollback target=fe9e4a37401cdda1288226990236536cba85288b failed=f8de54d84553526c9a10b79cc21ea0f01b1bb0fc",
+    "state": "idle"
   },
   "health": {
     "local_gateway": {
@@ -42,14 +43,14 @@
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 34883891200,
-      "free_bytes": 5430505472,
-      "used_percent": 82.7
+      "used_bytes": 35153596416,
+      "free_bytes": 5160800256,
+      "used_percent": 83.4
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 2497273856,
-      "used_percent": 36.0
+      "available_bytes": 2620014592,
+      "used_percent": 32.9
     }
   },
   "github": {
@@ -82,14 +83,27 @@
       {
         "name": "Publish project status",
         "display_title": "Publish project status",
-        "event": "schedule",
+        "event": "workflow_run",
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
         "head_sha": "f8de54d84553526c9a10b79cc21ea0f01b1bb0fc",
+        "run_number": 346,
+        "created_at": "2026-07-30T15:41:16Z",
+        "updated_at": "2026-07-30T15:41:27Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30557906615"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "schedule",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "f8de54d84553526c9a10b79cc21ea0f01b1bb0fc",
         "run_number": 345,
         "created_at": "2026-07-30T15:23:12Z",
-        "updated_at": "2026-07-30T15:23:16Z",
+        "updated_at": "2026-07-30T15:24:03Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30556416292"
       },
       {
@@ -122,13 +136,13 @@
         "name": "CI",
         "display_title": "Merge pull request #47 from b8vipvip/agent/isolation-negative-matrix",
         "event": "push",
-        "status": "in_progress",
-        "conclusion": null,
+        "status": "completed",
+        "conclusion": "failure",
         "head_branch": "main",
         "head_sha": "f8de54d84553526c9a10b79cc21ea0f01b1bb0fc",
         "run_number": 618,
         "created_at": "2026-07-30T14:32:05Z",
-        "updated_at": "2026-07-30T14:33:33Z",
+        "updated_at": "2026-07-30T15:41:13Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30552168764"
       },
       {
@@ -221,19 +235,6 @@
         "created_at": "2026-07-30T14:26:20Z",
         "updated_at": "2026-07-30T14:26:54Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30551692300"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "94d639b2fbb180f681d823931782be21b834ef0c",
-        "run_number": 340,
-        "created_at": "2026-07-30T14:23:57Z",
-        "updated_at": "2026-07-30T14:24:46Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30551496270"
       }
     ]
   },
@@ -251,13 +252,13 @@
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-30T23:23:42+08:00"
+    "generated_at": "2026-07-30T23:41:52+08:00"
   },
   "deployment_consistency": {
-    "state": "in_progress",
+    "state": "idle",
     "marker_consistent": true,
     "current_matches_main": false,
-    "deploying_matches_main": true,
+    "deploying_matches_main": null,
     "main_sha": "f8de54d84553526c9a10b79cc21ea0f01b1bb0fc"
   },
   "reliability": {
@@ -302,7 +303,7 @@
         "letta_recall_delayed",
         "service_scope_verification_failed"
       ],
-      "age_seconds_at_publish": 23174,
+      "age_seconds_at_publish": 24264,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }
