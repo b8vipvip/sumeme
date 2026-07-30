@@ -53,7 +53,9 @@ services:
       - .env
     environment:
       PROVIDER_PROXY_API_KEY: ${GATEWAY_API_KEY}
-      EMBEDDING_PROVIDER_MODE: ${EMBEDDING_PROVIDER_MODE:-auto}
+      # The current relay has no reliable native /embeddings endpoint. Keep semantic
+      # extraction remote and deterministic hashing local; never load local models.
+      EMBEDDING_PROVIDER_MODE: remote-semantic-hash
       EMBEDDING_DIMENSION: ${EMBEDDING_DIMENSION:-1536}
       EMBEDDING_MAX_INPUTS: ${EMBEDDING_MAX_INPUTS:-32}
       EMBEDDING_MAX_CHARS_PER_INPUT: ${EMBEDDING_MAX_CHARS_PER_INPUT:-12000}
@@ -77,6 +79,10 @@ services:
       - .env
     environment:
       LETTA_BASE_URL: http://letta:8283
+      # Letta's OpenAI-compatible provider handle is openai/<model>. The endpoint
+      # itself is redirected to ai-provider-proxy below.
+      LETTA_MODEL: openai/${OPENAI_MEMORY_MODEL}
+      LETTA_EMBEDDING: openai/${OPENAI_EMBEDDING_MODEL}
       EMBEDDING_API_BASE_URL: http://ai-provider-proxy:8100/v1
       EMBEDDING_API_KEY: ${GATEWAY_API_KEY}
       MEMPALACE_QDRANT_URL: http://qdrant:6333
