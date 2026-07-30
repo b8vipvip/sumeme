@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import logging
 import sqlite3
+import uuid
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
@@ -99,11 +100,11 @@ class ObjectReservationManager:
                         candidate.scope,
                         candidate.object_id,
                     )
-                    if (
-                        current is None
-                        or current.state != "reserved"
-                        or current.created_at > cutoff.isoformat()
-                    ):
+                    if current is None or current.state != "reserved":
+                        skipped += 1
+                        continue
+                    created_at = self._parse_timestamp(current.created_at)
+                    if created_at is None or created_at > cutoff:
                         skipped += 1
                         continue
                     await self.store.delete(current)
@@ -157,17 +158,21 @@ class ObjectReservationManager:
 
     @asynccontextmanager
     async def _lease(self, object_id: str, operation: str) -> AsyncIterator[None]:
-        acquired = await anyio.to_thread.run_sync(
+        lease_id = await anyio.to_thread.run_sync(
             self._acquire_sync,
             object_id,
             operation,
         )
-        if not acquired:
+        if lease_id is None:
             raise ObjectReservationError("object_operation_in_progress", status_code=409)
         try:
             yield
         finally:
-            await anyio.to_thread.run_sync(self._release_sync, object_id)
+            await anyio.to_thread.run_sync(
+                self._release_sync,
+                object_id,
+                lease_id,
+            )
 
     def _connect(self) -> sqlite3.Connection:
         connection = sqlite3.connect(self.path, timeout=30)
@@ -182,12 +187,32 @@ class ObjectReservationManager:
                 """
                 CREATE TABLE IF NOT EXISTS object_operation_leases (
                     object_id TEXT PRIMARY KEY,
+                    lease_id TEXT NOT NULL,
                     operation TEXT NOT NULL,
                     acquired_at TEXT NOT NULL,
                     expires_at TEXT NOT NULL
                 )
                 """
             )
+            columns = {
+                str(row["name"])
+                for row in connection.execute(
+                    "PRAGMA table_info(object_operation_leases)"
+                ).fetchall()
+            }
+            if "lease_id" not in columns:
+                connection.execute("DROP TABLE object_operation_leases")
+                connection.execute(
+                    """
+                    CREATE TABLE object_operation_leases (
+                        object_id TEXT PRIMARY KEY,
+                        lease_id TEXT NOT NULL,
+                        operation TEXT NOT NULL,
+                        acquired_at TEXT NOT NULL,
+                        expires_at TEXT NOT NULL
+                    )
+                    """
+                )
             connection.execute(
                 """
                 CREATE INDEX IF NOT EXISTS object_operation_leases_expiry_idx
@@ -195,9 +220,10 @@ class ObjectReservationManager:
                 """
             )
 
-    def _acquire_sync(self, object_id: str, operation: str) -> bool:
+    def _acquire_sync(self, object_id: str, operation: str) -> str | None:
         now = datetime.now(UTC)
         expires_at = now + timedelta(seconds=self.operation_lease_seconds)
+        lease_id = uuid.uuid4().hex
         with self._connect() as connection:
             connection.execute("BEGIN IMMEDIATE")
             connection.execute(
@@ -208,11 +234,12 @@ class ObjectReservationManager:
                 connection.execute(
                     """
                     INSERT INTO object_operation_leases (
-                        object_id, operation, acquired_at, expires_at
-                    ) VALUES (?, ?, ?, ?)
+                        object_id, lease_id, operation, acquired_at, expires_at
+                    ) VALUES (?, ?, ?, ?, ?)
                     """,
                     (
                         object_id,
+                        lease_id,
                         operation,
                         now.isoformat(),
                         expires_at.isoformat(),
@@ -220,15 +247,18 @@ class ObjectReservationManager:
                 )
             except sqlite3.IntegrityError:
                 connection.rollback()
-                return False
+                return None
             connection.commit()
-            return True
+            return lease_id
 
-    def _release_sync(self, object_id: str) -> None:
+    def _release_sync(self, object_id: str, lease_id: str) -> None:
         with self._connect() as connection:
             connection.execute(
-                "DELETE FROM object_operation_leases WHERE object_id = ?",
-                (object_id,),
+                """
+                DELETE FROM object_operation_leases
+                WHERE object_id = ? AND lease_id = ?
+                """,
+                (object_id, lease_id),
             )
 
     def _expired_sync(self, cutoff: str, limit: int) -> list[ObjectRecord]:
@@ -242,7 +272,14 @@ class ObjectReservationManager:
                 """,
                 (cutoff, limit),
             ).fetchall()
+        return [ObjectRegistry._row_to_record(row) for row in rows]
+
+    @staticmethod
+    def _parse_timestamp(value: str) -> datetime | None:
         try:
-            return [ObjectRegistry._row_to_record(row) for row in rows]
-        except ObjectRegistryError:
-            raise
+            parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        except ValueError:
+            return None
+        if parsed.tzinfo is None:
+            parsed = parsed.replace(tzinfo=UTC)
+        return parsed.astimezone(UTC)
