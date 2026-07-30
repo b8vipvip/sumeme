@@ -23,7 +23,7 @@ class ObjectAccessSettings(BaseSettings):
     object_max_size_bytes: int = Field(
         default=2 * 1024**3,
         ge=1,
-        le=50 * 1024**3,
+        le=5 * 1024**3,
     )
     object_presign_ttl_seconds: int = Field(default=600, ge=60, le=3600)
     object_allow_insecure_public_endpoint: bool = False
