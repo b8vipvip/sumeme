@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-07-30T11:36:32+08:00",
+  "generated_at": "2026-07-30T11:47:14+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "degraded",
   "project_stage": "deployment_behind_main",
@@ -62,7 +62,7 @@
       "name": "sumeme-memory-gateway",
       "state": "running",
       "health": "healthy",
-      "status": "Up 26 seconds (healthy)",
+      "status": "Up 25 seconds (healthy)",
       "critical": true
     },
     {
@@ -70,7 +70,7 @@
       "name": "sumeme-postgres",
       "state": "running",
       "health": "healthy",
-      "status": "Up 23 hours (healthy)",
+      "status": "Up 24 hours (healthy)",
       "critical": true
     },
     {
@@ -78,7 +78,7 @@
       "name": "sumeme-qdrant",
       "state": "running",
       "health": "healthy",
-      "status": "Up 23 hours (healthy)",
+      "status": "Up 24 hours (healthy)",
       "critical": true
     },
     {
@@ -86,7 +86,7 @@
       "name": "sumeme-redis",
       "state": "running",
       "health": "healthy",
-      "status": "Up 23 hours (healthy)",
+      "status": "Up 24 hours (healthy)",
       "critical": true
     },
     {
@@ -94,7 +94,7 @@
       "name": "sumeme-rustfs",
       "state": "running",
       "health": "healthy",
-      "status": "Up 38 minutes (healthy)",
+      "status": "Up 49 minutes (healthy)",
       "critical": true
     },
     {
@@ -102,27 +102,37 @@
       "name": "sumeme-searxng",
       "state": "running",
       "health": "",
-      "status": "Up 23 hours",
+      "status": "Up 24 hours",
       "critical": true
     }
   ],
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 34290180096,
-      "free_bytes": 6024216576,
+      "used_bytes": 34293977088,
+      "free_bytes": 6020419584,
       "used_percent": 81.3
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 2237333504,
-      "used_percent": 42.7
+      "available_bytes": 2233184256,
+      "used_percent": 42.8
     }
   },
   "github": {
     "default_branch": "main",
-    "latest_main_sha": "9244676f94a67cadb05d6ccc61811476209f1f12",
-    "open_pull_requests": [],
+    "latest_main_sha": "43bdbd14851ce74bd6ece93a9f0d3259aaeac8f9",
+    "open_pull_requests": [
+      {
+        "number": 27,
+        "title": "Add scoped object metadata and lifecycle rules",
+        "draft": false,
+        "head": "agent/scoped-object-metadata",
+        "base": "main",
+        "updated_at": "2026-07-30T03:46:26Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/pull/27"
+      }
+    ],
     "open_issues": [
       {
         "number": 10,
@@ -151,168 +161,168 @@
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
-        "head_sha": "9244676f94a67cadb05d6ccc61811476209f1f12",
-        "run_number": 319,
-        "created_at": "2026-07-30T03:36:16Z",
-        "updated_at": "2026-07-30T03:36:20Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511626078"
+        "head_sha": "43bdbd14851ce74bd6ece93a9f0d3259aaeac8f9",
+        "run_number": 321,
+        "created_at": "2026-07-30T03:46:59Z",
+        "updated_at": "2026-07-30T03:47:03Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30512095874"
       },
       {
         "name": "CI",
-        "display_title": "Add a private RustFS bucket for scoped vault objects",
+        "display_title": "Add scoped object metadata and lifecycle rules",
+        "event": "pull_request",
+        "status": "in_progress",
+        "conclusion": null,
+        "head_branch": "agent/scoped-object-metadata",
+        "head_sha": "262574d0c124e80f6d0aa1bb71e63b74cbeec5e2",
+        "run_number": 261,
+        "created_at": "2026-07-30T03:46:30Z",
+        "updated_at": "2026-07-30T03:46:41Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30512074470"
+      },
+      {
+        "name": "CI",
+        "display_title": "docs: define scoped object metadata lifecycle",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/scoped-object-metadata",
+        "head_sha": "262574d0c124e80f6d0aa1bb71e63b74cbeec5e2",
+        "run_number": 260,
+        "created_at": "2026-07-30T03:46:10Z",
+        "updated_at": "2026-07-30T03:46:47Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30512060370"
+      },
+      {
+        "name": "CI",
+        "display_title": "test: cover scoped object metadata isolation and policy",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/scoped-object-metadata",
+        "head_sha": "9a2c44ff42a2c09da0e18fa0a723886df4c97eee",
+        "run_number": 259,
+        "created_at": "2026-07-30T03:45:32Z",
+        "updated_at": "2026-07-30T03:46:10Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30512031543"
+      },
+      {
+        "name": "CI",
+        "display_title": "feat: add scoped object metadata registry",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/scoped-object-metadata",
+        "head_sha": "fe608206b264453f702173d06478e5ab98aee5b5",
+        "run_number": 258,
+        "created_at": "2026-07-30T03:44:59Z",
+        "updated_at": "2026-07-30T03:45:39Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30512003131"
+      },
+      {
+        "name": "CI",
+        "display_title": "Align production smoke timeouts with the relay",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/scoped-object-metadata",
+        "head_sha": "43bdbd14851ce74bd6ece93a9f0d3259aaeac8f9",
+        "run_number": 257,
+        "created_at": "2026-07-30T03:44:21Z",
+        "updated_at": "2026-07-30T03:44:56Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511976151"
+      },
+      {
+        "name": "CI",
+        "display_title": "Align production smoke timeouts with the relay",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_branch": "main",
+        "head_sha": "43bdbd14851ce74bd6ece93a9f0d3259aaeac8f9",
+        "run_number": 256,
+        "created_at": "2026-07-30T03:43:19Z",
+        "updated_at": "2026-07-30T03:46:57Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511930261"
+      },
+      {
+        "name": "CI",
+        "display_title": "Align production smoke timeouts with the relay",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/align-smoke-relay-timeouts",
+        "head_sha": "db22d57f313eab36293da16a97b9fddf25c2a03b",
+        "run_number": 255,
+        "created_at": "2026-07-30T03:42:12Z",
+        "updated_at": "2026-07-30T03:42:49Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511880933"
+      },
+      {
+        "name": "CI",
+        "display_title": "test: require smoke timeouts to follow relay configuration",
         "event": "push",
         "status": "completed",
         "conclusion": "success",
         "head_branch": "agent/align-smoke-relay-timeouts",
-        "head_sha": "9244676f94a67cadb05d6ccc61811476209f1f12",
-        "run_number": 251,
-        "created_at": "2026-07-30T03:35:30Z",
-        "updated_at": "2026-07-30T03:36:16Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511592370"
-      },
-      {
-        "name": "CI",
-        "display_title": "Add a private RustFS bucket for scoped vault objects",
-        "event": "push",
-        "status": "in_progress",
-        "conclusion": null,
-        "head_branch": "main",
-        "head_sha": "9244676f94a67cadb05d6ccc61811476209f1f12",
-        "run_number": 250,
-        "created_at": "2026-07-30T03:31:56Z",
-        "updated_at": "2026-07-30T03:36:15Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511431534"
-      },
-      {
-        "name": "CI",
-        "display_title": "Add a private RustFS bucket for scoped vault objects",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/private-vault-object-bucket",
-        "head_sha": "99547b2583c22c6bbdcab15ce4bde30dff4fbe0c",
-        "run_number": 249,
-        "created_at": "2026-07-30T03:28:55Z",
-        "updated_at": "2026-07-30T03:29:37Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511294742"
-      },
-      {
-        "name": "CI",
-        "display_title": "docs: define private vault object storage migration",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/private-vault-object-bucket",
-        "head_sha": "99547b2583c22c6bbdcab15ce4bde30dff4fbe0c",
-        "run_number": 248,
-        "created_at": "2026-07-30T03:28:17Z",
-        "updated_at": "2026-07-30T03:28:53Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511267019"
-      },
-      {
-        "name": "CI",
-        "display_title": "test: enforce private vault bucket policy",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/private-vault-object-bucket",
-        "head_sha": "5cb16f338cb67da3f5afd3167d89d4073a96f312",
-        "run_number": 247,
-        "created_at": "2026-07-30T03:27:25Z",
-        "updated_at": "2026-07-30T03:28:07Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511230541"
+        "head_sha": "db22d57f313eab36293da16a97b9fddf25c2a03b",
+        "run_number": 254,
+        "created_at": "2026-07-30T03:40:40Z",
+        "updated_at": "2026-07-30T03:41:25Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511815375"
       },
       {
         "name": "Publish project status",
         "display_title": "Publish project status",
         "event": "workflow_run",
         "status": "completed",
-        "conclusion": "success",
+        "conclusion": "failure",
         "head_branch": "main",
-        "head_sha": "7e0eb3a682f83919030b5e164198a68fe63ce8ff",
-        "run_number": 318,
-        "created_at": "2026-07-30T03:27:11Z",
-        "updated_at": "2026-07-30T03:27:47Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511220749"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "cancelled",
-        "head_branch": "main",
-        "head_sha": "7e0eb3a682f83919030b5e164198a68fe63ce8ff",
-        "run_number": 317,
-        "created_at": "2026-07-30T03:27:05Z",
-        "updated_at": "2026-07-30T03:27:19Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511216409"
+        "head_sha": "9244676f94a67cadb05d6ccc61811476209f1f12",
+        "run_number": 320,
+        "created_at": "2026-07-30T03:40:30Z",
+        "updated_at": "2026-07-30T03:44:44Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511808695"
       },
       {
         "name": "CI",
-        "display_title": "docs: configure private vault object bucket",
+        "display_title": "docs: configure production smoke request timeouts",
         "event": "push",
         "status": "completed",
         "conclusion": "success",
-        "head_branch": "agent/private-vault-object-bucket",
-        "head_sha": "387f98b896f1e743d7cfa67fc9243be7e286b708",
-        "run_number": 246,
-        "created_at": "2026-07-30T03:26:52Z",
-        "updated_at": "2026-07-30T03:27:34Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511206167"
+        "head_branch": "agent/align-smoke-relay-timeouts",
+        "head_sha": "e914eafb84434c3c0a511d6a8e434a65b012f7be",
+        "run_number": 253,
+        "created_at": "2026-07-30T03:40:07Z",
+        "updated_at": "2026-07-30T03:40:44Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511790115"
       },
       {
         "name": "CI",
-        "display_title": "feat: create private RustFS bucket for vault objects",
+        "display_title": "ops: align smoke request timeouts with relay settings",
         "event": "push",
         "status": "completed",
         "conclusion": "success",
-        "head_branch": "agent/private-vault-object-bucket",
-        "head_sha": "8b862de58e7406c01ab77c0b458e23af2c04a489",
-        "run_number": 245,
-        "created_at": "2026-07-30T03:26:11Z",
-        "updated_at": "2026-07-30T03:26:56Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511177198"
-      },
-      {
-        "name": "Smoke production",
-        "display_title": "Smoke production",
-        "event": "schedule",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "7e0eb3a682f83919030b5e164198a68fe63ce8ff",
-        "run_number": 3,
-        "created_at": "2026-07-30T03:25:02Z",
-        "updated_at": "2026-07-30T03:27:04Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511125043"
-      },
-      {
-        "name": "CI",
-        "display_title": "Add persistent vault ownership and storage policies",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/private-vault-object-bucket",
-        "head_sha": "7e0eb3a682f83919030b5e164198a68fe63ce8ff",
-        "run_number": 244,
-        "created_at": "2026-07-30T03:24:46Z",
-        "updated_at": "2026-07-30T03:25:26Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511113445"
+        "head_branch": "agent/align-smoke-relay-timeouts",
+        "head_sha": "74603846573022fb89fe1a90a199b59d258490ab",
+        "run_number": 252,
+        "created_at": "2026-07-30T03:38:53Z",
+        "updated_at": "2026-07-30T03:39:29Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511738778"
       }
     ]
   },
   "collector": {
     "event_name": "workflow_run",
     "workflow": "Publish project status",
-    "run_id": "30511626078"
+    "run_id": "30512095874"
   },
   "freshness": {
     "age_seconds_at_publish": 0,
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-30T11:36:32+08:00"
+    "generated_at": "2026-07-30T11:47:14+08:00"
   },
   "reliability": {
     "disk": {
@@ -323,10 +333,10 @@
     },
     "smoke_test": {
       "schema_version": 5,
-      "generated_at": "2026-07-30T11:35:43+08:00",
-      "started_at": "2026-07-30T11:32:41+08:00",
-      "finished_at": "2026-07-30T11:35:43+08:00",
-      "duration_seconds": 182,
+      "generated_at": "2026-07-30T11:46:36+08:00",
+      "started_at": "2026-07-30T11:44:53+08:00",
+      "finished_at": "2026-07-30T11:46:36+08:00",
+      "duration_seconds": 103,
       "overall": "failure",
       "deployment_gate": "failure",
       "memory_provider": "mempalace-letta",
@@ -336,14 +346,14 @@
       "require_recall": false,
       "checks": {
         "models": true,
-        "chat": false,
-        "scope": false,
+        "chat": true,
+        "scope": true,
         "memory_write": false,
         "memory_recall": false,
         "s3": true
       },
       "write_components": {
-        "mempalace": false,
+        "mempalace": true,
         "letta": false
       },
       "recall_components": {
@@ -351,12 +361,12 @@
         "letta": false
       },
       "error_codes": [
-        "chat_http_000",
+        "letta_write_rejected",
+        "memory_checkpoint_failed",
         "mempalace_recall_delayed",
-        "letta_recall_delayed",
-        "service_scope_verification_failed"
+        "letta_recall_delayed"
       ],
-      "age_seconds_at_publish": 49,
+      "age_seconds_at_publish": 38,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }

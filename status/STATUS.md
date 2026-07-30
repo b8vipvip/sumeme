@@ -1,12 +1,12 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-30T11:36:32+08:00
+- **采集时间：** 2026-07-30T11:47:14+08:00
 - **总体状态：** `healthy`
 - **开发阶段：** `deployment_behind_main`
 - **线上版本：** `fe9e4a37401cdda1288226990236536cba85288b`
-- **main 最新版本：** `9244676f94a67cadb05d6ccc61811476209f1f12`
+- **main 最新版本：** `43bdbd14851ce74bd6ece93a9f0d3259aaeac8f9`
 - **线上与 main 同步：** 否
-- **开放 PR：** 0
+- **开放 PR：** 1
 - **开放 Issue：** 3
 
 ## 健康检查
@@ -14,7 +14,7 @@
 - 本地网关：`ok`
 - 公网入口：`ok`
 - 磁盘使用：`81.3%`，剩余 5.6 GiB
-- 内存使用：`42.7%`，可用 2.1 GiB
+- 内存使用：`42.8%`，可用 2.1 GiB
 
 ## 容器服务
 
@@ -22,29 +22,29 @@
 |---|---|---|---|
 | letta | running | healthy | Up 23 hours (healthy) |
 | lobe | running | - | Up 23 hours |
-| memory-gateway | running | healthy | Up 26 seconds (healthy) |
-| postgresql | running | healthy | Up 23 hours (healthy) |
-| qdrant | running | healthy | Up 23 hours (healthy) |
-| redis | running | healthy | Up 23 hours (healthy) |
-| rustfs | running | healthy | Up 38 minutes (healthy) |
-| searxng | running | - | Up 23 hours |
+| memory-gateway | running | healthy | Up 25 seconds (healthy) |
+| postgresql | running | healthy | Up 24 hours (healthy) |
+| qdrant | running | healthy | Up 24 hours (healthy) |
+| redis | running | healthy | Up 24 hours (healthy) |
+| rustfs | running | healthy | Up 49 minutes (healthy) |
+| searxng | running | - | Up 24 hours |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-07-30T03:36:20Z |
-| CI | success | agent/align-smoke-relay-timeouts | 2026-07-30T03:36:16Z |
-| CI | in_progress | main | 2026-07-30T03:36:15Z |
-| CI | success | agent/private-vault-object-bucket | 2026-07-30T03:29:37Z |
-| CI | success | agent/private-vault-object-bucket | 2026-07-30T03:28:53Z |
-| CI | success | agent/private-vault-object-bucket | 2026-07-30T03:28:07Z |
-| Publish project status | success | main | 2026-07-30T03:27:47Z |
-| Publish project status | cancelled | main | 2026-07-30T03:27:19Z |
+| Publish project status | in_progress | main | 2026-07-30T03:47:03Z |
+| CI | in_progress | agent/scoped-object-metadata | 2026-07-30T03:46:41Z |
+| CI | success | agent/scoped-object-metadata | 2026-07-30T03:46:47Z |
+| CI | success | agent/scoped-object-metadata | 2026-07-30T03:46:10Z |
+| CI | success | agent/scoped-object-metadata | 2026-07-30T03:45:39Z |
+| CI | success | agent/scoped-object-metadata | 2026-07-30T03:44:56Z |
+| CI | failure | main | 2026-07-30T03:46:57Z |
+| CI | success | agent/align-smoke-relay-timeouts | 2026-07-30T03:42:49Z |
 
 ## 开放 PR
 
-- 无
+- #27 Add scoped object metadata and lifecycle rules (`agent/scoped-object-metadata` → `main`)
 
 ## 开放 Issue
 
