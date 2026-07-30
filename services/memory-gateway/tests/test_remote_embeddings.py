@@ -18,6 +18,7 @@ def make_settings(**overrides) -> Settings:
         "gateway_admin_token": SecretStr("admin-key"),
         "mempalace_enabled": True,
         "letta_enabled": False,
+        "letta_required": False,
     }
     values.update(overrides)
     return Settings(**values)
