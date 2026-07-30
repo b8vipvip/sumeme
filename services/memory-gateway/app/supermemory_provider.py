@@ -9,6 +9,7 @@ import httpx
 
 from .config import Settings
 from .content import safe_id
+from .memory_deadlines import MemoryDeadlines
 from .memory_result import MemoryWriteResult
 from .memory_scope import MemoryScope, coerce_scope
 
@@ -27,9 +28,16 @@ class SupermemoryProvider:
 
     def __init__(self, settings: Settings):
         self.settings = settings
+        self.deadlines = MemoryDeadlines.from_environment()
         self._client = httpx.AsyncClient(
             timeout=httpx.Timeout(settings.supermemory_timeout_seconds),
             follow_redirects=True,
+        )
+
+    def _request_timeout(self, operation_timeout: float) -> float:
+        return min(
+            max(float(self.settings.supermemory_timeout_seconds), 0.1),
+            max(float(operation_timeout), 0.1),
         )
 
     async def recall(self, query: str, scope: MemoryScope | str) -> str:
@@ -50,6 +58,7 @@ class SupermemoryProvider:
                 self.settings.supermemory_search_url,
                 headers=self._headers(),
                 json=payload,
+                timeout=self._request_timeout(self.deadlines.recall_seconds),
             )
             response.raise_for_status()
             data = response.json()
@@ -123,11 +132,22 @@ class SupermemoryProvider:
                 self.settings.supermemory_documents_url,
                 headers=self._headers(),
                 json=payload,
+                timeout=self._request_timeout(self.deadlines.write_seconds),
             )
             response.raise_for_status()
             return MemoryWriteResult(
                 provider=self.name,
                 components={"supermemory": True},
+            )
+        except httpx.TimeoutException:
+            logger.warning(
+                "Supermemory write timed out for scope %s",
+                resolved.display_key,
+            )
+            return MemoryWriteResult(
+                provider=self.name,
+                components={"supermemory": False},
+                error_codes=("supermemory_write_timeout",),
             )
         except httpx.HTTPError:
             logger.exception(
