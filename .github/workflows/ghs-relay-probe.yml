@@ -202,3 +202,5 @@ jobs:
           fi
           git commit -m 'status(ghs): update relay capability probe'
           git push origin HEAD:ghs-status
+
+# Revalidation trigger: 2026-07-30
