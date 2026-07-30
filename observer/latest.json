@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-07-30T05:10:50.188Z",
+  "generated_at": "2026-07-30T05:15:43.823Z",
   "workflows": [
     {
       "label": "CI",
@@ -11,8 +11,8 @@
           "run_id": 30515885122,
           "sha": "f0432ba1a41dd0aedd4ba5e1c26feac43654c96c",
           "event": "push",
-          "status": "in_progress",
-          "conclusion": null,
+          "status": "completed",
+          "conclusion": "failure",
           "created_at": "2026-07-30T05:10:30Z",
           "jobs": [
             {
@@ -25,8 +25,8 @@
             {
               "id": 90785470591,
               "name": "gateway",
-              "status": "in_progress",
-              "conclusion": null,
+              "status": "completed",
+              "conclusion": "success",
               "failed_steps": []
             },
             {
@@ -34,6 +34,25 @@
               "name": "compose",
               "status": "completed",
               "conclusion": "success",
+              "failed_steps": []
+            },
+            {
+              "id": 90785520657,
+              "name": "Deploy production (ADOB SSH) / Deploy sumeme via SSH",
+              "status": "completed",
+              "conclusion": "failure",
+              "failed_steps": [
+                {
+                  "name": "Execute allow-listed project deployment script",
+                  "conclusion": "failure"
+                }
+              ]
+            },
+            {
+              "id": 90785520866,
+              "name": "Deploy production (self-hosted fallback)",
+              "status": "completed",
+              "conclusion": "skipped",
               "failed_steps": []
             }
           ]
@@ -661,6 +680,16 @@
       "workflow_id": "publish-status.yml",
       "runs": [
         {
+          "run_number": 325,
+          "run_id": 30515993046,
+          "sha": "f0432ba1a41dd0aedd4ba5e1c26feac43654c96c",
+          "event": "workflow_run",
+          "status": "completed",
+          "conclusion": "success",
+          "created_at": "2026-07-30T05:12:47Z",
+          "jobs": []
+        },
+        {
           "run_number": 324,
           "run_id": 30514731442,
           "sha": "2419cf12398c2368facf1dc0321f6203a661ed42",
@@ -748,16 +777,6 @@
           "status": "completed",
           "conclusion": "success",
           "created_at": "2026-07-30T03:18:24Z",
-          "jobs": []
-        },
-        {
-          "run_number": 315,
-          "run_id": 30509897537,
-          "sha": "3c955a64a87bcbdf67130675b321c31d07ee7ed7",
-          "event": "workflow_run",
-          "status": "completed",
-          "conclusion": "failure",
-          "created_at": "2026-07-30T02:58:27Z",
           "jobs": []
         }
       ]
