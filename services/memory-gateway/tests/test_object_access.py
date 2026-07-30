@@ -213,6 +213,25 @@ class FakeObjectStore:
         return None
 
 
+class FakeReservationManager:
+    def __init__(self, registry: ObjectRegistry, store: FakeObjectStore):
+        self.registry = registry
+        self.store = store
+
+    async def complete(self, item: ObjectRecord) -> ObjectRecord:
+        verified = await self.store.verify_upload(item)
+        return await self.registry.complete(
+            scope=item.scope,
+            object_id=item.object_id,
+            actual_size_bytes=verified.size_bytes,
+            actual_sha256=verified.sha256,
+        )
+
+    async def delete(self, item: ObjectRecord) -> ObjectRecord:
+        await self.store.delete(item)
+        return await self.registry.soft_delete(item.scope, item.object_id)
+
+
 def test_object_api_hides_internal_key_and_enforces_scope(tmp_path) -> None:
     registry = ObjectRegistry(str(tmp_path / "objects.sqlite3"), 1024)
     asyncio.run(registry.initialize())
@@ -221,6 +240,10 @@ def test_object_api_hides_internal_key_and_enforces_scope(tmp_path) -> None:
     application.state.vaults = FakeVaults()
     application.state.objects = registry
     application.state.object_store = FakeObjectStore()
+    application.state.object_reservations = FakeReservationManager(
+        registry,
+        application.state.object_store,
+    )
 
     def require_auth(value: str | None) -> None:
         if value != "Bearer gateway":
@@ -284,6 +307,7 @@ def test_object_api_rejects_untrusted_legacy_account() -> None:
     application.state.vaults = FakeVaults()
     application.state.objects = SimpleNamespace()
     application.state.object_store = FakeObjectStore()
+    application.state.object_reservations = SimpleNamespace()
     application.include_router(
         build_object_router(
             core_settings=core_settings(identity_mode="legacy-client-asserted"),
