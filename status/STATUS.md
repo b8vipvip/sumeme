@@ -1,10 +1,10 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-30T11:59:52+08:00
+- **采集时间：** 2026-07-30T13:13:20+08:00
 - **总体状态：** `healthy`
 - **开发阶段：** `deployment_behind_main`
 - **线上版本：** `fe9e4a37401cdda1288226990236536cba85288b`
-- **main 最新版本：** `a6217df0d2c4e1da6deae642892a72a4d7428c99`
+- **main 最新版本：** `f0432ba1a41dd0aedd4ba5e1c26feac43654c96c`
 - **线上与 main 同步：** 否
 - **开放 PR：** 0
 - **开放 Issue：** 3
@@ -13,34 +13,34 @@
 
 - 本地网关：`ok`
 - 公网入口：`ok`
-- 磁盘使用：`81.4%`，剩余 5.6 GiB
-- 内存使用：`42.0%`，可用 2.1 GiB
+- 磁盘使用：`82.3%`，剩余 5.2 GiB
+- 内存使用：`42.2%`，可用 2.1 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| letta | running | healthy | Up 23 hours (healthy) |
-| lobe | running | - | Up 23 hours |
-| memory-gateway | running | healthy | Up 25 seconds (healthy) |
-| postgresql | running | healthy | Up 24 hours (healthy) |
-| qdrant | running | healthy | Up 24 hours (healthy) |
-| redis | running | healthy | Up 24 hours (healthy) |
-| rustfs | running | healthy | Up About an hour (healthy) |
-| searxng | running | - | Up 24 hours |
+| letta | running | healthy | Up 24 hours (healthy) |
+| lobe | running | - | Up 24 hours |
+| memory-gateway | running | healthy | Up 41 seconds (healthy) |
+| postgresql | running | healthy | Up 25 hours (healthy) |
+| qdrant | running | healthy | Up 25 hours (healthy) |
+| redis | running | healthy | Up 25 hours (healthy) |
+| rustfs | running | healthy | Up 31 minutes (healthy) |
+| searxng | running | - | Up 25 hours |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-07-30T03:59:42Z |
-| CI | success | agent/observe-main-deploy-2 | 2026-07-30T03:50:50Z |
-| Observe main deployment once | success | agent/observe-main-deploy-2 | 2026-07-30T03:50:20Z |
-| CI | success | agent/observe-main-deploy-2 | 2026-07-30T03:49:02Z |
-| Observe main deployment once | success | agent/observe-main-deploy-2 | 2026-07-30T03:48:32Z |
-| CI | failure | main | 2026-07-30T03:59:36Z |
-| Publish project status | success | main | 2026-07-30T03:47:26Z |
-| CI | success | agent/scoped-object-metadata | 2026-07-30T03:47:19Z |
+| Publish project status | in_progress | main | 2026-07-30T05:12:54Z |
+| CI | success | agent/observe-main-deploy-2 | 2026-07-30T05:11:28Z |
+| Observe main deployment once | success | agent/observe-main-deploy-2 | 2026-07-30T05:11:01Z |
+| Read sanitized production smoke once | success | agent/observe-main-deploy-2 | 2026-07-30T05:10:58Z |
+| CI | failure | main | 2026-07-30T05:12:45Z |
+| CI | success | agent/remote-mempalace-provider | 2026-07-30T05:09:54Z |
+| CI | success | agent/remote-mempalace-provider | 2026-07-30T05:10:00Z |
+| CI | failure | agent/remote-mempalace-provider | 2026-07-30T05:07:26Z |
 
 ## 开放 PR
 

@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-07-30T11:59:52+08:00",
+  "generated_at": "2026-07-30T13:13:20+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "degraded",
   "project_stage": "deployment_behind_main",
@@ -46,7 +46,7 @@
       "name": "sumeme-letta",
       "state": "running",
       "health": "healthy",
-      "status": "Up 23 hours (healthy)",
+      "status": "Up 24 hours (healthy)",
       "critical": true
     },
     {
@@ -54,7 +54,7 @@
       "name": "sumeme-lobehub",
       "state": "running",
       "health": "",
-      "status": "Up 23 hours",
+      "status": "Up 24 hours",
       "critical": true
     },
     {
@@ -62,7 +62,7 @@
       "name": "sumeme-memory-gateway",
       "state": "running",
       "health": "healthy",
-      "status": "Up 25 seconds (healthy)",
+      "status": "Up 41 seconds (healthy)",
       "critical": true
     },
     {
@@ -70,7 +70,7 @@
       "name": "sumeme-postgres",
       "state": "running",
       "health": "healthy",
-      "status": "Up 24 hours (healthy)",
+      "status": "Up 25 hours (healthy)",
       "critical": true
     },
     {
@@ -78,7 +78,7 @@
       "name": "sumeme-qdrant",
       "state": "running",
       "health": "healthy",
-      "status": "Up 24 hours (healthy)",
+      "status": "Up 25 hours (healthy)",
       "critical": true
     },
     {
@@ -86,7 +86,7 @@
       "name": "sumeme-redis",
       "state": "running",
       "health": "healthy",
-      "status": "Up 24 hours (healthy)",
+      "status": "Up 25 hours (healthy)",
       "critical": true
     },
     {
@@ -94,7 +94,7 @@
       "name": "sumeme-rustfs",
       "state": "running",
       "health": "healthy",
-      "status": "Up About an hour (healthy)",
+      "status": "Up 31 minutes (healthy)",
       "critical": true
     },
     {
@@ -102,26 +102,26 @@
       "name": "sumeme-searxng",
       "state": "running",
       "health": "",
-      "status": "Up 24 hours",
+      "status": "Up 25 hours",
       "critical": true
     }
   ],
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 34297114624,
-      "free_bytes": 6017282048,
-      "used_percent": 81.4
+      "used_bytes": 34708385792,
+      "free_bytes": 5606010880,
+      "used_percent": 82.3
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 2263293952,
-      "used_percent": 42.0
+      "available_bytes": 2255409152,
+      "used_percent": 42.2
     }
   },
   "github": {
     "default_branch": "main",
-    "latest_main_sha": "a6217df0d2c4e1da6deae642892a72a4d7428c99",
+    "latest_main_sha": "f0432ba1a41dd0aedd4ba5e1c26feac43654c96c",
     "open_pull_requests": [],
     "open_issues": [
       {
@@ -139,7 +139,7 @@
       {
         "number": 4,
         "title": "Phase 1.5：端到端验证、状态新鲜度与磁盘保护",
-        "updated_at": "2026-07-30T03:48:29Z",
+        "updated_at": "2026-07-30T04:45:34Z",
         "html_url": "https://github.com/b8vipvip/sumeme/issues/4"
       }
     ],
@@ -151,168 +151,168 @@
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
-        "head_sha": "a6217df0d2c4e1da6deae642892a72a4d7428c99",
-        "run_number": 322,
-        "created_at": "2026-07-30T03:59:38Z",
-        "updated_at": "2026-07-30T03:59:42Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30512639080"
+        "head_sha": "f0432ba1a41dd0aedd4ba5e1c26feac43654c96c",
+        "run_number": 325,
+        "created_at": "2026-07-30T05:12:47Z",
+        "updated_at": "2026-07-30T05:12:54Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30515993046"
       },
       {
         "name": "CI",
-        "display_title": "ci: publish temporary deployment observation artifact",
+        "display_title": "chore: observe remote memory deployment",
         "event": "push",
         "status": "completed",
         "conclusion": "success",
         "head_branch": "agent/observe-main-deploy-2",
-        "head_sha": "5d04bcf646484831a8cedd8111f796f2fa08020b",
-        "run_number": 264,
-        "created_at": "2026-07-30T03:50:05Z",
-        "updated_at": "2026-07-30T03:50:50Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30512228600"
+        "head_sha": "03a55661302cd45b5fdaaf43fb28b3401a61590c",
+        "run_number": 329,
+        "created_at": "2026-07-30T05:10:46Z",
+        "updated_at": "2026-07-30T05:11:28Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30515897282"
       },
       {
         "name": "Observe main deployment once",
-        "display_title": "ci: publish temporary deployment observation artifact",
+        "display_title": "chore: observe remote memory deployment",
         "event": "push",
         "status": "completed",
         "conclusion": "success",
         "head_branch": "agent/observe-main-deploy-2",
-        "head_sha": "5d04bcf646484831a8cedd8111f796f2fa08020b",
-        "run_number": 5,
-        "created_at": "2026-07-30T03:50:04Z",
-        "updated_at": "2026-07-30T03:50:20Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30512228279"
+        "head_sha": "03a55661302cd45b5fdaaf43fb28b3401a61590c",
+        "run_number": 8,
+        "created_at": "2026-07-30T05:10:46Z",
+        "updated_at": "2026-07-30T05:11:01Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30515897060"
+      },
+      {
+        "name": "Read sanitized production smoke once",
+        "display_title": "chore: observe remote memory deployment",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/observe-main-deploy-2",
+        "head_sha": "03a55661302cd45b5fdaaf43fb28b3401a61590c",
+        "run_number": 2,
+        "created_at": "2026-07-30T05:10:46Z",
+        "updated_at": "2026-07-30T05:10:58Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30515897048"
       },
       {
         "name": "CI",
-        "display_title": "ci: observe latest main deployment queue",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/observe-main-deploy-2",
-        "head_sha": "b3576b3a39d705a9c7d9ccd982ba20332698ba85",
-        "run_number": 263,
-        "created_at": "2026-07-30T03:48:10Z",
-        "updated_at": "2026-07-30T03:49:02Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30512147226"
-      },
-      {
-        "name": "Observe main deployment once",
-        "display_title": "ci: observe latest main deployment queue",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/observe-main-deploy-2",
-        "head_sha": "b3576b3a39d705a9c7d9ccd982ba20332698ba85",
-        "run_number": 4,
-        "created_at": "2026-07-30T03:48:10Z",
-        "updated_at": "2026-07-30T03:48:32Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30512146857"
-      },
-      {
-        "name": "CI",
-        "display_title": "Add scoped object metadata and lifecycle rules",
+        "display_title": "Route MemPalace embeddings through the remote API only",
         "event": "push",
         "status": "completed",
         "conclusion": "failure",
         "head_branch": "main",
-        "head_sha": "a6217df0d2c4e1da6deae642892a72a4d7428c99",
-        "run_number": 262,
-        "created_at": "2026-07-30T03:47:40Z",
-        "updated_at": "2026-07-30T03:59:36Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30512125327"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "43bdbd14851ce74bd6ece93a9f0d3259aaeac8f9",
-        "run_number": 321,
-        "created_at": "2026-07-30T03:46:59Z",
-        "updated_at": "2026-07-30T03:47:26Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30512095874"
+        "head_sha": "f0432ba1a41dd0aedd4ba5e1c26feac43654c96c",
+        "run_number": 328,
+        "created_at": "2026-07-30T05:10:30Z",
+        "updated_at": "2026-07-30T05:12:45Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30515885122"
       },
       {
         "name": "CI",
-        "display_title": "Add scoped object metadata and lifecycle rules",
+        "display_title": "Route MemPalace embeddings through the remote API only",
         "event": "pull_request",
         "status": "completed",
         "conclusion": "success",
-        "head_branch": "agent/scoped-object-metadata",
-        "head_sha": "262574d0c124e80f6d0aa1bb71e63b74cbeec5e2",
-        "run_number": 261,
-        "created_at": "2026-07-30T03:46:30Z",
-        "updated_at": "2026-07-30T03:47:19Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30512074470"
+        "head_branch": "agent/remote-mempalace-provider",
+        "head_sha": "2dc8097c8d60388f4e1509a00065764b55826f2b",
+        "run_number": 327,
+        "created_at": "2026-07-30T05:09:34Z",
+        "updated_at": "2026-07-30T05:09:54Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30515840542"
       },
       {
         "name": "CI",
-        "display_title": "docs: define scoped object metadata lifecycle",
+        "display_title": "test: inspect actual imports for local model dependencies",
         "event": "push",
         "status": "completed",
         "conclusion": "success",
-        "head_branch": "agent/scoped-object-metadata",
-        "head_sha": "262574d0c124e80f6d0aa1bb71e63b74cbeec5e2",
-        "run_number": 260,
-        "created_at": "2026-07-30T03:46:10Z",
-        "updated_at": "2026-07-30T03:46:47Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30512060370"
+        "head_branch": "agent/remote-mempalace-provider",
+        "head_sha": "2dc8097c8d60388f4e1509a00065764b55826f2b",
+        "run_number": 326,
+        "created_at": "2026-07-30T05:09:30Z",
+        "updated_at": "2026-07-30T05:10:00Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30515838008"
       },
       {
         "name": "CI",
-        "display_title": "test: cover scoped object metadata isolation and policy",
-        "event": "push",
+        "display_title": "Route MemPalace embeddings through the remote API only",
+        "event": "pull_request",
         "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/scoped-object-metadata",
-        "head_sha": "9a2c44ff42a2c09da0e18fa0a723886df4c97eee",
-        "run_number": 259,
-        "created_at": "2026-07-30T03:45:32Z",
-        "updated_at": "2026-07-30T03:46:10Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30512031543"
+        "conclusion": "failure",
+        "head_branch": "agent/remote-mempalace-provider",
+        "head_sha": "8b9e56f2c72f28fb008d093a1c7affed8f8cf238",
+        "run_number": 325,
+        "created_at": "2026-07-30T05:07:04Z",
+        "updated_at": "2026-07-30T05:07:26Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30515722382"
       },
       {
         "name": "CI",
-        "display_title": "feat: add scoped object metadata registry",
+        "display_title": "test: prevent local MemPalace model dependency regressions",
         "event": "push",
         "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/scoped-object-metadata",
-        "head_sha": "fe608206b264453f702173d06478e5ab98aee5b5",
-        "run_number": 258,
-        "created_at": "2026-07-30T03:44:59Z",
-        "updated_at": "2026-07-30T03:45:39Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30512003131"
+        "conclusion": "failure",
+        "head_branch": "agent/remote-mempalace-provider",
+        "head_sha": "8b9e56f2c72f28fb008d093a1c7affed8f8cf238",
+        "run_number": 324,
+        "created_at": "2026-07-30T05:07:01Z",
+        "updated_at": "2026-07-30T05:07:41Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30515719839"
       },
       {
         "name": "CI",
-        "display_title": "Align production smoke timeouts with the relay",
+        "display_title": "Route MemPalace embeddings through the remote API only",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/remote-mempalace-provider",
+        "head_sha": "77958ed85c636846ebe738bf369102fadc729995",
+        "run_number": 323,
+        "created_at": "2026-07-30T05:05:42Z",
+        "updated_at": "2026-07-30T05:06:12Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30515656798"
+      },
+      {
+        "name": "CI",
+        "display_title": "docs: describe remote-AI MemPalace adapter",
         "event": "push",
         "status": "completed",
         "conclusion": "success",
-        "head_branch": "agent/scoped-object-metadata",
-        "head_sha": "43bdbd14851ce74bd6ece93a9f0d3259aaeac8f9",
-        "run_number": 257,
-        "created_at": "2026-07-30T03:44:21Z",
-        "updated_at": "2026-07-30T03:44:56Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30511976151"
+        "head_branch": "agent/remote-mempalace-provider",
+        "head_sha": "77958ed85c636846ebe738bf369102fadc729995",
+        "run_number": 322,
+        "created_at": "2026-07-30T05:05:39Z",
+        "updated_at": "2026-07-30T05:06:12Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30515654643"
+      },
+      {
+        "name": "CI",
+        "display_title": "Route MemPalace embeddings through the remote API only",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/remote-mempalace-provider",
+        "head_sha": "9b10ed8f59e3577d2ca4d903c996afdc9476f9af",
+        "run_number": 321,
+        "created_at": "2026-07-30T05:05:22Z",
+        "updated_at": "2026-07-30T05:05:51Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30515640678"
       }
     ]
   },
   "collector": {
     "event_name": "workflow_run",
     "workflow": "Publish project status",
-    "run_id": "30512639080"
+    "run_id": "30515993046"
   },
   "freshness": {
     "age_seconds_at_publish": 0,
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-30T11:59:52+08:00"
+    "generated_at": "2026-07-30T13:13:20+08:00"
   },
   "reliability": {
     "disk": {
@@ -323,10 +323,10 @@
     },
     "smoke_test": {
       "schema_version": 5,
-      "generated_at": "2026-07-30T11:59:05+08:00",
-      "started_at": "2026-07-30T11:49:03+08:00",
-      "finished_at": "2026-07-30T11:59:05+08:00",
-      "duration_seconds": 602,
+      "generated_at": "2026-07-30T13:12:24+08:00",
+      "started_at": "2026-07-30T13:12:06+08:00",
+      "finished_at": "2026-07-30T13:12:24+08:00",
+      "duration_seconds": 18,
       "overall": "failure",
       "deployment_gate": "failure",
       "memory_provider": "mempalace-letta",
@@ -336,8 +336,8 @@
       "require_recall": false,
       "checks": {
         "models": true,
-        "chat": false,
-        "scope": false,
+        "chat": true,
+        "scope": true,
         "memory_write": false,
         "memory_recall": false,
         "s3": true
@@ -351,12 +351,13 @@
         "letta": false
       },
       "error_codes": [
-        "chat_http_000",
+        "mempalace_embedding_rejected",
+        "letta_agent_create_failed",
+        "memory_checkpoint_failed",
         "mempalace_recall_delayed",
-        "letta_recall_delayed",
-        "service_scope_verification_failed"
+        "letta_recall_delayed"
       ],
-      "age_seconds_at_publish": 47,
+      "age_seconds_at_publish": 56,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }
