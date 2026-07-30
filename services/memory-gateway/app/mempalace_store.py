@@ -218,16 +218,29 @@ class MemPalaceStore:
         }
         latest = latest_user_message(request_payload.get("messages") or [])
         user_search_text = flatten_content((latest or {}).get("content"))
+        stable_user = json.dumps(
+            {"role": "user", "request": request_payload},
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+            default=str,
+        )
         user_content = json.dumps(
             {**common, "role": "user", "request": request_payload},
             ensure_ascii=False,
             sort_keys=True,
             default=str,
         )
-        raw_items: list[tuple[str, str, str]] = [
-            ("user", user_content, user_search_text or user_content)
+        raw_items: list[tuple[str, str, str, str]] = [
+            ("user", user_content, user_search_text or stable_user, stable_user)
         ]
         if assistant and self.settings.store_assistant_verbatim:
+            stable_assistant = json.dumps(
+                {"role": "assistant", "content": assistant},
+                ensure_ascii=False,
+                sort_keys=True,
+                separators=(",", ":"),
+            )
             raw_items.append(
                 (
                     "assistant",
@@ -237,12 +250,13 @@ class MemPalaceStore:
                         sort_keys=True,
                     ),
                     assistant,
+                    stable_assistant,
                 )
             )
 
         items: list[dict[str, Any]] = []
-        for role, content, search_text in raw_items:
-            content_hash = hashlib.sha256(content.encode("utf-8")).hexdigest()
+        for role, content, search_text, stable_content in raw_items:
+            content_hash = hashlib.sha256(stable_content.encode("utf-8")).hexdigest()
             identity = (
                 f"{scope.storage_key}\n{conversation_id}\n{role}\n{content_hash}"
             )
