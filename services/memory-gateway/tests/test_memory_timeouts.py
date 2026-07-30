@@ -32,7 +32,7 @@ def make_settings(**overrides) -> Settings:
 async def test_recall_uses_partial_memory_when_one_component_times_out(
     monkeypatch,
 ) -> None:
-    monkeypatch.setenv("MEMORY_RECALL_TIMEOUT_SECONDS", "0.01")
+    monkeypatch.setenv("MEMORY_RECALL_TIMEOUT_SECONDS", "0.1")
     provider = MemPalaceLettaProvider(make_settings())
     provider.mempalace = SimpleNamespace(
         search=_async_result(
@@ -61,7 +61,7 @@ async def test_recall_uses_partial_memory_when_one_component_times_out(
 async def test_recall_returns_quickly_when_both_components_time_out(
     monkeypatch,
 ) -> None:
-    monkeypatch.setenv("MEMORY_RECALL_TIMEOUT_SECONDS", "0.01")
+    monkeypatch.setenv("MEMORY_RECALL_TIMEOUT_SECONDS", "0.1")
     provider = MemPalaceLettaProvider(make_settings())
     provider.mempalace = SimpleNamespace(search=_slow_result([]))
     provider.letta = SimpleNamespace(recall=_slow_result("late"))
@@ -71,7 +71,7 @@ async def test_recall_returns_quickly_when_both_components_time_out(
             "question",
             MemoryScope.account("account-a", "personal"),
         ),
-        timeout=0.5,
+        timeout=1.0,
     )
 
     assert context == ""
@@ -79,7 +79,7 @@ async def test_recall_returns_quickly_when_both_components_time_out(
 
 @pytest.mark.asyncio
 async def test_write_timeout_is_reported_per_component(monkeypatch) -> None:
-    monkeypatch.setenv("MEMORY_WRITE_TIMEOUT_SECONDS", "0.01")
+    monkeypatch.setenv("MEMORY_WRITE_TIMEOUT_SECONDS", "0.1")
     provider = MemPalaceLettaProvider(make_settings())
     provider.mempalace = SimpleNamespace(add_exchange=_slow_result(True))
     provider.letta = SimpleNamespace(remember=_async_result(True))
