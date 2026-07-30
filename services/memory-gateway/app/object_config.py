@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 from functools import lru_cache
 
-from pydantic import AliasChoices, Field, SecretStr, model_validator
+from pydantic import Field, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 _BUCKET = re.compile(r"^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$")
@@ -29,10 +29,8 @@ class ObjectAccessSettings(BaseSettings):
     object_allow_insecure_public_endpoint: bool = False
 
     rustfs_internal_endpoint: str = "http://rustfs:9000"
-    rustfs_public_endpoint: str = Field(
-        default="",
-        validation_alias=AliasChoices("RUSTFS_PUBLIC_ENDPOINT", "S3_ENDPOINT"),
-    )
+    rustfs_public_endpoint: str = ""
+    s3_endpoint: str = ""
     rustfs_access_key: SecretStr = SecretStr("")
     rustfs_secret_key: SecretStr = SecretStr("")
     rustfs_private_bucket: str = "sumeme-vaults"
@@ -54,7 +52,9 @@ class ObjectAccessSettings(BaseSettings):
             self.rustfs_internal_endpoint,
             "RUSTFS_INTERNAL_ENDPOINT",
         )
-        public_endpoint = self.rustfs_public_endpoint.strip()
+        public_endpoint = (
+            self.rustfs_public_endpoint.strip() or self.s3_endpoint.strip()
+        )
         if self.object_api_enabled and not public_endpoint:
             raise ValueError(
                 "RUSTFS_PUBLIC_ENDPOINT or S3_ENDPOINT is required when "
