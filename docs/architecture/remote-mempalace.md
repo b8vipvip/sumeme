@@ -12,8 +12,9 @@ structured memory:   Letta
 backup provider:      SuMeMe-maintained Supermemory fork
 ```
 
-Every embedding request is sent to the configured OpenAI-compatible relay or an
-approved official vendor API. There is no local model fallback.
+Every embedding request is sent through the internal Remote AI Provider Proxy to
+the configured OpenAI-compatible relay or an approved official vendor API. There
+is no local model fallback.
 
 ## Data placement
 
@@ -22,7 +23,8 @@ verbatim drawer content
   -> /data/gateway/mempalace-remote.sqlite3
 
 embedding request
-  -> OPENAI_RELAY_BASE_URL/v1/embeddings
+  -> ai-provider-proxy /v1/embeddings
+  -> native remote embeddings or remote semantic canonicalization
 
 vector + scope metadata + drawer_id
   -> Qdrant collection <namespace>_mempalace_remote_v1
@@ -54,7 +56,7 @@ The new runtime neither imports it nor deletes it. A later migration tool must:
 
 1. read legacy drawers without loading a local embedding model;
 2. preserve their original text and timestamps;
-3. request new vectors from the approved remote embedding API;
+3. request new vectors through the approved Remote AI Provider Proxy;
 4. write the scoped SQLite/Qdrant representation;
 5. produce a resumable, auditable migration report.
 
@@ -64,7 +66,7 @@ could make unbounded API calls or mix old single-user wings into the wrong Vault
 ## Failure behavior
 
 - remote embedding timeout: sanitized `mempalace_embedding_timeout`;
-- relay authentication failure: `mempalace_embedding_auth_failed`;
+- provider authentication failure: `mempalace_embedding_auth_failed`;
 - Qdrant timeout/unavailable: stable `mempalace_qdrant_*` category;
 - recall failures degrade to an empty raw-memory result so chat continues;
 - checkpoint failures remain visible to production smoke and do not silently
