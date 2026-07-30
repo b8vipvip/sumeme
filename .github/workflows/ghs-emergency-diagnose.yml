@@ -8,11 +8,11 @@ on:
       - .github/workflows/ghs-emergency-diagnose.yml
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   diagnose:
-    name: Read sanitized production diagnostics using GHS
+    name: Publish sanitized production diagnostics using GHS
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -64,7 +64,121 @@ jobs:
           chmod 600 "${HOME}/.ssh/config"
           ssh adob-production 'printf "ghs-diagnostics-ready\n"'
 
-      - name: Read bounded production state and redacted logs
+      - name: Collect bounded production state
+        shell: bash
+        env:
+          EXPECTED_MAIN_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          ssh adob-production "EXPECTED_MAIN_SHA='${EXPECTED_MAIN_SHA}' python3 -" > "${RUNNER_TEMP}/ghs-status.json" <<'PY'
+          import datetime as dt
+          import json
+          import os
+          import subprocess
+          import urllib.error
+          import urllib.request
+          from pathlib import Path
+
+          deploy_dir = Path('/opt/sumeme')
+          state_dir = deploy_dir / '.deploy'
+
+          def read(path: Path) -> str:
+              try:
+                  return path.read_text(encoding='utf-8').strip()
+              except OSError:
+                  return ''
+
+          def run(command: list[str]) -> dict[str, object]:
+              try:
+                  result = subprocess.run(
+                      command,
+                      cwd=deploy_dir,
+                      capture_output=True,
+                      text=True,
+                      timeout=30,
+                      check=False,
+                  )
+                  return {
+                      'ok': result.returncode == 0,
+                      'returncode': result.returncode,
+                      'stdout': result.stdout.strip()[:20000],
+                      'stderr': result.stderr.strip()[:2000],
+                  }
+              except Exception as exc:
+                  return {'ok': False, 'returncode': -1, 'stdout': '', 'stderr': type(exc).__name__}
+
+          def http(url: str) -> dict[str, object]:
+              try:
+                  with urllib.request.urlopen(url, timeout=8) as response:
+                      return {'ok': 200 <= response.status < 300, 'status': response.status}
+              except urllib.error.HTTPError as exc:
+                  return {'ok': False, 'status': exc.code}
+              except Exception as exc:
+                  return {'ok': False, 'status': None, 'error': type(exc).__name__}
+
+          ps = run(['docker', 'compose', 'ps', '--format', 'json'])
+          records: list[dict[str, object]] = []
+          raw = str(ps.get('stdout') or '')
+          if raw:
+              try:
+                  parsed = json.loads(raw)
+                  records = parsed if isinstance(parsed, list) else [parsed]
+              except json.JSONDecodeError:
+                  for line in raw.splitlines():
+                      try:
+                          item = json.loads(line)
+                      except json.JSONDecodeError:
+                          continue
+                      if isinstance(item, dict):
+                          records.append(item)
+
+          services = []
+          for item in records:
+              services.append({
+                  'service': item.get('Service') or item.get('service'),
+                  'state': item.get('State') or item.get('state'),
+                  'health': item.get('Health') or item.get('health'),
+                  'status': item.get('Status') or item.get('status'),
+              })
+
+          smoke = {}
+          smoke_path = state_dir / 'smoke' / 'latest.json'
+          try:
+              value = json.loads(smoke_path.read_text(encoding='utf-8'))
+              smoke = {
+                  'generated_at': value.get('generated_at'),
+                  'overall': value.get('overall'),
+                  'deployment_gate': value.get('deployment_gate'),
+                  'checks': value.get('checks'),
+                  'write_components': value.get('write_components'),
+                  'recall_components': value.get('recall_components'),
+                  'error_codes': value.get('error_codes'),
+              }
+          except (OSError, json.JSONDecodeError):
+              smoke = {'status': 'missing_or_invalid'}
+
+          status = {
+              'schema_version': 1,
+              'mode': 'GHS',
+              'generated_at': dt.datetime.now(dt.timezone.utc).isoformat(timespec='seconds'),
+              'workflow_source_sha': os.environ.get('EXPECTED_MAIN_SHA', ''),
+              'deployment': {
+                  'current_sha': read(state_dir / 'current_sha'),
+                  'previous_sha': read(state_dir / 'previous_sha'),
+                  'deploying_sha': read(state_dir / 'deploying_sha'),
+              },
+              'health': {
+                  'local_gateway': http('http://127.0.0.1:8010/health'),
+                  'public': http('https://sumeme.mv3.cn/sumeme-health'),
+              },
+              'services': sorted(services, key=lambda item: str(item.get('service') or '')),
+              'smoke': smoke,
+          }
+          print(json.dumps(status, ensure_ascii=False, indent=2))
+          PY
+          python3 -m json.tool "${RUNNER_TEMP}/ghs-status.json" >/dev/null
+
+      - name: Read redacted failure logs
         shell: bash
         run: |
           set -euo pipefail
@@ -73,32 +187,38 @@ jobs:
           cd /opt/sumeme
           echo '== Docker services =='
           docker compose ps || true
-          echo '== Letta health state =='
-          docker inspect --format '{{json .State}}' sumeme-letta 2>/dev/null || true
-          echo '== Memory gateway health state =='
-          docker inspect --format '{{json .State}}' sumeme-memory-gateway 2>/dev/null || true
           echo '== Redacted Letta logs =='
           DEPLOY_DIR=/opt/sumeme bash scripts/show-logs.sh letta 300 2h || true
           echo '== Redacted memory-gateway logs =='
           DEPLOY_DIR=/opt/sumeme bash scripts/show-logs.sh memory-gateway 200 2h || true
-          echo '== Persistent smoke result =='
-          python3 - <<'PY' || true
-          import json
-          from pathlib import Path
-
-          path = Path('/opt/sumeme/.deploy/smoke/latest.json')
-          if not path.exists():
-              print('missing')
-              raise SystemExit(0)
-          value = json.loads(path.read_text(encoding='utf-8'))
-          print(json.dumps({
-              'generated_at': value.get('generated_at'),
-              'overall': value.get('overall'),
-              'deployment_gate': value.get('deployment_gate'),
-              'checks': value.get('checks'),
-              'write_components': value.get('write_components'),
-              'recall_components': value.get('recall_components'),
-              'error_codes': value.get('error_codes'),
-          }, ensure_ascii=False))
-          PY
           REMOTE
+
+      - name: Publish GHS status snapshot
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          STATUS_REPO="${RUNNER_TEMP}/sumeme-ghs-status"
+          rm -rf "${STATUS_REPO}"
+          mkdir -p "${STATUS_REPO}"
+          cd "${STATUS_REPO}"
+          git init
+          git config user.name 'sumeme-ghs-status-bot'
+          git config user.email 'sumeme-ghs-status-bot@users.noreply.github.com'
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          if git ls-remote --exit-code --heads origin ghs-status >/dev/null 2>&1; then
+            git fetch --depth=1 origin ghs-status
+            git checkout -B ghs-status FETCH_HEAD
+          else
+            git checkout --orphan ghs-status
+          fi
+          mkdir -p status
+          cp "${RUNNER_TEMP}/ghs-status.json" status/status.json
+          git add status/status.json
+          if git diff --cached --quiet; then
+            echo 'GHS status snapshot is unchanged.'
+            exit 0
+          fi
+          git commit -m 'status(ghs): update production snapshot'
+          git push origin HEAD:ghs-status
