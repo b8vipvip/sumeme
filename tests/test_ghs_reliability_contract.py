@@ -7,6 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DEPLOY_SCRIPT = ROOT / "scripts" / "deploy-production.sh"
 COMPOSE_FILE = ROOT / "docker-compose.yml"
 CI_WORKFLOW = ROOT / ".github" / "workflows" / "ci.yml"
+STATUS_WORKFLOW = ROOT / ".github" / "workflows" / "publish-status.yml"
 
 
 def test_production_and_rollback_rebuild_all_local_runtime_images() -> None:
@@ -43,3 +44,22 @@ def test_production_workflow_remains_explicitly_ghs() -> None:
     assert "adob_mode: GHS" in workflow
     assert "vars.SUMEME_DEPLOY_TRANSPORT == 'github-hosted-ssh'" in workflow
     assert "Deploy production (VSR fallback)" in workflow
+
+
+def test_status_publisher_uses_ghs_without_sending_github_token_to_vps() -> None:
+    workflow = STATUS_WORKFLOW.read_text(encoding="utf-8")
+
+    assert "Publish project status (GHS)" in workflow
+    assert "runs-on: ubuntu-latest" in workflow
+    assert "runs-on: [self-hosted" not in workflow
+    assert "StrictHostKeyChecking=yes" in workflow
+    assert "SUMEME_SSH_HOST_KEY" in workflow
+    assert "github-status-snapshot.py" in workflow
+    assert "collect-project-status-ghs.py" in workflow
+    assert "ADOB mode: GHS" in workflow
+
+    remote_collection = workflow.split(
+        "- name: Collect sanitized production status through GHS", 1
+    )[1].split("- name: Remove remote temporary collector bundle", 1)[0]
+    assert "GITHUB_TOKEN" not in remote_collection
+    assert "github-status.json" in remote_collection
