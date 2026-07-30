@@ -1,50 +1,51 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-30T17:39:34+08:00
+- **采集时间：** 2026-07-30T22:24:23+08:00
 - **总体状态：** `healthy`
 - **开发阶段：** `deployment_behind_main`
 - **线上版本：** `fe9e4a37401cdda1288226990236536cba85288b`
-- **main 最新版本：** `77dc4c7c020025c4a234add709f9b4fb10cbe5a6`
+- **main 最新版本：** `94d639b2fbb180f681d823931782be21b834ef0c`
 - **线上与 main 同步：** 否
-- **开放 PR：** 0
+- **开放 PR：** 2
 - **开放 Issue：** 3
 
 ## 健康检查
 
 - 本地网关：`ok`
 - 公网入口：`ok`
-- 磁盘使用：`82.9%`，剩余 5.0 GiB
-- 内存使用：`51.8%`，可用 1.8 GiB
+- 磁盘使用：`83.4%`，剩余 4.8 GiB
+- 内存使用：`55.3%`，可用 1.6 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| letta | running | healthy | Up About an hour (healthy) |
-| lobe | running | - | Up 29 hours |
-| memory-gateway | running | healthy | Up About an hour (healthy) |
-| postgresql | running | healthy | Up 30 hours (healthy) |
-| qdrant | running | healthy | Up 30 hours (healthy) |
-| redis | running | healthy | Up 30 hours (healthy) |
-| rustfs | running | healthy | Up 5 hours (healthy) |
-| searxng | running | - | Up 30 hours |
+| letta | running | healthy | Up 6 hours (healthy) |
+| lobe | running | - | Up 33 hours |
+| memory-gateway | running | healthy | Up 6 hours (healthy) |
+| postgresql | running | healthy | Up 34 hours (healthy) |
+| qdrant | running | healthy | Up 34 hours (healthy) |
+| redis | running | healthy | Up 34 hours (healthy) |
+| rustfs | running | healthy | Up 10 hours (healthy) |
+| searxng | running | - | Up 34 hours |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-07-30T09:39:16Z |
-| Publish project status | success | main | 2026-07-30T09:34:45Z |
-| CI | failure | main | 2026-07-30T09:33:55Z |
-| CI | failure | agent/ci-control-check | 2026-07-30T09:04:37Z |
-| CI | failure | agent/ci-control-check | 2026-07-30T09:04:02Z |
-| CI | failure | agent/ci-control-check | 2026-07-30T09:03:31Z |
-| CI | failure | agent/ghs-relay-revalidate-min | 2026-07-30T09:01:45Z |
-| CI | failure | agent/ghs-relay-revalidate-min | 2026-07-30T09:01:32Z |
+| Publish project status | in_progress | main | 2026-07-30T14:24:01Z |
+| CI | pending | main | 2026-07-30T14:23:54Z |
+| CI | success | agent/object-reservation-cleanup | 2026-07-30T14:22:48Z |
+| CI | failure | agent/object-reservation-cleanup | 2026-07-30T14:21:05Z |
+| CI | cancelled | main | 2026-07-30T14:23:55Z |
+| CI | success | agent/scoped-object-access-api | 2026-07-30T14:09:45Z |
+| CI | success | agent/scoped-object-access-api | 2026-07-30T14:09:53Z |
+| CI | failure | agent/scoped-object-access-api | 2026-07-30T14:07:14Z |
 
 ## 开放 PR
 
-- 无
+- #47 Add cross-scope object isolation negative matrix (`agent/isolation-negative-matrix` → `agent/letta-agent-ownership`)
+- #46 Fail closed on Letta agent ownership collisions (`agent/letta-agent-ownership` → `agent/object-reservation-cleanup`)
 
 ## 开放 Issue
 
@@ -63,6 +64,10 @@
 
 - 状态快照发布时年龄：`0s`
 - 状态快照过期：`no`（阈值 2100s）
+- 部署状态：`in_progress`
+- 当前版本与 main 一致：`no`
+- deploying SHA：`d80e539434df8d6f89a198a45a067b332addcb3b`
+- 最近发布结果：`success`
 - 磁盘保护级别：`warning`
 - 最近 smoke test：`failure`
 - 自动清理不会删除 Docker 数据卷、数据库或用户附件。

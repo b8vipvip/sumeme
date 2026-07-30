@@ -1,9 +1,9 @@
 {
-  "schema_version": 2,
-  "generated_at": "2026-07-30T17:39:34+08:00",
+  "schema_version": 3,
+  "generated_at": "2026-07-30T22:24:23+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "degraded",
-  "project_stage": "deployment_behind_main",
+  "project_stage": "deployment_in_progress",
   "reasons": [
     "磁盘使用率达到 80% 警戒线"
   ],
@@ -16,7 +16,11 @@
       "2026-07-29T15:00:27+08:00 efe5b594b0b0d05509a1e7717f2eadc95adabf84",
       "2026-07-29T15:01:16+08:00 985f62c95ecff62417e9f515c3a683e369fdaf8d",
       "2026-07-29T15:03:24+08:00 fe9e4a37401cdda1288226990236536cba85288b"
-    ]
+    ],
+    "deploying_sha": "d80e539434df8d6f89a198a45a067b332addcb3b",
+    "last_result": "success",
+    "last_history_entry": "2026-07-29T15:03:24+08:00 fe9e4a37401cdda1288226990236536cba85288b",
+    "state": "in_progress"
   },
   "health": {
     "local_gateway": {
@@ -46,7 +50,7 @@
       "name": "sumeme-letta",
       "state": "running",
       "health": "healthy",
-      "status": "Up About an hour (healthy)",
+      "status": "Up 6 hours (healthy)",
       "critical": true
     },
     {
@@ -54,7 +58,7 @@
       "name": "sumeme-lobehub",
       "state": "running",
       "health": "",
-      "status": "Up 29 hours",
+      "status": "Up 33 hours",
       "critical": true
     },
     {
@@ -62,7 +66,7 @@
       "name": "sumeme-memory-gateway",
       "state": "running",
       "health": "healthy",
-      "status": "Up About an hour (healthy)",
+      "status": "Up 6 hours (healthy)",
       "critical": true
     },
     {
@@ -70,7 +74,7 @@
       "name": "sumeme-postgres",
       "state": "running",
       "health": "healthy",
-      "status": "Up 30 hours (healthy)",
+      "status": "Up 34 hours (healthy)",
       "critical": true
     },
     {
@@ -78,7 +82,7 @@
       "name": "sumeme-qdrant",
       "state": "running",
       "health": "healthy",
-      "status": "Up 30 hours (healthy)",
+      "status": "Up 34 hours (healthy)",
       "critical": true
     },
     {
@@ -86,7 +90,7 @@
       "name": "sumeme-redis",
       "state": "running",
       "health": "healthy",
-      "status": "Up 30 hours (healthy)",
+      "status": "Up 34 hours (healthy)",
       "critical": true
     },
     {
@@ -94,7 +98,7 @@
       "name": "sumeme-rustfs",
       "state": "running",
       "health": "healthy",
-      "status": "Up 5 hours (healthy)",
+      "status": "Up 10 hours (healthy)",
       "critical": true
     },
     {
@@ -102,27 +106,48 @@
       "name": "sumeme-searxng",
       "state": "running",
       "health": "",
-      "status": "Up 30 hours",
+      "status": "Up 34 hours",
       "critical": true
     }
   ],
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 34966237184,
-      "free_bytes": 5348159488,
-      "used_percent": 82.9
+      "used_bytes": 35162705920,
+      "free_bytes": 5151690752,
+      "used_percent": 83.4
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1880965120,
-      "used_percent": 51.8
+      "available_bytes": 1744953344,
+      "used_percent": 55.3
     }
   },
   "github": {
+    "schema_version": 1,
+    "source": "github-hosted-runner",
     "default_branch": "main",
-    "latest_main_sha": "77dc4c7c020025c4a234add709f9b4fb10cbe5a6",
-    "open_pull_requests": [],
+    "latest_main_sha": "94d639b2fbb180f681d823931782be21b834ef0c",
+    "open_pull_requests": [
+      {
+        "number": 47,
+        "title": "Add cross-scope object isolation negative matrix",
+        "draft": false,
+        "head": "agent/isolation-negative-matrix",
+        "base": "agent/letta-agent-ownership",
+        "updated_at": "2026-07-30T12:53:27Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/pull/47"
+      },
+      {
+        "number": 46,
+        "title": "Fail closed on Letta agent ownership collisions",
+        "draft": false,
+        "head": "agent/letta-agent-ownership",
+        "base": "agent/object-reservation-cleanup",
+        "updated_at": "2026-07-30T14:20:27Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/pull/46"
+      }
+    ],
     "open_issues": [
       {
         "number": 10,
@@ -139,7 +164,7 @@
       {
         "number": 4,
         "title": "Phase 1.5：端到端验证、状态新鲜度与磁盘保护",
-        "updated_at": "2026-07-30T09:10:10Z",
+        "updated_at": "2026-07-30T12:55:06Z",
         "html_url": "https://github.com/b8vipvip/sumeme/issues/4"
       }
     ],
@@ -147,172 +172,183 @@
       {
         "name": "Publish project status",
         "display_title": "Publish project status",
-        "event": "schedule",
+        "event": "workflow_run",
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
-        "head_sha": "77dc4c7c020025c4a234add709f9b4fb10cbe5a6",
-        "run_number": 337,
-        "created_at": "2026-07-30T09:39:11Z",
-        "updated_at": "2026-07-30T09:39:16Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30531546031"
+        "head_sha": "94d639b2fbb180f681d823931782be21b834ef0c",
+        "run_number": 340,
+        "created_at": "2026-07-30T14:23:57Z",
+        "updated_at": "2026-07-30T14:24:01Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30551496270"
       },
       {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
+        "name": "CI",
+        "display_title": "Merge pull request #45 from b8vipvip/agent/object-reservation-cleanup",
+        "event": "push",
+        "status": "pending",
+        "conclusion": null,
+        "head_branch": "main",
+        "head_sha": "94d639b2fbb180f681d823931782be21b834ef0c",
+        "run_number": 613,
+        "created_at": "2026-07-30T14:23:18Z",
+        "updated_at": "2026-07-30T14:23:54Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30551443261"
+      },
+      {
+        "name": "CI",
+        "display_title": "Clean expired object reservations with SQLite leases",
+        "event": "pull_request",
         "status": "completed",
         "conclusion": "success",
+        "head_branch": "agent/object-reservation-cleanup",
+        "head_sha": "105a80d43405411a5d4e55b39a3da0a32e9cd312",
+        "run_number": 612,
+        "created_at": "2026-07-30T14:22:03Z",
+        "updated_at": "2026-07-30T14:22:48Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30551340137"
+      },
+      {
+        "name": "CI",
+        "display_title": "Clean expired object reservations with SQLite leases",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_branch": "agent/object-reservation-cleanup",
+        "head_sha": "571e7dd1086725d67f7e7646764eb358f3767d35",
+        "run_number": 611,
+        "created_at": "2026-07-30T14:20:37Z",
+        "updated_at": "2026-07-30T14:21:05Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30551224117"
+      },
+      {
+        "name": "CI",
+        "display_title": "Merge pull request #44 from b8vipvip/agent/scoped-object-access-api",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "cancelled",
         "head_branch": "main",
-        "head_sha": "77dc4c7c020025c4a234add709f9b4fb10cbe5a6",
-        "run_number": 336,
-        "created_at": "2026-07-30T09:33:58Z",
-        "updated_at": "2026-07-30T09:34:45Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30531197335"
+        "head_sha": "78f2b4c27a64bf76c98cb4b107cdd5b4975451ca",
+        "run_number": 610,
+        "created_at": "2026-07-30T14:10:37Z",
+        "updated_at": "2026-07-30T14:23:55Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30550418035"
       },
       {
         "name": "CI",
-        "display_title": "Merge PR #38: fix bounded redacted production log streaming",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "main",
-        "head_sha": "77dc4c7c020025c4a234add709f9b4fb10cbe5a6",
-        "run_number": 499,
-        "created_at": "2026-07-30T09:33:44Z",
-        "updated_at": "2026-07-30T09:33:55Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30531182666"
-      },
-      {
-        "name": "CI",
-        "display_title": "CI control check with unchanged workflow",
+        "display_title": "Add scoped signed private-object access API",
         "event": "pull_request",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/ci-control-check",
-        "head_sha": "c4720e22a65e712ba21ae46a411cef30b9977ab0",
-        "run_number": 498,
-        "created_at": "2026-07-30T09:04:26Z",
-        "updated_at": "2026-07-30T09:04:37Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30529221895"
-      },
-      {
-        "name": "CI",
-        "display_title": "test(ci): trigger unmodified workflow control run",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/ci-control-check",
-        "head_sha": "c4720e22a65e712ba21ae46a411cef30b9977ab0",
-        "run_number": 497,
-        "created_at": "2026-07-30T09:03:51Z",
-        "updated_at": "2026-07-30T09:04:02Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30529181368"
-      },
-      {
-        "name": "CI",
-        "display_title": "Fix degraded-memory CI fixtures",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/ci-control-check",
-        "head_sha": "fa4097b6139a00dcbead61d455eaab5c4294d912",
-        "run_number": 496,
-        "created_at": "2026-07-30T09:03:20Z",
-        "updated_at": "2026-07-30T09:03:31Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30529146087"
-      },
-      {
-        "name": "CI",
-        "display_title": "Run minimal GHS relay chat HTTP probe",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/ghs-relay-revalidate-min",
-        "head_sha": "b387483af16f080ec84b68faba40ef3d759c3673",
-        "run_number": 495,
-        "created_at": "2026-07-30T09:01:32Z",
-        "updated_at": "2026-07-30T09:01:45Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30529018743"
-      },
-      {
-        "name": "CI",
-        "display_title": "ops(ghs): isolate relay probe from deployment workflow resolution",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/ghs-relay-revalidate-min",
-        "head_sha": "b387483af16f080ec84b68faba40ef3d759c3673",
-        "run_number": 494,
-        "created_at": "2026-07-30T09:01:29Z",
-        "updated_at": "2026-07-30T09:01:32Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30529014368"
-      },
-      {
-        "name": "CI",
-        "display_title": "Run minimal GHS relay chat HTTP probe",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/ghs-relay-revalidate-min",
-        "head_sha": "1b1047f98e97b72954f38fe46993b186f151f037",
-        "run_number": 493,
-        "created_at": "2026-07-30T08:59:09Z",
-        "updated_at": "2026-07-30T08:59:21Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30528848766"
-      },
-      {
-        "name": "CI",
-        "display_title": "ops(ghs): add minimal relay chat HTTP probe",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/ghs-relay-revalidate-min",
-        "head_sha": "1b1047f98e97b72954f38fe46993b186f151f037",
-        "run_number": 492,
-        "created_at": "2026-07-30T08:58:52Z",
-        "updated_at": "2026-07-30T08:59:04Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30528830099"
-      },
-      {
-        "name": "CI",
-        "display_title": "Fix degraded-memory CI fixtures",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/ghs-relay-revalidate-min",
-        "head_sha": "fa4097b6139a00dcbead61d455eaab5c4294d912",
-        "run_number": 491,
-        "created_at": "2026-07-30T08:58:27Z",
-        "updated_at": "2026-07-30T08:58:38Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30528800592"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
         "status": "completed",
         "conclusion": "success",
+        "head_branch": "agent/scoped-object-access-api",
+        "head_sha": "03fdefd27cceff0afb68edd0bd28532608971629",
+        "run_number": 609,
+        "created_at": "2026-07-30T14:09:13Z",
+        "updated_at": "2026-07-30T14:09:45Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30550308065"
+      },
+      {
+        "name": "CI",
+        "display_title": "Apply Ruff import spacing",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/scoped-object-access-api",
+        "head_sha": "03fdefd27cceff0afb68edd0bd28532608971629",
+        "run_number": 608,
+        "created_at": "2026-07-30T14:09:10Z",
+        "updated_at": "2026-07-30T14:09:53Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30550303159"
+      },
+      {
+        "name": "CI",
+        "display_title": "Add scoped signed private-object access API",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_branch": "agent/scoped-object-access-api",
+        "head_sha": "b690d45793a610328ccd59b059946599406d5833",
+        "run_number": 607,
+        "created_at": "2026-07-30T14:06:42Z",
+        "updated_at": "2026-07-30T14:07:14Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30550108921"
+      },
+      {
+        "name": "CI",
+        "display_title": "Fix object access contract import order",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_branch": "agent/scoped-object-access-api",
+        "head_sha": "b690d45793a610328ccd59b059946599406d5833",
+        "run_number": 606,
+        "created_at": "2026-07-30T14:06:35Z",
+        "updated_at": "2026-07-30T14:07:10Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30550100158"
+      },
+      {
+        "name": "CI",
+        "display_title": "Add scoped signed private-object access API",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_branch": "agent/scoped-object-access-api",
+        "head_sha": "34cd66a5bc22d3f706b9ff86096fcb3bd34920b1",
+        "run_number": 605,
+        "created_at": "2026-07-30T14:06:30Z",
+        "updated_at": "2026-07-30T14:06:58Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30550093909"
+      },
+      {
+        "name": "CI",
+        "display_title": "Fix object store cleanup lint",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_branch": "agent/scoped-object-access-api",
+        "head_sha": "34cd66a5bc22d3f706b9ff86096fcb3bd34920b1",
+        "run_number": 604,
+        "created_at": "2026-07-30T14:06:24Z",
+        "updated_at": "2026-07-30T14:07:00Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30550085306"
+      },
+      {
+        "name": "CI",
+        "display_title": "Merge pull request #43 from b8vipvip/agent/ghs-reliability-next",
+        "event": "push",
+        "status": "in_progress",
+        "conclusion": null,
         "head_branch": "main",
-        "head_sha": "fa4097b6139a00dcbead61d455eaab5c4294d912",
-        "run_number": 335,
-        "created_at": "2026-07-30T08:57:44Z",
-        "updated_at": "2026-07-30T08:59:07Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30528752659"
+        "head_sha": "d80e539434df8d6f89a198a45a067b332addcb3b",
+        "run_number": 603,
+        "created_at": "2026-07-30T14:02:50Z",
+        "updated_at": "2026-07-30T14:03:36Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30549795861"
       }
     ]
   },
   "collector": {
-    "event_name": "schedule",
-    "workflow": "Publish project status",
-    "run_id": "30531546031"
+    "event_name": null,
+    "workflow": null,
+    "run_id": null
   },
+  "age_seconds": 0,
+  "stale": false,
   "freshness": {
+    "age_seconds": 0,
+    "stale": false,
     "age_seconds_at_publish": 0,
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-30T17:39:34+08:00"
+    "generated_at": "2026-07-30T22:24:23+08:00"
+  },
+  "deployment_consistency": {
+    "state": "in_progress",
+    "marker_consistent": true,
+    "current_matches_main": false,
+    "deploying_matches_main": false,
+    "main_sha": "94d639b2fbb180f681d823931782be21b834ef0c"
   },
   "reliability": {
     "disk": {
@@ -356,7 +392,7 @@
         "letta_recall_delayed",
         "service_scope_verification_failed"
       ],
-      "age_seconds_at_publish": 2526,
+      "age_seconds_at_publish": 19615,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }
