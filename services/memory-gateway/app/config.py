@@ -78,6 +78,7 @@ class Settings(BaseSettings):
     mempalace_qdrant_timeout_seconds: float = Field(default=30, ge=1, le=300)
 
     letta_enabled: bool = True
+    letta_required: bool = True
     letta_base_url: str = "http://letta:8283"
     letta_server_password: SecretStr = SecretStr("")
     letta_agent_id: str = ""
@@ -144,6 +145,9 @@ class Settings(BaseSettings):
             if not db_path.startswith("/"):
                 raise ValueError("MEMPALACE_REMOTE_DB_PATH must be an absolute path")
             self.mempalace_remote_db_path = db_path
+
+        if self.letta_required and not self.letta_enabled:
+            raise ValueError("LETTA_REQUIRED=true requires LETTA_ENABLED=true")
 
         if normalized == "supermemory":
             if not self.supermemory_base_url.strip():

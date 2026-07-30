@@ -81,27 +81,39 @@ class MemPalaceLettaProvider:
     ) -> MemoryWriteResult:
         message = latest_user_message(request_payload.get("messages") or [])
         user_text = flatten_content((message or {}).get("content"))
-        outcomes = await asyncio.gather(
-            self._write_component(
-                "mempalace",
-                self.mempalace.add_exchange(
-                    scope=scope,
-                    conversation_id=conversation_id,
-                    request_payload=request_payload,
-                    assistant=assistant_text,
-                ),
-            ),
-            self._write_component(
-                "letta",
-                self.letta.remember(
-                    scope=scope,
-                    user_text=user_text,
-                    assistant_text=assistant_text,
-                    conversation_id=conversation_id,
-                ),
-            ),
-        )
+        operations: list[Awaitable[tuple[str, bool, str | None]]] = []
+        required_components: list[str] = []
 
+        if self.settings.mempalace_enabled:
+            operations.append(
+                self._write_component(
+                    "mempalace",
+                    self.mempalace.add_exchange(
+                        scope=scope,
+                        conversation_id=conversation_id,
+                        request_payload=request_payload,
+                        assistant=assistant_text,
+                    ),
+                )
+            )
+            required_components.append("mempalace")
+
+        if self.settings.letta_enabled:
+            operations.append(
+                self._write_component(
+                    "letta",
+                    self.letta.remember(
+                        scope=scope,
+                        user_text=user_text,
+                        assistant_text=assistant_text,
+                        conversation_id=conversation_id,
+                    ),
+                )
+            )
+            if self.settings.letta_required:
+                required_components.append("letta")
+
+        outcomes = await asyncio.gather(*operations) if operations else []
         components: dict[str, bool] = {}
         error_codes: list[str] = []
         for name, accepted, error_code in outcomes:
@@ -113,6 +125,7 @@ class MemPalaceLettaProvider:
             provider=self.name,
             components=components,
             error_codes=tuple(error_codes),
+            required_components=tuple(required_components),
         )
 
     async def _recall_component(
