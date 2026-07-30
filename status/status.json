@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-07-30T22:34:12+08:00",
+  "generated_at": "2026-07-30T23:23:42+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "unhealthy",
   "project_stage": "deployment_in_progress",
@@ -42,14 +42,14 @@
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 34675920896,
-      "free_bytes": 5638475776,
-      "used_percent": 82.3
+      "used_bytes": 34883891200,
+      "free_bytes": 5430505472,
+      "used_percent": 82.7
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 2618363904,
-      "used_percent": 32.9
+      "available_bytes": 2497273856,
+      "used_percent": 36.0
     }
   },
   "github": {
@@ -82,14 +82,27 @@
       {
         "name": "Publish project status",
         "display_title": "Publish project status",
-        "event": "workflow_run",
+        "event": "schedule",
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
         "head_sha": "f8de54d84553526c9a10b79cc21ea0f01b1bb0fc",
+        "run_number": 345,
+        "created_at": "2026-07-30T15:23:12Z",
+        "updated_at": "2026-07-30T15:23:16Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30556416292"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "f8de54d84553526c9a10b79cc21ea0f01b1bb0fc",
         "run_number": 344,
         "created_at": "2026-07-30T14:33:34Z",
-        "updated_at": "2026-07-30T14:33:48Z",
+        "updated_at": "2026-07-30T14:34:33Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30552292127"
       },
       {
@@ -221,19 +234,6 @@
         "created_at": "2026-07-30T14:23:57Z",
         "updated_at": "2026-07-30T14:24:46Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30551496270"
-      },
-      {
-        "name": "CI",
-        "display_title": "Merge pull request #45 from b8vipvip/agent/object-reservation-cleanup",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "cancelled",
-        "head_branch": "main",
-        "head_sha": "94d639b2fbb180f681d823931782be21b834ef0c",
-        "run_number": 613,
-        "created_at": "2026-07-30T14:23:18Z",
-        "updated_at": "2026-07-30T14:29:51Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30551443261"
       }
     ]
   },
@@ -251,7 +251,7 @@
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-30T22:34:12+08:00"
+    "generated_at": "2026-07-30T23:23:42+08:00"
   },
   "deployment_consistency": {
     "state": "in_progress",
@@ -302,7 +302,7 @@
         "letta_recall_delayed",
         "service_scope_verification_failed"
       ],
-      "age_seconds_at_publish": 20204,
+      "age_seconds_at_publish": 23174,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }
