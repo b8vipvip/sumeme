@@ -1,4 +1,4 @@
-name: Observe main deployment once
+name: Observe exact main deployment
 
 on:
   push:
@@ -11,74 +11,77 @@ permissions:
 jobs:
   observe:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 45
     steps:
-      - name: Publish sanitized workflow observation
+      - name: Wait for exact main CI and publish sanitized jobs
         uses: actions/github-script@v7
         with:
           script: |
             const owner = context.repo.owner;
             const repo = context.repo.repo;
-            const workflowFiles = [
-              ['CI', 'ci.yml'],
-              ['Deploy production', 'deploy-production.yml'],
-              ['Smoke production', 'smoke-production.yml'],
-              ['Publish project status', 'publish-status.yml'],
-            ];
+            const targetSha = '9e14dc225588fbc6c0b88ebb1c2552e30f1fca6e';
+            let selectedRun = null;
+            let jobs = [];
+
+            for (let attempt = 0; attempt < 120; attempt += 1) {
+              const runs = await github.rest.actions.listWorkflowRuns({
+                owner,
+                repo,
+                workflow_id: 'ci.yml',
+                branch: 'main',
+                event: 'push',
+                per_page: 30,
+              });
+              selectedRun = runs.data.workflow_runs.find(
+                (run) => run.head_sha === targetSha,
+              ) || null;
+              if (selectedRun) {
+                const response = await github.rest.actions.listJobsForWorkflowRun({
+                  owner,
+                  repo,
+                  run_id: selectedRun.id,
+                  per_page: 100,
+                  filter: 'latest',
+                });
+                jobs = response.data.jobs;
+                if (selectedRun.status === 'completed') break;
+              }
+              await new Promise((resolve) => setTimeout(resolve, 20000));
+            }
+
             const result = {
               schema_version: 1,
               generated_at: new Date().toISOString(),
-              workflows: [],
+              target_sha: targetSha,
+              run: selectedRun ? {
+                id: selectedRun.id,
+                number: selectedRun.run_number,
+                status: selectedRun.status,
+                conclusion: selectedRun.conclusion,
+                created_at: selectedRun.created_at,
+              } : null,
+              jobs: jobs.map((job) => ({
+                id: job.id,
+                name: job.name,
+                status: job.status,
+                conclusion: job.conclusion,
+                failed_steps: (job.steps || [])
+                  .filter((step) => step.conclusion && !['success', 'skipped'].includes(step.conclusion))
+                  .map((step) => ({
+                    name: step.name,
+                    conclusion: step.conclusion,
+                  })),
+              })),
             };
 
-            for (const [label, workflowId] of workflowFiles) {
-              const response = await github.rest.actions.listWorkflowRuns({
-                owner,
-                repo,
-                workflow_id: workflowId,
-                branch: 'main',
-                per_page: 10,
-              });
-              const workflow = { label, workflow_id: workflowId, runs: [] };
-              for (const run of response.data.workflow_runs) {
-                const item = {
-                  run_number: run.run_number,
-                  run_id: run.id,
-                  sha: run.head_sha,
-                  event: run.event,
-                  status: run.status,
-                  conclusion: run.conclusion,
-                  created_at: run.created_at,
-                  jobs: [],
-                };
-                if (label === 'CI' || label === 'Deploy production') {
-                  const jobsResponse = await github.rest.actions.listJobsForWorkflowRun({
-                    owner,
-                    repo,
-                    run_id: run.id,
-                    per_page: 100,
-                    filter: 'latest',
-                  });
-                  item.jobs = jobsResponse.data.jobs.map((job) => ({
-                    id: job.id,
-                    name: job.name,
-                    status: job.status,
-                    conclusion: job.conclusion,
-                    failed_steps: (job.steps || [])
-                      .filter((step) => step.conclusion && !['success', 'skipped'].includes(step.conclusion))
-                      .map((step) => ({name: step.name, conclusion: step.conclusion})),
-                  }));
-                }
-                workflow.runs.push(item);
-              }
-              result.workflows.push(workflow);
-            }
-
-            const path = 'observer/latest.json';
+            const path = 'observer/provider-proxy-deploy.json';
             let sha;
             try {
               const current = await github.rest.repos.getContent({
-                owner, repo, path, ref: 'ops-status',
+                owner,
+                repo,
+                path,
+                ref: 'ops-status',
               });
               if (!Array.isArray(current.data)) sha = current.data.sha;
             } catch (error) {
@@ -89,189 +92,7 @@ jobs:
               repo,
               path,
               branch: 'ops-status',
-              message: 'observer: update temporary deployment snapshot',
+              message: 'observer: record provider proxy deployment',
               content: Buffer.from(JSON.stringify(result, null, 2) + '\n').toString('base64'),
               sha,
             });
-
-      - name: Configure pinned SSH trust
-        env:
-          SSH_HOST: ${{ vars.SUMEME_VPS_HOST }}
-          SSH_PORT: ${{ vars.SUMEME_VPS_PORT || '22' }}
-          SSH_USER: ${{ vars.SUMEME_VPS_USER || 'sumeme-runner' }}
-          SSH_PRIVATE_KEY: ${{ secrets.SUMEME_SSH_PRIVATE_KEY }}
-          SSH_HOST_KEY: ${{ secrets.SUMEME_SSH_HOST_KEY }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          install -d -m 700 "${HOME}/.ssh"
-          printf '%s\n' "${SSH_PRIVATE_KEY}" | tr -d '\r' > "${HOME}/.ssh/sumeme_observe"
-          printf '%s\n' "${SSH_HOST_KEY}" | tr -d '\r' > "${HOME}/.ssh/known_hosts"
-          chmod 600 "${HOME}/.ssh/sumeme_observe" "${HOME}/.ssh/known_hosts"
-          cat > "${HOME}/.ssh/config" <<EOF
-          Host sumeme-production
-            HostName ${SSH_HOST}
-            Port ${SSH_PORT}
-            User ${SSH_USER}
-            IdentityFile ${HOME}/.ssh/sumeme_observe
-            IdentitiesOnly yes
-            BatchMode yes
-            StrictHostKeyChecking yes
-            UserKnownHostsFile ${HOME}/.ssh/known_hosts
-            ConnectTimeout 20
-          EOF
-          chmod 600 "${HOME}/.ssh/config"
-
-      - name: Read and reduce latest smoke result
-        shell: bash
-        run: |
-          set -euo pipefail
-          ssh sumeme-production 'cat /opt/sumeme/.deploy/smoke/latest.json' > /tmp/smoke.json
-          jq '{
-            schema_version,
-            generated_at,
-            duration_seconds,
-            overall,
-            deployment_gate,
-            memory_provider,
-            identity_mode,
-            test_scope,
-            require_recall,
-            checks,
-            write_components,
-            recall_components,
-            error_codes
-          }' /tmp/smoke.json > /tmp/smoke-sanitized.json
-
-      - name: Probe remote embedding and Letta model capabilities
-        shell: bash
-        run: |
-          set -euo pipefail
-          ssh sumeme-production 'docker exec -i sumeme-memory-gateway python -' > /tmp/provider-capabilities.json <<'PY'
-          import json
-          import os
-          import httpx
-
-          def error_shape(response):
-              try:
-                  payload = response.json()
-              except Exception:
-                  return {"type": None, "code": None}
-              error = payload.get("error") if isinstance(payload, dict) else None
-              if not isinstance(error, dict):
-                  return {"type": None, "code": None}
-              return {
-                  "type": str(error.get("type") or "")[:80] or None,
-                  "code": str(error.get("code") or "")[:80] or None,
-              }
-
-          def handles(payload):
-              if isinstance(payload, dict):
-                  values = payload.get("data") or payload.get("models") or payload.get("items") or payload.get("result") or []
-              else:
-                  values = payload
-              if not isinstance(values, list):
-                  return []
-              result = []
-              for item in values:
-                  if not isinstance(item, dict):
-                      continue
-                  value = item.get("handle") or item.get("id") or item.get("name")
-                  if isinstance(value, str) and value and value not in result:
-                      result.append(value)
-              return result
-
-          result = {
-              "schema_version": 1,
-              "relay": {},
-              "letta": {},
-          }
-
-          relay_base = os.environ.get("OPENAI_RELAY_BASE_URL", "").rstrip("/")
-          relay_key = os.environ.get("OPENAI_RELAY_API_KEY", "")
-          embedding_model = os.environ.get("OPENAI_EMBEDDING_MODEL", "")
-          relay_headers = {"Authorization": f"Bearer {relay_key}"}
-          result["relay"]["configured_embedding_model"] = embedding_model
-          try:
-              with httpx.Client(timeout=30, follow_redirects=True) as client:
-                  models_response = client.get(f"{relay_base}/models", headers=relay_headers)
-                  result["relay"]["models_status"] = models_response.status_code
-                  model_handles = handles(models_response.json()) if models_response.status_code < 400 else []
-                  result["relay"]["configured_model_listed"] = embedding_model in model_handles
-                  result["relay"]["embedding_like_models"] = [
-                      value for value in model_handles
-                      if "embed" in value.lower()
-                  ][:20]
-
-                  embedding_response = client.post(
-                      f"{relay_base}/embeddings",
-                      headers={**relay_headers, "Content-Type": "application/json"},
-                      json={"model": embedding_model, "input": ["sumeme capability probe"]},
-                  )
-                  result["relay"]["embedding_status"] = embedding_response.status_code
-                  result["relay"]["embedding_error"] = error_shape(embedding_response)
-          except Exception as exc:
-              result["relay"]["probe_exception"] = type(exc).__name__
-
-          letta_base = os.environ.get("LETTA_BASE_URL", "http://letta:8283").rstrip("/")
-          letta_key = os.environ.get("LETTA_SERVER_PASSWORD", "")
-          letta_model = os.environ.get("LETTA_MODEL", "")
-          letta_embedding = os.environ.get("LETTA_EMBEDDING", "")
-          letta_headers = {"Authorization": f"Bearer {letta_key}"} if letta_key else {}
-          result["letta"]["configured_model"] = letta_model
-          result["letta"]["configured_embedding"] = letta_embedding
-          try:
-              with httpx.Client(timeout=30, follow_redirects=True) as client:
-                  model_response = client.get(f"{letta_base}/v1/models/", headers=letta_headers)
-                  result["letta"]["models_status"] = model_response.status_code
-                  model_handles = handles(model_response.json()) if model_response.status_code < 400 else []
-                  result["letta"]["configured_model_listed"] = letta_model in model_handles
-                  result["letta"]["model_handles"] = model_handles[:30]
-
-                  embedding_response = client.get(
-                      f"{letta_base}/v1/models/embedding",
-                      headers=letta_headers,
-                  )
-                  result["letta"]["embeddings_status"] = embedding_response.status_code
-                  embedding_handles = handles(embedding_response.json()) if embedding_response.status_code < 400 else []
-                  result["letta"]["configured_embedding_listed"] = letta_embedding in embedding_handles
-                  result["letta"]["embedding_handles"] = embedding_handles[:30]
-          except Exception as exc:
-              result["letta"]["probe_exception"] = type(exc).__name__
-
-          print(json.dumps(result, ensure_ascii=False, indent=2))
-          PY
-          python -m json.tool /tmp/provider-capabilities.json >/dev/null
-
-      - name: Publish sanitized diagnostics
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            const owner = context.repo.owner;
-            const repo = context.repo.repo;
-            const files = [
-              ['diagnostics/smoke-latest.json', '/tmp/smoke-sanitized.json', 'diagnostics: update sanitized smoke result'],
-              ['diagnostics/provider-capabilities.json', '/tmp/provider-capabilities.json', 'diagnostics: update provider capability probe'],
-            ];
-            for (const [path, source, message] of files) {
-              const content = fs.readFileSync(source);
-              let sha;
-              try {
-                const current = await github.rest.repos.getContent({
-                  owner, repo, path, ref: 'ops-status',
-                });
-                if (!Array.isArray(current.data)) sha = current.data.sha;
-              } catch (error) {
-                if (error.status !== 404) throw error;
-              }
-              await github.rest.repos.createOrUpdateFileContents({
-                owner,
-                repo,
-                path,
-                branch: 'ops-status',
-                message,
-                content: content.toString('base64'),
-                sha,
-              });
-            }
