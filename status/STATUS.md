@@ -1,29 +1,28 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-30T15:55:29+08:00
+- **采集时间：** 2026-07-30T16:03:26+08:00
 - **总体状态：** `healthy`
 - **开发阶段：** `deployment_behind_main`
 - **线上版本：** `fe9e4a37401cdda1288226990236536cba85288b`
 - **main 最新版本：** `67e1099e10ff27f7cb52e3cd9de4936ed5c4cd07`
 - **线上与 main 同步：** 否
-- **开放 PR：** 0
+- **开放 PR：** 1
 - **开放 Issue：** 3
 
 ## 健康检查
 
 - 本地网关：`ok`
 - 公网入口：`ok`
-- 磁盘使用：`81.6%`，剩余 5.5 GiB
-- 内存使用：`51.2%`，可用 1.8 GiB
+- 磁盘使用：`82.6%`，剩余 5.1 GiB
+- 内存使用：`49.6%`，可用 1.8 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| ai-provider-proxy | running | healthy | Up 7 minutes (healthy) |
-| letta | running | healthy | Up 7 minutes (healthy) |
+| letta | running | healthy | Up 6 minutes (healthy) |
 | lobe | running | - | Up 27 hours |
-| memory-gateway | running | healthy | Up About a minute (healthy) |
+| memory-gateway | running | healthy | Up 3 minutes (healthy) |
 | postgresql | running | healthy | Up 28 hours (healthy) |
 | qdrant | running | healthy | Up 28 hours (healthy) |
 | redis | running | healthy | Up 28 hours (healthy) |
@@ -34,18 +33,18 @@
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-07-30T07:55:18Z |
-| CI | in_progress | agent/recover-ghs-mempalace-degraded | 2026-07-30T07:55:05Z |
-| CI | failure | main | 2026-07-30T07:55:12Z |
-| CI | failure | agent/recover-ghs-mempalace-degraded | 2026-07-30T07:54:04Z |
-| CI | failure | agent/recover-ghs-mempalace-degraded | 2026-07-30T07:52:44Z |
-| CI | failure | agent/recover-ghs-mempalace-degraded | 2026-07-30T07:52:22Z |
-| CI | failure | agent/recover-ghs-mempalace-degraded | 2026-07-30T07:51:59Z |
-| CI | failure | agent/recover-ghs-mempalace-degraded | 2026-07-30T07:51:36Z |
+| CI | in_progress | agent/fix-memory-degraded-ci | 2026-07-30T08:03:00Z |
+| CI | failure | agent/ghs-live-diagnose | 2026-07-30T08:01:38Z |
+| Publish project status | in_progress | main | 2026-07-30T08:00:39Z |
+| CI | failure | agent/ghs-live-diagnose | 2026-07-30T08:00:16Z |
+| CI | failure | agent/ghs-live-diagnose | 2026-07-30T07:59:31Z |
+| CI | success | agent/ghs-emergency-diagnose | 2026-07-30T07:56:51Z |
+| GHS emergency diagnostics | success | agent/ghs-emergency-diagnose | 2026-07-30T07:56:46Z |
+| Publish project status | success | main | 2026-07-30T07:55:44Z |
 
 ## 开放 PR
 
-- 无
+- #36 Run one-shot read-only GHS production diagnosis (`agent/ghs-live-diagnose` → `main`)
 
 ## 开放 Issue
 
