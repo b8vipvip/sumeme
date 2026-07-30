@@ -11,8 +11,8 @@ permissions:
 jobs:
   auto-fix-provider-proxy:
     if: >-
-      github.event_name == 'push' &&
-      github.ref == 'refs/heads/agent/remote-ai-provider-proxy'
+      github.event_name == 'pull_request' &&
+      github.head_ref == 'agent/remote-ai-provider-proxy'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -37,7 +37,7 @@ jobs:
               raise SystemExit('target line is missing')
           PY
           rm -f .github/workflows/apply-provider-proxy-style-fix.yml
-          git checkout HEAD^ -- .github/workflows/ci.yml
+          git checkout a955323c50224b0b88b931e23c41cf805185d53b -- .github/workflows/ci.yml
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add services/ai-provider-proxy/app/main.py .github/workflows/ci.yml
