@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import asyncio
-from typing import Any, Protocol
+import logging
+from collections.abc import Awaitable
+from typing import Any, Protocol, TypeVar
 
 from .config import Settings
 from .content import flatten_content, latest_user_message
@@ -9,6 +11,9 @@ from .letta_memory import LettaMemory
 from .memory_result import MemoryWriteResult
 from .memory_scope import MemoryScope
 from .mempalace_store import MemPalaceStore
+
+logger = logging.getLogger(__name__)
+T = TypeVar("T")
 
 
 class MemoryProvider(Protocol):
@@ -37,8 +42,20 @@ class MemPalaceLettaProvider:
         self.letta = LettaMemory(settings)
 
     async def recall(self, query: str, scope: MemoryScope) -> str:
-        raw_task = asyncio.create_task(self.mempalace.search(query, scope))
-        structured_task = asyncio.create_task(self.letta.recall(query, scope))
+        raw_task = asyncio.create_task(
+            self._bounded_recall(
+                "mempalace",
+                self.mempalace.search(query, scope),
+                [],
+            )
+        )
+        structured_task = asyncio.create_task(
+            self._bounded_recall(
+                "letta",
+                self.letta.recall(query, scope),
+                "",
+            )
+        )
         raw_results, structured = await asyncio.gather(raw_task, structured_task)
 
         sections: list[str] = []
@@ -56,6 +73,28 @@ class MemPalaceLettaProvider:
 
         return "\n\n".join(sections)
 
+    async def _bounded_recall(
+        self,
+        component: str,
+        operation: Awaitable[T],
+        fallback: T,
+    ) -> T:
+        try:
+            return await asyncio.wait_for(
+                operation,
+                timeout=self.settings.memory_recall_timeout_seconds,
+            )
+        except TimeoutError:
+            logger.warning(
+                "Memory recall timed out component=%s timeout_seconds=%s",
+                component,
+                self.settings.memory_recall_timeout_seconds,
+            )
+            return fallback
+        except Exception:
+            logger.exception("Memory recall failed component=%s", component)
+            return fallback
+
     async def remember_exchange(
         self,
         *,
@@ -66,18 +105,25 @@ class MemPalaceLettaProvider:
     ) -> MemoryWriteResult:
         message = latest_user_message(request_payload.get("messages") or [])
         user_text = flatten_content((message or {}).get("content"))
+        timeout = self.settings.memory_write_timeout_seconds
         outcomes = await asyncio.gather(
-            self.mempalace.add_exchange(
-                scope=scope,
-                conversation_id=conversation_id,
-                request_payload=request_payload,
-                assistant=assistant_text,
+            asyncio.wait_for(
+                self.mempalace.add_exchange(
+                    scope=scope,
+                    conversation_id=conversation_id,
+                    request_payload=request_payload,
+                    assistant=assistant_text,
+                ),
+                timeout=timeout,
             ),
-            self.letta.remember(
-                scope=scope,
-                user_text=user_text,
-                assistant_text=assistant_text,
-                conversation_id=conversation_id,
+            asyncio.wait_for(
+                self.letta.remember(
+                    scope=scope,
+                    user_text=user_text,
+                    assistant_text=assistant_text,
+                    conversation_id=conversation_id,
+                ),
+                timeout=timeout,
             ),
             return_exceptions=True,
         )
@@ -88,7 +134,9 @@ class MemPalaceLettaProvider:
         for name, outcome in zip(names, outcomes, strict=True):
             accepted = outcome is True
             components[name] = accepted
-            if isinstance(outcome, BaseException):
+            if isinstance(outcome, TimeoutError):
+                error_codes.append(f"{name}_write_timeout")
+            elif isinstance(outcome, BaseException):
                 error_codes.append(f"{name}_write_exception")
             elif not accepted:
                 error_codes.append(f"{name}_write_rejected")
