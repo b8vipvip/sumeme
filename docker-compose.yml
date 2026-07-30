@@ -55,6 +55,8 @@ services:
       LETTA_BASE_URL: http://letta:8283
       MEMPALACE_QDRANT_URL: http://qdrant:6333
       MEMPALACE_PALACE_PATH: /data/mempalace/palace
+      RUSTFS_INTERNAL_ENDPOINT: http://rustfs:9000
+      RUSTFS_PRIVATE_BUCKET: ${RUSTFS_PRIVATE_BUCKET:-sumeme-vaults}
     volumes:
       - mempalace-data:/data/mempalace
       - gateway-data:/data/gateway
@@ -194,6 +196,8 @@ services:
         mc alias set rustfs http://rustfs:9000 "${RUSTFS_ACCESS_KEY}" "${RUSTFS_SECRET_KEY}";
         mc mb "rustfs/${RUSTFS_LOBE_BUCKET}" --ignore-existing;
         mc anonymous set-json /bucket.config.json "rustfs/${RUSTFS_LOBE_BUCKET}";
+        mc mb "rustfs/${RUSTFS_PRIVATE_BUCKET:-sumeme-vaults}" --ignore-existing;
+        mc anonymous set none "rustfs/${RUSTFS_PRIVATE_BUCKET:-sumeme-vaults}";
     restart: "no"
     networks:
       - sumeme
