@@ -79,6 +79,9 @@ services:
       - .env
     environment:
       LETTA_BASE_URL: http://letta:8283
+      # MemPalace remains the required verbatim-memory component. Letta failures
+      # stay visible as degraded until structured-memory compatibility is restored.
+      LETTA_REQUIRED: ${LETTA_REQUIRED:-false}
       # Letta's OpenAI-compatible provider handle is openai/<model>. The endpoint
       # itself is redirected to ai-provider-proxy below.
       LETTA_MODEL: openai/${OPENAI_MEMORY_MODEL}
@@ -108,7 +111,9 @@ services:
       - sumeme
 
   letta:
-    image: ${LETTA_IMAGE:-letta/letta:latest}
+    # Use a new pin variable so an old persistent LETTA_IMAGE=latest entry cannot
+    # silently override the reviewed runtime during deployment or rollback.
+    image: ${LETTA_IMAGE_PIN:-letta/letta:0.16.8}
     container_name: sumeme-letta
     restart: unless-stopped
     expose:
