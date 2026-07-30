@@ -18,6 +18,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: agent/remote-ai-provider-proxy
+          fetch-depth: 0
       - name: Apply exact exception type fix and remove temporary automation
         shell: bash
         run: |
