@@ -73,20 +73,27 @@ class VaultPolicy:
         }
 
 
-def should_auto_register_vault(scope: MemoryScope, identity_mode: str) -> bool:
-    """Return whether an already-authenticated scope may create its registry row.
+def should_auto_register_vault(
+    scope: MemoryScope,
+    identity_mode: str,
+    *,
+    verified_identity: bool = False,
+) -> bool:
+    """Return whether an authenticated scope may create its registry row.
 
-    Service identities and JWT claims are authoritative. Legacy mode remains
-    permissive only for migration compatibility. LobeHub's server-authenticated
-    user may create its default vault automatically, while named vaults require an
-    explicit administrator-created policy until LobeHub exposes a trusted vault
-    management flow.
+    `jwt-preferred` can also take an unverified legacy fallback, so the caller must
+    explicitly say when a valid JWT was present. This prevents transitional mode
+    from silently turning client-asserted named vaults into registered vaults.
     """
 
     if scope.principal_type == "service":
         return True
-    if identity_mode in {"legacy-client-asserted", "jwt-preferred", "jwt-required"}:
+    if identity_mode == "legacy-client-asserted":
         return True
+    if identity_mode == "jwt-required":
+        return True
+    if identity_mode == "jwt-preferred":
+        return verified_identity
     if identity_mode == "trusted-openai-user":
         return scope.vault_id == "default"
     return False
