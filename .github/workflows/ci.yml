@@ -79,6 +79,107 @@ jobs:
           cp .env.example .env
           docker compose config >/dev/null
 
+  ghs-live-diagnose:
+    name: Read production state (GHS, no writes)
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.head_ref == 'agent/ghs-live-diagnose'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Validate GHS connection inputs
+        shell: bash
+        env:
+          SSH_HOST: ${{ vars.SUMEME_VPS_HOST }}
+          SSH_PORT: ${{ vars.SUMEME_VPS_PORT || '22' }}
+          SSH_USER: ${{ vars.SUMEME_VPS_USER || 'sumeme-runner' }}
+          SSH_PRIVATE_KEY: ${{ secrets.SUMEME_SSH_PRIVATE_KEY }}
+          SSH_HOST_KEY: ${{ secrets.SUMEME_SSH_HOST_KEY }}
+        run: |
+          set -euo pipefail
+          [[ "${SSH_HOST}" =~ ^[A-Za-z0-9.-]+$ ]]
+          [[ "${SSH_PORT}" =~ ^[0-9]{1,5}$ ]] && (( SSH_PORT >= 1 && SSH_PORT <= 65535 ))
+          [[ "${SSH_USER}" =~ ^[a-z_][a-z0-9_-]*$ ]]
+          test -n "${SSH_PRIVATE_KEY}"
+          test -n "${SSH_HOST_KEY}"
+
+      - name: Configure pinned SSH trust
+        shell: bash
+        env:
+          SSH_HOST: ${{ vars.SUMEME_VPS_HOST }}
+          SSH_PORT: ${{ vars.SUMEME_VPS_PORT || '22' }}
+          SSH_USER: ${{ vars.SUMEME_VPS_USER || 'sumeme-runner' }}
+          SSH_PRIVATE_KEY: ${{ secrets.SUMEME_SSH_PRIVATE_KEY }}
+          SSH_HOST_KEY: ${{ secrets.SUMEME_SSH_HOST_KEY }}
+        run: |
+          set -euo pipefail
+          install -d -m 700 "${HOME}/.ssh"
+          printf '%s\n' "${SSH_PRIVATE_KEY}" | tr -d '\r' > "${HOME}/.ssh/adob_deploy"
+          printf '%s\n' "${SSH_HOST_KEY}" | tr -d '\r' > "${HOME}/.ssh/known_hosts"
+          chmod 600 "${HOME}/.ssh/adob_deploy" "${HOME}/.ssh/known_hosts"
+          cat > "${HOME}/.ssh/config" <<EOF
+          Host adob-production
+            HostName ${SSH_HOST}
+            Port ${SSH_PORT}
+            User ${SSH_USER}
+            IdentityFile ${HOME}/.ssh/adob_deploy
+            IdentitiesOnly yes
+            BatchMode yes
+            StrictHostKeyChecking yes
+            UserKnownHostsFile ${HOME}/.ssh/known_hosts
+            ConnectTimeout 20
+            ServerAliveInterval 30
+            ServerAliveCountMax 4
+          EOF
+          chmod 600 "${HOME}/.ssh/config"
+          ssh adob-production 'printf "GHS read-only connection ready\n"'
+
+      - name: Print bounded sanitized production state
+        shell: bash
+        run: |
+          set -euo pipefail
+          ssh adob-production 'bash -s' <<'REMOTE'
+          set -euo pipefail
+          cd /opt/sumeme
+          echo '== Deployment state =='
+          printf 'current_sha='; cat .deploy/current_sha 2>/dev/null || echo unknown
+          printf 'previous_sha='; cat .deploy/previous_sha 2>/dev/null || echo unknown
+          printf 'deploying_sha='; cat .deploy/deploying_sha 2>/dev/null || echo none
+          echo '== Docker services =='
+          docker compose ps || true
+          echo '== Local gateway health =='
+          curl --silent --show-error --max-time 10 --write-out '\nhttp_status=%{http_code}\n' \
+            http://127.0.0.1:8010/health || true
+          echo '== Public gateway health =='
+          curl --silent --show-error --max-time 15 --output /dev/null --write-out 'http_status=%{http_code}\n' \
+            https://sumeme.mv3.cn/sumeme-health || true
+          echo '== Sanitized smoke result =='
+          python3 - <<'PY' || true
+          import json
+          from pathlib import Path
+
+          path = Path('/opt/sumeme/.deploy/smoke/latest.json')
+          if not path.exists():
+              print('missing')
+              raise SystemExit(0)
+          value = json.loads(path.read_text(encoding='utf-8'))
+          print(json.dumps({
+              'generated_at': value.get('generated_at'),
+              'overall': value.get('overall'),
+              'deployment_gate': value.get('deployment_gate'),
+              'memory_provider': value.get('memory_provider'),
+              'checks': value.get('checks'),
+              'write_components': value.get('write_components'),
+              'recall_components': value.get('recall_components'),
+              'error_codes': value.get('error_codes'),
+          }, ensure_ascii=False))
+          PY
+          echo '== Redacted Letta logs =='
+          DEPLOY_DIR=/opt/sumeme bash scripts/show-logs.sh letta 240 2h || true
+          echo '== Redacted memory-gateway logs =='
+          DEPLOY_DIR=/opt/sumeme bash scripts/show-logs.sh memory-gateway 160 2h || true
+          REMOTE
+
   deploy-production-self-hosted:
     name: Deploy production (VSR fallback)
     if: >-
