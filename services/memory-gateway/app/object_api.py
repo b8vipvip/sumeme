@@ -11,7 +11,11 @@ from .identity import IdentityError
 from .memory_scope import MemoryScope
 from .object_config import ObjectAccessSettings
 from .object_store import ObjectStoreError
-from .objects import ObjectRecord, ObjectRegistryError
+from .objects import (
+    ObjectRecord,
+    ObjectRegistryError,
+    validate_storage_policy_for_object,
+)
 from .vaults import VaultPolicy, VaultRegistryError, should_auto_register_vault
 
 
@@ -113,6 +117,16 @@ def build_object_router(
     def raise_store(exc: ObjectStoreError) -> None:
         raise HTTPException(status_code=exc.status_code, detail=exc.code) from exc
 
+    def enforce_current_policy(policy: VaultPolicy, record: ObjectRecord) -> None:
+        try:
+            validate_storage_policy_for_object(
+                policy,
+                object_kind=record.object_kind,
+                sanitized_for_cloud=record.sanitized_for_cloud,
+            )
+        except ObjectRegistryError as exc:
+            raise_registry(exc)
+
     @router.post("/reserve-upload")
     async def reserve_upload(
         body: ReserveUploadBody,
@@ -158,13 +172,14 @@ def build_object_router(
     ) -> dict[str, Any]:
         require_gateway_auth(authorization)
         require_enabled(request)
-        scope, _policy = await resolve_scope_and_policy(request, body)
+        scope, policy = await resolve_scope_and_policy(request, body)
         try:
             record = await request.app.state.objects.get(scope, body.object_id)
         except ObjectRegistryError as exc:
             raise_registry(exc)
         if record is None:
             raise HTTPException(status_code=404, detail="object_not_found")
+        enforce_current_policy(policy, record)
         try:
             verified = await request.app.state.object_store.verify_upload(record)
             completed = await request.app.state.objects.complete(
@@ -190,13 +205,14 @@ def build_object_router(
     ) -> dict[str, Any]:
         require_gateway_auth(authorization)
         require_enabled(request)
-        scope, _policy = await resolve_scope_and_policy(request, body)
+        scope, policy = await resolve_scope_and_policy(request, body)
         try:
             record = await request.app.state.objects.get(scope, body.object_id)
         except ObjectRegistryError as exc:
             raise_registry(exc)
         if record is None or record.state == "deleted":
             raise HTTPException(status_code=404, detail="object_not_found")
+        enforce_current_policy(policy, record)
         try:
             download = await request.app.state.object_store.create_download(record)
         except ObjectStoreError as exc:
