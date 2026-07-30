@@ -35,10 +35,13 @@ def test_write_result_exposes_only_sanitized_status() -> None:
     )
 
     assert result.success is False
+    assert result.degraded is False
     assert result.as_dict() == {
         "provider": "mempalace-letta",
         "success": False,
+        "degraded": False,
         "components": {"mempalace": True, "letta": False},
+        "required_components": ["mempalace", "letta"],
         "error_codes": ["letta_write_rejected"],
     }
 
@@ -64,6 +67,7 @@ async def test_default_provider_reports_each_component() -> None:
     assert result.components == {"mempalace": True, "letta": False}
     assert result.error_codes == ("letta_write_rejected",)
     assert result.success is False
+    assert result.degraded is False
 
 
 @pytest.mark.asyncio
