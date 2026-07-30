@@ -119,10 +119,54 @@ restore_snapshot() {
   rm -rf "${temp_dir}"
 }
 
+print_failure_diagnostics() {
+  local smoke_path="${STATE_DIR}/smoke/latest.json"
+
+  echo "== Sanitized deployment failure diagnostics ==" >&2
+  if [[ -f "${smoke_path}" ]]; then
+    python3 - "${smoke_path}" <<'PY' >&2 || true
+import json
+import sys
+
+path = sys.argv[1]
+try:
+    with open(path, encoding="utf-8") as handle:
+        value = json.load(handle)
+except Exception:
+    print("smoke_result=unreadable")
+    raise SystemExit(0)
+
+summary = {
+    "overall": value.get("overall"),
+    "deployment_gate": value.get("deployment_gate"),
+    "memory_provider": value.get("memory_provider"),
+    "test_scope": value.get("test_scope"),
+    "checks": value.get("checks"),
+    "write_components": value.get("write_components"),
+    "recall_components": value.get("recall_components"),
+    "error_codes": value.get("error_codes"),
+    "duration_seconds": value.get("duration_seconds"),
+}
+print("smoke_result=" + json.dumps(summary, ensure_ascii=False, separators=(",", ":")))
+PY
+  else
+    echo "smoke_result=missing" >&2
+  fi
+
+  for service in memory-gateway letta; do
+    echo "== Redacted ${service} logs (last 120 lines, 20m) ==" >&2
+    DEPLOY_DIR="${DEPLOY_DIR}" bash "${DEPLOY_DIR}/scripts/show-logs.sh" \
+      "${service}" 120 20m >&2 || true
+  done
+  echo "== End sanitized deployment failure diagnostics ==" >&2
+}
+
 rollback_on_error() {
   local exit_code=$?
   trap - ERR
   echo "Deployment failed with exit code ${exit_code}."
+
+  print_failure_diagnostics
 
   if [[ "${CURRENT_SHA}" != "initial" ]]; then
     echo "Restoring previous code release ${CURRENT_SHA}..."
