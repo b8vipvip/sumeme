@@ -9,6 +9,8 @@ services:
     ports:
       - 127.0.0.1:${WEB_PORT:-3210}:80
     depends_on:
+      lobe:
+        condition: service_started
       memory-gateway:
         condition: service_healthy
     healthcheck:
@@ -21,9 +23,9 @@ services:
       - sumeme
 
   lobe:
-    # Legacy data/application service retained temporarily for migration only.
-    # It is no longer the public UI and has no host port mapping.
-    image: ${LOBEHUB_IMAGE_PIN:-sumeme-lobehub:2.2.11-auth-control-1}
+    # LobeHub remains SuMeMe's account, conversation, attachment and application
+    # backend. Only its visible frontend is replaced by sumeme-web.
+    image: ${LOBEHUB_IMAGE_PIN:-sumeme-lobehub:2.2.11-auth-fdex-2}
     pull_policy: never
     container_name: sumeme-lobehub
     restart: unless-stopped
@@ -43,7 +45,7 @@ services:
     env_file:
       - .env
     environment:
-      APP_URL: ${LOBE_LEGACY_APP_URL:-http://lobe:3210}
+      APP_URL: ${APP_URL:-https://sumeme.mv3.cn}
       INTERNAL_APP_URL: http://lobe:3210
       DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@postgresql:5432/${LOBE_DB_NAME}
       REDIS_URL: redis://redis:6379
