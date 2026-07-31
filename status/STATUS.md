@@ -1,48 +1,50 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-31T09:00:51+08:00
-- **总体状态：** `unhealthy`
-- **开发阶段：** `deployed_unhealthy`
+- **采集时间：** 2026-07-31T09:38:19+08:00
+- **总体状态：** `healthy`
+- **开发阶段：** `deployment_behind_main`
 - **线上版本：** `fe9e4a37401cdda1288226990236536cba85288b`
 - **main 最新版本：** `f8de54d84553526c9a10b79cc21ea0f01b1bb0fc`
 - **线上与 main 同步：** 否
-- **开放 PR：** 0
+- **开放 PR：** 1
 - **开放 Issue：** 3
-
-## 需要关注
-
-- 缺少关键服务: letta, lobe, memory-gateway, postgresql, qdrant, redis, rustfs, searxng
-- 本地 memory-gateway 健康检查失败
-- 公网健康检查失败
 
 ## 健康检查
 
-- 本地网关：`failed`
-- 公网入口：`failed`
+- 本地网关：`ok`
+- 公网入口：`ok`
 - 磁盘使用：`83.4%`，剩余 4.8 GiB
-- 内存使用：`33.1%`，可用 2.4 GiB
+- 内存使用：`61.7%`，可用 1.4 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
+| letta | running | healthy | Up 16 minutes (healthy) |
+| lobe | running | - | Up 9 minutes |
+| memory-gateway | running | healthy | Up 9 minutes (healthy) |
+| postgresql | running | healthy | Up 16 minutes (healthy) |
+| qdrant | running | healthy | Up 16 minutes (healthy) |
+| redis | running | healthy | Up 16 minutes (healthy) |
+| rustfs | running | healthy | Up 16 minutes (healthy) |
+| searxng | running | - | Up 16 minutes |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-07-31T01:00:33Z |
-| Publish project status | success | main | 2026-07-30T23:17:37Z |
-| Publish project status | success | main | 2026-07-30T22:01:47Z |
-| Publish project status | success | main | 2026-07-30T20:56:46Z |
-| Publish project status | success | main | 2026-07-30T19:52:40Z |
-| Publish project status | success | main | 2026-07-30T19:50:09Z |
-| Smoke production | success | main | 2026-07-30T19:49:25Z |
-| Publish project status | success | main | 2026-07-30T18:14:18Z |
+| CI | success | agent/fix-production-reliability | 2026-07-31T01:36:25Z |
+| CI | failure | agent/fix-production-reliability | 2026-07-31T01:34:46Z |
+| CI | success | agent/revalidate-blocked-stages | 2026-07-31T01:28:34Z |
+| Revalidate blocked stages | failure | agent/revalidate-blocked-stages | 2026-07-31T01:29:38Z |
+| CI | success | agent/revalidate-blocked-stages | 2026-07-31T01:28:03Z |
+| Revalidate blocked stages | failure | agent/revalidate-blocked-stages | 2026-07-31T01:29:15Z |
+| CI | success | agent/revalidate-blocked-stages | 2026-07-31T01:16:24Z |
+| Revalidate blocked stages | failure | agent/revalidate-blocked-stages | 2026-07-31T01:26:24Z |
 
 ## 开放 PR
 
-- 无
+- #49 Fail closed on rollback and scheduled smoke (`agent/fix-production-reliability` → `main`)
 
 ## 开放 Issue
 
