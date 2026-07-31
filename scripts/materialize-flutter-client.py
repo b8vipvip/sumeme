@@ -46,11 +46,10 @@ def materialize(output: Path) -> None:
     for filename in ("pubspec.yaml", "analysis_options.yaml"):
         shutil.copy2(CLIENT_SOURCE / filename, output / filename)
     for directory in ("lib", "test"):
-        shutil.copytree(
-            CLIENT_SOURCE / directory,
-            output / directory,
-            dirs_exist_ok=True,
-        )
+        destination = output / directory
+        if destination.exists():
+            shutil.rmtree(destination)
+        shutil.copytree(CLIENT_SOURCE / directory, destination)
 
     manifest = output / "android" / "app" / "src" / "main" / "AndroidManifest.xml"
     replace_required(
