@@ -12,6 +12,7 @@ HEALTH_CHECK = ROOT / "scripts" / "health-check.sh"
 UI_SMOKE = ROOT / "scripts" / "smoke-public-ui.py"
 SERVER_UI = ROOT / "web" / "server-ui" / "index.html"
 SERVER_JS = ROOT / "web" / "server-ui" / "static" / "app.js"
+CHAT_WRITE_JS = ROOT / "web" / "server-ui" / "static" / "chat-write.js"
 SERVER_CSS = ROOT / "web" / "server-ui" / "static" / "admin.css"
 CONVERSATION_CSS = ROOT / "web" / "server-ui" / "static" / "conversations.css"
 SERVER_NGINX = ROOT / "web" / "server-ui" / "nginx.conf"
@@ -73,7 +74,7 @@ class PublicUIDeliveryContractTests(unittest.TestCase):
         self.assertIn("location = /sumeme-health", nginx)
         self.assertIn("COPY static /usr/share/nginx/html/static", dockerfile)
 
-    def test_conversation_browser_reads_lobehub_without_mutating_it(self) -> None:
+    def test_conversation_browser_reads_lobehub_safely(self) -> None:
         html = SERVER_UI.read_text(encoding="utf-8")
         javascript = SERVER_JS.read_text(encoding="utf-8")
         conversation_css = CONVERSATION_CSS.read_text(encoding="utf-8")
@@ -82,7 +83,6 @@ class PublicUIDeliveryContractTests(unittest.TestCase):
         self.assertIn('id="topicList"', html)
         self.assertIn('id="topicSearchInput"', html)
         self.assertIn('id="messageList"', html)
-        self.assertIn("第一阶段 · 安全只读", html)
         self.assertIn("topic.queryTopics", javascript)
         self.assertIn("topic.getTopicTranscript", javascript)
         self.assertIn("withLastMessage: true", javascript)
@@ -91,12 +91,39 @@ class PublicUIDeliveryContractTests(unittest.TestCase):
         self.assertNotIn("message.createMessage", javascript)
         self.assertNotIn("topic.createTopic", javascript)
         self.assertNotIn("topic.batchDelete", javascript)
+        self.assertIn("textContent = contentToText", javascript)
         self.assertIn(".chat-workspace", conversation_css)
         self.assertIn(".conversation-item.active", conversation_css)
         self.assertIn(".message-row.user", conversation_css)
         self.assertIn("/assets/conversation-style", nginx)
         self.assertIn("conversations.css", nginx)
         self.assertIn("default_type text/css", nginx)
+
+    def test_message_send_uses_the_native_lobehub_agent_runtime(self) -> None:
+        javascript = CHAT_WRITE_JS.read_text(encoding="utf-8")
+        conversation_css = CONVERSATION_CSS.read_text(encoding="utf-8")
+        nginx = SERVER_NGINX.read_text(encoding="utf-8")
+
+        self.assertIn("agent.queryAgents", javascript)
+        self.assertIn("aiAgent.execAgent", javascript)
+        self.assertIn("aiAgent.getOperationStatus", javascript)
+        self.assertIn("topic.getTopicTranscript", javascript)
+        self.assertIn("autoStart: true", javascript)
+        self.assertIn("trigger: 'chat'", javascript)
+        self.assertIn("appContext", javascript)
+        self.assertIn("operationId", javascript)
+        self.assertIn("topicId", javascript)
+        self.assertNotIn("message.createMessage", javascript)
+        self.assertNotIn("topic.createTopic", javascript)
+        self.assertNotIn("/webapi/chat/", javascript)
+        self.assertNotIn("approvalMode: 'headless'", javascript)
+        self.assertIn("等待工具审批或人工输入", javascript)
+        self.assertIn(".chat-composer", conversation_css)
+        self.assertIn(".agent-select-field", conversation_css)
+        self.assertIn(".chat-runtime-footer", conversation_css)
+        self.assertIn("/assets/chat-runtime", nginx)
+        self.assertIn("chat-write.js", nginx)
+        self.assertIn("default_type application/javascript", nginx)
 
     def test_health_check_requires_sumeme_frontend(self) -> None:
         health = HEALTH_CHECK.read_text(encoding="utf-8")
