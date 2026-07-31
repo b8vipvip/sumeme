@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-07-31T13:39:19+08:00",
+  "generated_at": "2026-07-31T14:35:23+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "degraded",
   "project_stage": "deployment_behind_main",
@@ -84,7 +84,7 @@
       "name": "sumeme-letta",
       "state": "running",
       "health": "healthy",
-      "status": "Up 3 hours (healthy)",
+      "status": "Up 4 hours (healthy)",
       "critical": false,
       "required": false
     },
@@ -93,7 +93,7 @@
       "name": "sumeme-lobehub",
       "state": "running",
       "health": "",
-      "status": "Up 3 hours",
+      "status": "Up 4 hours",
       "critical": true
     },
     {
@@ -109,7 +109,7 @@
       "name": "sumeme-postgres",
       "state": "running",
       "health": "healthy",
-      "status": "Up 3 hours (healthy)",
+      "status": "Up 4 hours (healthy)",
       "critical": true
     },
     {
@@ -117,7 +117,7 @@
       "name": "sumeme-qdrant",
       "state": "running",
       "health": "healthy",
-      "status": "Up 3 hours (healthy)",
+      "status": "Up 4 hours (healthy)",
       "critical": true
     },
     {
@@ -125,7 +125,7 @@
       "name": "sumeme-redis",
       "state": "running",
       "health": "healthy",
-      "status": "Up 3 hours (healthy)",
+      "status": "Up 4 hours (healthy)",
       "critical": true
     },
     {
@@ -133,7 +133,7 @@
       "name": "sumeme-rustfs",
       "state": "running",
       "health": "healthy",
-      "status": "Up 3 hours (healthy)",
+      "status": "Up 4 hours (healthy)",
       "critical": true
     },
     {
@@ -141,21 +141,21 @@
       "name": "sumeme-searxng",
       "state": "running",
       "health": "",
-      "status": "Up 3 hours",
+      "status": "Up 4 hours",
       "critical": true
     }
   ],
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 35348656128,
-      "free_bytes": 4965740544,
-      "used_percent": 83.9
+      "used_bytes": 35472588800,
+      "free_bytes": 4841807872,
+      "used_percent": 84.1
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1365135360,
-      "used_percent": 65.0
+      "available_bytes": 1429479424,
+      "used_percent": 63.4
     }
   },
   "github": {
@@ -163,7 +163,17 @@
     "source": "github-hosted-runner",
     "default_branch": "main",
     "latest_main_sha": "58d5a70c99b63ddc060bfc3aca9e93794088bb69",
-    "open_pull_requests": [],
+    "open_pull_requests": [
+      {
+        "number": 58,
+        "title": "Replace LobeHub UI with native SuMeMe clients and server console",
+        "draft": false,
+        "head": "agent/native-sumeme-client-server-ui",
+        "base": "main",
+        "updated_at": "2026-07-31T06:34:50Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/pull/58"
+      }
+    ],
     "open_issues": [
       {
         "number": 10,
@@ -186,19 +196,6 @@
     ],
     "recent_workflows": [
       {
-        "name": "Public UI smoke",
-        "display_title": "Public UI smoke",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "skipped",
-        "head_branch": "main",
-        "head_sha": "58d5a70c99b63ddc060bfc3aca9e93794088bb69",
-        "run_number": 11,
-        "created_at": "2026-07-31T05:38:51Z",
-        "updated_at": "2026-07-31T05:38:52Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30607373896"
-      },
-      {
         "name": "Publish project status",
         "display_title": "Publish project status",
         "event": "workflow_run",
@@ -206,49 +203,10 @@
         "conclusion": null,
         "head_branch": "main",
         "head_sha": "58d5a70c99b63ddc060bfc3aca9e93794088bb69",
-        "run_number": 364,
-        "created_at": "2026-07-31T05:38:51Z",
-        "updated_at": "2026-07-31T05:38:54Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30607373876"
-      },
-      {
-        "name": "CI",
-        "display_title": "Merge PR #57: bundle LobeHub UI and add SuMeMe control panel",
-        "event": "push",
-        "status": "in_progress",
-        "conclusion": null,
-        "head_branch": "main",
-        "head_sha": "58d5a70c99b63ddc060bfc3aca9e93794088bb69",
-        "run_number": 662,
-        "created_at": "2026-07-31T05:33:56Z",
-        "updated_at": "2026-07-31T05:34:41Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30607150757"
-      },
-      {
-        "name": "Build Android and Windows clients",
-        "display_title": "Merge PR #57: bundle LobeHub UI and add SuMeMe control panel",
-        "event": "push",
-        "status": "in_progress",
-        "conclusion": null,
-        "head_branch": "main",
-        "head_sha": "58d5a70c99b63ddc060bfc3aca9e93794088bb69",
-        "run_number": 13,
-        "created_at": "2026-07-31T05:33:56Z",
-        "updated_at": "2026-07-31T05:35:57Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30607150410"
-      },
-      {
-        "name": "Client source check",
-        "display_title": "Merge PR #57: bundle LobeHub UI and add SuMeMe control panel",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "58d5a70c99b63ddc060bfc3aca9e93794088bb69",
-        "run_number": 5,
-        "created_at": "2026-07-31T05:33:56Z",
-        "updated_at": "2026-07-31T05:35:31Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30607150409"
+        "run_number": 365,
+        "created_at": "2026-07-31T06:35:00Z",
+        "updated_at": "2026-07-31T06:35:03Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30610081474"
       },
       {
         "name": "Public UI smoke",
@@ -257,50 +215,63 @@
         "status": "completed",
         "conclusion": "skipped",
         "head_branch": "main",
-        "head_sha": "15a409989390b3d94ef52435f3c6135429410cb4",
+        "head_sha": "58d5a70c99b63ddc060bfc3aca9e93794088bb69",
+        "run_number": 16,
+        "created_at": "2026-07-31T06:35:00Z",
+        "updated_at": "2026-07-31T06:35:01Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30610081455"
+      },
+      {
+        "name": "Public UI smoke",
+        "display_title": "Public UI smoke",
+        "event": "workflow_run",
+        "status": "in_progress",
+        "conclusion": null,
+        "head_branch": "main",
+        "head_sha": "58d5a70c99b63ddc060bfc3aca9e93794088bb69",
+        "run_number": 15,
+        "created_at": "2026-07-31T06:34:55Z",
+        "updated_at": "2026-07-31T06:34:56Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30610077790"
+      },
+      {
+        "name": "CI",
+        "display_title": "Replace LobeHub UI with native SuMeMe clients and server console",
+        "event": "pull_request",
+        "status": "in_progress",
+        "conclusion": null,
+        "head_branch": "agent/native-sumeme-client-server-ui",
+        "head_sha": "5344986a9d5d7e2e215f2e1e47dc95575f55cbce",
+        "run_number": 667,
+        "created_at": "2026-07-31T06:34:54Z",
+        "updated_at": "2026-07-31T06:34:57Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30610076687"
+      },
+      {
+        "name": "Client source check",
+        "display_title": "Replace LobeHub UI with native SuMeMe clients and server console",
+        "event": "pull_request",
+        "status": "in_progress",
+        "conclusion": null,
+        "head_branch": "agent/native-sumeme-client-server-ui",
+        "head_sha": "5344986a9d5d7e2e215f2e1e47dc95575f55cbce",
         "run_number": 10,
-        "created_at": "2026-07-31T05:29:53Z",
-        "updated_at": "2026-07-31T05:29:53Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30606959698"
-      },
-      {
-        "name": "CI",
-        "display_title": "Bundle LobeHub UI into clients and add SuMeMe control panel",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/bundled-lobehub-ui-control-panel",
-        "head_sha": "fd2e74c52927286c5023f91fc779288432464210",
-        "run_number": 661,
-        "created_at": "2026-07-31T05:29:01Z",
-        "updated_at": "2026-07-31T05:29:51Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30606922341"
+        "created_at": "2026-07-31T06:34:54Z",
+        "updated_at": "2026-07-31T06:35:03Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30610076387"
       },
       {
         "name": "Build Android and Windows clients",
-        "display_title": "Bundle LobeHub UI into clients and add SuMeMe control panel",
+        "display_title": "Replace LobeHub UI with native SuMeMe clients and server console",
         "event": "pull_request",
         "status": "in_progress",
         "conclusion": null,
-        "head_branch": "agent/bundled-lobehub-ui-control-panel",
-        "head_sha": "fd2e74c52927286c5023f91fc779288432464210",
-        "run_number": 12,
-        "created_at": "2026-07-31T05:29:01Z",
-        "updated_at": "2026-07-31T05:31:09Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30606921997"
-      },
-      {
-        "name": "Client source check",
-        "display_title": "Bundle LobeHub UI into clients and add SuMeMe control panel",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/bundled-lobehub-ui-control-panel",
-        "head_sha": "fd2e74c52927286c5023f91fc779288432464210",
-        "run_number": 4,
-        "created_at": "2026-07-31T05:29:01Z",
-        "updated_at": "2026-07-31T05:30:03Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30606921993"
+        "head_branch": "agent/native-sumeme-client-server-ui",
+        "head_sha": "5344986a9d5d7e2e215f2e1e47dc95575f55cbce",
+        "run_number": 18,
+        "created_at": "2026-07-31T06:34:54Z",
+        "updated_at": "2026-07-31T06:34:59Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30610076383"
       },
       {
         "name": "Public UI smoke",
@@ -309,37 +280,76 @@
         "status": "completed",
         "conclusion": "skipped",
         "head_branch": "main",
-        "head_sha": "15a409989390b3d94ef52435f3c6135429410cb4",
-        "run_number": 9,
-        "created_at": "2026-07-31T05:26:45Z",
-        "updated_at": "2026-07-31T05:26:45Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30606819382"
+        "head_sha": "58d5a70c99b63ddc060bfc3aca9e93794088bb69",
+        "run_number": 14,
+        "created_at": "2026-07-31T06:34:25Z",
+        "updated_at": "2026-07-31T06:34:32Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30610053245"
       },
       {
         "name": "CI",
-        "display_title": "Bundle LobeHub UI into clients and add SuMeMe control panel",
+        "display_title": "Replace LobeHub UI with native SuMeMe clients and server console",
         "event": "pull_request",
         "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/bundled-lobehub-ui-control-panel",
-        "head_sha": "1217a664750683b3c35de700e3c0775424f234ee",
-        "run_number": 660,
-        "created_at": "2026-07-31T05:26:09Z",
-        "updated_at": "2026-07-31T05:26:42Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30606792251"
+        "conclusion": "failure",
+        "head_branch": "agent/native-sumeme-client-server-ui",
+        "head_sha": "fed9b81fcccf4c62a6eb24d59b81a9dd4aeeaa19",
+        "run_number": 666,
+        "created_at": "2026-07-31T06:34:15Z",
+        "updated_at": "2026-07-31T06:34:53Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30610044791"
+      },
+      {
+        "name": "Client source check",
+        "display_title": "Replace LobeHub UI with native SuMeMe clients and server console",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_branch": "agent/native-sumeme-client-server-ui",
+        "head_sha": "fed9b81fcccf4c62a6eb24d59b81a9dd4aeeaa19",
+        "run_number": 9,
+        "created_at": "2026-07-31T06:34:14Z",
+        "updated_at": "2026-07-31T06:34:54Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30610044522"
       },
       {
         "name": "Build Android and Windows clients",
-        "display_title": "Bundle LobeHub UI into clients and add SuMeMe control panel",
+        "display_title": "Replace LobeHub UI with native SuMeMe clients and server console",
+        "event": "pull_request",
+        "status": "in_progress",
+        "conclusion": null,
+        "head_branch": "agent/native-sumeme-client-server-ui",
+        "head_sha": "fed9b81fcccf4c62a6eb24d59b81a9dd4aeeaa19",
+        "run_number": 17,
+        "created_at": "2026-07-31T06:34:14Z",
+        "updated_at": "2026-07-31T06:34:17Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30610044487"
+      },
+      {
+        "name": "CI",
+        "display_title": "Replace LobeHub UI with native SuMeMe clients and server console",
         "event": "pull_request",
         "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/bundled-lobehub-ui-control-panel",
-        "head_sha": "1217a664750683b3c35de700e3c0775424f234ee",
-        "run_number": 11,
-        "created_at": "2026-07-31T05:26:08Z",
-        "updated_at": "2026-07-31T05:34:34Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30606791998"
+        "conclusion": "failure",
+        "head_branch": "agent/native-sumeme-client-server-ui",
+        "head_sha": "332a96e6bef0b68bc310970d20cde66a552c12b7",
+        "run_number": 665,
+        "created_at": "2026-07-31T06:33:42Z",
+        "updated_at": "2026-07-31T06:34:23Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30610016990"
+      },
+      {
+        "name": "Client source check",
+        "display_title": "Replace LobeHub UI with native SuMeMe clients and server console",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_branch": "agent/native-sumeme-client-server-ui",
+        "head_sha": "332a96e6bef0b68bc310970d20cde66a552c12b7",
+        "run_number": 8,
+        "created_at": "2026-07-31T06:33:42Z",
+        "updated_at": "2026-07-31T06:34:19Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30610016690"
       }
     ]
   },
@@ -357,7 +367,7 @@
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-31T13:39:19+08:00"
+    "generated_at": "2026-07-31T14:35:23+08:00"
   },
   "components": {
     "letta": {
@@ -425,7 +435,7 @@
         "service_scope_verification_failed"
       ],
       "deployment_classification": "external_degraded",
-      "age_seconds_at_publish": 8992,
+      "age_seconds_at_publish": 12356,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }

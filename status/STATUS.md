@@ -1,12 +1,12 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-31T13:39:19+08:00
+- **采集时间：** 2026-07-31T14:35:23+08:00
 - **总体状态：** `degraded`
 - **开发阶段：** `deployment_behind_main`
 - **线上版本：** `8077ba1627b5cb68c306cb762c636e6742a42701`
 - **main 最新版本：** `58d5a70c99b63ddc060bfc3aca9e93794088bb69`
 - **线上与 main 同步：** 否
-- **开放 PR：** 0
+- **开放 PR：** 1
 - **开放 Issue：** 3
 
 ## 需要关注
@@ -17,39 +17,39 @@
 
 - 本地网关：`ok`
 - 公网入口：`ok`
-- 磁盘使用：`83.9%`，剩余 4.6 GiB
-- 内存使用：`65.0%`，可用 1.3 GiB
+- 磁盘使用：`84.1%`，剩余 4.5 GiB
+- 内存使用：`63.4%`，可用 1.3 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
 | ai-provider-proxy | running | healthy | Up 3 hours (healthy) |
-| letta | running | healthy | Up 3 hours (healthy) |
-| lobe | running | - | Up 3 hours |
+| letta | running | healthy | Up 4 hours (healthy) |
+| lobe | running | - | Up 4 hours |
 | memory-gateway | running | healthy | Up 3 hours (healthy) |
-| postgresql | running | healthy | Up 3 hours (healthy) |
-| qdrant | running | healthy | Up 3 hours (healthy) |
-| redis | running | healthy | Up 3 hours (healthy) |
-| rustfs | running | healthy | Up 3 hours (healthy) |
-| searxng | running | - | Up 3 hours |
+| postgresql | running | healthy | Up 4 hours (healthy) |
+| qdrant | running | healthy | Up 4 hours (healthy) |
+| redis | running | healthy | Up 4 hours (healthy) |
+| rustfs | running | healthy | Up 4 hours (healthy) |
+| searxng | running | - | Up 4 hours |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Public UI smoke | skipped | main | 2026-07-31T05:38:52Z |
-| Publish project status | in_progress | main | 2026-07-31T05:38:54Z |
-| CI | in_progress | main | 2026-07-31T05:34:41Z |
-| Build Android and Windows clients | in_progress | main | 2026-07-31T05:35:57Z |
-| Client source check | success | main | 2026-07-31T05:35:31Z |
-| Public UI smoke | skipped | main | 2026-07-31T05:29:53Z |
-| CI | success | agent/bundled-lobehub-ui-control-panel | 2026-07-31T05:29:51Z |
-| Build Android and Windows clients | in_progress | agent/bundled-lobehub-ui-control-panel | 2026-07-31T05:31:09Z |
+| Publish project status | in_progress | main | 2026-07-31T06:35:03Z |
+| Public UI smoke | skipped | main | 2026-07-31T06:35:01Z |
+| Public UI smoke | in_progress | main | 2026-07-31T06:34:56Z |
+| CI | in_progress | agent/native-sumeme-client-server-ui | 2026-07-31T06:34:57Z |
+| Client source check | in_progress | agent/native-sumeme-client-server-ui | 2026-07-31T06:35:03Z |
+| Build Android and Windows clients | in_progress | agent/native-sumeme-client-server-ui | 2026-07-31T06:34:59Z |
+| Public UI smoke | skipped | main | 2026-07-31T06:34:32Z |
+| CI | failure | agent/native-sumeme-client-server-ui | 2026-07-31T06:34:53Z |
 
 ## 开放 PR
 
-- 无
+- #58 Replace LobeHub UI with native SuMeMe clients and server console (`agent/native-sumeme-client-server-ui` → `main`)
 
 ## 开放 Issue
 
