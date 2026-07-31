@@ -1,0 +1,6 @@
+services:
+  lobe:
+    # The FDEX-derived SuMeMe frontend calls LobeHub through APIs and no longer
+    # needs a freshly rebuilt visual SPA. Reuse the already verified production
+    # backend image to avoid a one-hour upstream source build on every UI release.
+    image: sumeme-lobehub:2.2.11-auth-control-1
