@@ -1,0 +1,220 @@
+name: Revalidate blocked stages
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  virtualenv-build:
+    name: Virtualenv compile, test, and image build
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Check out exact candidate
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate memory gateway in isolated virtualenv
+        run: |
+          set -euo pipefail
+          python -m venv "${RUNNER_TEMP}/gateway-venv"
+          "${RUNNER_TEMP}/gateway-venv/bin/pip" install -r services/memory-gateway/requirements-dev.txt
+          cd services/memory-gateway
+          "${RUNNER_TEMP}/gateway-venv/bin/ruff" check app tests
+          PYTHONPATH=. "${RUNNER_TEMP}/gateway-venv/bin/pytest" -q
+          "${RUNNER_TEMP}/gateway-venv/bin/python" -m compileall app
+
+      - name: Validate provider proxy in isolated virtualenv
+        run: |
+          set -euo pipefail
+          python -m venv "${RUNNER_TEMP}/proxy-venv"
+          "${RUNNER_TEMP}/proxy-venv/bin/pip" install -r services/ai-provider-proxy/requirements-dev.txt
+          cd services/ai-provider-proxy
+          "${RUNNER_TEMP}/proxy-venv/bin/ruff" check app tests
+          PYTHONPATH=. "${RUNNER_TEMP}/proxy-venv/bin/pytest" -q
+          "${RUNNER_TEMP}/proxy-venv/bin/python" -m compileall app
+
+      - name: Validate operational scripts
+        run: |
+          set -euo pipefail
+          python -m compileall scripts tests
+          python -m unittest discover -s tests -v
+          bash -n scripts/*.sh
+          DEPLOY_DIR="${RUNNER_TEMP}/disk-check" \
+            DISK_WARN_PERCENT=99 DISK_FAIL_PERCENT=100 DISK_MIN_FREE_GIB=0 \
+            bash scripts/preflight-disk.sh --json | python -m json.tool >/dev/null
+          DEPLOY_DIR="${RUNNER_TEMP}/cleanup-check" bash scripts/cleanup-runtime.sh --dry-run
+
+      - name: Validate Compose and build both local runtime images
+        run: |
+          set -euo pipefail
+          cp .env.example .env
+          docker compose config >/dev/null
+          docker build -t sumeme-memory-gateway:revalidate services/memory-gateway
+          docker build -t sumeme-ai-provider-proxy:revalidate services/ai-provider-proxy
+
+  production-recovery-and-smoke:
+    name: GHS recover and rerun blocked production acceptance
+    needs: virtualenv-build
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Check out trusted candidate scripts
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Configure pinned SSH trust
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SUMEME_SSH_PRIVATE_KEY }}
+          SSH_HOST_KEY: ${{ secrets.SUMEME_SSH_HOST_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "${SSH_PRIVATE_KEY}"
+          test -n "${SSH_HOST_KEY}"
+          install -m 700 -d "${HOME}/.ssh"
+          printf '%s\n' "${SSH_PRIVATE_KEY}" > "${HOME}/.ssh/id_ed25519"
+          chmod 600 "${HOME}/.ssh/id_ed25519"
+          printf '%s\n' "${SSH_HOST_KEY}" > "${HOME}/.ssh/known_hosts"
+          chmod 600 "${HOME}/.ssh/known_hosts"
+
+      - name: Upload current trusted validation scripts
+        env:
+          SSH_HOST: ${{ vars.SUMEME_VPS_HOST }}
+          SSH_PORT: ${{ vars.SUMEME_VPS_PORT || '22' }}
+          SSH_USER: ${{ vars.SUMEME_VPS_USER || 'sumeme-runner' }}
+        run: |
+          set -euo pipefail
+          test -n "${SSH_HOST}"
+          test -n "${SSH_PORT}"
+          test -n "${SSH_USER}"
+          remote_dir="/tmp/sumeme-revalidate-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          printf 'REMOTE_DIR=%s\n' "${remote_dir}" >> "${GITHUB_ENV}"
+          ssh -i "${HOME}/.ssh/id_ed25519" -p "${SSH_PORT}" \
+            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            -o UserKnownHostsFile="${HOME}/.ssh/known_hosts" \
+            "${SSH_USER}@${SSH_HOST}" \
+            "rm -rf '${remote_dir}' && install -d -m 700 '${remote_dir}'"
+          scp -i "${HOME}/.ssh/id_ed25519" -P "${SSH_PORT}" \
+            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            -o UserKnownHostsFile="${HOME}/.ssh/known_hosts" \
+            scripts/health-check.sh \
+            scripts/preflight-disk.sh \
+            scripts/cleanup-runtime.sh \
+            scripts/smoke-private-object.sh \
+            scripts/smoke-test.sh \
+            "${SSH_USER}@${SSH_HOST}:${remote_dir}/"
+
+      - name: Recover production and rerun relay, memory, and private-object acceptance
+        env:
+          SSH_HOST: ${{ vars.SUMEME_VPS_HOST }}
+          SSH_PORT: ${{ vars.SUMEME_VPS_PORT || '22' }}
+          SSH_USER: ${{ vars.SUMEME_VPS_USER || 'sumeme-runner' }}
+        run: |
+          set -euo pipefail
+          ssh -i "${HOME}/.ssh/id_ed25519" -p "${SSH_PORT}" \
+            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            -o UserKnownHostsFile="${HOME}/.ssh/known_hosts" \
+            "${SSH_USER}@${SSH_HOST}" \
+            "REMOTE_DIR='${REMOTE_DIR}' DEPLOY_DIR=/opt/sumeme bash -s" <<'REMOTE'
+          set -Eeuo pipefail
+          cd "${DEPLOY_DIR}"
+          test -f .env
+          docker compose config >/dev/null
+
+          echo "== Disk protection revalidation =="
+          set +e
+          disk_json="$(DEPLOY_DIR="${DEPLOY_DIR}" bash "${REMOTE_DIR}/preflight-disk.sh" --json)"
+          disk_status=$?
+          set -e
+          printf '%s\n' "${disk_json}"
+          disk_level="$(python3 -c 'import json,sys; print(json.loads(sys.stdin.read()).get("level", "unknown"))' <<<"${disk_json}")"
+          if [[ "${disk_level}" == "warning" || "${disk_status}" -eq 2 ]]; then
+            DEPLOY_DIR="${DEPLOY_DIR}" bash "${REMOTE_DIR}/cleanup-runtime.sh"
+            DEPLOY_DIR="${DEPLOY_DIR}" bash "${REMOTE_DIR}/preflight-disk.sh" --json
+          elif [[ "${disk_status}" -ne 0 ]]; then
+            exit "${disk_status}"
+          fi
+
+          echo "== Production container recovery =="
+          docker compose up -d --remove-orphans
+          if ! DEPLOY_DIR="${DEPLOY_DIR}" bash "${REMOTE_DIR}/health-check.sh"; then
+            echo "Existing images were not healthy; rebuilding local runtime services."
+            docker compose build memory-gateway ai-provider-proxy
+            docker compose up -d --remove-orphans
+            DEPLOY_DIR="${DEPLOY_DIR}" bash "${REMOTE_DIR}/health-check.sh"
+          fi
+
+          echo "== Sanitized deployment state =="
+          printf 'current_sha=%s\n' "$(cat .deploy/current_sha 2>/dev/null || echo unknown)"
+          printf 'deploying_sha=%s\n' "$(cat .deploy/deploying_sha 2>/dev/null || echo empty)"
+          docker compose ps --format json | python3 -c '
+          import json, sys
+          rows=[]
+          for line in sys.stdin:
+              line=line.strip()
+              if not line: continue
+              item=json.loads(line)
+              rows.append({"service": item.get("Service"), "state": item.get("State"), "health": item.get("Health")})
+          print(json.dumps(rows, ensure_ascii=False, sort_keys=True))
+          '
+
+          private_report="${REMOTE_DIR}/private-object.json"
+          application_report="${REMOTE_DIR}/application.json"
+          set +e
+          PRIVATE_OBJECT_SMOKE_OUTPUT_PATH="${private_report}" \
+            DEPLOY_DIR="${DEPLOY_DIR}" bash "${REMOTE_DIR}/smoke-private-object.sh"
+          private_status=$?
+          SMOKE_OUTPUT_PATH="${application_report}" \
+            DEPLOY_DIR="${DEPLOY_DIR}" bash "${REMOTE_DIR}/smoke-test.sh"
+          application_status=$?
+          set -e
+
+          python3 - "${private_report}" "${application_report}" <<'PY'
+          import json, sys
+          output={}
+          for name, path in (("private_object", sys.argv[1]), ("application", sys.argv[2])):
+              try:
+                  value=json.load(open(path, encoding="utf-8"))
+              except Exception:
+                  output[name]={"available": False}
+                  continue
+              output[name]={
+                  "available": True,
+                  "overall": value.get("overall"),
+                  "deployment_gate": value.get("deployment_gate"),
+                  "scope": value.get("scope") or value.get("test_scope"),
+                  "checks": value.get("checks"),
+                  "write_components": value.get("write_components"),
+                  "recall_components": value.get("recall_components"),
+                  "error_codes": value.get("error_codes"),
+                  "duration_seconds": value.get("duration_seconds"),
+              }
+          print(json.dumps(output, ensure_ascii=False, indent=2, sort_keys=True))
+          PY
+
+          test "${private_status}" -eq 0
+          test "${application_status}" -eq 0
+          REMOTE
+
+      - name: Remove remote validation bundle
+        if: always()
+        env:
+          SSH_HOST: ${{ vars.SUMEME_VPS_HOST }}
+          SSH_PORT: ${{ vars.SUMEME_VPS_PORT || '22' }}
+          SSH_USER: ${{ vars.SUMEME_VPS_USER || 'sumeme-runner' }}
+        run: |
+          set +e
+          if [[ -n "${REMOTE_DIR:-}" ]]; then
+            ssh -i "${HOME}/.ssh/id_ed25519" -p "${SSH_PORT}" \
+              -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+              -o UserKnownHostsFile="${HOME}/.ssh/known_hosts" \
+              "${SSH_USER}@${SSH_HOST}" "rm -rf '${REMOTE_DIR}'"
+          fi
