@@ -9,6 +9,7 @@ from pathlib import Path
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 CLIENT_SOURCE = REPOSITORY_ROOT / "clients" / "sumeme_app"
+CONTROL_PANEL_SOURCE = REPOSITORY_ROOT / "web" / "control-panel"
 
 
 def run(*args: str, cwd: Path | None = None) -> None:
@@ -29,10 +30,26 @@ def replace_required(path: Path, old: str, new: str) -> None:
     path.write_text(content.replace(old, new), encoding="utf-8")
 
 
-def materialize(output: Path) -> None:
+def validate_web_ui(web_ui: Path) -> None:
+    required = (
+        web_ui / "desktop.html",
+        web_ui / "auth.html",
+        web_ui / "bundle.json",
+        web_ui / "_spa",
+        web_ui / "_spa-auth",
+    )
+    missing = [str(path) for path in required if not path.exists()]
+    if missing:
+        raise RuntimeError("Bundled LobeHub UI is incomplete: " + ", ".join(missing))
+
+
+def materialize(output: Path, web_ui: Path) -> None:
     flutter = resolve_flutter()
     if not CLIENT_SOURCE.is_dir():
         raise RuntimeError(f"Missing client source: {CLIENT_SOURCE}")
+    if not CONTROL_PANEL_SOURCE.is_dir():
+        raise RuntimeError(f"Missing control panel source: {CONTROL_PANEL_SOURCE}")
+    validate_web_ui(web_ui)
 
     if output.exists():
         shutil.rmtree(output)
@@ -57,12 +74,17 @@ def materialize(output: Path) -> None:
             shutil.rmtree(destination)
         shutil.copytree(CLIENT_SOURCE / directory, destination)
 
+    assets = output / "assets"
+    shutil.copytree(web_ui, assets / "lobehub")
+    shutil.copytree(CONTROL_PANEL_SOURCE, assets / "control-panel")
+
     manifest = output / "android" / "app" / "src" / "main" / "AndroidManifest.xml"
     replace_required(
         manifest,
         '<manifest xmlns:android="http://schemas.android.com/apk/res/android">',
         '<manifest xmlns:android="http://schemas.android.com/apk/res/android">\n'
-        '    <uses-permission android:name="android.permission.INTERNET" />',
+        '    <uses-permission android:name="android.permission.INTERNET" />\n'
+        '    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />',
     )
     replace_required(manifest, 'android:label="sumeme_app"', 'android:label="SuMeMe"')
 
@@ -84,9 +106,15 @@ def main() -> int:
         description="Generate Android and Windows Flutter platform projects for SuMeMe"
     )
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument(
+        "--web-ui",
+        required=True,
+        type=Path,
+        help="Prepared LobeHub UI directory created by prepare-client-web-ui.py",
+    )
     args = parser.parse_args()
 
-    materialize(args.output.resolve())
+    materialize(args.output.resolve(), args.web_ui.resolve())
     print(args.output.resolve())
     return 0
 
