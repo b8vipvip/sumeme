@@ -32,16 +32,44 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
       - name: Compile public UI smoke test
         run: python -m py_compile scripts/smoke-public-ui.py
-      - name: Run native server UI contract
+      - name: Check frontend JavaScript syntax
+        run: node --check web/server-ui/static/app.js
+      - name: Run frontend and backend-boundary contract
         run: python -m unittest tests.test_public_ui_delivery_contract -v
       - name: Build server UI container
         run: docker build -t sumeme-web:test web/server-ui
-      - name: Start isolated upstream and server UI containers
+      - name: Start isolated LobeHub fixture, gateway and server UI
         run: |
           set -euo pipefail
           docker network create sumeme-ui-test
+          fixture="${RUNNER_TEMP}/lobe-fixture.conf"
+          cat > "${fixture}" <<'EOF'
+          server {
+            listen 80;
+            location = /api/auth/get-session {
+              default_type application/json;
+              return 200 '{"session":null,"user":null}';
+            }
+            location /_spa-auth/ {
+              default_type application/javascript;
+              return 200 'console.log("auth fixture")';
+            }
+            location / {
+              default_type text/plain;
+              return 200 'lobe backend fixture';
+            }
+          }
+          EOF
+          docker run -d \
+            --name lobe \
+            --network sumeme-ui-test \
+            -v "${fixture}:/etc/nginx/conf.d/default.conf:ro" \
+            nginx:1.27-alpine
           docker run -d \
             --name memory-gateway \
             --network sumeme-ui-test \
@@ -51,7 +79,7 @@ jobs:
             --network sumeme-ui-test \
             -p 127.0.0.1:18080:80 \
             sumeme-web:test
-      - name: Verify container health and native UI markers
+      - name: Verify frontend, login route and LobeHub proxy
         run: |
           set -euo pipefail
           ready=false
@@ -68,19 +96,29 @@ jobs:
           fi
           curl --fail --silent http://127.0.0.1:18080/healthz | python -m json.tool >/dev/null
           page="$(curl --fail --silent http://127.0.0.1:18080/)"
+          signin="$(curl --fail --silent 'http://127.0.0.1:18080/signin?callbackUrl=%2F')"
           grep -F '<title>SuMeMe · 服务端</title>' <<<"${page}"
           grep -F '服务端管理中心' <<<"${page}"
-          if grep -F '/_spa' <<<"${page}"; then
-            echo 'Legacy SPA asset reference found in native server UI.' >&2
+          grep -F 'SUMEME OPERATIONS CENTER' <<<"${page}"
+          grep -F '登录 SuMeMe' <<<"${signin}"
+          curl --fail --silent http://127.0.0.1:18080/static/admin.css >/dev/null
+          curl --fail --silent http://127.0.0.1:18080/static/app.js >/dev/null
+          session="$(curl --fail --silent http://127.0.0.1:18080/api/auth/get-session)"
+          grep -F '"session":null' <<<"${session}"
+          asset="$(curl --fail --silent http://127.0.0.1:18080/_spa-auth/assets/probe.js)"
+          grep -F 'auth fixture' <<<"${asset}"
+          if grep -F '<script src="/_spa-auth/' <<<"${page}"; then
+            echo 'Visible SuMeMe page still depends on the old auth SPA.' >&2
             exit 1
           fi
       - name: Print container logs on failure
         if: failure()
         run: |
           docker logs sumeme-web-test || true
+          docker logs lobe || true
           docker logs memory-gateway || true
       - name: Stop test containers
         if: always()
         run: |
-          docker rm -f sumeme-web-test memory-gateway >/dev/null 2>&1 || true
+          docker rm -f sumeme-web-test lobe memory-gateway >/dev/null 2>&1 || true
           docker network rm sumeme-ui-test >/dev/null 2>&1 || true
