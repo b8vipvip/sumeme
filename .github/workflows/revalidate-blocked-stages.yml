@@ -13,11 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
-      - name: Check out exact candidate
-        uses: actions/checkout@v4
-
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
@@ -67,8 +64,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
-      - name: Check out trusted candidate scripts
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
 
@@ -86,7 +82,7 @@ jobs:
           printf '%s\n' "${SSH_HOST_KEY}" > "${HOME}/.ssh/known_hosts"
           chmod 600 "${HOME}/.ssh/known_hosts"
 
-      - name: Upload current trusted validation scripts
+      - name: Upload trusted validation scripts
         env:
           SSH_HOST: ${{ vars.SUMEME_VPS_HOST }}
           SSH_PORT: ${{ vars.SUMEME_VPS_PORT || '22' }}
@@ -106,14 +102,12 @@ jobs:
           scp -i "${HOME}/.ssh/id_ed25519" -P "${SSH_PORT}" \
             -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
             -o UserKnownHostsFile="${HOME}/.ssh/known_hosts" \
-            scripts/health-check.sh \
-            scripts/preflight-disk.sh \
-            scripts/cleanup-runtime.sh \
-            scripts/smoke-private-object.sh \
+            scripts/health-check.sh scripts/preflight-disk.sh \
+            scripts/cleanup-runtime.sh scripts/smoke-private-object.sh \
             scripts/smoke-test.sh \
             "${SSH_USER}@${SSH_HOST}:${remote_dir}/"
 
-      - name: Recover production and rerun relay, memory, and private-object acceptance
+      - name: Recover production and rerun blocked acceptance
         env:
           SSH_HOST: ${{ vars.SUMEME_VPS_HOST }}
           SSH_PORT: ${{ vars.SUMEME_VPS_PORT || '22' }}
@@ -144,12 +138,24 @@ jobs:
             exit "${disk_status}"
           fi
 
+          recreate_project_containers() {
+            echo "Recreating Compose project containers without removing volumes."
+            mapfile -t ids < <(docker ps -aq --filter label=com.docker.compose.project=sumeme)
+            if (( ${#ids[@]} > 0 )); then
+              docker rm -f "${ids[@]}"
+            fi
+            docker network rm sumeme >/dev/null 2>&1 || true
+            docker compose up -d --remove-orphans
+          }
+
           echo "== Production container recovery =="
-          docker compose up -d --remove-orphans
+          if ! docker compose up -d --remove-orphans; then
+            recreate_project_containers
+          fi
           if ! DEPLOY_DIR="${DEPLOY_DIR}" bash "${REMOTE_DIR}/health-check.sh"; then
             echo "Existing images were not healthy; rebuilding local runtime services."
             docker compose build memory-gateway ai-provider-proxy
-            docker compose up -d --remove-orphans
+            recreate_project_containers
             DEPLOY_DIR="${DEPLOY_DIR}" bash "${REMOTE_DIR}/health-check.sh"
           fi
 
@@ -161,9 +167,9 @@ jobs:
           rows=[]
           for line in sys.stdin:
               line=line.strip()
-              if not line: continue
-              item=json.loads(line)
-              rows.append({"service": item.get("Service"), "state": item.get("State"), "health": item.get("Health")})
+              if line:
+                  item=json.loads(line)
+                  rows.append({"service": item.get("Service"), "state": item.get("State"), "health": item.get("Health")})
           print(json.dumps(rows, ensure_ascii=False, sort_keys=True))
           '
 
@@ -183,7 +189,8 @@ jobs:
           output={}
           for name, path in (("private_object", sys.argv[1]), ("application", sys.argv[2])):
               try:
-                  value=json.load(open(path, encoding="utf-8"))
+                  with open(path, encoding="utf-8") as handle:
+                      value=json.load(handle)
               except Exception:
                   output[name]={"available": False}
                   continue
