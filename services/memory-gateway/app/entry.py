@@ -19,6 +19,17 @@ object_settings = get_object_settings()
 _base_lifespan = app.router.lifespan_context
 
 
+def _lobe_database_url() -> str:
+    configured = os.getenv("LOBE_DATABASE_URL", "").strip()
+    if configured:
+        return configured
+    password = os.getenv("POSTGRES_PASSWORD", "").strip()
+    database = os.getenv("LOBE_DB_NAME", "").strip()
+    if not password or not database:
+        return ""
+    return f"postgresql://postgres:{password}@postgresql:5432/{database}"
+
+
 @asynccontextmanager
 async def application_lifespan(application):
     cleanup_task: asyncio.Task[None] | None = None
@@ -29,7 +40,7 @@ async def application_lifespan(application):
         application.state.admin_store = AdminStore(
             os.getenv("SUMEME_ADMIN_DB_PATH", "/data/gateway/admin.sqlite3"),
             master_secret=master_secret,
-            lobe_database_url=os.getenv("LOBE_DATABASE_URL", ""),
+            lobe_database_url=_lobe_database_url(),
         )
         await application.state.admin_store.initialize()
 
