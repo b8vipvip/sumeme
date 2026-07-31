@@ -172,6 +172,8 @@ class BundledLobeHubServer {
       'content-length',
       'transfer-encoding',
       'accept-encoding',
+      'origin',
+      'referer',
     };
     downstream.headers.forEach((String name, List<String> values) {
       if (skippedRequestHeaders.contains(name.toLowerCase())) {
@@ -181,6 +183,14 @@ class BundledLobeHubServer {
         upstream.headers.add(name, value);
       }
     });
+
+    if (downstream.headers.value('origin') != null) {
+      upstream.headers.set('origin', remoteOrigin.origin);
+    }
+    final String? referer = downstream.headers.value('referer');
+    if (referer != null) {
+      upstream.headers.set('referer', _rewriteRequestUrl(referer));
+    }
     upstream.headers.set('x-sumeme-client', 'bundled-lobehub');
     await upstream.addStream(downstream);
 
@@ -225,6 +235,18 @@ class BundledLobeHubServer {
     await downstream.response.close();
   }
 
+  String _rewriteRequestUrl(String rawUrl) {
+    final Uri? value = Uri.tryParse(rawUrl);
+    if (value == null || value.origin != origin.origin) {
+      return rawUrl;
+    }
+    return remoteOrigin.replace(
+      path: value.path,
+      query: value.hasQuery ? value.query : null,
+      fragment: value.hasFragment ? value.fragment : null,
+    ).toString();
+  }
+
   String _rewriteLocation(String rawLocation) {
     final Uri? location = Uri.tryParse(rawLocation);
     if (location == null) {
@@ -232,12 +254,16 @@ class BundledLobeHubServer {
     }
 
     if (location.hasScheme && location.origin == remoteOrigin.origin) {
-      final String relative = StringBuffer()
-        ..write(location.path.isEmpty ? '/' : location.path)
-        ..write(location.hasQuery ? '?${location.query}' : '')
-        ..write(location.hasFragment ? '#${location.fragment}' : '')
-        .toString();
-      return origin.resolve(relative).toString();
+      final StringBuffer relative = StringBuffer(
+        location.path.isEmpty ? '/' : location.path,
+      );
+      if (location.hasQuery) {
+        relative.write('?${location.query}');
+      }
+      if (location.hasFragment) {
+        relative.write('#${location.fragment}');
+      }
+      return origin.resolve(relative.toString()).toString();
     }
 
     if (!location.hasScheme && rawLocation.startsWith('/')) {
