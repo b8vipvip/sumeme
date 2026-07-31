@@ -42,6 +42,20 @@ class AdminClientBoundaryTest(unittest.TestCase):
         self.assertIn("location ^~ /api/client/", nginx)
         self.assertIn("/admin/index.html", nginx)
 
+    def test_initial_admin_requires_server_bootstrap_secret(self) -> None:
+        entry = (ROOT / "services/memory-gateway/app/entry.py").read_text(
+            encoding="utf-8"
+        )
+        frontend = (ROOT / "web/server-ui/static/client-branding.js").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("SUMEME_ADMIN_BOOTSTRAP_TOKEN", entry)
+        self.assertIn("x-sumeme-bootstrap-token", entry)
+        self.assertIn("hmac.compare_digest", entry)
+        self.assertIn("X-SuMeMe-Bootstrap-Token", frontend)
+        self.assertIn("一次性初始化密钥", frontend)
+        self.assertIn("location.pathname.startsWith('/admin')", frontend)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,8 +1,12 @@
 from __future__ import annotations
 
 import asyncio
+import hmac
 import os
 from contextlib import asynccontextmanager, suppress
+
+from fastapi import Request
+from fastapi.responses import JSONResponse
 
 from .admin_api import build_admin_router
 from .admin_store import AdminStore
@@ -28,6 +32,25 @@ def _lobe_database_url() -> str:
     if not password or not database:
         return ""
     return f"postgresql://postgres:{password}@postgresql:5432/{database}"
+
+
+def _admin_bootstrap_secret() -> str:
+    return os.getenv("SUMEME_ADMIN_BOOTSTRAP_TOKEN", "").strip() or (
+        settings.gateway_admin_token.get_secret_value().strip()
+    )
+
+
+@app.middleware("http")
+async def protect_admin_bootstrap(request: Request, call_next):
+    if request.method == "POST" and request.url.path == "/api/admin/bootstrap":
+        expected = _admin_bootstrap_secret()
+        supplied = request.headers.get("x-sumeme-bootstrap-token", "").strip()
+        if not expected or not supplied or not hmac.compare_digest(supplied, expected):
+            return JSONResponse(
+                status_code=403,
+                content={"detail": "invalid_admin_bootstrap_token"},
+            )
+    return await call_next(request)
 
 
 @asynccontextmanager
