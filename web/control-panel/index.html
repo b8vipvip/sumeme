@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light dark" />
+  <title>SuMeMe 控制台</title>
+  <style>
+    :root {
+      --bg: #f5f6fa;
+      --panel: rgba(255, 255, 255, 0.92);
+      --panel-solid: #ffffff;
+      --text: #171923;
+      --muted: #6b7280;
+      --line: #e7e9f0;
+      --accent: #6d5dfc;
+      --accent-soft: #efedff;
+      --good: #169c6b;
+      --good-soft: #e8f8f1;
+      --warn: #b76b00;
+      --warn-soft: #fff4df;
+      --bad: #d14343;
+      --bad-soft: #ffebeb;
+      --shadow: 0 18px 50px rgba(28, 31, 48, 0.08);
+      --radius: 18px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #101116;
+        --panel: rgba(25, 27, 35, 0.94);
+        --panel-solid: #191b23;
+        --text: #f4f5f8;
+        --muted: #9da3b2;
+        --line: #303440;
+        --accent: #968aff;
+        --accent-soft: #292443;
+        --good: #53d5a3;
+        --good-soft: #163a2e;
+        --warn: #ffc56b;
+        --warn-soft: #432f12;
+        --bad: #ff8585;
+        --bad-soft: #482323;
+        --shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(109, 93, 252, 0.12), transparent 32rem),
+        radial-gradient(circle at 100% 35%, rgba(61, 191, 160, 0.08), transparent 30rem),
+        var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", "Microsoft YaHei", sans-serif;
+    }
+
+    button, a { font: inherit; }
+    .app { display: grid; grid-template-columns: 238px minmax(0, 1fr); min-height: 100vh; }
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 26px 18px;
+      border-right: 1px solid var(--line);
+      background: color-mix(in srgb, var(--panel-solid) 88%, transparent);
+      backdrop-filter: blur(18px);
+    }
+
+    .brand { display: flex; align-items: center; gap: 12px; padding: 0 8px 24px; }
+    .brand-mark {
+      width: 42px; height: 42px; border-radius: 14px; display: grid; place-items: center;
+      color: white; font-weight: 800; letter-spacing: -1px;
+      background: linear-gradient(135deg, #8375ff, #5745e9 60%, #3c2ab9);
+      box-shadow: 0 10px 28px rgba(92, 73, 232, 0.32);
+    }
+    .brand strong { display: block; font-size: 16px; }
+    .brand small { color: var(--muted); }
+
+    .nav-label { margin: 12px 10px 8px; color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: .12em; }
+    .nav-item {
+      width: 100%; border: 0; text-align: left; cursor: pointer;
+      display: flex; gap: 11px; align-items: center; padding: 11px 12px; margin: 4px 0;
+      color: var(--muted); background: transparent; border-radius: 12px;
+    }
+    .nav-item.active { color: var(--accent); background: var(--accent-soft); font-weight: 700; }
+    .nav-icon { width: 22px; text-align: center; }
+    .sidebar-note {
+      position: absolute; left: 18px; right: 18px; bottom: 22px;
+      padding: 14px; border: 1px solid var(--line); border-radius: 14px;
+      color: var(--muted); font-size: 12px; line-height: 1.55; background: var(--panel);
+    }
+
+    .main { min-width: 0; padding: 30px clamp(22px, 4vw, 58px) 56px; }
+    .topbar { display: flex; justify-content: space-between; gap: 20px; align-items: flex-start; margin-bottom: 26px; }
+    .eyebrow { color: var(--accent); font-weight: 800; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; }
+    h1 { margin: 7px 0 6px; font-size: clamp(28px, 4vw, 42px); letter-spacing: -0.04em; }
+    .subtitle { color: var(--muted); max-width: 660px; line-height: 1.65; }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+    .button {
+      border: 1px solid var(--line); color: var(--text); background: var(--panel-solid);
+      border-radius: 12px; padding: 10px 14px; cursor: pointer; font-weight: 700;
+      box-shadow: 0 4px 14px rgba(0,0,0,.04);
+    }
+    .button.primary { color: white; border-color: transparent; background: var(--accent); }
+    .button:disabled { opacity: .58; cursor: wait; }
+
+    .hero {
+      display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(260px, .7fr); gap: 18px;
+      margin-bottom: 18px;
+    }
+    .card {
+      border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel);
+      box-shadow: var(--shadow); backdrop-filter: blur(18px); overflow: hidden;
+    }
+    .status-card { padding: 24px; position: relative; }
+    .status-card::after {
+      content: ""; position: absolute; width: 190px; height: 190px; right: -65px; top: -72px;
+      border-radius: 50%; background: var(--accent-soft); opacity: .8;
+    }
+    .status-line { position: relative; z-index: 1; display: flex; align-items: center; gap: 12px; }
+    .status-dot { width: 13px; height: 13px; border-radius: 50%; background: var(--muted); box-shadow: 0 0 0 7px color-mix(in srgb, var(--muted) 15%, transparent); }
+    .status-dot.good { background: var(--good); box-shadow: 0 0 0 7px color-mix(in srgb, var(--good) 15%, transparent); }
+    .status-dot.warn { background: var(--warn); box-shadow: 0 0 0 7px color-mix(in srgb, var(--warn) 15%, transparent); }
+    .status-dot.bad { background: var(--bad); box-shadow: 0 0 0 7px color-mix(in srgb, var(--bad) 15%, transparent); }
+    .status-title { font-size: 24px; font-weight: 800; letter-spacing: -.02em; }
+    .status-desc { position: relative; z-index: 1; color: var(--muted); line-height: 1.65; margin: 16px 0 22px; max-width: 650px; }
+    .meta-row { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 8px; }
+    .pill { padding: 7px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-size: 12px; font-weight: 700; }
+
+    .quick-card { padding: 22px; }
+    .quick-card h2, .section-head h2 { margin: 0; font-size: 17px; letter-spacing: -.01em; }
+    .quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 17px; }
+    .quick-metric { padding: 13px; border-radius: 13px; background: color-mix(in srgb, var(--bg) 75%, transparent); }
+    .quick-metric span { display: block; color: var(--muted); font-size: 11px; margin-bottom: 7px; }
+    .quick-metric strong { font-size: 18px; }
+
+    .section { margin-top: 18px; }
+    .section-head { display: flex; align-items: center; justify-content: space-between; padding: 20px 22px 12px; }
+    .section-head p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 14px 22px; text-align: left; border-top: 1px solid var(--line); white-space: nowrap; }
+    th { color: var(--muted); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+    td { font-size: 13px; }
+    .service-name { display: flex; align-items: center; gap: 10px; font-weight: 750; }
+    .service-avatar { width: 31px; height: 31px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; font-size: 11px; font-weight: 850; }
+    .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 9px; border-radius: 999px; font-size: 11px; font-weight: 750; }
+    .badge.good { color: var(--good); background: var(--good-soft); }
+    .badge.warn { color: var(--warn); background: var(--warn-soft); }
+    .badge.bad { color: var(--bad); background: var(--bad-soft); }
+    .badge.neutral { color: var(--muted); background: color-mix(in srgb, var(--muted) 12%, transparent); }
+
+    .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .detail-card { padding: 22px; }
+    .detail-list { margin: 18px 0 0; display: grid; gap: 12px; }
+    .detail-row { display: flex; justify-content: space-between; gap: 20px; padding-bottom: 11px; border-bottom: 1px dashed var(--line); }
+    .detail-row:last-child { border: 0; padding-bottom: 0; }
+    .detail-row span { color: var(--muted); }
+    .detail-row code { max-width: 58%; overflow: hidden; text-overflow: ellipsis; font-size: 12px; }
+    .bar { height: 9px; border-radius: 999px; overflow: hidden; background: color-mix(in srgb, var(--muted) 16%, transparent); margin-top: 10px; }
+    .bar > i { display: block; height: 100%; width: 0; border-radius: inherit; background: linear-gradient(90deg, var(--accent), #43c39b); transition: width .5s ease; }
+
+    .notice { margin-top: 18px; padding: 16px 18px; border-radius: 14px; color: var(--muted); border: 1px solid var(--line); background: var(--panel); line-height: 1.65; }
+    .notice strong { color: var(--text); }
+    .empty { padding: 32px 22px; color: var(--muted); text-align: center; border-top: 1px solid var(--line); }
+    .hidden { display: none !important; }
+    .skeleton { color: transparent; border-radius: 7px; background: linear-gradient(90deg, var(--line), color-mix(in srgb, var(--line) 55%, transparent), var(--line)); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
+    @keyframes shimmer { to { background-position: -200% 0; } }
+
+    @media (max-width: 920px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar { position: relative; height: auto; border-right: 0; border-bottom: 1px solid var(--line); padding: 16px; }
+      .brand { padding-bottom: 8px; }
+      .nav-label, .sidebar-note { display: none; }
+      nav { display: flex; gap: 6px; overflow-x: auto; }
+      .nav-item { width: auto; flex: 0 0 auto; margin: 0; }
+      .main { padding-top: 22px; }
+      .hero, .two-column { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 620px) {
+      .topbar { flex-direction: column; }
+      .actions { justify-content: flex-start; }
+      .quick-grid { grid-template-columns: 1fr 1fr; }
+      th, td { padding-left: 16px; padding-right: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">Su</div>
+        <div><strong>SuMeMe</strong><small>服务控制台</small></div>
+      </div>
+      <div class="nav-label">运维视图</div>
+      <nav>
+        <button class="nav-item active" data-target="overview"><span class="nav-icon">◫</span>总览</button>
+        <button class="nav-item" data-target="services"><span class="nav-icon">◉</span>服务</button>
+        <button class="nav-item" data-target="deployment"><span class="nav-icon">↗</span>部署</button>
+        <button class="nav-item" data-target="memory"><span class="nav-icon">◇</span>记忆系统</button>
+      </nav>
+      <div class="sidebar-note">
+        当前面板为<strong>只读运维界面</strong>。它只展示脱敏健康与发布状态，不向浏览器暴露密钥，也不提供危险的容器重启按钮。
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">Operations Center</div>
+          <h1>服务端控制面板</h1>
+          <div class="subtitle">集中查看 LobeHub、记忆网关、数据库、向量库、对象存储和部署状态。页面既可由服务器提供，也会随桌面客户端一起内置。</div>
+        </div>
+        <div class="actions">
+          <button id="openApp" class="button">打开 LobeHub</button>
+          <button id="refresh" class="button primary">刷新状态</button>
+        </div>
+      </header>
+
+      <section id="overview" class="view">
+        <div class="hero">
+          <article class="card status-card">
+            <div class="status-line"><span id="overallDot" class="status-dot"></span><div id="overallTitle" class="status-title">正在读取状态…</div></div>
+            <p id="overallDescription" class="status-desc">正在连接 SuMeMe 健康接口与脱敏状态快照。</p>
+            <div class="meta-row">
+              <span id="stagePill" class="pill">阶段：读取中</span>
+              <span id="updatedPill" class="pill">更新时间：--</span>
+              <span id="clientPill" class="pill">运行环境：检测中</span>
+            </div>
+          </article>
+          <article class="card quick-card">
+            <h2>关键指标</h2>
+            <div class="quick-grid">
+              <div class="quick-metric"><span>服务在线</span><strong id="serviceCount">--</strong></div>
+              <div class="quick-metric"><span>磁盘使用</span><strong id="diskQuick">--</strong></div>
+              <div class="quick-metric"><span>内存使用</span><strong id="memoryQuick">--</strong></div>
+              <div class="quick-metric"><span>部署同步</span><strong id="syncQuick">--</strong></div>
+            </div>
+          </article>
+        </div>
+
+        <article class="card section" id="services">
+          <div class="section-head"><div><h2>运行服务</h2><p>来自公开脱敏状态快照，不包含容器环境变量和用户数据。</p></div><span id="serviceSummary" class="badge neutral">读取中</span></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>服务</th><th>运行状态</th><th>健康状态</th><th>重要级别</th><th>说明</th></tr></thead>
+              <tbody id="serviceRows"></tbody>
+            </table>
+            <div id="serviceEmpty" class="empty">正在读取服务清单…</div>
+          </div>
+        </article>
+      </section>
+
+      <section id="deployment" class="view section two-column">
+        <article class="card detail-card">
+          <div class="section-head" style="padding:0"><div><h2>发布状态</h2><p>当前代码版本与主分支一致性。</p></div></div>
+          <div class="detail-list">
+            <div class="detail-row"><span>当前 SHA</span><code id="currentSha">--</code></div>
+            <div class="detail-row"><span>上一 SHA</span><code id="previousSha">--</code></div>
+            <div class="detail-row"><span>部署状态</span><strong id="deployState">--</strong></div>
+            <div class="detail-row"><span>最近结果</span><strong id="deployResult">--</strong></div>
+            <div class="detail-row"><span>主分支同步</span><strong id="deploySync">--</strong></div>
+          </div>
+        </article>
+        <article class="card detail-card">
+          <div class="section-head" style="padding:0"><div><h2>系统资源</h2><p>用于判断发布和数据写入风险。</p></div></div>
+          <div class="detail-list">
+            <div><div class="detail-row"><span>磁盘使用率</span><strong id="diskPercent">--</strong></div><div class="bar"><i id="diskBar"></i></div></div>
+            <div><div class="detail-row"><span>可用磁盘</span><strong id="diskFree">--</strong></div></div>
+            <div><div class="detail-row"><span>内存使用率</span><strong id="ramPercent">--</strong></div><div class="bar"><i id="ramBar"></i></div></div>
+            <div><div class="detail-row"><span>可用内存</span><strong id="ramFree">--</strong></div></div>
+          </div>
+        </article>
+      </section>
+
+      <section id="memory" class="view section two-column">
+        <article class="card detail-card">
+          <div class="section-head" style="padding:0"><div><h2>记忆链路</h2><p>网关对外报告的当前配置。</p></div></div>
+          <div class="detail-list">
+            <div class="detail-row"><span>记忆提供器</span><strong id="memoryProvider">--</strong></div>
+            <div class="detail-row"><span>默认存储模式</span><strong id="storageMode">--</strong></div>
+            <div class="detail-row"><span>MemPalace</span><strong id="mempalaceState">--</strong></div>
+            <div class="detail-row"><span>Letta</span><strong id="lettaState">--</strong></div>
+            <div class="detail-row"><span>身份模式</span><strong id="identityMode">--</strong></div>
+          </div>
+        </article>
+        <article class="card detail-card">
+          <div class="section-head" style="padding:0"><div><h2>公开健康接口</h2><p>浏览器能直接验证的最小状态。</p></div></div>
+          <div class="detail-list">
+            <div class="detail-row"><span>HTTP 状态</span><strong id="healthHttp">--</strong></div>
+            <div class="detail-row"><span>对象 API</span><strong id="objectApi">--</strong></div>
+            <div class="detail-row"><span>记忆检查点</span><strong id="checkpointState">--</strong></div>
+            <div class="detail-row"><span>中转地址</span><code id="relayBase">--</code></div>
+          </div>
+        </article>
+      </section>
+
+      <div id="errorNotice" class="notice hidden"><strong>部分状态暂不可用：</strong><span id="errorText"></span></div>
+      <div class="notice"><strong>安全边界：</strong>本面板目前只读。后续如增加重启、升级、备份或回滚操作，会单独加入管理员鉴权、操作确认和审计记录，不会把服务器令牌写进网页或客户端。</div>
+    </main>
+  </div>
+
+  <script>
+    const STATUS_URL = 'https://raw.githubusercontent.com/b8vipvip/sumeme/ops-status/status/status.json';
+    const $ = (id) => document.getElementById(id);
+    const state = { status: null, health: null, client: null };
+
+    function text(id, value) { $(id).textContent = value ?? '--'; }
+    function boolText(value) { return value === true ? '是' : value === false ? '否' : '--'; }
+    function shortSha(value) { return value ? String(value).slice(0, 12) : '--'; }
+    function bytes(value) {
+      const n = Number(value || 0);
+      if (!n) return '--';
+      const units = ['B', 'KiB', 'MiB', 'GiB', 'TiB'];
+      let v = n, i = 0;
+      while (v >= 1024 && i < units.length - 1) { v /= 1024; i++; }
+      return `${v.toFixed(i > 2 ? 2 : 1)} ${units[i]}`;
+    }
+    function badgeClass(value) {
+      const v = String(value || '').toLowerCase();
+      if (['healthy', 'running', 'up', 'success', 'ok', 'idle', 'true'].includes(v)) return 'good';
+      if (['degraded', 'starting', 'warning', 'external_degraded'].includes(v)) return 'warn';
+      if (['unhealthy', 'failed', 'failure', 'exited', 'false', 'missing'].includes(v)) return 'bad';
+      return 'neutral';
+    }
+    function zhStatus(value) {
+      const map = { healthy:'健康', degraded:'降级', unhealthy:'异常', running:'运行中', starting:'启动中', exited:'已退出', success:'成功', failure:'失败', idle:'空闲', in_progress:'部署中', external_degraded:'外部服务降级', none:'未配置' };
+      return map[String(value || '').toLowerCase()] || value || '未知';
+    }
+
+    async function getJson(url, timeout = 12000) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeout);
+      try {
+        const response = await fetch(url, { cache: 'no-store', signal: controller.signal });
+        if (!response.ok) throw new Error(`${url} 返回 HTTP ${response.status}`);
+        return { data: await response.json(), status: response.status };
+      } finally { clearTimeout(timer); }
+    }
+
+    function renderServices(status) {
+      const rows = $('serviceRows'); rows.replaceChildren();
+      const services = Array.isArray(status?.services) ? status.services : [];
+      $('serviceEmpty').classList.toggle('hidden', services.length > 0);
+      let online = 0;
+      for (const item of services) {
+        const stateValue = item.state || 'unknown';
+        const healthValue = item.health || 'none';
+        if (String(stateValue).toLowerCase() === 'running') online++;
+        const tr = document.createElement('tr');
+        const initials = String(item.service || '?').split('-').map(v => v[0]).join('').slice(0, 3).toUpperCase();
+        tr.innerHTML = `
+          <td><div class="service-name"><span class="service-avatar">${initials}</span><div>${item.service || 'unknown'}<div style="color:var(--muted);font-size:11px;margin-top:3px">${item.name || ''}</div></div></div></td>
+          <td><span class="badge ${badgeClass(stateValue)}">${zhStatus(stateValue)}</span></td>
+          <td><span class="badge ${badgeClass(healthValue)}">${zhStatus(healthValue)}</span></td>
+          <td>${item.critical ? '<span class="badge bad">关键</span>' : '<span class="badge neutral">辅助</span>'}</td>
+          <td style="color:var(--muted)">${item.status || '--'}</td>`;
+        rows.appendChild(tr);
+      }
+      text('serviceCount', `${online}/${services.length || 0}`);
+      $('serviceSummary').className = `badge ${online === services.length && services.length ? 'good' : 'warn'}`;
+      text('serviceSummary', `${online} 个运行中`);
+    }
+
+    function render(status, health, client) {
+      const overall = status?.overall || (health ? 'healthy' : 'unknown');
+      const reasons = Array.isArray(status?.reasons) ? status.reasons : [];
+      const dot = $('overallDot'); dot.className = `status-dot ${badgeClass(overall)}`;
+      text('overallTitle', overall === 'healthy' ? '系统运行正常' : overall === 'degraded' ? '系统可用，但存在降级项' : overall === 'unhealthy' ? '系统存在异常' : '状态信息不完整');
+      text('overallDescription', reasons.length ? reasons.join('；') : '关键服务与公开健康接口暂无已知异常。');
+      text('stagePill', `阶段：${status?.project_stage || '未知'}`);
+      text('updatedPill', `更新时间：${status?.generated_at ? new Date(status.generated_at).toLocaleString() : '--'}`);
+      text('clientPill', `运行环境：${client?.mode === 'bundled-client' ? '客户端内置' : '服务器网页'}`);
+
+      renderServices(status);
+      const disk = status?.system?.disk || {};
+      const ram = status?.system?.memory || {};
+      const diskPct = Number(disk.used_percent || 0);
+      const ramPct = Number(ram.used_percent || 0);
+      text('diskQuick', diskPct ? `${diskPct.toFixed(1)}%` : '--');
+      text('memoryQuick', ramPct ? `${ramPct.toFixed(1)}%` : '--');
+      text('syncQuick', boolText(status?.deployment_in_sync));
+      text('diskPercent', diskPct ? `${diskPct.toFixed(1)}%` : '--');
+      text('diskFree', bytes(disk.free_bytes));
+      text('ramPercent', ramPct ? `${ramPct.toFixed(1)}%` : '--');
+      text('ramFree', bytes(ram.available_bytes));
+      $('diskBar').style.width = `${Math.min(100, diskPct)}%`;
+      $('ramBar').style.width = `${Math.min(100, ramPct)}%`;
+
+      const deploy = status?.deployment || {};
+      text('currentSha', shortSha(deploy.current_sha));
+      text('previousSha', shortSha(deploy.previous_sha));
+      text('deployState', zhStatus(deploy.state));
+      text('deployResult', zhStatus(deploy.last_result));
+      text('deploySync', boolText(status?.deployment_in_sync));
+
+      text('memoryProvider', health?.memory_provider);
+      text('storageMode', health?.default_storage_mode);
+      text('mempalaceState', health ? (health.mempalace_enabled ? '已启用' : '未启用') : '--');
+      text('lettaState', health ? (health.letta_enabled ? '已启用' : '未启用') : '--');
+      text('identityMode', health?.identity_enforcement || health?.identity_account_source);
+      text('healthHttp', health ? '200 / OK' : '--');
+      text('objectApi', health?.object_api_enabled === undefined ? '--' : boolText(health.object_api_enabled));
+      text('checkpointState', health ? boolText(health.memory_checkpoint) : '--');
+      text('relayBase', health?.relay_base_url || '--');
+    }
+
+    async function refresh() {
+      const button = $('refresh'); button.disabled = true; button.textContent = '刷新中…';
+      const errors = [];
+      const results = await Promise.allSettled([
+        getJson('/sumeme-health'),
+        getJson(STATUS_URL),
+        getJson('/__sumeme/client-info', 2500),
+      ]);
+      if (results[0].status === 'fulfilled') state.health = results[0].value.data;
+      else errors.push(`健康接口：${results[0].reason?.message || results[0].reason}`);
+      if (results[1].status === 'fulfilled') state.status = results[1].value.data;
+      else errors.push(`状态快照：${results[1].reason?.message || results[1].reason}`);
+      if (results[2].status === 'fulfilled') state.client = results[2].value.data;
+      render(state.status, state.health, state.client);
+      $('errorNotice').classList.toggle('hidden', errors.length === 0);
+      text('errorText', errors.join('；'));
+      button.disabled = false; button.textContent = '刷新状态';
+    }
+
+    document.querySelectorAll('.nav-item').forEach((button) => button.addEventListener('click', () => {
+      document.querySelectorAll('.nav-item').forEach(v => v.classList.remove('active'));
+      button.classList.add('active');
+      document.getElementById(button.dataset.target)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }));
+    $('refresh').addEventListener('click', refresh);
+    $('openApp').addEventListener('click', () => { location.href = '/'; });
+    refresh();
+  </script>
+</body>
+</html>
