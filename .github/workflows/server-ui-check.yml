@@ -1,0 +1,86 @@
+name: Server UI check
+
+on:
+  pull_request:
+    paths:
+      - "web/server-ui/**"
+      - "docker-compose.yml"
+      - "scripts/health-check.sh"
+      - "scripts/smoke-public-ui.py"
+      - "tests/test_public_ui_delivery_contract.py"
+      - ".github/workflows/server-ui-check.yml"
+  push:
+    branches: [main]
+    paths:
+      - "web/server-ui/**"
+      - "docker-compose.yml"
+      - "scripts/health-check.sh"
+      - "scripts/smoke-public-ui.py"
+      - "tests/test_public_ui_delivery_contract.py"
+      - ".github/workflows/server-ui-check.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  server-ui:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile public UI smoke test
+        run: python -m py_compile scripts/smoke-public-ui.py
+      - name: Run native server UI contract
+        run: python -m unittest tests.test_public_ui_delivery_contract -v
+      - name: Build server UI container
+        run: docker build -t sumeme-web:test web/server-ui
+      - name: Start isolated upstream and server UI containers
+        run: |
+          set -euo pipefail
+          docker network create sumeme-ui-test
+          docker run -d \
+            --name memory-gateway \
+            --network sumeme-ui-test \
+            nginx:1.27-alpine
+          docker run -d \
+            --name sumeme-web-test \
+            --network sumeme-ui-test \
+            -p 127.0.0.1:18080:80 \
+            sumeme-web:test
+      - name: Verify container health and native UI markers
+        run: |
+          set -euo pipefail
+          ready=false
+          for attempt in $(seq 1 20); do
+            if curl --fail --silent http://127.0.0.1:18080/healthz >/dev/null; then
+              ready=true
+              break
+            fi
+            sleep 1
+          done
+          if [[ "${ready}" != "true" ]]; then
+            echo 'sumeme-web did not become ready.' >&2
+            exit 1
+          fi
+          curl --fail --silent http://127.0.0.1:18080/healthz | python -m json.tool >/dev/null
+          page="$(curl --fail --silent http://127.0.0.1:18080/)"
+          grep -F '<title>SuMeMe · 服务端</title>' <<<"${page}"
+          grep -F '服务端管理中心' <<<"${page}"
+          if grep -F '/_spa' <<<"${page}"; then
+            echo 'Legacy SPA asset reference found in native server UI.' >&2
+            exit 1
+          fi
+      - name: Print container logs on failure
+        if: failure()
+        run: |
+          docker logs sumeme-web-test || true
+          docker logs memory-gateway || true
+      - name: Stop test containers
+        if: always()
+        run: |
+          docker rm -f sumeme-web-test memory-gateway >/dev/null 2>&1 || true
+          docker network rm sumeme-ui-test >/dev/null 2>&1 || true

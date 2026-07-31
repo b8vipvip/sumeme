@@ -4,14 +4,12 @@ on:
   pull_request:
     paths:
       - "clients/sumeme_app/**"
-      - "web/control-panel/**"
       - "scripts/materialize-flutter-client.py"
       - ".github/workflows/client-source-check.yml"
   push:
     branches: [main]
     paths:
       - "clients/sumeme_app/**"
-      - "web/control-panel/**"
       - "scripts/materialize-flutter-client.py"
       - ".github/workflows/client-source-check.yml"
   workflow_dispatch:
@@ -30,21 +28,10 @@ jobs:
         with:
           channel: stable
           cache: true
-      - name: Create a minimal valid UI fixture
-        run: |
-          set -euo pipefail
-          fixture="${RUNNER_TEMP}/lobehub-ui-fixture"
-          mkdir -p "${fixture}/_spa/assets" "${fixture}/_spa-auth/assets"
-          printf '<!doctype html><script src="/_spa/assets/app.js"></script>' > "${fixture}/desktop.html"
-          printf '<!doctype html><script src="/_spa-auth/assets/auth.js"></script>' > "${fixture}/auth.html"
-          printf 'console.log("desktop")' > "${fixture}/_spa/assets/app.js"
-          printf 'console.log("auth")' > "${fixture}/_spa-auth/assets/auth.js"
-          printf '{"schema":1,"upstream_ref":"fixture"}\n' > "${fixture}/bundle.json"
-      - name: Materialize client with the fixture
+      - name: Materialize native client
         run: >-
           python3 scripts/materialize-flutter-client.py
           --output "${RUNNER_TEMP}/sumeme_app"
-          --web-ui "${RUNNER_TEMP}/lobehub-ui-fixture"
       - name: Analyze and test Flutter source
         working-directory: ${{ runner.temp }}/sumeme_app
         run: |

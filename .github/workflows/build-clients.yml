@@ -4,17 +4,13 @@ on:
   pull_request:
     paths:
       - "clients/sumeme_app/**"
-      - "web/control-panel/**"
       - "scripts/materialize-flutter-client.py"
-      - "scripts/prepare-client-web-ui.py"
       - ".github/workflows/build-clients.yml"
   push:
     branches: [main]
     paths:
       - "clients/sumeme_app/**"
-      - "web/control-panel/**"
       - "scripts/materialize-flutter-client.py"
-      - "scripts/prepare-client-web-ui.py"
       - ".github/workflows/build-clients.yml"
   workflow_dispatch:
 
@@ -22,75 +18,8 @@ permissions:
   contents: read
 
 jobs:
-  prepare-web-ui:
-    name: Prepare bundled LobeHub UI
-    runs-on: ubuntu-latest
-    timeout-minutes: 90
-    env:
-      LOBEHUB_UPSTREAM_REF: v2.2.11
-      APP_URL: https://sumeme.mv3.cn
-      DATABASE_DRIVER: node
-      DATABASE_URL: postgres://postgres:password@localhost:5432/postgres
-      KEY_VAULTS_SECRET: client-build-placeholder
-      AUTH_SECRET: client-build-placeholder
-
-    steps:
-      - name: Check out SuMeMe client source
-        uses: actions/checkout@v4
-
-      - name: Check out pinned LobeHub source
-        uses: actions/checkout@v4
-        with:
-          repository: lobehub/lobehub
-          ref: ${{ env.LOBEHUB_UPSTREAM_REF }}
-          path: .upstream/lobehub
-          persist-credentials: false
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "24"
-
-      - name: Install pinned LobeHub dependencies
-        working-directory: .upstream/lobehub
-        run: |
-          set -euo pipefail
-          corepack enable
-          # The published v2.2.11 tag contains an overrides/lockfile metadata
-          # mismatch. The production Dockerfile also performs a non-frozen pnpm
-          # install; source and dependency ranges remain pinned by the tag.
-          pnpm install --no-frozen-lockfile
-
-      - name: Build desktop and authentication SPAs
-        working-directory: .upstream/lobehub
-        run: |
-          set -euo pipefail
-          pnpm run build:spa
-          pnpm run build:spa:auth
-          test -s dist/desktop/index.html
-          test -s dist/auth/index.auth.html
-
-      - name: Stage immutable client web assets
-        run: |
-          set -euo pipefail
-          python3 scripts/prepare-client-web-ui.py \
-            --desktop-dist .upstream/lobehub/dist/desktop \
-            --auth-dist .upstream/lobehub/dist/auth \
-            --output "${RUNNER_TEMP}/lobehub-ui" \
-            --upstream-ref "${LOBEHUB_UPSTREAM_REF}"
-          test -s "${RUNNER_TEMP}/lobehub-ui/bundle.json"
-
-      - name: Upload bundled LobeHub UI
-        uses: actions/upload-artifact@v4
-        with:
-          name: sumeme-lobehub-web-ui
-          path: ${{ runner.temp }}/lobehub-ui
-          if-no-files-found: error
-          retention-days: 7
-
   android:
     name: Android APK
-    needs: prepare-web-ui
     runs-on: ubuntu-latest
     timeout-minutes: 45
 
@@ -105,16 +34,10 @@ jobs:
         with:
           channel: stable
           cache: true
-      - name: Download bundled LobeHub UI
-        uses: actions/download-artifact@v4
-        with:
-          name: sumeme-lobehub-web-ui
-          path: ${{ runner.temp }}/lobehub-ui
-      - name: Materialize generated platform project
+      - name: Materialize native platform project
         run: >-
           python3 scripts/materialize-flutter-client.py
           --output "${RUNNER_TEMP}/sumeme_app"
-          --web-ui "${RUNNER_TEMP}/lobehub-ui"
       - name: Analyze and test
         working-directory: ${{ runner.temp }}/sumeme_app
         run: |
@@ -124,7 +47,7 @@ jobs:
         working-directory: ${{ runner.temp }}/sumeme_app
         run: >-
           flutter build apk --release
-          --build-name 0.2.0
+          --build-name 0.3.0
           --build-number "${GITHUB_RUN_NUMBER}"
       - name: Write build provenance
         run: |
@@ -132,9 +55,9 @@ jobs:
             echo "repository=${GITHUB_REPOSITORY}"
             echo "commit=${GITHUB_SHA}"
             echo "run=${GITHUB_RUN_ID}"
-            echo "version=0.2.0+${GITHUB_RUN_NUMBER}"
-            echo "lobehub=v2.2.11"
-            echo "ui=bundled-loopback-proxy"
+            echo "version=0.3.0+${GITHUB_RUN_NUMBER}"
+            echo "ui=native-flutter"
+            echo "webview=false"
             flutter --version | head -n 1
           } > "${RUNNER_TEMP}/sumeme-app-build.txt"
       - name: Upload Android APK
@@ -149,7 +72,6 @@ jobs:
 
   windows:
     name: Windows EXE
-    needs: prepare-web-ui
     runs-on: windows-latest
     timeout-minutes: 60
 
@@ -160,17 +82,11 @@ jobs:
         with:
           channel: stable
           cache: true
-      - name: Download bundled LobeHub UI
-        uses: actions/download-artifact@v4
-        with:
-          name: sumeme-lobehub-web-ui
-          path: ${{ runner.temp }}\lobehub-ui
-      - name: Materialize generated platform project
+      - name: Materialize native platform project
         shell: pwsh
         run: >-
           python scripts/materialize-flutter-client.py
           --output "$env:RUNNER_TEMP\sumeme_app"
-          --web-ui "$env:RUNNER_TEMP\lobehub-ui"
       - name: Analyze, test and build Windows application
         shell: pwsh
         run: |
@@ -180,7 +96,7 @@ jobs:
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
             flutter test
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-            flutter build windows --release --build-name 0.2.0 --build-number "$env:GITHUB_RUN_NUMBER"
+            flutter build windows --release --build-name 0.3.0 --build-number "$env:GITHUB_RUN_NUMBER"
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           }
           finally {
@@ -205,7 +121,7 @@ jobs:
           if (-not (Test-Path $iscc)) { throw "Inno Setup compiler was not found" }
 
           & $iscc `
-            "/DAppVersion=0.2.$env:GITHUB_RUN_NUMBER" `
+            "/DAppVersion=0.3.$env:GITHUB_RUN_NUMBER" `
             "/DBuildDir=$releaseDir" `
             "/DOutputDir=$artifactDir" `
             "$env:GITHUB_WORKSPACE\clients\sumeme_app\packaging\windows\sumeme.iss"
@@ -215,9 +131,9 @@ jobs:
             "repository=$env:GITHUB_REPOSITORY"
             "commit=$env:GITHUB_SHA"
             "run=$env:GITHUB_RUN_ID"
-            "version=0.2.0+$env:GITHUB_RUN_NUMBER"
-            "lobehub=v2.2.11"
-            "ui=bundled-loopback-proxy"
+            "version=0.3.0+$env:GITHUB_RUN_NUMBER"
+            "ui=native-flutter"
+            "webview=false"
             (flutter --version | Select-Object -First 1)
           ) | Set-Content -Encoding UTF8 (Join-Path $artifactDir "build-info.txt")
       - name: Upload Windows EXE and portable package

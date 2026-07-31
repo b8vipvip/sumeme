@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sumeme_app/main.dart';
+import 'package:sumeme_app/app_state.dart';
 
 void main() {
-  test('production app URL uses HTTPS', () {
-    final Uri uri = Uri.parse(defaultAppUrl);
+  test('default SuMeMe server URL uses HTTPS', () {
+    final Uri uri = Uri.parse(SuMeMeAppState.defaultServerUrl);
 
     expect(uri.scheme, 'https');
     expect(uri.host, 'sumeme.mv3.cn');

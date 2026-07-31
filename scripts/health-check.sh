@@ -15,10 +15,10 @@ read_env() {
 GATEWAY_PORT="$(read_env GATEWAY_PORT 8010)"
 APP_URL="$(read_env APP_URL https://sumeme.mv3.cn)"
 PUBLIC_HEALTH_URL="${PUBLIC_HEALTH_URL:-${APP_URL%/}/sumeme-health}"
-CONTROL_PANEL_URL="${CONTROL_PANEL_URL:-${APP_URL%/}/sumeme-control/index.html}"
 PUBLIC_UI_SMOKE_MODE="$(read_env PUBLIC_UI_SMOKE_MODE required)"
 
 expected_services=(
+  sumeme-web
   lobe
   memory-gateway
   letta
@@ -72,31 +72,24 @@ else
   failed=1
 fi
 
-if curl --fail --silent --show-error --location --max-time 30 \
-  "${APP_URL}" >/dev/null; then
-  echo "[ OK ] public app HTML: ${APP_URL}"
+public_app="$(curl --fail --silent --show-error --location --max-time 30 \
+  "${APP_URL}" || true)"
+if grep -Fq '<title>SuMeMe · 服务端</title>' <<<"${public_app}" && \
+   grep -Fq '服务端管理中心' <<<"${public_app}"; then
+  echo "[ OK ] native SuMeMe server UI: ${APP_URL}"
 else
-  echo "[FAIL] public app HTML: ${APP_URL}"
-  failed=1
-fi
-
-control_panel="$(curl --fail --silent --show-error --location --max-time 30 \
-  "${CONTROL_PANEL_URL}" || true)"
-if grep -Fq '<title>SuMeMe 控制台</title>' <<<"${control_panel}"; then
-  echo "[ OK ] SuMeMe control panel: ${CONTROL_PANEL_URL}"
-else
-  echo "[FAIL] SuMeMe control panel missing or invalid: ${CONTROL_PANEL_URL}"
+  echo "[FAIL] native SuMeMe server UI missing or invalid: ${APP_URL}"
   failed=1
 fi
 
 case "${PUBLIC_UI_SMOKE_MODE}" in
   off)
-    echo "[SKIP] public UI asset smoke is disabled"
+    echo "[SKIP] public UI smoke is disabled"
     ;;
   warn|required)
     ui_ok=false
     for attempt in 1 2 3 4 5; do
-      echo "Public UI asset smoke attempt ${attempt}/5..."
+      echo "Public UI smoke attempt ${attempt}/5..."
       if python3 scripts/smoke-public-ui.py "${APP_URL%/}/" --timeout 30; then
         ui_ok=true
         break
@@ -105,12 +98,12 @@ case "${PUBLIC_UI_SMOKE_MODE}" in
     done
 
     if [[ "${ui_ok}" == "true" ]]; then
-      echo "[ OK ] public UI HTML and referenced assets"
+      echo "[ OK ] public SuMeMe UI"
     elif [[ "${PUBLIC_UI_SMOKE_MODE}" == "required" ]]; then
-      echo "[FAIL] public UI references missing or unavailable assets"
+      echo "[FAIL] public SuMeMe UI is unavailable or invalid"
       failed=1
     else
-      echo "[WARN] public UI references missing or unavailable assets"
+      echo "[WARN] public SuMeMe UI is unavailable or invalid"
     fi
     ;;
   *)
