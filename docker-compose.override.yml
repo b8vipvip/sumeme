@@ -1,4 +1,10 @@
 services:
+  sumeme-web:
+    # The public frontend is a small local Nginx image. Always rebuild it from the
+    # exact release source so updated HTML, CSS, JavaScript and proxy rules cannot
+    # be hidden by an older cached image on the production host.
+    pull_policy: build
+
   lobe:
     # The FDEX-derived SuMeMe frontend calls LobeHub through APIs and no longer
     # needs a freshly rebuilt visual SPA. Before deployment, the exact image used
