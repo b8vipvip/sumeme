@@ -115,10 +115,10 @@ jobs:
           cp .env.example .env
           docker compose config >/dev/null
           test "$(docker compose config --format json | python3 -c 'import json,sys; print(json.load(sys.stdin)["services"]["lobe"]["image"])')" = \
-            'sumeme-lobehub:2.2.11-auth-control-1'
+            'sumeme-lobehub:2.2.11-backend-reuse-1'
 
   verify-lobehub-image-ghs:
-    name: Verify LobeHub backend image (GHS)
+    name: Prepare running LobeHub backend image (GHS)
     if: >-
       github.event_name == 'push' &&
       github.ref == 'refs/heads/main' &&
@@ -127,11 +127,17 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
-      LOBEHUB_IMAGE_TAG: sumeme-lobehub:2.2.11-auth-control-1
+      LOBEHUB_IMAGE_TAG: sumeme-lobehub:2.2.11-backend-reuse-1
       SSH_HOST: ${{ vars.SUMEME_VPS_HOST }}
       SSH_PORT: ${{ vars.SUMEME_VPS_PORT || '22' }}
       SSH_USER: ${{ vars.SUMEME_VPS_USER || 'sumeme-runner' }}
     steps:
+      - name: Check out exact verified release
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
       - name: Configure pinned SSH trust
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SUMEME_SSH_PRIVATE_KEY }}
@@ -144,17 +150,25 @@ jobs:
           printf '%s\n' "${SSH_HOST_KEY}" > "${HOME}/.ssh/known_hosts"
           chmod 600 "${HOME}/.ssh/known_hosts"
 
-      - name: Verify the reviewed backend image is present
+      - name: Tag the exact image used by the running backend container
         run: |
           set -euo pipefail
+          remote_script="/tmp/sumeme-tag-lobehub-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.sh"
+          scp -i "${HOME}/.ssh/sumeme_deploy_key" \
+            -P "${SSH_PORT}" \
+            -o BatchMode=yes \
+            -o StrictHostKeyChecking=yes \
+            -o UserKnownHostsFile="${HOME}/.ssh/known_hosts" \
+            scripts/tag-running-lobehub-image.sh \
+            "${SSH_USER}@${SSH_HOST}:${remote_script}"
           ssh -i "${HOME}/.ssh/sumeme_deploy_key" \
             -p "${SSH_PORT}" \
             -o BatchMode=yes \
             -o StrictHostKeyChecking=yes \
             -o UserKnownHostsFile="${HOME}/.ssh/known_hosts" \
             "${SSH_USER}@${SSH_HOST}" \
-            "docker image inspect '${LOBEHUB_IMAGE_TAG}' >/dev/null"
-          echo "Using existing LobeHub backend image: ${LOBEHUB_IMAGE_TAG}"
+            "set -e; chmod 700 '${remote_script}'; '${remote_script}' '${LOBEHUB_IMAGE_TAG}' sumeme-lobehub; rm -f '${remote_script}'"
+          echo "Prepared LobeHub backend image alias: ${LOBEHUB_IMAGE_TAG}"
           echo "The visible UI is built by sumeme-web; no upstream LobeHub frontend rebuild is required."
 
   deploy-production-self-hosted:
@@ -186,12 +200,11 @@ jobs:
           echo "ADOB mode: VSR"
           echo "Verified release SHA: ${actual}"
 
-      - name: Verify the LobeHub backend image is preloaded
-        run: |
-          docker image inspect sumeme-lobehub:2.2.11-auth-control-1 >/dev/null || {
-            echo 'Missing sumeme-lobehub:2.2.11-auth-control-1 on the self-hosted production runner.' >&2
-            exit 1
-          }
+      - name: Tag the exact image used by the running backend container
+        run: >-
+          bash scripts/tag-running-lobehub-image.sh
+          sumeme-lobehub:2.2.11-backend-reuse-1
+          sumeme-lobehub
 
       - name: Deploy exact verified release to VPS using VSR
         env:
