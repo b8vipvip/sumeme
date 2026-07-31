@@ -42,6 +42,7 @@ jobs:
           node --check web/server-ui/static/app.js
           node --check web/server-ui/static/chat-write.js
           node --check web/server-ui/static/chat-attachments.js
+          node --check web/server-ui/static/chat-interventions.js
       - name: Run frontend and backend-boundary contract
         run: python -m unittest tests.test_public_ui_delivery_contract -v
       - name: Build server UI container
@@ -64,7 +65,7 @@ jobs:
             }
             location = /trpc/topic.getTopicTranscript {
               default_type application/json;
-              return 200 '{"result":{"data":{"json":{"items":[{"id":"message-fixture","role":"assistant","content":"Fixture transcript","createdAt":"2026-07-31T10:01:00Z"}]}}}}';
+              return 200 '{"result":{"data":{"json":{"items":[{"id":"message-fixture","role":"assistant","content":"Fixture transcript","createdAt":"2026-07-31T10:01:00Z"},{"id":"tool-message-fixture","role":"tool","content":"","plugin":{"toolCallId":"call-fixture"}}]}}}}';
             }
             location = /trpc/agent.queryAgents {
               default_type application/json;
@@ -88,7 +89,15 @@ jobs:
             }
             location = /trpc/aiAgent.getOperationStatus {
               default_type application/json;
-              return 200 '{"result":{"data":{"json":{"currentState":{"status":"done"},"hasError":false,"isCompleted":true}}}}';
+              return 200 '{"result":{"data":{"json":{"currentState":{"metadata":{"agentId":"agent-fixture","topicId":"topic-fixture"},"status":"waiting_for_human"},"hasError":false,"isCompleted":false,"operationId":"operation-fixture"}}}}';
+            }
+            location = /trpc/aiAgent.getPendingInterventions {
+              default_type application/json;
+              return 200 '{"result":{"data":{"json":{"pendingInterventions":[{"lastModified":"2026-07-31T10:03:00Z","operationId":"operation-fixture","pendingToolsCalling":[{"apiName":"fixtureTool","arguments":"{\"value\":1}","id":"call-fixture","identifier":"fixture-plugin"}],"status":"waiting_for_human","stepCount":2,"type":"tool_approval"}],"timestamp":"2026-07-31T10:03:00Z","totalCount":1}}}}';
+            }
+            location = /trpc/aiAgent.processHumanIntervention {
+              default_type application/json;
+              return 200 '{"result":{"data":{"json":{"message":"Human intervention processed successfully","operationId":"operation-fixture","scheduled":true,"success":true}}}}';
             }
             location /_spa-auth/ {
               default_type application/javascript;
@@ -138,24 +147,33 @@ jobs:
           grep -F 'id="topicList"' <<<"${page}"
           grep -F '/assets/conversation-style' <<<"${page}"
           grep -F '/assets/attachment-style' <<<"${page}"
+          grep -F '/assets/intervention-style' <<<"${page}"
           grep -F '/assets/chat-runtime' <<<"${page}"
           grep -F '/assets/chat-attachments' <<<"${page}"
+          grep -F '/assets/chat-interventions' <<<"${page}"
           grep -F '登录 SuMeMe' <<<"${signin}"
           curl --fail --silent http://127.0.0.1:18080/static/admin.css >/dev/null
           curl --fail --silent http://127.0.0.1:18080/static/app.js >/dev/null
           conversation_css="$(curl --fail --silent http://127.0.0.1:18080/assets/conversation-style)"
           attachment_css="$(curl --fail --silent http://127.0.0.1:18080/assets/attachment-style)"
+          intervention_css="$(curl --fail --silent http://127.0.0.1:18080/assets/intervention-style)"
           grep -F '.chat-workspace' <<<"${conversation_css}"
           grep -F '.chat-composer' <<<"${conversation_css}"
           grep -F '.chat-attachment-item' <<<"${attachment_css}"
+          grep -F '.intervention-panel' <<<"${intervention_css}"
           runtime_js="$(curl --fail --silent http://127.0.0.1:18080/assets/chat-runtime)"
           attachment_js="$(curl --fail --silent http://127.0.0.1:18080/assets/chat-attachments)"
+          intervention_js="$(curl --fail --silent http://127.0.0.1:18080/assets/chat-interventions)"
           grep -F 'aiAgent.execAgent' <<<"${runtime_js}"
           grep -F 'aiAgent.getOperationStatus' <<<"${runtime_js}"
           grep -F 'file.checkFileHash' <<<"${attachment_js}"
           grep -F 'upload.createS3PreSignedUrl' <<<"${attachment_js}"
           grep -F 'file.createFile' <<<"${attachment_js}"
           grep -F 'value.json.fileIds' <<<"${attachment_js}"
+          grep -F 'aiAgent.getPendingInterventions' <<<"${intervention_js}"
+          grep -F 'aiAgent.processHumanIntervention' <<<"${intervention_js}"
+          grep -F "action: 'approve'" <<<"${intervention_js}"
+          grep -F "action: 'reject_continue'" <<<"${intervention_js}"
           session="$(curl --fail --silent http://127.0.0.1:18080/api/auth/get-session)"
           grep -F '"session":null' <<<"${session}"
           topics="$(curl --fail --silent 'http://127.0.0.1:18080/trpc/topic.queryTopics?input=%7B%22json%22%3A%7B%7D%7D')"
@@ -170,15 +188,24 @@ jobs:
             --data '{"json":{"agentId":"agent-fixture","appContext":{"scope":"main","topicId":"topic-fixture"},"autoStart":true,"fileIds":["file-fixture"],"prompt":"Fixture prompt","trigger":"chat"}}' \
             http://127.0.0.1:18080/trpc/aiAgent.execAgent)"
           operation="$(curl --fail --silent 'http://127.0.0.1:18080/trpc/aiAgent.getOperationStatus?input=%7B%22json%22%3A%7B%22historyLimit%22%3A6%2C%22includeHistory%22%3Afalse%2C%22operationId%22%3A%22operation-fixture%22%7D%7D')"
+          pending="$(curl --fail --silent 'http://127.0.0.1:18080/trpc/aiAgent.getPendingInterventions?input=%7B%22json%22%3A%7B%22operationId%22%3A%22operation-fixture%22%7D%7D')"
+          intervention="$(curl --fail --silent \
+            -H 'Content-Type: application/json' \
+            -X POST \
+            --data '{"json":{"action":"approve","data":{"approvedToolCall":{"apiName":"fixtureTool","arguments":"{\"value\":1}","id":"call-fixture","identifier":"fixture-plugin"}},"operationId":"operation-fixture","stepIndex":2,"toolMessageId":"tool-message-fixture"}}' \
+            http://127.0.0.1:18080/trpc/aiAgent.processHumanIntervention)"
           grep -F 'Fixture conversation' <<<"${topics}"
           grep -F 'Fixture transcript' <<<"${transcript}"
+          grep -F 'tool-message-fixture' <<<"${transcript}"
           grep -F 'Fixture agent' <<<"${agents}"
           grep -F '"isExist":false' <<<"${hash_check}"
           grep -F 'signed-upload' <<<"${signed_url}"
           grep -F 'file-fixture' <<<"${file_record}"
           grep -F 'operation-fixture' <<<"${execution}"
-          grep -F 'topic-fixture' <<<"${execution}"
-          grep -F '"isCompleted":true' <<<"${operation}"
+          grep -F 'waiting_for_human' <<<"${operation}"
+          grep -F 'tool_approval' <<<"${pending}"
+          grep -F 'call-fixture' <<<"${pending}"
+          grep -F '"success":true' <<<"${intervention}"
           asset="$(curl --fail --silent http://127.0.0.1:18080/_spa-auth/assets/probe.js)"
           grep -F 'auth fixture' <<<"${asset}"
           if grep -F '<script src="/_spa-auth/' <<<"${page}"; then
