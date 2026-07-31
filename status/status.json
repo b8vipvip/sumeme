@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-07-31T17:16:36+08:00",
+  "generated_at": "2026-07-31T17:39:19+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "unhealthy",
   "project_stage": "deployed_unhealthy",
@@ -77,7 +77,7 @@
       "name": "sumeme-ai-provider-proxy",
       "state": "running",
       "health": "healthy",
-      "status": "Up 6 hours (healthy)",
+      "status": "Up 7 hours (healthy)",
       "critical": false
     },
     {
@@ -85,7 +85,7 @@
       "name": "sumeme-letta",
       "state": "running",
       "health": "healthy",
-      "status": "Up 6 hours (healthy)",
+      "status": "Up 7 hours (healthy)",
       "critical": false,
       "required": false
     },
@@ -94,15 +94,15 @@
       "name": "sumeme-lobehub",
       "state": "running",
       "health": "",
-      "status": "Up 6 hours",
-      "critical": false
+      "status": "Up 7 hours",
+      "critical": true
     },
     {
       "service": "memory-gateway",
       "name": "sumeme-memory-gateway",
       "state": "running",
       "health": "healthy",
-      "status": "Up 6 hours (healthy)",
+      "status": "Up 7 hours (healthy)",
       "critical": true
     },
     {
@@ -110,7 +110,7 @@
       "name": "sumeme-postgres",
       "state": "running",
       "health": "healthy",
-      "status": "Up 6 hours (healthy)",
+      "status": "Up 7 hours (healthy)",
       "critical": true
     },
     {
@@ -118,7 +118,7 @@
       "name": "sumeme-qdrant",
       "state": "running",
       "health": "healthy",
-      "status": "Up 6 hours (healthy)",
+      "status": "Up 7 hours (healthy)",
       "critical": true
     },
     {
@@ -126,7 +126,7 @@
       "name": "sumeme-redis",
       "state": "running",
       "health": "healthy",
-      "status": "Up 6 hours (healthy)",
+      "status": "Up 7 hours (healthy)",
       "critical": true
     },
     {
@@ -134,7 +134,7 @@
       "name": "sumeme-rustfs",
       "state": "running",
       "health": "healthy",
-      "status": "Up 6 hours (healthy)",
+      "status": "Up 7 hours (healthy)",
       "critical": true
     },
     {
@@ -142,28 +142,28 @@
       "name": "sumeme-searxng",
       "state": "running",
       "health": "",
-      "status": "Up 6 hours",
+      "status": "Up 7 hours",
       "critical": true
     }
   ],
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 35589160960,
-      "free_bytes": 4725235712,
+      "used_bytes": 35592359936,
+      "free_bytes": 4722036736,
       "used_percent": 84.4
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1432092672,
-      "used_percent": 63.3
+      "available_bytes": 1417097216,
+      "used_percent": 63.7
     }
   },
   "github": {
     "schema_version": 1,
     "source": "github-hosted-runner",
     "default_branch": "main",
-    "latest_main_sha": "abfba0110a4e17ce86745a333314b4964a4695c0",
+    "latest_main_sha": "d53ed92d27a9858d004c11f77a41f958d1f93def",
     "open_pull_requests": [],
     "open_issues": [
       {
@@ -187,43 +187,95 @@
     ],
     "recent_workflows": [
       {
+        "name": "Public UI smoke",
+        "display_title": "Public UI smoke",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "skipped",
+        "head_branch": "main",
+        "head_sha": "d53ed92d27a9858d004c11f77a41f958d1f93def",
+        "run_number": 33,
+        "created_at": "2026-07-31T09:38:51Z",
+        "updated_at": "2026-07-31T09:38:52Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30620696449"
+      },
+      {
         "name": "Publish project status",
         "display_title": "Publish project status",
         "event": "workflow_run",
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
-        "head_sha": "abfba0110a4e17ce86745a333314b4964a4695c0",
-        "run_number": 368,
-        "created_at": "2026-07-31T09:16:13Z",
-        "updated_at": "2026-07-31T09:16:17Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30619312668"
+        "head_sha": "d53ed92d27a9858d004c11f77a41f958d1f93def",
+        "run_number": 369,
+        "created_at": "2026-07-31T09:38:51Z",
+        "updated_at": "2026-07-31T09:38:54Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30620696425"
       },
       {
-        "name": "Smoke production",
-        "display_title": "Smoke production",
-        "event": "schedule",
+        "name": "CI",
+        "display_title": "Merge PR #60: deploy without rebuilding LobeHub",
+        "event": "push",
         "status": "completed",
-        "conclusion": "success",
+        "conclusion": "failure",
         "head_branch": "main",
-        "head_sha": "abfba0110a4e17ce86745a333314b4964a4695c0",
-        "run_number": 8,
-        "created_at": "2026-07-31T09:15:33Z",
-        "updated_at": "2026-07-31T09:16:11Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30619270241"
+        "head_sha": "d53ed92d27a9858d004c11f77a41f958d1f93def",
+        "run_number": 684,
+        "created_at": "2026-07-31T09:38:05Z",
+        "updated_at": "2026-07-31T09:38:49Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30620650166"
       },
       {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
+        "name": "Public UI smoke",
+        "display_title": "Public UI smoke",
         "event": "workflow_run",
         "status": "completed",
+        "conclusion": "skipped",
+        "head_branch": "main",
+        "head_sha": "1b09d1a909116950acd5ad9c7309d6be23a8ac17",
+        "run_number": 32,
+        "created_at": "2026-07-31T09:37:37Z",
+        "updated_at": "2026-07-31T09:37:45Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30620622811"
+      },
+      {
+        "name": "CI",
+        "display_title": "Deploy FDEX frontend without rebuilding LobeHub",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/reuse-lobehub-backend-image",
+        "head_sha": "468a751093765108dff47652046e956d897cd0de",
+        "run_number": 683,
+        "created_at": "2026-07-31T09:36:51Z",
+        "updated_at": "2026-07-31T09:37:36Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30620576702"
+      },
+      {
+        "name": "CI",
+        "display_title": "Merge PR #59: FDEX frontend with LobeHub backend",
+        "event": "push",
+        "status": "in_progress",
+        "conclusion": null,
+        "head_branch": "main",
+        "head_sha": "1b09d1a909116950acd5ad9c7309d6be23a8ac17",
+        "run_number": 682,
+        "created_at": "2026-07-31T09:34:09Z",
+        "updated_at": "2026-07-31T09:34:50Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30620413363"
+      },
+      {
+        "name": "Server UI check",
+        "display_title": "Merge PR #59: FDEX frontend with LobeHub backend",
+        "event": "push",
+        "status": "completed",
         "conclusion": "success",
         "head_branch": "main",
-        "head_sha": "abfba0110a4e17ce86745a333314b4964a4695c0",
-        "run_number": 367,
-        "created_at": "2026-07-31T07:54:49Z",
-        "updated_at": "2026-07-31T07:55:38Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30614449110"
+        "head_sha": "1b09d1a909116950acd5ad9c7309d6be23a8ac17",
+        "run_number": 11,
+        "created_at": "2026-07-31T09:34:09Z",
+        "updated_at": "2026-07-31T09:34:31Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30620413050"
       },
       {
         "name": "Public UI smoke",
@@ -233,75 +285,10 @@
         "conclusion": "skipped",
         "head_branch": "main",
         "head_sha": "abfba0110a4e17ce86745a333314b4964a4695c0",
-        "run_number": 27,
-        "created_at": "2026-07-31T07:54:49Z",
-        "updated_at": "2026-07-31T07:54:51Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30614449080"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "schedule",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "abfba0110a4e17ce86745a333314b4964a4695c0",
-        "run_number": 366,
-        "created_at": "2026-07-31T07:32:30Z",
-        "updated_at": "2026-07-31T07:33:13Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30613177996"
-      },
-      {
-        "name": "CI",
-        "display_title": "Merge PR #58: native SuMeMe clients and server console",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "cancelled",
-        "head_branch": "main",
-        "head_sha": "abfba0110a4e17ce86745a333314b4964a4695c0",
-        "run_number": 677,
-        "created_at": "2026-07-31T06:53:50Z",
-        "updated_at": "2026-07-31T07:54:47Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30611029625"
-      },
-      {
-        "name": "Server UI check",
-        "display_title": "Merge PR #58: native SuMeMe clients and server console",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "abfba0110a4e17ce86745a333314b4964a4695c0",
-        "run_number": 6,
-        "created_at": "2026-07-31T06:53:49Z",
-        "updated_at": "2026-07-31T06:54:13Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30611029419"
-      },
-      {
-        "name": "Build Android and Windows clients",
-        "display_title": "Merge PR #58: native SuMeMe clients and server console",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "abfba0110a4e17ce86745a333314b4964a4695c0",
-        "run_number": 28,
-        "created_at": "2026-07-31T06:53:49Z",
-        "updated_at": "2026-07-31T06:58:52Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30611029381"
-      },
-      {
-        "name": "Client source check",
-        "display_title": "Merge PR #58: native SuMeMe clients and server console",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "abfba0110a4e17ce86745a333314b4964a4695c0",
-        "run_number": 20,
-        "created_at": "2026-07-31T06:53:49Z",
-        "updated_at": "2026-07-31T06:54:45Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30611029368"
+        "run_number": 31,
+        "created_at": "2026-07-31T09:33:43Z",
+        "updated_at": "2026-07-31T09:33:45Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30620386095"
       },
       {
         "name": "Public UI smoke",
@@ -310,37 +297,50 @@
         "status": "completed",
         "conclusion": "skipped",
         "head_branch": "main",
-        "head_sha": "58d5a70c99b63ddc060bfc3aca9e93794088bb69",
-        "run_number": 26,
-        "created_at": "2026-07-31T06:48:00Z",
-        "updated_at": "2026-07-31T06:48:01Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30610733490"
+        "head_sha": "abfba0110a4e17ce86745a333314b4964a4695c0",
+        "run_number": 30,
+        "created_at": "2026-07-31T09:32:46Z",
+        "updated_at": "2026-07-31T09:32:47Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30620327494"
       },
       {
         "name": "CI",
-        "display_title": "Replace LobeHub UI with native SuMeMe clients and server console",
+        "display_title": "Use FDEX-derived frontend while preserving LobeHub backend",
         "event": "pull_request",
         "status": "completed",
         "conclusion": "success",
-        "head_branch": "agent/native-sumeme-client-server-ui",
-        "head_sha": "adc251838e1cf05d0f9b877319c58d3ba488d8c6",
-        "run_number": 676,
-        "created_at": "2026-07-31T06:47:16Z",
-        "updated_at": "2026-07-31T06:47:58Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30610697693"
+        "head_branch": "agent/fdex-ui-preserve-lobehub",
+        "head_sha": "dcea000ce1bef0abb7963ea9cb93e89b823b3b82",
+        "run_number": 681,
+        "created_at": "2026-07-31T09:32:45Z",
+        "updated_at": "2026-07-31T09:33:41Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30620326979"
       },
       {
         "name": "Server UI check",
-        "display_title": "Replace LobeHub UI with native SuMeMe clients and server console",
+        "display_title": "Use FDEX-derived frontend while preserving LobeHub backend",
         "event": "pull_request",
         "status": "completed",
         "conclusion": "success",
-        "head_branch": "agent/native-sumeme-client-server-ui",
-        "head_sha": "adc251838e1cf05d0f9b877319c58d3ba488d8c6",
-        "run_number": 5,
-        "created_at": "2026-07-31T06:47:16Z",
-        "updated_at": "2026-07-31T06:47:34Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30610697451"
+        "head_branch": "agent/fdex-ui-preserve-lobehub",
+        "head_sha": "dcea000ce1bef0abb7963ea9cb93e89b823b3b82",
+        "run_number": 10,
+        "created_at": "2026-07-31T09:32:44Z",
+        "updated_at": "2026-07-31T09:33:06Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30620326229"
+      },
+      {
+        "name": "CI",
+        "display_title": "Use FDEX-derived frontend while preserving LobeHub backend",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_branch": "agent/fdex-ui-preserve-lobehub",
+        "head_sha": "0e5cc681dfb6e8f0b29c5cf37e57f9aedbb052f8",
+        "run_number": 680,
+        "created_at": "2026-07-31T09:31:59Z",
+        "updated_at": "2026-07-31T09:32:44Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30620278028"
       }
     ]
   },
@@ -358,7 +358,7 @@
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-31T17:16:36+08:00"
+    "generated_at": "2026-07-31T17:39:19+08:00"
   },
   "components": {
     "letta": {
@@ -373,7 +373,7 @@
     "marker_consistent": true,
     "current_matches_main": false,
     "deploying_matches_main": null,
-    "main_sha": "abfba0110a4e17ce86745a333314b4964a4695c0"
+    "main_sha": "d53ed92d27a9858d004c11f77a41f958d1f93def"
   },
   "reliability": {
     "disk": {
@@ -426,7 +426,7 @@
         "service_scope_verification_failed"
       ],
       "deployment_classification": "external_degraded",
-      "age_seconds_at_publish": 22029,
+      "age_seconds_at_publish": 23392,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }

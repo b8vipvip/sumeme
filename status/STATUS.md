@@ -1,10 +1,10 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-31T17:16:36+08:00
+- **采集时间：** 2026-07-31T17:39:19+08:00
 - **总体状态：** `unhealthy`
 - **开发阶段：** `deployed_unhealthy`
 - **线上版本：** `8077ba1627b5cb68c306cb762c636e6742a42701`
-- **main 最新版本：** `abfba0110a4e17ce86745a333314b4964a4695c0`
+- **main 最新版本：** `d53ed92d27a9858d004c11f77a41f958d1f93def`
 - **线上与 main 同步：** 否
 - **开放 PR：** 0
 - **开放 Issue：** 3
@@ -19,34 +19,34 @@
 - 本地网关：`ok`
 - 公网入口：`ok`
 - 磁盘使用：`84.4%`，剩余 4.4 GiB
-- 内存使用：`63.3%`，可用 1.3 GiB
+- 内存使用：`63.7%`，可用 1.3 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| ai-provider-proxy | running | healthy | Up 6 hours (healthy) |
-| letta | running | healthy | Up 6 hours (healthy) |
-| lobe | running | - | Up 6 hours |
-| memory-gateway | running | healthy | Up 6 hours (healthy) |
-| postgresql | running | healthy | Up 6 hours (healthy) |
-| qdrant | running | healthy | Up 6 hours (healthy) |
-| redis | running | healthy | Up 6 hours (healthy) |
-| rustfs | running | healthy | Up 6 hours (healthy) |
-| searxng | running | - | Up 6 hours |
+| ai-provider-proxy | running | healthy | Up 7 hours (healthy) |
+| letta | running | healthy | Up 7 hours (healthy) |
+| lobe | running | - | Up 7 hours |
+| memory-gateway | running | healthy | Up 7 hours (healthy) |
+| postgresql | running | healthy | Up 7 hours (healthy) |
+| qdrant | running | healthy | Up 7 hours (healthy) |
+| redis | running | healthy | Up 7 hours (healthy) |
+| rustfs | running | healthy | Up 7 hours (healthy) |
+| searxng | running | - | Up 7 hours |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-07-31T09:16:17Z |
-| Smoke production | success | main | 2026-07-31T09:16:11Z |
-| Publish project status | success | main | 2026-07-31T07:55:38Z |
-| Public UI smoke | skipped | main | 2026-07-31T07:54:51Z |
-| Publish project status | success | main | 2026-07-31T07:33:13Z |
-| CI | cancelled | main | 2026-07-31T07:54:47Z |
-| Server UI check | success | main | 2026-07-31T06:54:13Z |
-| Build Android and Windows clients | success | main | 2026-07-31T06:58:52Z |
+| Public UI smoke | skipped | main | 2026-07-31T09:38:52Z |
+| Publish project status | in_progress | main | 2026-07-31T09:38:54Z |
+| CI | failure | main | 2026-07-31T09:38:49Z |
+| Public UI smoke | skipped | main | 2026-07-31T09:37:45Z |
+| CI | success | agent/reuse-lobehub-backend-image | 2026-07-31T09:37:36Z |
+| CI | in_progress | main | 2026-07-31T09:34:50Z |
+| Server UI check | success | main | 2026-07-31T09:34:31Z |
+| Public UI smoke | skipped | main | 2026-07-31T09:33:45Z |
 
 ## 开放 PR
 
