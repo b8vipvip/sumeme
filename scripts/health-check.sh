@@ -15,6 +15,7 @@ read_env() {
 GATEWAY_PORT="$(read_env GATEWAY_PORT 8010)"
 APP_URL="$(read_env APP_URL https://sumeme.mv3.cn)"
 PUBLIC_HEALTH_URL="${PUBLIC_HEALTH_URL:-${APP_URL%/}/sumeme-health}"
+CONTROL_PANEL_URL="${CONTROL_PANEL_URL:-${APP_URL%/}/sumeme-control/index.html}"
 PUBLIC_UI_SMOKE_MODE="$(read_env PUBLIC_UI_SMOKE_MODE required)"
 
 expected_services=(
@@ -76,6 +77,15 @@ if curl --fail --silent --show-error --location --max-time 30 \
   echo "[ OK ] public app HTML: ${APP_URL}"
 else
   echo "[FAIL] public app HTML: ${APP_URL}"
+  failed=1
+fi
+
+control_panel="$(curl --fail --silent --show-error --location --max-time 30 \
+  "${CONTROL_PANEL_URL}" || true)"
+if grep -Fq '<title>SuMeMe 控制台</title>' <<<"${control_panel}"; then
+  echo "[ OK ] SuMeMe control panel: ${CONTROL_PANEL_URL}"
+else
+  echo "[FAIL] SuMeMe control panel missing or invalid: ${CONTROL_PANEL_URL}"
   failed=1
 fi
 
