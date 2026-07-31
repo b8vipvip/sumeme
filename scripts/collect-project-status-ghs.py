@@ -41,12 +41,12 @@ def main() -> int:
     collector_path = Path(args.collector)
     collector = load_collector(collector_path)
 
-    # The native SuMeMe web service owns the public entrypoint. The historical
-    # lobe container is retained only as an internal migration source and must
-    # not make the product unavailable when it is intentionally stopped later.
+    # sumeme-web owns the public FDEX-derived frontend, while lobe remains the
+    # required account, Better Auth, conversation, attachment and application
+    # backend. Both services are required for the product to be usable.
     critical_services = getattr(collector, "CRITICAL_SERVICES", None)
     if isinstance(critical_services, set):
-        critical_services.discard("lobe")
+        critical_services.add("lobe")
         critical_services.add("sumeme-web")
 
     collector.github_snapshot = lambda: snapshot
