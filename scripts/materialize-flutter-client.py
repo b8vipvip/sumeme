@@ -10,6 +10,11 @@ from pathlib import Path
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 CLIENT_SOURCE = REPOSITORY_ROOT / "clients" / "sumeme_app"
 CONTROL_PANEL_SOURCE = REPOSITORY_ROOT / "web" / "control-panel"
+ASSET_BLOCK = (
+    "  assets:\n"
+    "    - assets/lobehub/\n"
+    "    - assets/control-panel/\n"
+)
 
 
 def run(*args: str, cwd: Path | None = None) -> None:
@@ -41,6 +46,18 @@ def validate_web_ui(web_ui: Path) -> None:
     missing = [str(path) for path in required if not path.exists()]
     if missing:
         raise RuntimeError("Bundled LobeHub UI is incomplete: " + ", ".join(missing))
+
+
+def expand_asset_entries(project: Path) -> None:
+    assets = project / "assets"
+    files = sorted(path for path in assets.rglob("*") if path.is_file())
+    if not files:
+        raise RuntimeError(f"No client assets were staged under {assets}")
+
+    entries = "  assets:\n" + "".join(
+        f"    - {path.relative_to(project).as_posix()}\n" for path in files
+    )
+    replace_required(project / "pubspec.yaml", ASSET_BLOCK, entries)
 
 
 def materialize(output: Path, web_ui: Path) -> None:
@@ -77,6 +94,7 @@ def materialize(output: Path, web_ui: Path) -> None:
     assets = output / "assets"
     shutil.copytree(web_ui, assets / "lobehub")
     shutil.copytree(CONTROL_PANEL_SOURCE, assets / "control-panel")
+    expand_asset_entries(output)
 
     manifest = output / "android" / "app" / "src" / "main" / "AndroidManifest.xml"
     replace_required(
