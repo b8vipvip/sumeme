@@ -1,11 +1,11 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-31T20:17:16+08:00
+- **采集时间：** 2026-07-31T20:18:04+08:00
 - **总体状态：** `healthy`
-- **开发阶段：** `deployment_in_progress`
-- **线上版本：** `4a88ed68344be6778b4acbdd484fca8dd89a5d48`
+- **开发阶段：** `deployed_and_stable`
+- **线上版本：** `7fec9c27f5570bca44ebad70fb20c7577a4ea86a`
 - **main 最新版本：** `7fec9c27f5570bca44ebad70fb20c7577a4ea86a`
-- **线上与 main 同步：** 否
+- **线上与 main 同步：** 是
 - **开放 PR：** 0
 - **开放 Issue：** 3
 
@@ -14,16 +14,16 @@
 - 本地网关：`ok`
 - 公网入口：`ok`
 - 磁盘使用：`72.3%`，剩余 9.1 GiB
-- 内存使用：`56.6%`，可用 1.6 GiB
+- 内存使用：`56.2%`，可用 1.6 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| ai-provider-proxy | running | healthy | Up About a minute (healthy) |
+| ai-provider-proxy | running | healthy | Up 2 minutes (healthy) |
 | letta | running | healthy | Up 9 hours (healthy) |
 | lobe | running | - | Up 2 hours |
-| memory-gateway | running | healthy | Up About a minute (healthy) |
+| memory-gateway | running | healthy | Up 2 minutes (healthy) |
 | postgresql | running | healthy | Up 9 hours (healthy) |
 | qdrant | running | healthy | Up 9 hours (healthy) |
 | redis | running | healthy | Up 9 hours (healthy) |
@@ -35,14 +35,14 @@
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-07-31T12:16:58Z |
-| CI | in_progress | main | 2026-07-31T12:15:17Z |
+| Public UI smoke | in_progress | main | 2026-07-31T12:17:47Z |
+| Publish project status | in_progress | main | 2026-07-31T12:17:46Z |
+| Publish project status | success | main | 2026-07-31T12:17:37Z |
+| CI | success | main | 2026-07-31T12:17:39Z |
 | Server UI check | success | main | 2026-07-31T12:14:41Z |
 | Files manager check | success | main | 2026-07-31T12:14:43Z |
 | Public UI smoke | skipped | main | 2026-07-31T12:14:06Z |
 | CI | success | agent/lobehub-files-manager | 2026-07-31T12:14:02Z |
-| Files manager check | success | agent/lobehub-files-manager | 2026-07-31T12:13:25Z |
-| Server UI check | success | agent/lobehub-files-manager | 2026-07-31T12:13:30Z |
 
 ## 开放 PR
 
@@ -56,6 +56,7 @@
 
 ## 最近部署
 
+- `2026-07-31T20:17:25+08:00 7fec9c27f5570bca44ebad70fb20c7577a4ea86a`
 - `2026-07-31T19:28:50+08:00 4a88ed68344be6778b4acbdd484fca8dd89a5d48`
 - `2026-07-31T19:20:51+08:00 9621f00a6ff32e996229c8b3f490ae98dcfd0a96`
 - `2026-07-31T19:10:53+08:00 adddeac3918de48859647db5a8b0e90ec1259196`
@@ -65,15 +66,14 @@
 - `2026-07-31T18:23:32+08:00 rollback_failed target=d090da52d3dfd06711d173949473ac5a514f82a4 failed=1b09d1a909116950acd5ad9c7309d6be23a8ac17 reason=snapshot_restore_failed`
 - `2026-07-31T18:23:31+08:00 rollback_failed target=d090da52d3dfd06711d173949473ac5a514f82a4 failed=1b09d1a909116950acd5ad9c7309d6be23a8ac17 reason=snapshot_restore_failed`
 - `2026-07-31T18:11:46+08:00 d090da52d3dfd06711d173949473ac5a514f82a4`
-- `2026-07-31T18:04:11+08:00 530a1175b64a219d8771218616a5dbd7abf0233b`
 
 ## 可靠性信号
 
 - 状态快照发布时年龄：`0s`
 - 状态快照过期：`no`（阈值 2100s）
-- 部署状态：`in_progress`
-- 当前版本与 main 一致：`no`
-- deploying SHA：`7fec9c27f5570bca44ebad70fb20c7577a4ea86a`
+- 部署状态：`idle`
+- 当前版本与 main 一致：`yes`
+- deploying SHA：`none`
 - 最近发布结果：`success`
 - 磁盘保护级别：`ok`
 - Letta 必需：`no`
