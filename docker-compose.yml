@@ -131,7 +131,7 @@ services:
       ai-provider-proxy:
         condition: service_healthy
     healthcheck:
-      test: [CMD-SHELL, "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8283/v1/health', timeout=5)\""]
+      test: [CMD-SHELL, "python -c \"import os, urllib.request; request = urllib.request.Request('http://localhost:8283/v1/health/', headers={'Authorization': 'Bearer ' + os.environ['LETTA_SERVER_PASSWORD']}); urllib.request.urlopen(request, timeout=5)\""]
       interval: 15s
       timeout: 8s
       retries: 30
