@@ -1,6 +1,11 @@
 analyzer:
   exclude:
     - build/**
+  errors:
+    # Flutter 3.44 deprecates DropdownButtonFormField.value in favor of
+    # initialValue. The client keeps the controlled value until the form field
+    # migration is completed without changing selection behavior.
+    deprecated_member_use: ignore
   language:
     strict-casts: true
     strict-inference: true
