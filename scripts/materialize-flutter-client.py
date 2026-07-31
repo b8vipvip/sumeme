@@ -59,6 +59,13 @@ def materialize(output: Path) -> None:
         if source.exists():
             shutil.copytree(source, destination)
 
+    # Flutter 3.44 separates inherited component themes from ThemeData values.
+    replace_required(
+        output / "lib" / "app_shell.dart",
+        "cardTheme: CardTheme(",
+        "cardTheme: CardThemeData(",
+    )
+
     manifest = output / "android" / "app" / "src" / "main" / "AndroidManifest.xml"
     replace_required(
         manifest,
