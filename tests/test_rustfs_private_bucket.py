@@ -60,13 +60,17 @@ class RustFSPrivateBucketTests(unittest.TestCase):
         self.assertIn('mc stat "$target"', script)
         self.assertNotIn("RUSTFS_LOBE_BUCKET", script)
 
-    def test_deployment_gates_on_private_and_application_smoke(self) -> None:
+    def test_deployment_gates_private_storage_separately_from_live_provider(self) -> None:
         script = DEPLOY_SCRIPT.read_text(encoding="utf-8")
 
         private_index = script.index("bash scripts/smoke-private-object.sh")
         application_index = script.index("bash scripts/smoke-test.sh")
         self.assertLess(private_index, application_index)
-        self.assertIn("private_object_status != 0 || smoke_status != 0", script)
+        self.assertIn("if (( private_object_status != 0 )); then", script)
+        self.assertIn("Critical private-object smoke failed", script)
+        self.assertIn("if (( smoke_status != 0 )); then", script)
+        self.assertIn("classify_and_annotate_smoke", script)
+        self.assertIn('smoke_classification}" == "external_degraded"', script)
 
     def test_scheduled_smoke_uses_ghs_with_pinned_host_key(self) -> None:
         workflow = SMOKE_WORKFLOW.read_text(encoding="utf-8")
