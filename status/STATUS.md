@@ -1,10 +1,10 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-31T17:49:12+08:00
+- **采集时间：** 2026-07-31T17:56:22+08:00
 - **总体状态：** `unhealthy`
 - **开发阶段：** `deployed_unhealthy`
 - **线上版本：** `8077ba1627b5cb68c306cb762c636e6742a42701`
-- **main 最新版本：** `8dfeb2f0293a6fa38602200be92cdefce7d42b2d`
+- **main 最新版本：** `4a8f255c0306ceac8bd38470525c6e1cee180738`
 - **线上与 main 同步：** 否
 - **开放 PR：** 0
 - **开放 Issue：** 3
@@ -18,17 +18,17 @@
 
 - 本地网关：`ok`
 - 公网入口：`ok`
-- 磁盘使用：`84.7%`，剩余 4.3 GiB
-- 内存使用：`60.1%`，可用 1.5 GiB
+- 磁盘使用：`84.8%`，剩余 4.3 GiB
+- 内存使用：`59.9%`，可用 1.5 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| ai-provider-proxy | running | healthy | Up 53 seconds (healthy) |
+| ai-provider-proxy | running | healthy | Up 48 seconds (healthy) |
 | letta | running | healthy | Up 7 hours (healthy) |
-| lobe | running | - | Up 42 seconds |
-| memory-gateway | running | healthy | Up 47 seconds (healthy) |
+| lobe | running | - | Up 36 seconds |
+| memory-gateway | running | healthy | Up 42 seconds (healthy) |
 | postgresql | running | healthy | Up 7 hours (healthy) |
 | qdrant | running | healthy | Up 7 hours (healthy) |
 | redis | running | healthy | Up 7 hours (healthy) |
@@ -39,14 +39,14 @@
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Public UI smoke | in_progress | main | 2026-07-31T09:48:46Z |
-| Publish project status | in_progress | main | 2026-07-31T09:48:49Z |
-| CI | failure | main | 2026-07-31T09:48:43Z |
-| Public UI smoke | skipped | main | 2026-07-31T09:44:56Z |
-| CI | success | agent/tag-running-lobehub-backend | 2026-07-31T09:44:46Z |
-| Public UI smoke | skipped | main | 2026-07-31T09:38:52Z |
-| Publish project status | success | main | 2026-07-31T09:39:37Z |
-| CI | failure | main | 2026-07-31T09:38:49Z |
+| Public UI smoke | skipped | main | 2026-07-31T09:56:01Z |
+| Publish project status | in_progress | main | 2026-07-31T09:56:03Z |
+| CI | failure | main | 2026-07-31T09:55:58Z |
+| Server UI check | success | main | 2026-07-31T09:53:08Z |
+| Public UI smoke | skipped | main | 2026-07-31T09:52:38Z |
+| CI | success | agent/extensionless-web-assets | 2026-07-31T09:52:26Z |
+| Server UI check | success | agent/extensionless-web-assets | 2026-07-31T09:52:09Z |
+| Public UI smoke | skipped | main | 2026-07-31T09:48:56Z |
 
 ## 开放 PR
 
@@ -60,6 +60,7 @@
 
 ## 最近部署
 
+- `2026-07-31T17:55:52+08:00 rollback target=8077ba1627b5cb68c306cb762c636e6742a42701 failed=4a8f255c0306ceac8bd38470525c6e1cee180738`
 - `2026-07-31T17:48:37+08:00 rollback target=8077ba1627b5cb68c306cb762c636e6742a42701 failed=8dfeb2f0293a6fa38602200be92cdefce7d42b2d`
 - `2026-07-31T11:09:27+08:00 8077ba1627b5cb68c306cb762c636e6742a42701`
 - `2026-07-31T11:01:29+08:00 12adbf02d85c101098cb772587540700b20ec644`
@@ -69,7 +70,6 @@
 - `2026-07-31T10:41:36+08:00 rollback target=fe9e4a37401cdda1288226990236536cba85288b failed=a7789e85a59277b609eed3b3f89dc14502e7f245`
 - `2026-07-31T10:22:08+08:00 rollback_failed target=fe9e4a37401cdda1288226990236536cba85288b failed=01892424ec7418e0f712334adb168144797c6d4a reason=runtime_recovery_failed`
 - `2026-07-30T23:41:07+08:00 rollback target=fe9e4a37401cdda1288226990236536cba85288b failed=f8de54d84553526c9a10b79cc21ea0f01b1bb0fc`
-- `2026-07-30T22:33:25+08:00 rollback target=fe9e4a37401cdda1288226990236536cba85288b failed=d80e539434df8d6f89a198a45a067b332addcb3b`
 
 ## 可靠性信号
 
