@@ -1,20 +1,20 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-31T22:06:59+08:00
+- **采集时间：** 2026-07-31T22:11:04+08:00
 - **总体状态：** `healthy`
-- **开发阶段：** `development_in_progress`
-- **线上版本：** `2fd8e6aa85fd2048443029be322d9e14e557a9b4`
-- **main 最新版本：** `2fd8e6aa85fd2048443029be322d9e14e557a9b4`
+- **开发阶段：** `deployed_and_stable`
+- **线上版本：** `ddddf2ee60fa08dbda449942b276dff2fc28e18e`
+- **main 最新版本：** `ddddf2ee60fa08dbda449942b276dff2fc28e18e`
 - **线上与 main 同步：** 是
-- **开放 PR：** 1
+- **开放 PR：** 0
 - **开放 Issue：** 3
 
 ## 健康检查
 
 - 本地网关：`ok`
 - 公网入口：`ok`
-- 磁盘使用：`73.1%`，剩余 8.9 GiB
-- 内存使用：`58.0%`，可用 1.5 GiB
+- 磁盘使用：`73.1%`，剩余 8.8 GiB
+- 内存使用：`58.2%`，可用 1.5 GiB
 
 ## 容器服务
 
@@ -23,30 +23,30 @@
 | ai-provider-proxy | running | healthy | Up 2 minutes (healthy) |
 | letta | running | healthy | Up 11 hours (healthy) |
 | lobe | running | - | Up 4 hours |
-| memory-gateway | running | healthy | Up 2 minutes (healthy) |
+| memory-gateway | running | healthy | Up About a minute (healthy) |
 | postgresql | running | healthy | Up 11 hours (healthy) |
 | qdrant | running | healthy | Up 11 hours (healthy) |
 | redis | running | healthy | Up 11 hours (healthy) |
 | rustfs | running | healthy | Up 11 hours (healthy) |
 | searxng | running | - | Up 11 hours |
-| sumeme-web | running | healthy | Up 2 minutes (healthy) |
+| sumeme-web | running | healthy | Up About a minute (healthy) |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Public UI smoke | in_progress | main | 2026-07-31T14:06:35Z |
-| Publish project status | in_progress | main | 2026-07-31T14:06:34Z |
-| Public UI smoke | skipped | main | 2026-07-31T14:05:50Z |
-| CI | success | agent/protect-admin-bootstrap | 2026-07-31T14:05:35Z |
-| Memory manager check | success | agent/protect-admin-bootstrap | 2026-07-31T14:05:46Z |
-| Server UI check | success | agent/protect-admin-bootstrap | 2026-07-31T14:05:10Z |
-| Admin console and managed client check | success | agent/protect-admin-bootstrap | 2026-07-31T14:05:45Z |
-| Build Android and Windows clients | success | main | 2026-07-31T13:54:55Z |
+| Publish project status | in_progress | main | 2026-07-31T14:10:33Z |
+| Public UI smoke | in_progress | main | 2026-07-31T14:10:33Z |
+| CI | success | main | 2026-07-31T14:10:28Z |
+| Admin console and managed client check | success | main | 2026-07-31T14:07:57Z |
+| Server UI check | success | main | 2026-07-31T14:07:30Z |
+| Memory manager check | success | main | 2026-07-31T14:07:56Z |
+| Public UI smoke | success | main | 2026-07-31T14:07:05Z |
+| Publish project status | success | main | 2026-07-31T14:07:21Z |
 
 ## 开放 PR
 
-- #73 Require a one-time secret for initial administrator setup (`agent/protect-admin-bootstrap` → `main`)
+- 无
 
 ## 开放 Issue
 
@@ -56,6 +56,7 @@
 
 ## 最近部署
 
+- `2026-07-31T22:10:19+08:00 ddddf2ee60fa08dbda449942b276dff2fc28e18e`
 - `2026-07-31T22:06:14+08:00 2fd8e6aa85fd2048443029be322d9e14e557a9b4`
 - `2026-07-31T20:26:00+08:00 1858ee28dacc133f737b8e7028f4bfba05c13a7b`
 - `2026-07-31T20:17:25+08:00 7fec9c27f5570bca44ebad70fb20c7577a4ea86a`
@@ -65,11 +66,10 @@
 - `2026-07-31T18:54:35+08:00 556007b956d06ca04857be3a817a09bba6aa2065`
 - `2026-07-31T18:32:38+08:00 rollback_failed target=d090da52d3dfd06711d173949473ac5a514f82a4 failed=626f41b285a6ef4ee328fb4cba1c274ced733d39 reason=snapshot_restore_failed`
 - `2026-07-31T18:32:38+08:00 rollback_failed target=d090da52d3dfd06711d173949473ac5a514f82a4 failed=626f41b285a6ef4ee328fb4cba1c274ced733d39 reason=snapshot_restore_failed`
-- `2026-07-31T18:23:32+08:00 rollback_failed target=d090da52d3dfd06711d173949473ac5a514f82a4 failed=1b09d1a909116950acd5ad9c7309d6be23a8ac17 reason=snapshot_restore_failed`
 
 ## 可靠性信号
 
-- 状态快照发布时年龄：`1s`
+- 状态快照发布时年龄：`0s`
 - 状态快照过期：`no`（阈值 2100s）
 - 部署状态：`idle`
 - 当前版本与 main 一致：`yes`
