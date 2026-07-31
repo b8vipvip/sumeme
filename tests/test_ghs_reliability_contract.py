@@ -13,11 +13,18 @@ SMOKE_WORKFLOW = ROOT / ".github" / "workflows" / "smoke-production.yml"
 
 
 class GHSReliabilityContractTests(unittest.TestCase):
-    def test_production_and_rollback_rebuild_all_local_runtime_images(self) -> None:
+    def test_production_and_rollback_build_only_services_in_each_snapshot(self) -> None:
         script = DEPLOY_SCRIPT.read_text(encoding="utf-8")
+        build_helper = script.split("build_local_services() {", 1)[1].split(
+            "compose_up_resilient() {", 1
+        )[0]
 
-        command = "docker compose build memory-gateway ai-provider-proxy"
-        self.assertEqual(script.count(command), 2)
+        self.assertIn("docker compose config --services", build_helper)
+        self.assertIn("for candidate in memory-gateway ai-provider-proxy", build_helper)
+        self.assertIn('docker compose build "${build_services[@]}"', build_helper)
+        self.assertEqual(script.count("&& build_local_services"), 1)
+        self.assertEqual(script.count("\nbuild_local_services\n"), 1)
+        self.assertNotIn("docker compose build memory-gateway ai-provider-proxy", script)
         self.assertNotIn("docker compose build memory-gateway || true", script)
 
     def test_rollback_fails_closed_and_records_accurate_history(self) -> None:
@@ -31,13 +38,31 @@ class GHSReliabilityContractTests(unittest.TestCase):
         self.assertIn("rollback_failed target=${CURRENT_SHA}", rollback)
         self.assertIn('if [[ "${rollback_succeeded}" == "true" ]]', rollback)
         self.assertIn("runtime_recovery_failed", rollback)
+        self.assertIn("&& build_local_services", rollback)
         self.assertNotIn("docker compose up -d --remove-orphans || true", rollback)
         self.assertNotIn("bash scripts/health-check.sh || true", rollback)
+
+    def test_live_provider_failure_is_visible_but_not_a_required_rollback(self) -> None:
+        script = DEPLOY_SCRIPT.read_text(encoding="utf-8")
+        smoke_gate = script.split('SMOKE_TEST_MODE="$(read_env SMOKE_TEST_MODE warn)"', 1)[
+            1
+        ]
+
+        self.assertIn("classify_and_annotate_smoke", script)
+        self.assertIn('classification = "external_degraded"', script)
+        self.assertIn('value["deployment_gate"] = "external_degraded"', script)
+        self.assertIn('value["overall"] = "degraded"', script)
+        self.assertIn(
+            '[[ "${smoke_classification}" == "external_degraded" ]]', smoke_gate
+        )
+        self.assertIn("live provider smoke is degraded", smoke_gate)
+        self.assertIn("Critical private-object smoke failed", smoke_gate)
+        self.assertIn("Required local application smoke failed", smoke_gate)
 
     def test_compose_recovery_recreates_containers_without_pruning_volumes(self) -> None:
         script = DEPLOY_SCRIPT.read_text(encoding="utf-8")
         recovery = script.split("compose_up_resilient() {", 1)[1].split(
-            "print_failure_diagnostics() {", 1
+            "classify_and_annotate_smoke() {", 1
         )[0]
 
         self.assertIn("com.docker.compose.project=${project}", recovery)
