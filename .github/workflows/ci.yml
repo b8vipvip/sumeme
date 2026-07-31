@@ -126,7 +126,7 @@ jobs:
     timeout-minutes: 60
     env:
       LOBEHUB_UPSTREAM_REF: v2.2.11
-      LOBEHUB_IMAGE_TAG: sumeme-lobehub:2.2.11-auth-assets-1
+      LOBEHUB_IMAGE_TAG: sumeme-lobehub:2.2.11-auth-control-1
       SSH_HOST: ${{ vars.SUMEME_VPS_HOST }}
       SSH_PORT: ${{ vars.SUMEME_VPS_PORT || '22' }}
       SSH_USER: ${{ vars.SUMEME_VPS_USER || 'sumeme-runner' }}
@@ -176,12 +176,22 @@ jobs:
           path: .upstream/lobehub
           persist-credentials: false
 
-      - name: Patch only the missing auth SPA packaging instruction
+      - name: Stage SuMeMe control panel in the LobeHub public tree
+        if: steps.remote-image.outputs.present != 'true'
+        run: |
+          set -euo pipefail
+          rm -rf .upstream/lobehub/public/sumeme-control
+          cp -R web/control-panel .upstream/lobehub/public/sumeme-control
+          test -s .upstream/lobehub/public/sumeme-control/index.html
+
+      - name: Patch auth SPA and control-panel packaging instructions
         if: steps.remote-image.outputs.present != 'true'
         run: |
           set -euo pipefail
           python scripts/patch-lobehub-auth-assets.py .upstream/lobehub/Dockerfile
           grep -Fx 'COPY --from=builder /app/public/_spa-auth /app/public/_spa-auth' \
+            .upstream/lobehub/Dockerfile
+          grep -Fx 'COPY --from=builder /app/public/sumeme-control /app/public/sumeme-control' \
             .upstream/lobehub/Dockerfile
 
       - name: Build the pinned patched LobeHub image
@@ -197,7 +207,7 @@ jobs:
         if: steps.remote-image.outputs.present != 'true'
         run: |
           set -euo pipefail
-          archive="${RUNNER_TEMP}/sumeme-lobehub-2.2.11-auth-assets-1.tar.gz"
+          archive="${RUNNER_TEMP}/sumeme-lobehub-2.2.11-auth-control-1.tar.gz"
           remote_archive="/tmp/sumeme-lobehub-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.tar.gz"
           docker save "${LOBEHUB_IMAGE_TAG}" | gzip -1 > "${archive}"
           scp -i "${HOME}/.ssh/sumeme_deploy_key" \
@@ -245,8 +255,8 @@ jobs:
 
       - name: Verify the pinned patched LobeHub image is preloaded
         run: |
-          docker image inspect sumeme-lobehub:2.2.11-auth-assets-1 >/dev/null || {
-            echo 'Missing sumeme-lobehub:2.2.11-auth-assets-1 on the self-hosted production runner.' >&2
+          docker image inspect sumeme-lobehub:2.2.11-auth-control-1 >/dev/null || {
+            echo 'Missing sumeme-lobehub:2.2.11-auth-control-1 on the self-hosted production runner.' >&2
             exit 1
           }
 

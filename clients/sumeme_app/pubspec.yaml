@@ -1,7 +1,7 @@
 name: sumeme_app
-description: First-party SuMeMe client shell for Android and Windows.
+description: SuMeMe client with a bundled LobeHub UI for Android and Windows.
 publish_to: none
-version: 0.1.0+1
+version: 0.2.0+1
 
 environment:
   sdk: ">=3.12.0 <4.0.0"
@@ -19,3 +19,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/lobehub/
+    - assets/control-panel/
