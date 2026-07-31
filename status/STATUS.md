@@ -1,10 +1,10 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-31T20:18:04+08:00
+- **采集时间：** 2026-07-31T20:26:46+08:00
 - **总体状态：** `healthy`
 - **开发阶段：** `deployed_and_stable`
-- **线上版本：** `7fec9c27f5570bca44ebad70fb20c7577a4ea86a`
-- **main 最新版本：** `7fec9c27f5570bca44ebad70fb20c7577a4ea86a`
+- **线上版本：** `1858ee28dacc133f737b8e7028f4bfba05c13a7b`
+- **main 最新版本：** `1858ee28dacc133f737b8e7028f4bfba05c13a7b`
 - **线上与 main 同步：** 是
 - **开放 PR：** 0
 - **开放 Issue：** 3
@@ -24,25 +24,25 @@
 | letta | running | healthy | Up 9 hours (healthy) |
 | lobe | running | - | Up 2 hours |
 | memory-gateway | running | healthy | Up 2 minutes (healthy) |
-| postgresql | running | healthy | Up 9 hours (healthy) |
-| qdrant | running | healthy | Up 9 hours (healthy) |
-| redis | running | healthy | Up 9 hours (healthy) |
-| rustfs | running | healthy | Up 9 hours (healthy) |
-| searxng | running | - | Up 9 hours |
+| postgresql | running | healthy | Up 10 hours (healthy) |
+| qdrant | running | healthy | Up 10 hours (healthy) |
+| redis | running | healthy | Up 10 hours (healthy) |
+| rustfs | running | healthy | Up 10 hours (healthy) |
+| searxng | running | - | Up 10 hours |
 | sumeme-web | running | healthy | Up About a minute (healthy) |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Public UI smoke | in_progress | main | 2026-07-31T12:17:47Z |
-| Publish project status | in_progress | main | 2026-07-31T12:17:46Z |
-| Publish project status | success | main | 2026-07-31T12:17:37Z |
-| CI | success | main | 2026-07-31T12:17:39Z |
-| Server UI check | success | main | 2026-07-31T12:14:41Z |
-| Files manager check | success | main | 2026-07-31T12:14:43Z |
-| Public UI smoke | skipped | main | 2026-07-31T12:14:06Z |
-| CI | success | agent/lobehub-files-manager | 2026-07-31T12:14:02Z |
+| Public UI smoke | queued | main | 2026-07-31T12:26:17Z |
+| Publish project status | in_progress | main | 2026-07-31T12:26:20Z |
+| CI | success | main | 2026-07-31T12:26:13Z |
+| Files manager check | success | main | 2026-07-31T12:23:18Z |
+| Server UI check | success | main | 2026-07-31T12:23:35Z |
+| Memory manager check | success | main | 2026-07-31T12:23:48Z |
+| Public UI smoke | skipped | main | 2026-07-31T12:22:29Z |
+| CI | success | agent/memory-browser-manager | 2026-07-31T12:22:25Z |
 
 ## 开放 PR
 
@@ -56,6 +56,7 @@
 
 ## 最近部署
 
+- `2026-07-31T20:26:00+08:00 1858ee28dacc133f737b8e7028f4bfba05c13a7b`
 - `2026-07-31T20:17:25+08:00 7fec9c27f5570bca44ebad70fb20c7577a4ea86a`
 - `2026-07-31T19:28:50+08:00 4a88ed68344be6778b4acbdd484fca8dd89a5d48`
 - `2026-07-31T19:20:51+08:00 9621f00a6ff32e996229c8b3f490ae98dcfd0a96`
@@ -65,7 +66,6 @@
 - `2026-07-31T18:32:38+08:00 rollback_failed target=d090da52d3dfd06711d173949473ac5a514f82a4 failed=626f41b285a6ef4ee328fb4cba1c274ced733d39 reason=snapshot_restore_failed`
 - `2026-07-31T18:23:32+08:00 rollback_failed target=d090da52d3dfd06711d173949473ac5a514f82a4 failed=1b09d1a909116950acd5ad9c7309d6be23a8ac17 reason=snapshot_restore_failed`
 - `2026-07-31T18:23:31+08:00 rollback_failed target=d090da52d3dfd06711d173949473ac5a514f82a4 failed=1b09d1a909116950acd5ad9c7309d6be23a8ac17 reason=snapshot_restore_failed`
-- `2026-07-31T18:11:46+08:00 d090da52d3dfd06711d173949473ac5a514f82a4`
 
 ## 可靠性信号
 

@@ -1,16 +1,15 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-07-31T20:18:04+08:00",
+  "generated_at": "2026-07-31T20:26:46+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "healthy",
   "project_stage": "deployed_and_stable",
   "reasons": [],
   "deployment_in_sync": true,
   "deployment": {
-    "current_sha": "7fec9c27f5570bca44ebad70fb20c7577a4ea86a",
-    "previous_sha": "4a88ed68344be6778b4acbdd484fca8dd89a5d48",
+    "current_sha": "1858ee28dacc133f737b8e7028f4bfba05c13a7b",
+    "previous_sha": "7fec9c27f5570bca44ebad70fb20c7577a4ea86a",
     "history": [
-      "2026-07-31T18:11:46+08:00 d090da52d3dfd06711d173949473ac5a514f82a4",
       "2026-07-31T18:23:31+08:00 rollback_failed target=d090da52d3dfd06711d173949473ac5a514f82a4 failed=1b09d1a909116950acd5ad9c7309d6be23a8ac17 reason=snapshot_restore_failed",
       "2026-07-31T18:23:32+08:00 rollback_failed target=d090da52d3dfd06711d173949473ac5a514f82a4 failed=1b09d1a909116950acd5ad9c7309d6be23a8ac17 reason=snapshot_restore_failed",
       "2026-07-31T18:32:38+08:00 rollback_failed target=d090da52d3dfd06711d173949473ac5a514f82a4 failed=626f41b285a6ef4ee328fb4cba1c274ced733d39 reason=snapshot_restore_failed",
@@ -19,11 +18,12 @@
       "2026-07-31T19:10:53+08:00 adddeac3918de48859647db5a8b0e90ec1259196",
       "2026-07-31T19:20:51+08:00 9621f00a6ff32e996229c8b3f490ae98dcfd0a96",
       "2026-07-31T19:28:50+08:00 4a88ed68344be6778b4acbdd484fca8dd89a5d48",
-      "2026-07-31T20:17:25+08:00 7fec9c27f5570bca44ebad70fb20c7577a4ea86a"
+      "2026-07-31T20:17:25+08:00 7fec9c27f5570bca44ebad70fb20c7577a4ea86a",
+      "2026-07-31T20:26:00+08:00 1858ee28dacc133f737b8e7028f4bfba05c13a7b"
     ],
     "deploying_sha": null,
     "last_result": "success",
-    "last_history_entry": "2026-07-31T20:17:25+08:00 7fec9c27f5570bca44ebad70fb20c7577a4ea86a",
+    "last_history_entry": "2026-07-31T20:26:00+08:00 1858ee28dacc133f737b8e7028f4bfba05c13a7b",
     "state": "idle"
   },
   "health": {
@@ -107,7 +107,7 @@
       "name": "sumeme-postgres",
       "state": "running",
       "health": "healthy",
-      "status": "Up 9 hours (healthy)",
+      "status": "Up 10 hours (healthy)",
       "critical": true
     },
     {
@@ -115,7 +115,7 @@
       "name": "sumeme-qdrant",
       "state": "running",
       "health": "healthy",
-      "status": "Up 9 hours (healthy)",
+      "status": "Up 10 hours (healthy)",
       "critical": true
     },
     {
@@ -123,7 +123,7 @@
       "name": "sumeme-redis",
       "state": "running",
       "health": "healthy",
-      "status": "Up 9 hours (healthy)",
+      "status": "Up 10 hours (healthy)",
       "critical": true
     },
     {
@@ -131,7 +131,7 @@
       "name": "sumeme-rustfs",
       "state": "running",
       "health": "healthy",
-      "status": "Up 9 hours (healthy)",
+      "status": "Up 10 hours (healthy)",
       "critical": true
     },
     {
@@ -139,7 +139,7 @@
       "name": "sumeme-searxng",
       "state": "running",
       "health": "",
-      "status": "Up 9 hours",
+      "status": "Up 10 hours",
       "critical": true
     },
     {
@@ -154,13 +154,13 @@
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 30496575488,
-      "free_bytes": 9817821184,
+      "used_bytes": 30500020224,
+      "free_bytes": 9814376448,
       "used_percent": 72.3
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1709211648,
+      "available_bytes": 1710116864,
       "used_percent": 56.2
     }
   },
@@ -168,7 +168,7 @@
     "schema_version": 1,
     "source": "github-hosted-runner",
     "default_branch": "main",
-    "latest_main_sha": "7fec9c27f5570bca44ebad70fb20c7577a4ea86a",
+    "latest_main_sha": "1858ee28dacc133f737b8e7028f4bfba05c13a7b",
     "open_pull_requests": [],
     "open_issues": [
       {
@@ -195,14 +195,14 @@
         "name": "Public UI smoke",
         "display_title": "Public UI smoke",
         "event": "workflow_run",
-        "status": "in_progress",
+        "status": "queued",
         "conclusion": null,
         "head_branch": "main",
-        "head_sha": "7fec9c27f5570bca44ebad70fb20c7577a4ea86a",
-        "run_number": 54,
-        "created_at": "2026-07-31T12:17:43Z",
-        "updated_at": "2026-07-31T12:17:47Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30630083317"
+        "head_sha": "1858ee28dacc133f737b8e7028f4bfba05c13a7b",
+        "run_number": 56,
+        "created_at": "2026-07-31T12:26:17Z",
+        "updated_at": "2026-07-31T12:26:17Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30630607455"
       },
       {
         "name": "Publish project status",
@@ -211,63 +211,63 @@
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
-        "head_sha": "7fec9c27f5570bca44ebad70fb20c7577a4ea86a",
-        "run_number": 382,
-        "created_at": "2026-07-31T12:17:43Z",
-        "updated_at": "2026-07-31T12:17:46Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30630083248"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "schedule",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "7fec9c27f5570bca44ebad70fb20c7577a4ea86a",
-        "run_number": 381,
-        "created_at": "2026-07-31T12:16:55Z",
-        "updated_at": "2026-07-31T12:17:37Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30630035780"
+        "head_sha": "1858ee28dacc133f737b8e7028f4bfba05c13a7b",
+        "run_number": 383,
+        "created_at": "2026-07-31T12:26:17Z",
+        "updated_at": "2026-07-31T12:26:20Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30630607411"
       },
       {
         "name": "CI",
-        "display_title": "Merge PR #70: native LobeHub files manager",
+        "display_title": "Merge PR #71: account-scoped memory manager",
         "event": "push",
         "status": "completed",
         "conclusion": "success",
         "head_branch": "main",
-        "head_sha": "7fec9c27f5570bca44ebad70fb20c7577a4ea86a",
-        "run_number": 704,
-        "created_at": "2026-07-31T12:14:23Z",
-        "updated_at": "2026-07-31T12:17:39Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30629880178"
-      },
-      {
-        "name": "Server UI check",
-        "display_title": "Merge PR #70: native LobeHub files manager",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "7fec9c27f5570bca44ebad70fb20c7577a4ea86a",
-        "run_number": 27,
-        "created_at": "2026-07-31T12:14:23Z",
-        "updated_at": "2026-07-31T12:14:41Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30629879857"
+        "head_sha": "1858ee28dacc133f737b8e7028f4bfba05c13a7b",
+        "run_number": 706,
+        "created_at": "2026-07-31T12:23:04Z",
+        "updated_at": "2026-07-31T12:26:13Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30630407032"
       },
       {
         "name": "Files manager check",
-        "display_title": "Merge PR #70: native LobeHub files manager",
+        "display_title": "Merge PR #71: account-scoped memory manager",
         "event": "push",
         "status": "completed",
         "conclusion": "success",
         "head_branch": "main",
-        "head_sha": "7fec9c27f5570bca44ebad70fb20c7577a4ea86a",
+        "head_sha": "1858ee28dacc133f737b8e7028f4bfba05c13a7b",
+        "run_number": 4,
+        "created_at": "2026-07-31T12:23:03Z",
+        "updated_at": "2026-07-31T12:23:18Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30630406776"
+      },
+      {
+        "name": "Server UI check",
+        "display_title": "Merge PR #71: account-scoped memory manager",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "1858ee28dacc133f737b8e7028f4bfba05c13a7b",
+        "run_number": 29,
+        "created_at": "2026-07-31T12:23:03Z",
+        "updated_at": "2026-07-31T12:23:35Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30630406770"
+      },
+      {
+        "name": "Memory manager check",
+        "display_title": "Merge PR #71: account-scoped memory manager",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "1858ee28dacc133f737b8e7028f4bfba05c13a7b",
         "run_number": 2,
-        "created_at": "2026-07-31T12:14:23Z",
-        "updated_at": "2026-07-31T12:14:43Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30629879855"
+        "created_at": "2026-07-31T12:23:03Z",
+        "updated_at": "2026-07-31T12:23:48Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30630406752"
       },
       {
         "name": "Public UI smoke",
@@ -276,63 +276,63 @@
         "status": "completed",
         "conclusion": "skipped",
         "head_branch": "main",
-        "head_sha": "4a88ed68344be6778b4acbdd484fca8dd89a5d48",
-        "run_number": 53,
-        "created_at": "2026-07-31T12:14:05Z",
-        "updated_at": "2026-07-31T12:14:06Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30629861179"
+        "head_sha": "7fec9c27f5570bca44ebad70fb20c7577a4ea86a",
+        "run_number": 55,
+        "created_at": "2026-07-31T12:22:28Z",
+        "updated_at": "2026-07-31T12:22:29Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30630370691"
       },
       {
         "name": "CI",
-        "display_title": "Manage LobeHub files and RustFS objects in SuMeMe",
+        "display_title": "Browse, search and manage account-scoped long-term memory",
         "event": "pull_request",
         "status": "completed",
         "conclusion": "success",
-        "head_branch": "agent/lobehub-files-manager",
-        "head_sha": "a5a861eb2b5570b2d3428d2c16e40fa4168cde9b",
-        "run_number": 703,
-        "created_at": "2026-07-31T12:13:14Z",
-        "updated_at": "2026-07-31T12:14:02Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30629809725"
+        "head_branch": "agent/memory-browser-manager",
+        "head_sha": "5aabc55f6b57d679abd50aa85acc10538772f242",
+        "run_number": 705,
+        "created_at": "2026-07-31T12:21:49Z",
+        "updated_at": "2026-07-31T12:22:25Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30630331770"
       },
       {
-        "name": "Files manager check",
-        "display_title": "Manage LobeHub files and RustFS objects in SuMeMe",
+        "name": "Memory manager check",
+        "display_title": "Browse, search and manage account-scoped long-term memory",
         "event": "pull_request",
         "status": "completed",
         "conclusion": "success",
-        "head_branch": "agent/lobehub-files-manager",
-        "head_sha": "a5a861eb2b5570b2d3428d2c16e40fa4168cde9b",
+        "head_branch": "agent/memory-browser-manager",
+        "head_sha": "5aabc55f6b57d679abd50aa85acc10538772f242",
         "run_number": 1,
-        "created_at": "2026-07-31T12:13:13Z",
-        "updated_at": "2026-07-31T12:13:25Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30629809328"
+        "created_at": "2026-07-31T12:21:49Z",
+        "updated_at": "2026-07-31T12:22:33Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30630331349"
       },
       {
         "name": "Server UI check",
-        "display_title": "Manage LobeHub files and RustFS objects in SuMeMe",
+        "display_title": "Browse, search and manage account-scoped long-term memory",
         "event": "pull_request",
         "status": "completed",
         "conclusion": "success",
-        "head_branch": "agent/lobehub-files-manager",
-        "head_sha": "a5a861eb2b5570b2d3428d2c16e40fa4168cde9b",
-        "run_number": 26,
-        "created_at": "2026-07-31T12:13:13Z",
-        "updated_at": "2026-07-31T12:13:30Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30629809251"
+        "head_branch": "agent/memory-browser-manager",
+        "head_sha": "5aabc55f6b57d679abd50aa85acc10538772f242",
+        "run_number": 28,
+        "created_at": "2026-07-31T12:21:49Z",
+        "updated_at": "2026-07-31T12:22:04Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30630331324"
       },
       {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
+        "name": "Files manager check",
+        "display_title": "Browse, search and manage account-scoped long-term memory",
+        "event": "pull_request",
         "status": "completed",
         "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "4a88ed68344be6778b4acbdd484fca8dd89a5d48",
-        "run_number": 380,
-        "created_at": "2026-07-31T11:29:03Z",
-        "updated_at": "2026-07-31T11:29:48Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30627184121"
+        "head_branch": "agent/memory-browser-manager",
+        "head_sha": "5aabc55f6b57d679abd50aa85acc10538772f242",
+        "run_number": 3,
+        "created_at": "2026-07-31T12:21:49Z",
+        "updated_at": "2026-07-31T12:22:18Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30630331316"
       },
       {
         "name": "Public UI smoke",
@@ -341,11 +341,11 @@
         "status": "completed",
         "conclusion": "success",
         "head_branch": "main",
-        "head_sha": "4a88ed68344be6778b4acbdd484fca8dd89a5d48",
-        "run_number": 52,
-        "created_at": "2026-07-31T11:29:03Z",
-        "updated_at": "2026-07-31T11:29:29Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30627184034"
+        "head_sha": "7fec9c27f5570bca44ebad70fb20c7577a4ea86a",
+        "run_number": 54,
+        "created_at": "2026-07-31T12:17:43Z",
+        "updated_at": "2026-07-31T12:18:13Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30630083317"
       }
     ]
   },
@@ -363,7 +363,7 @@
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-31T20:18:04+08:00"
+    "generated_at": "2026-07-31T20:26:46+08:00"
   },
   "components": {
     "letta": {
@@ -378,7 +378,7 @@
     "marker_consistent": true,
     "current_matches_main": true,
     "deploying_matches_main": null,
-    "main_sha": "7fec9c27f5570bca44ebad70fb20c7577a4ea86a"
+    "main_sha": "1858ee28dacc133f737b8e7028f4bfba05c13a7b"
   },
   "reliability": {
     "disk": {
@@ -397,10 +397,10 @@
     },
     "smoke_test": {
       "schema_version": 5,
-      "generated_at": "2026-07-31T20:17:25+08:00",
-      "started_at": "2026-07-31T20:16:14+08:00",
-      "finished_at": "2026-07-31T20:17:25+08:00",
-      "duration_seconds": 71,
+      "generated_at": "2026-07-31T20:26:00+08:00",
+      "started_at": "2026-07-31T20:24:53+08:00",
+      "finished_at": "2026-07-31T20:26:00+08:00",
+      "duration_seconds": 67,
       "overall": "degraded",
       "deployment_gate": "success",
       "memory_provider": "mempalace-letta",
@@ -428,7 +428,7 @@
         "letta_agent_create_failed",
         "letta_recall_delayed"
       ],
-      "age_seconds_at_publish": 39,
+      "age_seconds_at_publish": 46,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }
