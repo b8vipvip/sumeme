@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-07-31T15:55:16+08:00",
+  "generated_at": "2026-07-31T17:16:36+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "unhealthy",
   "project_stage": "deployed_unhealthy",
@@ -77,7 +77,7 @@
       "name": "sumeme-ai-provider-proxy",
       "state": "running",
       "health": "healthy",
-      "status": "Up 5 hours (healthy)",
+      "status": "Up 6 hours (healthy)",
       "critical": false
     },
     {
@@ -85,7 +85,7 @@
       "name": "sumeme-letta",
       "state": "running",
       "health": "healthy",
-      "status": "Up 5 hours (healthy)",
+      "status": "Up 6 hours (healthy)",
       "critical": false,
       "required": false
     },
@@ -94,7 +94,7 @@
       "name": "sumeme-lobehub",
       "state": "running",
       "health": "",
-      "status": "Up 5 hours",
+      "status": "Up 6 hours",
       "critical": false
     },
     {
@@ -102,7 +102,7 @@
       "name": "sumeme-memory-gateway",
       "state": "running",
       "health": "healthy",
-      "status": "Up 5 hours (healthy)",
+      "status": "Up 6 hours (healthy)",
       "critical": true
     },
     {
@@ -110,7 +110,7 @@
       "name": "sumeme-postgres",
       "state": "running",
       "health": "healthy",
-      "status": "Up 5 hours (healthy)",
+      "status": "Up 6 hours (healthy)",
       "critical": true
     },
     {
@@ -118,7 +118,7 @@
       "name": "sumeme-qdrant",
       "state": "running",
       "health": "healthy",
-      "status": "Up 5 hours (healthy)",
+      "status": "Up 6 hours (healthy)",
       "critical": true
     },
     {
@@ -126,7 +126,7 @@
       "name": "sumeme-redis",
       "state": "running",
       "health": "healthy",
-      "status": "Up 5 hours (healthy)",
+      "status": "Up 6 hours (healthy)",
       "critical": true
     },
     {
@@ -134,7 +134,7 @@
       "name": "sumeme-rustfs",
       "state": "running",
       "health": "healthy",
-      "status": "Up 5 hours (healthy)",
+      "status": "Up 6 hours (healthy)",
       "critical": true
     },
     {
@@ -142,21 +142,21 @@
       "name": "sumeme-searxng",
       "state": "running",
       "health": "",
-      "status": "Up 5 hours",
+      "status": "Up 6 hours",
       "critical": true
     }
   ],
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 35568525312,
-      "free_bytes": 4745871360,
+      "used_bytes": 35589160960,
+      "free_bytes": 4725235712,
       "used_percent": 84.4
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1446907904,
-      "used_percent": 62.9
+      "available_bytes": 1432092672,
+      "used_percent": 63.3
     }
   },
   "github": {
@@ -194,9 +194,35 @@
         "conclusion": null,
         "head_branch": "main",
         "head_sha": "abfba0110a4e17ce86745a333314b4964a4695c0",
+        "run_number": 368,
+        "created_at": "2026-07-31T09:16:13Z",
+        "updated_at": "2026-07-31T09:16:17Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30619312668"
+      },
+      {
+        "name": "Smoke production",
+        "display_title": "Smoke production",
+        "event": "schedule",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "abfba0110a4e17ce86745a333314b4964a4695c0",
+        "run_number": 8,
+        "created_at": "2026-07-31T09:15:33Z",
+        "updated_at": "2026-07-31T09:16:11Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30619270241"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "abfba0110a4e17ce86745a333314b4964a4695c0",
         "run_number": 367,
         "created_at": "2026-07-31T07:54:49Z",
-        "updated_at": "2026-07-31T07:54:53Z",
+        "updated_at": "2026-07-31T07:55:38Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30614449110"
       },
       {
@@ -315,32 +341,6 @@
         "created_at": "2026-07-31T06:47:16Z",
         "updated_at": "2026-07-31T06:47:34Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30610697451"
-      },
-      {
-        "name": "Build Android and Windows clients",
-        "display_title": "Replace LobeHub UI with native SuMeMe clients and server console",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/native-sumeme-client-server-ui",
-        "head_sha": "adc251838e1cf05d0f9b877319c58d3ba488d8c6",
-        "run_number": 27,
-        "created_at": "2026-07-31T06:47:16Z",
-        "updated_at": "2026-07-31T06:52:20Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30610697440"
-      },
-      {
-        "name": "Client source check",
-        "display_title": "Replace LobeHub UI with native SuMeMe clients and server console",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/native-sumeme-client-server-ui",
-        "head_sha": "adc251838e1cf05d0f9b877319c58d3ba488d8c6",
-        "run_number": 19,
-        "created_at": "2026-07-31T06:47:16Z",
-        "updated_at": "2026-07-31T06:48:09Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30610697433"
       }
     ]
   },
@@ -358,7 +358,7 @@
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-31T15:55:16+08:00"
+    "generated_at": "2026-07-31T17:16:36+08:00"
   },
   "components": {
     "letta": {
@@ -426,7 +426,7 @@
         "service_scope_verification_failed"
       ],
       "deployment_classification": "external_degraded",
-      "age_seconds_at_publish": 17149,
+      "age_seconds_at_publish": 22029,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }
