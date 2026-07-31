@@ -86,7 +86,12 @@ def materialize(output: Path, web_ui: Path) -> None:
         '    <uses-permission android:name="android.permission.INTERNET" />\n'
         '    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />',
     )
-    replace_required(manifest, 'android:label="sumeme_app"', 'android:label="SuMeMe"')
+    replace_required(
+        manifest,
+        'android:label="sumeme_app"',
+        'android:label="SuMeMe"\n'
+        '        android:usesCleartextTraffic="true"',
+    )
 
     gradle_kts = output / "android" / "app" / "build.gradle.kts"
     replace_required(
