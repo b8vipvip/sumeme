@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-07-31T18:12:29+08:00",
+  "generated_at": "2026-07-31T18:14:16+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "degraded",
   "project_stage": "deployed_degraded",
@@ -76,7 +76,7 @@
       "name": "sumeme-ai-provider-proxy",
       "state": "running",
       "health": "healthy",
-      "status": "Up 2 minutes (healthy)",
+      "status": "Up 3 minutes (healthy)",
       "critical": false
     },
     {
@@ -93,7 +93,7 @@
       "name": "sumeme-lobehub",
       "state": "running",
       "health": "",
-      "status": "Up 9 minutes",
+      "status": "Up 11 minutes",
       "critical": true
     },
     {
@@ -101,7 +101,7 @@
       "name": "sumeme-memory-gateway",
       "state": "running",
       "health": "healthy",
-      "status": "Up 2 minutes (healthy)",
+      "status": "Up 3 minutes (healthy)",
       "critical": true
     },
     {
@@ -149,21 +149,21 @@
       "name": "sumeme-web",
       "state": "running",
       "health": "healthy",
-      "status": "Up About a minute (healthy)",
+      "status": "Up 3 minutes (healthy)",
       "critical": true
     }
   ],
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 35877462016,
-      "free_bytes": 4436934656,
-      "used_percent": 85.1
+      "used_bytes": 35905552384,
+      "free_bytes": 4408844288,
+      "used_percent": 85.2
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1547886592,
-      "used_percent": 60.4
+      "available_bytes": 1560784896,
+      "used_percent": 60.0
     }
   },
   "github": {
@@ -196,27 +196,40 @@
       {
         "name": "Publish project status",
         "display_title": "Publish project status",
-        "event": "workflow_run",
+        "event": "schedule",
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
         "head_sha": "d090da52d3dfd06711d173949473ac5a514f82a4",
+        "run_number": 374,
+        "created_at": "2026-07-31T10:13:44Z",
+        "updated_at": "2026-07-31T10:13:54Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30622820392"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "d090da52d3dfd06711d173949473ac5a514f82a4",
         "run_number": 373,
         "created_at": "2026-07-31T10:12:01Z",
-        "updated_at": "2026-07-31T10:12:10Z",
+        "updated_at": "2026-07-31T10:12:48Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30622714514"
       },
       {
         "name": "Public UI smoke",
         "display_title": "Public UI smoke",
         "event": "workflow_run",
-        "status": "in_progress",
-        "conclusion": null,
+        "status": "completed",
+        "conclusion": "success",
         "head_branch": "main",
         "head_sha": "d090da52d3dfd06711d173949473ac5a514f82a4",
         "run_number": 41,
         "created_at": "2026-07-31T10:12:01Z",
-        "updated_at": "2026-07-31T10:12:04Z",
+        "updated_at": "2026-07-31T10:12:19Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30622714505"
       },
       {
@@ -335,19 +348,6 @@
         "created_at": "2026-07-31T10:00:37Z",
         "updated_at": "2026-07-31T10:01:03Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30622019036"
-      },
-      {
-        "name": "Public UI smoke",
-        "display_title": "Public UI smoke",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "skipped",
-        "head_branch": "main",
-        "head_sha": "4a8f255c0306ceac8bd38470525c6e1cee180738",
-        "run_number": 38,
-        "created_at": "2026-07-31T10:00:02Z",
-        "updated_at": "2026-07-31T10:00:02Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30621975976"
       }
     ]
   },
@@ -365,7 +365,7 @@
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-31T18:12:29+08:00"
+    "generated_at": "2026-07-31T18:14:16+08:00"
   },
   "components": {
     "letta": {
@@ -430,7 +430,7 @@
         "letta_agent_create_failed",
         "letta_recall_delayed"
       ],
-      "age_seconds_at_publish": 43,
+      "age_seconds_at_publish": 150,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }
