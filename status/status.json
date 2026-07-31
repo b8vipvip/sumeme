@@ -1,11 +1,10 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-07-31T10:22:36+08:00",
+  "generated_at": "2026-07-31T10:42:14+08:00",
   "repository": "b8vipvip/sumeme",
-  "overall": "unhealthy",
-  "project_stage": "deployed_unhealthy",
+  "overall": "degraded",
+  "project_stage": "deployment_behind_main",
   "reasons": [
-    "关键服务异常: letta(running/starting)",
     "磁盘使用率达到 80% 警戒线"
   ],
   "deployment_in_sync": false,
@@ -19,11 +18,12 @@
       "2026-07-29T15:03:24+08:00 fe9e4a37401cdda1288226990236536cba85288b",
       "2026-07-30T22:33:25+08:00 rollback target=fe9e4a37401cdda1288226990236536cba85288b failed=d80e539434df8d6f89a198a45a067b332addcb3b",
       "2026-07-30T23:41:07+08:00 rollback target=fe9e4a37401cdda1288226990236536cba85288b failed=f8de54d84553526c9a10b79cc21ea0f01b1bb0fc",
-      "2026-07-31T10:22:08+08:00 rollback_failed target=fe9e4a37401cdda1288226990236536cba85288b failed=01892424ec7418e0f712334adb168144797c6d4a reason=runtime_recovery_failed"
+      "2026-07-31T10:22:08+08:00 rollback_failed target=fe9e4a37401cdda1288226990236536cba85288b failed=01892424ec7418e0f712334adb168144797c6d4a reason=runtime_recovery_failed",
+      "2026-07-31T10:41:36+08:00 rollback target=fe9e4a37401cdda1288226990236536cba85288b failed=a7789e85a59277b609eed3b3f89dc14502e7f245"
     ],
     "deploying_sha": null,
-    "last_result": "unknown",
-    "last_history_entry": "2026-07-31T10:22:08+08:00 rollback_failed target=fe9e4a37401cdda1288226990236536cba85288b failed=01892424ec7418e0f712334adb168144797c6d4a reason=runtime_recovery_failed",
+    "last_result": "rollback",
+    "last_history_entry": "2026-07-31T10:41:36+08:00 rollback target=fe9e4a37401cdda1288226990236536cba85288b failed=a7789e85a59277b609eed3b3f89dc14502e7f245",
     "state": "idle"
   },
   "health": {
@@ -32,16 +32,6 @@
       "status": 200,
       "data": {
         "status": "ok",
-        "memory_provider": "mempalace-letta",
-        "memory_scope_schema": 2,
-        "vault_registry": "sqlite",
-        "default_storage_mode": "cloud",
-        "identity_enforcement": "legacy-client-asserted",
-        "identity_account_source": "client-asserted",
-        "identity_vault_authorization": "legacy-registry-autocreate",
-        "identity_jwks_source": "none",
-        "service_identity_configured": false,
-        "memory_checkpoint": true,
         "mempalace_enabled": true,
         "letta_enabled": true,
         "relay_base_url": "https://apihost.cn"
@@ -52,16 +42,6 @@
       "status": 200,
       "data": {
         "status": "ok",
-        "memory_provider": "mempalace-letta",
-        "memory_scope_schema": 2,
-        "vault_registry": "sqlite",
-        "default_storage_mode": "cloud",
-        "identity_enforcement": "legacy-client-asserted",
-        "identity_account_source": "client-asserted",
-        "identity_vault_authorization": "legacy-registry-autocreate",
-        "identity_jwks_source": "none",
-        "service_identity_configured": false,
-        "memory_checkpoint": true,
         "mempalace_enabled": true,
         "letta_enabled": true,
         "relay_base_url": "https://apihost.cn"
@@ -70,19 +50,11 @@
   },
   "services": [
     {
-      "service": "ai-provider-proxy",
-      "name": "sumeme-ai-provider-proxy",
-      "state": "running",
-      "health": "healthy",
-      "status": "Up 58 seconds (healthy)",
-      "critical": false
-    },
-    {
       "service": "letta",
       "name": "sumeme-letta",
       "state": "running",
-      "health": "starting",
-      "status": "Up 53 seconds (health: starting)",
+      "health": "healthy",
+      "status": "Up 2 minutes (healthy)",
       "critical": true
     },
     {
@@ -90,7 +62,7 @@
       "name": "sumeme-lobehub",
       "state": "running",
       "health": "",
-      "status": "Up 42 seconds",
+      "status": "Up 47 seconds",
       "critical": true
     },
     {
@@ -98,7 +70,7 @@
       "name": "sumeme-memory-gateway",
       "state": "running",
       "health": "healthy",
-      "status": "Up 48 seconds (healthy)",
+      "status": "Up 52 seconds (healthy)",
       "critical": true
     },
     {
@@ -106,7 +78,7 @@
       "name": "sumeme-postgres",
       "state": "running",
       "health": "healthy",
-      "status": "Up 58 seconds (healthy)",
+      "status": "Up 2 minutes (healthy)",
       "critical": true
     },
     {
@@ -114,7 +86,7 @@
       "name": "sumeme-qdrant",
       "state": "running",
       "health": "healthy",
-      "status": "Up 58 seconds (healthy)",
+      "status": "Up 2 minutes (healthy)",
       "critical": true
     },
     {
@@ -122,7 +94,7 @@
       "name": "sumeme-redis",
       "state": "running",
       "health": "healthy",
-      "status": "Up 58 seconds (healthy)",
+      "status": "Up 2 minutes (healthy)",
       "critical": true
     },
     {
@@ -130,7 +102,7 @@
       "name": "sumeme-rustfs",
       "state": "running",
       "health": "healthy",
-      "status": "Up 58 seconds (healthy)",
+      "status": "Up 2 minutes (healthy)",
       "critical": true
     },
     {
@@ -138,29 +110,39 @@
       "name": "sumeme-searxng",
       "state": "running",
       "health": "",
-      "status": "Up 58 seconds",
+      "status": "Up 2 minutes",
       "critical": true
     }
   ],
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 35319865344,
-      "free_bytes": 4994531328,
-      "used_percent": 83.8
+      "used_bytes": 35702104064,
+      "free_bytes": 4612292608,
+      "used_percent": 84.7
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1476714496,
-      "used_percent": 62.2
+      "available_bytes": 1534013440,
+      "used_percent": 60.7
     }
   },
   "github": {
     "schema_version": 1,
     "source": "github-hosted-runner",
     "default_branch": "main",
-    "latest_main_sha": "01892424ec7418e0f712334adb168144797c6d4a",
-    "open_pull_requests": [],
+    "latest_main_sha": "a7789e85a59277b609eed3b3f89dc14502e7f245",
+    "open_pull_requests": [
+      {
+        "number": 51,
+        "title": "Build first Android APK and Windows EXE clients",
+        "draft": true,
+        "head": "agent/first-flutter-clients",
+        "base": "main",
+        "updated_at": "2026-07-31T02:40:37Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/pull/51"
+      }
+    ],
     "open_issues": [
       {
         "number": 10,
@@ -189,10 +171,88 @@
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
+        "head_sha": "a7789e85a59277b609eed3b3f89dc14502e7f245",
+        "run_number": 356,
+        "created_at": "2026-07-31T02:41:44Z",
+        "updated_at": "2026-07-31T02:41:53Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30599643669"
+      },
+      {
+        "name": "CI",
+        "display_title": "Build first Android APK and Windows EXE clients",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/first-flutter-clients",
+        "head_sha": "46274c93c1cd05052a9522c98aac9c2e4739857a",
+        "run_number": 633,
+        "created_at": "2026-07-31T02:40:40Z",
+        "updated_at": "2026-07-31T02:41:26Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30599597954"
+      },
+      {
+        "name": "Build Android and Windows clients",
+        "display_title": "Build first Android APK and Windows EXE clients",
+        "event": "pull_request",
+        "status": "in_progress",
+        "conclusion": null,
+        "head_branch": "agent/first-flutter-clients",
+        "head_sha": "46274c93c1cd05052a9522c98aac9c2e4739857a",
+        "run_number": 1,
+        "created_at": "2026-07-31T02:40:40Z",
+        "updated_at": "2026-07-31T02:40:49Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30599597720"
+      },
+      {
+        "name": "CI",
+        "display_title": "Merge PR #50: separate live provider deployment gate",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_branch": "main",
+        "head_sha": "a7789e85a59277b609eed3b3f89dc14502e7f245",
+        "run_number": 632,
+        "created_at": "2026-07-31T02:37:47Z",
+        "updated_at": "2026-07-31T02:41:42Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30599473010"
+      },
+      {
+        "name": "CI",
+        "display_title": "Separate live provider degradation from critical deployment rollback",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/separate-live-provider-gate",
+        "head_sha": "59da3a209e23937e90107ed6b3f9b2165f427e4f",
+        "run_number": 631,
+        "created_at": "2026-07-31T02:36:48Z",
+        "updated_at": "2026-07-31T02:37:32Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30599430092"
+      },
+      {
+        "name": "CI",
+        "display_title": "Separate live provider degradation from critical deployment rollback",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_branch": "agent/separate-live-provider-gate",
+        "head_sha": "426c946e705a37cdd0c232758fa1cd453094bfdb",
+        "run_number": 630,
+        "created_at": "2026-07-31T02:35:42Z",
+        "updated_at": "2026-07-31T02:36:15Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30599382189"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
         "head_sha": "01892424ec7418e0f712334adb168144797c6d4a",
         "run_number": 355,
         "created_at": "2026-07-31T02:22:16Z",
-        "updated_at": "2026-07-31T02:22:20Z",
+        "updated_at": "2026-07-31T02:22:50Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30598795891"
       },
       {
@@ -259,84 +319,6 @@
         "created_at": "2026-07-31T01:35:44Z",
         "updated_at": "2026-07-31T01:36:25Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30596749436"
-      },
-      {
-        "name": "CI",
-        "display_title": "Fail closed on rollback and scheduled smoke",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/fix-production-reliability",
-        "head_sha": "981247078ec0e3b1db80e29850944740c0d2f4d4",
-        "run_number": 624,
-        "created_at": "2026-07-31T01:34:07Z",
-        "updated_at": "2026-07-31T01:34:46Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30596678171"
-      },
-      {
-        "name": "CI",
-        "display_title": "Revalidate all previously blocked build and production stages",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/revalidate-blocked-stages",
-        "head_sha": "341966a47a107b769bd4f45cfc998045c6c9347b",
-        "run_number": 623,
-        "created_at": "2026-07-31T01:27:54Z",
-        "updated_at": "2026-07-31T01:28:34Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30596403850"
-      },
-      {
-        "name": "Revalidate blocked stages",
-        "display_title": "Revalidate all previously blocked build and production stages",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/revalidate-blocked-stages",
-        "head_sha": "341966a47a107b769bd4f45cfc998045c6c9347b",
-        "run_number": 5,
-        "created_at": "2026-07-31T01:27:54Z",
-        "updated_at": "2026-07-31T01:29:38Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30596403637"
-      },
-      {
-        "name": "CI",
-        "display_title": "Revalidate all previously blocked build and production stages",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/revalidate-blocked-stages",
-        "head_sha": "82c0f4af1d9ede18f2d862b3c9225297021bd37e",
-        "run_number": 622,
-        "created_at": "2026-07-31T01:27:31Z",
-        "updated_at": "2026-07-31T01:28:03Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30596387217"
-      },
-      {
-        "name": "Revalidate blocked stages",
-        "display_title": "Revalidate all previously blocked build and production stages",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/revalidate-blocked-stages",
-        "head_sha": "82c0f4af1d9ede18f2d862b3c9225297021bd37e",
-        "run_number": 4,
-        "created_at": "2026-07-31T01:27:30Z",
-        "updated_at": "2026-07-31T01:29:15Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30596386999"
-      },
-      {
-        "name": "CI",
-        "display_title": "Revalidate all previously blocked build and production stages",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/revalidate-blocked-stages",
-        "head_sha": "8af4abf12926415c4ba66312dd068a77a8cb29db",
-        "run_number": 621,
-        "created_at": "2026-07-31T01:15:48Z",
-        "updated_at": "2026-07-31T01:16:24Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30595872019"
       }
     ]
   },
@@ -354,14 +336,14 @@
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-31T10:22:36+08:00"
+    "generated_at": "2026-07-31T10:42:14+08:00"
   },
   "deployment_consistency": {
     "state": "idle",
     "marker_consistent": true,
     "current_matches_main": false,
     "deploying_matches_main": null,
-    "main_sha": "01892424ec7418e0f712334adb168144797c6d4a"
+    "main_sha": "a7789e85a59277b609eed3b3f89dc14502e7f245"
   },
   "reliability": {
     "disk": {
@@ -372,10 +354,10 @@
     },
     "smoke_test": {
       "schema_version": 5,
-      "generated_at": "2026-07-31T10:22:08+08:00",
-      "started_at": "2026-07-31T10:22:04+08:00",
-      "finished_at": "2026-07-31T10:22:08+08:00",
-      "duration_seconds": 4,
+      "generated_at": "2026-07-31T10:39:00+08:00",
+      "started_at": "2026-07-31T10:38:58+08:00",
+      "finished_at": "2026-07-31T10:39:00+08:00",
+      "duration_seconds": 2,
       "overall": "failure",
       "deployment_gate": "failure",
       "memory_provider": "mempalace-letta",
@@ -405,7 +387,7 @@
         "letta_recall_delayed",
         "service_scope_verification_failed"
       ],
-      "age_seconds_at_publish": 28,
+      "age_seconds_at_publish": 194,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }
