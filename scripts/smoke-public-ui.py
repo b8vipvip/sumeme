@@ -24,16 +24,17 @@ class AssetParser(HTMLParser):
         if tag.lower() != "link" or not values.get("href"):
             return
         rel = {part.lower() for part in values.get("rel", "").split()}
-        if rel & {"stylesheet", "modulepreload", "preload"}:
+        if rel & {"stylesheet", "modulepreload", "preload", "icon"}:
             self.assets.append(("link", values["href"]))
 
 
-def fetch(url: str, timeout: int) -> dict[str, Any]:
+def fetch(url: str, timeout: int, *, accept: str | None = None) -> dict[str, Any]:
     request = urllib.request.Request(
         url,
         headers={
-            "Accept": "text/html,application/xhtml+xml,application/javascript,text/css,*/*;q=0.8",
-            "User-Agent": "sumeme-public-ui-smoke/2.0",
+            "Accept": accept
+            or "text/html,application/xhtml+xml,application/javascript,text/css,*/*;q=0.8",
+            "User-Agent": "sumeme-public-ui-smoke/3.0",
         },
     )
     try:
@@ -66,17 +67,24 @@ def fetch(url: str, timeout: int) -> dict[str, Any]:
         }
 
 
+def public_summary(result: dict[str, Any]) -> dict[str, Any]:
+    return {key: value for key, value in result.items() if key != "body"}
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Verify the native public SuMeMe server UI and referenced assets."
+        description=(
+            "Verify the FDEX-derived SuMeMe public frontend, referenced assets, "
+            "and the preserved LobeHub authentication gateway."
+        )
     )
     parser.add_argument("url", nargs="?", default="https://sumeme.mv3.cn/")
     parser.add_argument("--timeout", type=int, default=20)
     args = parser.parse_args()
 
-    page = fetch(args.url, args.timeout)
-    page_summary = {key: value for key, value in page.items() if key != "body"}
-    print(json.dumps({"page": page_summary}, ensure_ascii=False))
+    root_url = urllib.parse.urljoin(args.url, "/")
+    page = fetch(root_url, args.timeout)
+    print(json.dumps({"page": public_summary(page)}, ensure_ascii=False))
     if not page["ok"]:
         return 1
 
@@ -89,13 +97,16 @@ def main() -> int:
     required_markers = (
         "<title>SuMeMe · 服务端</title>",
         "服务端管理中心",
-        "/api/gateway/",
+        "SUMEME OPERATIONS CENTER",
+        "LobeHub 后端",
+        "/static/admin.css",
+        "/static/app.js",
         "/sumeme-health",
     )
     missing_markers = [marker for marker in required_markers if marker not in html]
     if missing_markers:
         print(
-            "Native SuMeMe UI markers are missing: " + ", ".join(missing_markers),
+            "SuMeMe frontend markers are missing: " + ", ".join(missing_markers),
             file=sys.stderr,
         )
         return 1
@@ -121,32 +132,73 @@ def main() -> int:
         summary = {
             "kind": kind,
             "reference": raw_url,
-            **{key: value for key, value in result.items() if key != "body"},
+            **public_summary(result),
         }
         print(json.dumps({"asset": summary}, ensure_ascii=False))
         if not result["ok"]:
             failures.append(summary)
 
-    self_contained = checked == 0 and "<style>" in html and "<script>" in html
+    signin_url = urllib.parse.urljoin(final_url, "/signin?callbackUrl=%2F")
+    signin = fetch(signin_url, args.timeout)
+    signin_html = signin["body"].decode("utf-8", errors="replace")
+    signin_ok = bool(
+        signin["ok"]
+        and "登录 SuMeMe" in signin_html
+        and "/static/app.js" in signin_html
+        and '<script src="/_spa-auth/' not in signin_html
+    )
+    print(
+        json.dumps(
+            {
+                "signin": {
+                    **public_summary(signin),
+                    "sumeme_login": signin_ok,
+                }
+            },
+            ensure_ascii=False,
+        )
+    )
+    if not signin_ok:
+        failures.append(
+            {
+                "kind": "signin",
+                "reference": "/signin?callbackUrl=%2F",
+                **public_summary(signin),
+            }
+        )
+
+    session_url = urllib.parse.urljoin(final_url, "/api/auth/get-session")
+    session = fetch(session_url, args.timeout, accept="application/json")
+    print(json.dumps({"auth_session": public_summary(session)}, ensure_ascii=False))
+    if not session["ok"]:
+        failures.append(
+            {
+                "kind": "auth_api",
+                "reference": "/api/auth/get-session",
+                **public_summary(session),
+            }
+        )
+
     print(
         json.dumps(
             {
                 "summary": {
                     "final_url": final_url,
                     "assets_checked": checked,
-                    "asset_failures": len(failures),
-                    "self_contained": self_contained,
+                    "asset_failures": len(
+                        [item for item in failures if item.get("kind") in {"script", "link"}]
+                    ),
+                    "signin_ok": signin_ok,
+                    "auth_session_ok": bool(session["ok"]),
+                    "failures": len(failures),
                 }
             },
             ensure_ascii=False,
         )
     )
 
-    if checked == 0 and not self_contained:
-        print(
-            "No first-party assets were referenced and the document is not a self-contained UI.",
-            file=sys.stderr,
-        )
+    if checked == 0:
+        print("No first-party frontend assets were referenced.", file=sys.stderr)
         return 1
     return 1 if failures else 0
 
