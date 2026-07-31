@@ -47,6 +47,7 @@ jobs:
           python -m compileall scripts tests
           python -m unittest discover -s tests -v
           bash -n scripts/*.sh
+          mkdir -p "${RUNNER_TEMP}/disk-check" "${RUNNER_TEMP}/cleanup-check"
           DEPLOY_DIR="${RUNNER_TEMP}/disk-check" \
             DISK_WARN_PERCENT=99 DISK_FAIL_PERCENT=100 DISK_MIN_FREE_GIB=0 \
             bash scripts/preflight-disk.sh --json | python -m json.tool >/dev/null
