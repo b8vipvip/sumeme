@@ -13,8 +13,10 @@ UI_SMOKE = ROOT / "scripts" / "smoke-public-ui.py"
 SERVER_UI = ROOT / "web" / "server-ui" / "index.html"
 SERVER_JS = ROOT / "web" / "server-ui" / "static" / "app.js"
 CHAT_WRITE_JS = ROOT / "web" / "server-ui" / "static" / "chat-write.js"
+CHAT_ATTACHMENTS_JS = ROOT / "web" / "server-ui" / "static" / "chat-attachments.js"
 SERVER_CSS = ROOT / "web" / "server-ui" / "static" / "admin.css"
 CONVERSATION_CSS = ROOT / "web" / "server-ui" / "static" / "conversations.css"
+ATTACHMENT_CSS = ROOT / "web" / "server-ui" / "static" / "chat-attachments.css"
 SERVER_NGINX = ROOT / "web" / "server-ui" / "nginx.conf"
 SERVER_DOCKERFILE = ROOT / "web" / "server-ui" / "Dockerfile"
 
@@ -124,6 +126,31 @@ class PublicUIDeliveryContractTests(unittest.TestCase):
         self.assertIn("/assets/chat-runtime", nginx)
         self.assertIn("chat-write.js", nginx)
         self.assertIn("default_type application/javascript", nginx)
+
+    def test_attachments_use_lobehub_hash_presign_record_and_agent_file_ids(self) -> None:
+        javascript = CHAT_ATTACHMENTS_JS.read_text(encoding="utf-8")
+        css = ATTACHMENT_CSS.read_text(encoding="utf-8")
+        nginx = SERVER_NGINX.read_text(encoding="utf-8")
+
+        self.assertIn("crypto.subtle.digest('SHA-256'", javascript)
+        self.assertIn("file.checkFileHash", javascript)
+        self.assertIn("upload.createS3PreSignedUrl", javascript)
+        self.assertIn("file.createFile", javascript)
+        self.assertIn("request.open('PUT', url)", javascript)
+        self.assertIn("source: 'sumeme-chat'", javascript)
+        self.assertIn("value.json.fileIds", javascript)
+        self.assertIn("value[0].json.fileIds", javascript)
+        self.assertIn("/trpc/aiAgent.execAgent", javascript)
+        self.assertNotIn("/api/v1/files", javascript)
+        self.assertNotIn("Authorization", javascript)
+        self.assertNotIn("file.removeFile", javascript)
+        self.assertIn("textContent = item.file.name", javascript)
+        self.assertIn(".chat-attachment-item", css)
+        self.assertIn(".attachment-progress", css)
+        self.assertIn("/assets/attachment-style", nginx)
+        self.assertIn("/assets/chat-attachments", nginx)
+        self.assertIn("chat-attachments.css", nginx)
+        self.assertIn("chat-attachments.js", nginx)
 
     def test_health_check_requires_sumeme_frontend(self) -> None:
         health = HEALTH_CHECK.read_text(encoding="utf-8")
