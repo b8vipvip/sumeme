@@ -73,12 +73,34 @@ else
 fi
 
 public_app="$(curl --fail --silent --show-error --location --max-time 30 \
-  "${APP_URL}" || true)"
+  "${APP_URL%/}/" || true)"
 if grep -Fq '<title>SuMeMe · 服务端</title>' <<<"${public_app}" && \
-   grep -Fq '服务端管理中心' <<<"${public_app}"; then
-  echo "[ OK ] native SuMeMe server UI: ${APP_URL}"
+   grep -Fq '服务端管理中心' <<<"${public_app}" && \
+   grep -Fq 'SUMEME OPERATIONS CENTER' <<<"${public_app}" && \
+   grep -Fq 'LobeHub 后端' <<<"${public_app}"; then
+  echo "[ OK ] FDEX-derived SuMeMe frontend: ${APP_URL}"
 else
-  echo "[FAIL] native SuMeMe server UI missing or invalid: ${APP_URL}"
+  echo "[FAIL] FDEX-derived SuMeMe frontend missing or invalid: ${APP_URL}"
+  failed=1
+fi
+
+signin_app="$(curl --fail --silent --show-error --location --max-time 30 \
+  "${APP_URL%/}/signin?callbackUrl=%2F" || true)"
+if grep -Fq '登录 SuMeMe' <<<"${signin_app}" && \
+   grep -Fq '/static/app.js' <<<"${signin_app}" && \
+   ! grep -Fq '<script src="/_spa-auth/' <<<"${signin_app}"; then
+  echo "[ OK ] SuMeMe login frontend"
+else
+  echo "[FAIL] SuMeMe login frontend is missing or still depends on the old auth SPA"
+  failed=1
+fi
+
+if curl --fail --silent --show-error --max-time 30 \
+  -H 'Accept: application/json' \
+  "${APP_URL%/}/api/auth/get-session" >/dev/null; then
+  echo "[ OK ] LobeHub Better Auth session API"
+else
+  echo "[FAIL] LobeHub Better Auth session API"
   failed=1
 fi
 
@@ -98,12 +120,12 @@ case "${PUBLIC_UI_SMOKE_MODE}" in
     done
 
     if [[ "${ui_ok}" == "true" ]]; then
-      echo "[ OK ] public SuMeMe UI"
+      echo "[ OK ] public SuMeMe UI and LobeHub auth gateway"
     elif [[ "${PUBLIC_UI_SMOKE_MODE}" == "required" ]]; then
-      echo "[FAIL] public SuMeMe UI is unavailable or invalid"
+      echo "[FAIL] public SuMeMe UI or LobeHub auth gateway is unavailable"
       failed=1
     else
-      echo "[WARN] public SuMeMe UI is unavailable or invalid"
+      echo "[WARN] public SuMeMe UI or LobeHub auth gateway is unavailable"
     fi
     ;;
   *)
