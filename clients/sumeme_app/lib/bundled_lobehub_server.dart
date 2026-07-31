@@ -6,6 +6,9 @@ import 'package:flutter/services.dart';
 class BundledLobeHubServer {
   BundledLobeHubServer({required this.remoteOrigin});
 
+  static const String _localSecureCookiePrefix = 'SuMeMeSecure-';
+  static const String _localHostCookiePrefix = 'SuMeMeHost-';
+
   final Uri remoteOrigin;
   final HttpClient _upstreamClient = HttpClient()..autoUncompress = true;
   HttpServer? _server;
@@ -173,6 +176,7 @@ class BundledLobeHubServer {
       'accept-encoding',
       'origin',
       'referer',
+      'cookie',
     };
     downstream.headers.forEach((String name, List<String> values) {
       if (skippedRequestHeaders.contains(name.toLowerCase())) {
@@ -189,6 +193,13 @@ class BundledLobeHubServer {
     final String? referer = downstream.headers.value('referer');
     if (referer != null) {
       upstream.headers.set('referer', _rewriteRequestUrl(referer));
+    }
+    final String? cookies = downstream.headers.value(HttpHeaders.cookieHeader);
+    if (cookies != null && cookies.isNotEmpty) {
+      upstream.headers.set(
+        HttpHeaders.cookieHeader,
+        _rewriteCookieHeaderForRemote(cookies),
+      );
     }
     upstream.headers.set('x-sumeme-client', 'bundled-lobehub');
     await upstream.addStream(downstream);
@@ -214,12 +225,7 @@ class BundledLobeHubServer {
     });
 
     for (final Cookie cookie in source.cookies) {
-      cookie.domain = null;
-      cookie.secure = false;
-      if (cookie.sameSite == SameSite.none) {
-        cookie.sameSite = SameSite.lax;
-      }
-      downstream.response.cookies.add(cookie);
+      downstream.response.cookies.add(_localCookie(cookie));
     }
 
     final String? location = source.headers.value(HttpHeaders.locationHeader);
@@ -232,6 +238,52 @@ class BundledLobeHubServer {
 
     await downstream.response.addStream(source);
     await downstream.response.close();
+  }
+
+  Cookie _localCookie(Cookie source) {
+    final Cookie cookie = Cookie(_localCookieName(source.name), source.value)
+      ..domain = null
+      ..expires = source.expires
+      ..httpOnly = source.httpOnly
+      ..maxAge = source.maxAge
+      ..path = source.path ?? '/'
+      ..secure = false
+      ..sameSite = source.sameSite == SameSite.none
+          ? SameSite.lax
+          : source.sameSite;
+    return cookie;
+  }
+
+  String _localCookieName(String name) {
+    if (name.startsWith('__Secure-')) {
+      return '$_localSecureCookiePrefix${name.substring('__Secure-'.length)}';
+    }
+    if (name.startsWith('__Host-')) {
+      return '$_localHostCookiePrefix${name.substring('__Host-'.length)}';
+    }
+    return name;
+  }
+
+  String _remoteCookieName(String name) {
+    if (name.startsWith(_localSecureCookiePrefix)) {
+      return '__Secure-${name.substring(_localSecureCookiePrefix.length)}';
+    }
+    if (name.startsWith(_localHostCookiePrefix)) {
+      return '__Host-${name.substring(_localHostCookiePrefix.length)}';
+    }
+    return name;
+  }
+
+  String _rewriteCookieHeaderForRemote(String header) {
+    return header.split(';').map((String item) {
+      final String part = item.trim();
+      final int equals = part.indexOf('=');
+      if (equals <= 0) {
+        return part;
+      }
+      final String name = part.substring(0, equals);
+      return '${_remoteCookieName(name)}${part.substring(equals)}';
+    }).join('; ');
   }
 
   String _rewriteRequestUrl(String rawUrl) {
