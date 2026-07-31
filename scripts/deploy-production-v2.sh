@@ -352,12 +352,17 @@ case "${SMOKE_TEST_MODE}" in
     echo "Production smoke test is disabled."
     ;;
   warn|required)
-    set +e
-    DEPLOY_DIR="${DEPLOY_DIR}" bash scripts/smoke-private-object.sh
-    private_object_status=$?
-    DEPLOY_DIR="${DEPLOY_DIR}" bash scripts/smoke-test.sh
-    smoke_status=$?
-    set -e
+    if DEPLOY_DIR="${DEPLOY_DIR}" bash scripts/smoke-private-object.sh; then
+      private_object_status=0
+    else
+      private_object_status=$?
+    fi
+
+    if DEPLOY_DIR="${DEPLOY_DIR}" bash scripts/smoke-test.sh; then
+      smoke_status=0
+    else
+      smoke_status=$?
+    fi
 
     if (( private_object_status != 0 )); then
       echo "Critical private-object smoke failed; refusing to publish the release." >&2
