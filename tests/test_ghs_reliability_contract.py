@@ -59,6 +59,27 @@ class GHSReliabilityContractTests(unittest.TestCase):
         self.assertIn("Critical private-object smoke failed", smoke_gate)
         self.assertIn("Required local application smoke failed", smoke_gate)
 
+    def test_expected_smoke_failures_are_captured_before_err_trap(self) -> None:
+        script = DEPLOY_SCRIPT.read_text(encoding="utf-8")
+        smoke_gate = script.split('SMOKE_TEST_MODE="$(read_env SMOKE_TEST_MODE warn)"', 1)[
+            1
+        ]
+
+        self.assertIn(
+            'if DEPLOY_DIR="${DEPLOY_DIR}" bash scripts/smoke-private-object.sh; then',
+            smoke_gate,
+        )
+        self.assertIn(
+            'if DEPLOY_DIR="${DEPLOY_DIR}" bash scripts/smoke-test.sh; then',
+            smoke_gate,
+        )
+        self.assertIn("private_object_status=$?", smoke_gate)
+        self.assertIn("smoke_status=$?", smoke_gate)
+        self.assertNotIn(
+            'set +e\n    DEPLOY_DIR="${DEPLOY_DIR}" bash scripts/smoke-private-object.sh',
+            smoke_gate,
+        )
+
     def test_compose_recovery_recreates_containers_without_pruning_volumes(self) -> None:
         script = DEPLOY_SCRIPT.read_text(encoding="utf-8")
         recovery = script.split("compose_up_resilient() {", 1)[1].split(
