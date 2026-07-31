@@ -1,6 +1,6 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-08-01T05:48:03+08:00
+- **采集时间：** 2026-08-01T06:51:56+08:00
 - **总体状态：** `healthy`
 - **开发阶段：** `deployed_and_stable`
 - **线上版本：** `ddddf2ee60fa08dbda449942b276dff2fc28e18e`
@@ -13,36 +13,36 @@
 
 - 本地网关：`ok`
 - 公网入口：`ok`
-- 磁盘使用：`73.7%`，剩余 8.6 GiB
-- 内存使用：`53.6%`，可用 1.7 GiB
+- 磁盘使用：`73.8%`，剩余 8.6 GiB
+- 内存使用：`54.2%`，可用 1.7 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| ai-provider-proxy | running | healthy | Up 8 hours (healthy) |
-| letta | running | healthy | Up 19 hours (healthy) |
-| lobe | running | - | Up 12 hours |
-| memory-gateway | running | healthy | Up 8 hours (healthy) |
-| postgresql | running | healthy | Up 19 hours (healthy) |
-| qdrant | running | healthy | Up 19 hours (healthy) |
-| redis | running | healthy | Up 19 hours (healthy) |
-| rustfs | running | healthy | Up 19 hours (healthy) |
-| searxng | running | - | Up 19 hours |
-| sumeme-web | running | healthy | Up 8 hours (healthy) |
+| ai-provider-proxy | running | healthy | Up 9 hours (healthy) |
+| letta | running | healthy | Up 20 hours (healthy) |
+| lobe | running | - | Up 13 hours |
+| memory-gateway | running | healthy | Up 9 hours (healthy) |
+| postgresql | running | healthy | Up 20 hours (healthy) |
+| qdrant | running | healthy | Up 20 hours (healthy) |
+| redis | running | healthy | Up 20 hours (healthy) |
+| rustfs | running | healthy | Up 20 hours (healthy) |
+| searxng | running | - | Up 20 hours |
+| sumeme-web | running | healthy | Up 9 hours (healthy) |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-07-31T21:47:46Z |
+| Publish project status | in_progress | main | 2026-07-31T22:51:41Z |
+| Publish project status | success | main | 2026-07-31T21:48:19Z |
 | Publish project status | success | main | 2026-07-31T20:45:42Z |
 | Publish project status | success | main | 2026-07-31T19:51:15Z |
 | Smoke production | success | main | 2026-07-31T19:50:34Z |
 | Publish project status | success | main | 2026-07-31T19:37:55Z |
 | Publish project status | success | main | 2026-07-31T18:00:20Z |
 | Publish project status | success | main | 2026-07-31T16:25:23Z |
-| Publish project status | success | main | 2026-07-31T14:45:29Z |
 
 ## 开放 PR
 
