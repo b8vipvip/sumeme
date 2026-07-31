@@ -1,19 +1,17 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-07-31T17:56:22+08:00",
+  "generated_at": "2026-07-31T18:04:59+08:00",
   "repository": "b8vipvip/sumeme",
-  "overall": "unhealthy",
-  "project_stage": "deployed_unhealthy",
+  "overall": "degraded",
+  "project_stage": "deployed_degraded",
   "reasons": [
-    "缺少关键服务: sumeme-web",
     "磁盘使用率达到 80% 警戒线"
   ],
-  "deployment_in_sync": false,
+  "deployment_in_sync": true,
   "deployment": {
-    "current_sha": "8077ba1627b5cb68c306cb762c636e6742a42701",
+    "current_sha": "530a1175b64a219d8771218616a5dbd7abf0233b",
     "previous_sha": "8077ba1627b5cb68c306cb762c636e6742a42701",
     "history": [
-      "2026-07-30T23:41:07+08:00 rollback target=fe9e4a37401cdda1288226990236536cba85288b failed=f8de54d84553526c9a10b79cc21ea0f01b1bb0fc",
       "2026-07-31T10:22:08+08:00 rollback_failed target=fe9e4a37401cdda1288226990236536cba85288b failed=01892424ec7418e0f712334adb168144797c6d4a reason=runtime_recovery_failed",
       "2026-07-31T10:41:36+08:00 rollback target=fe9e4a37401cdda1288226990236536cba85288b failed=a7789e85a59277b609eed3b3f89dc14502e7f245",
       "2026-07-31T10:49:41+08:00 421dbe47d8f8096f41572d2f89221b1c8870d5a3",
@@ -22,11 +20,12 @@
       "2026-07-31T11:01:29+08:00 12adbf02d85c101098cb772587540700b20ec644",
       "2026-07-31T11:09:27+08:00 8077ba1627b5cb68c306cb762c636e6742a42701",
       "2026-07-31T17:48:37+08:00 rollback target=8077ba1627b5cb68c306cb762c636e6742a42701 failed=8dfeb2f0293a6fa38602200be92cdefce7d42b2d",
-      "2026-07-31T17:55:52+08:00 rollback target=8077ba1627b5cb68c306cb762c636e6742a42701 failed=4a8f255c0306ceac8bd38470525c6e1cee180738"
+      "2026-07-31T17:55:52+08:00 rollback target=8077ba1627b5cb68c306cb762c636e6742a42701 failed=4a8f255c0306ceac8bd38470525c6e1cee180738",
+      "2026-07-31T18:04:11+08:00 530a1175b64a219d8771218616a5dbd7abf0233b"
     ],
     "deploying_sha": null,
-    "last_result": "rollback",
-    "last_history_entry": "2026-07-31T17:55:52+08:00 rollback target=8077ba1627b5cb68c306cb762c636e6742a42701 failed=4a8f255c0306ceac8bd38470525c6e1cee180738",
+    "last_result": "success",
+    "last_history_entry": "2026-07-31T18:04:11+08:00 530a1175b64a219d8771218616a5dbd7abf0233b",
     "state": "idle"
   },
   "health": {
@@ -77,7 +76,7 @@
       "name": "sumeme-ai-provider-proxy",
       "state": "running",
       "health": "healthy",
-      "status": "Up 48 seconds (healthy)",
+      "status": "Up 2 minutes (healthy)",
       "critical": false
     },
     {
@@ -94,7 +93,7 @@
       "name": "sumeme-lobehub",
       "state": "running",
       "health": "",
-      "status": "Up 36 seconds",
+      "status": "Up 2 minutes",
       "critical": true
     },
     {
@@ -102,7 +101,7 @@
       "name": "sumeme-memory-gateway",
       "state": "running",
       "health": "healthy",
-      "status": "Up 42 seconds (healthy)",
+      "status": "Up 2 minutes (healthy)",
       "critical": true
     },
     {
@@ -144,26 +143,34 @@
       "health": "",
       "status": "Up 7 hours",
       "critical": true
+    },
+    {
+      "service": "sumeme-web",
+      "name": "sumeme-web",
+      "state": "running",
+      "health": "healthy",
+      "status": "Up 2 minutes (healthy)",
+      "critical": true
     }
   ],
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 35739607040,
-      "free_bytes": 4574789632,
-      "used_percent": 84.8
+      "used_bytes": 35791732736,
+      "free_bytes": 4522663936,
+      "used_percent": 84.9
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1566441472,
-      "used_percent": 59.9
+      "available_bytes": 1551618048,
+      "used_percent": 60.3
     }
   },
   "github": {
     "schema_version": 1,
     "source": "github-hosted-runner",
     "default_branch": "main",
-    "latest_main_sha": "4a8f255c0306ceac8bd38470525c6e1cee180738",
+    "latest_main_sha": "530a1175b64a219d8771218616a5dbd7abf0233b",
     "open_pull_requests": [],
     "open_issues": [
       {
@@ -187,6 +194,97 @@
     ],
     "recent_workflows": [
       {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
+        "status": "in_progress",
+        "conclusion": null,
+        "head_branch": "main",
+        "head_sha": "530a1175b64a219d8771218616a5dbd7abf0233b",
+        "run_number": 372,
+        "created_at": "2026-07-31T10:04:25Z",
+        "updated_at": "2026-07-31T10:04:34Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30622254044"
+      },
+      {
+        "name": "Public UI smoke",
+        "display_title": "Public UI smoke",
+        "event": "workflow_run",
+        "status": "in_progress",
+        "conclusion": null,
+        "head_branch": "main",
+        "head_sha": "530a1175b64a219d8771218616a5dbd7abf0233b",
+        "run_number": 39,
+        "created_at": "2026-07-31T10:04:25Z",
+        "updated_at": "2026-07-31T10:04:28Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30622254041"
+      },
+      {
+        "name": "CI",
+        "display_title": "Merge PR #63: always rebuild sumeme-web",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "530a1175b64a219d8771218616a5dbd7abf0233b",
+        "run_number": 690,
+        "created_at": "2026-07-31T10:00:37Z",
+        "updated_at": "2026-07-31T10:04:23Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30622019478"
+      },
+      {
+        "name": "Server UI check",
+        "display_title": "Merge PR #63: always rebuild sumeme-web",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "530a1175b64a219d8771218616a5dbd7abf0233b",
+        "run_number": 15,
+        "created_at": "2026-07-31T10:00:37Z",
+        "updated_at": "2026-07-31T10:01:03Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30622019036"
+      },
+      {
+        "name": "Public UI smoke",
+        "display_title": "Public UI smoke",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "skipped",
+        "head_branch": "main",
+        "head_sha": "4a8f255c0306ceac8bd38470525c6e1cee180738",
+        "run_number": 38,
+        "created_at": "2026-07-31T10:00:02Z",
+        "updated_at": "2026-07-31T10:00:02Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30621975976"
+      },
+      {
+        "name": "CI",
+        "display_title": "Always rebuild sumeme-web from the deployed release",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/build-sumeme-web-on-deploy",
+        "head_sha": "73aff33b1571fe9d7f3f905867aedc0bd2c458d6",
+        "run_number": 689,
+        "created_at": "2026-07-31T09:59:27Z",
+        "updated_at": "2026-07-31T09:59:59Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30621941809"
+      },
+      {
+        "name": "Server UI check",
+        "display_title": "Always rebuild sumeme-web from the deployed release",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/build-sumeme-web-on-deploy",
+        "head_sha": "73aff33b1571fe9d7f3f905867aedc0bd2c458d6",
+        "run_number": 14,
+        "created_at": "2026-07-31T09:59:27Z",
+        "updated_at": "2026-07-31T09:59:46Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30621941476"
+      },
+      {
         "name": "Public UI smoke",
         "display_title": "Public UI smoke",
         "event": "workflow_run",
@@ -203,13 +301,13 @@
         "name": "Publish project status",
         "display_title": "Publish project status",
         "event": "workflow_run",
-        "status": "in_progress",
-        "conclusion": null,
+        "status": "completed",
+        "conclusion": "success",
         "head_branch": "main",
         "head_sha": "4a8f255c0306ceac8bd38470525c6e1cee180738",
         "run_number": 371,
         "created_at": "2026-07-31T09:56:00Z",
-        "updated_at": "2026-07-31T09:56:03Z",
+        "updated_at": "2026-07-31T09:56:40Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30621731906"
       },
       {
@@ -250,97 +348,6 @@
         "created_at": "2026-07-31T09:52:29Z",
         "updated_at": "2026-07-31T09:52:38Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30621514271"
-      },
-      {
-        "name": "CI",
-        "display_title": "Route SuMeMe frontend assets around Baota static-file interception",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/extensionless-web-assets",
-        "head_sha": "2d885b4c5283bc2349db357ad3ca7d5a5932d486",
-        "run_number": 687,
-        "created_at": "2026-07-31T09:51:50Z",
-        "updated_at": "2026-07-31T09:52:26Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30621474785"
-      },
-      {
-        "name": "Server UI check",
-        "display_title": "Route SuMeMe frontend assets around Baota static-file interception",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/extensionless-web-assets",
-        "head_sha": "2d885b4c5283bc2349db357ad3ca7d5a5932d486",
-        "run_number": 12,
-        "created_at": "2026-07-31T09:51:50Z",
-        "updated_at": "2026-07-31T09:52:09Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30621474313"
-      },
-      {
-        "name": "Public UI smoke",
-        "display_title": "Public UI smoke",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "skipped",
-        "head_branch": "main",
-        "head_sha": "8dfeb2f0293a6fa38602200be92cdefce7d42b2d",
-        "run_number": 35,
-        "created_at": "2026-07-31T09:48:46Z",
-        "updated_at": "2026-07-31T09:48:56Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30621291457"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "8dfeb2f0293a6fa38602200be92cdefce7d42b2d",
-        "run_number": 370,
-        "created_at": "2026-07-31T09:48:45Z",
-        "updated_at": "2026-07-31T09:49:31Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30621291284"
-      },
-      {
-        "name": "CI",
-        "display_title": "Merge PR #61: reuse the running LobeHub image",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "main",
-        "head_sha": "8dfeb2f0293a6fa38602200be92cdefce7d42b2d",
-        "run_number": 686,
-        "created_at": "2026-07-31T09:45:11Z",
-        "updated_at": "2026-07-31T09:48:43Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30621079066"
-      },
-      {
-        "name": "Public UI smoke",
-        "display_title": "Public UI smoke",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "skipped",
-        "head_branch": "main",
-        "head_sha": "d53ed92d27a9858d004c11f77a41f958d1f93def",
-        "run_number": 34,
-        "created_at": "2026-07-31T09:44:49Z",
-        "updated_at": "2026-07-31T09:44:56Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30621055880"
-      },
-      {
-        "name": "CI",
-        "display_title": "Reuse the exact running LobeHub backend image",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/tag-running-lobehub-backend",
-        "head_sha": "f58b065aeaff047240add32623771ecbf1f78f9d",
-        "run_number": 685,
-        "created_at": "2026-07-31T09:44:08Z",
-        "updated_at": "2026-07-31T09:44:46Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30621015105"
       }
     ]
   },
@@ -358,7 +365,7 @@
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-31T17:56:22+08:00"
+    "generated_at": "2026-07-31T18:04:59+08:00"
   },
   "components": {
     "letta": {
@@ -371,9 +378,9 @@
   "deployment_consistency": {
     "state": "idle",
     "marker_consistent": true,
-    "current_matches_main": false,
+    "current_matches_main": true,
     "deploying_matches_main": null,
-    "main_sha": "4a8f255c0306ceac8bd38470525c6e1cee180738"
+    "main_sha": "530a1175b64a219d8771218616a5dbd7abf0233b"
   },
   "reliability": {
     "disk": {
@@ -392,12 +399,12 @@
     },
     "smoke_test": {
       "schema_version": 5,
-      "generated_at": "2026-07-31T11:09:27+08:00",
-      "started_at": "2026-07-31T11:09:25+08:00",
-      "finished_at": "2026-07-31T11:09:27+08:00",
-      "duration_seconds": 2,
+      "generated_at": "2026-07-31T18:04:11+08:00",
+      "started_at": "2026-07-31T18:02:59+08:00",
+      "finished_at": "2026-07-31T18:04:11+08:00",
+      "duration_seconds": 72,
       "overall": "degraded",
-      "deployment_gate": "external_degraded",
+      "deployment_gate": "success",
       "memory_provider": "mempalace-letta",
       "identity_mode": "legacy-client-asserted",
       "service_identity_used": false,
@@ -405,28 +412,25 @@
       "require_recall": false,
       "checks": {
         "models": true,
-        "chat": false,
-        "scope": false,
-        "memory_write": false,
+        "chat": true,
+        "scope": true,
+        "memory_write": true,
         "memory_recall": false,
         "s3": true
       },
       "write_components": {
-        "mempalace": false,
+        "mempalace": true,
         "letta": false
       },
       "recall_components": {
-        "mempalace": false,
+        "mempalace": true,
         "letta": false
       },
       "error_codes": [
-        "chat_http_403",
-        "mempalace_recall_delayed",
-        "letta_recall_delayed",
-        "service_scope_verification_failed"
+        "letta_agent_create_failed",
+        "letta_recall_delayed"
       ],
-      "deployment_classification": "external_degraded",
-      "age_seconds_at_publish": 24415,
+      "age_seconds_at_publish": 48,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }

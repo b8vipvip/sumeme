@@ -1,52 +1,52 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-31T17:56:22+08:00
-- **总体状态：** `unhealthy`
-- **开发阶段：** `deployed_unhealthy`
-- **线上版本：** `8077ba1627b5cb68c306cb762c636e6742a42701`
-- **main 最新版本：** `4a8f255c0306ceac8bd38470525c6e1cee180738`
-- **线上与 main 同步：** 否
+- **采集时间：** 2026-07-31T18:04:59+08:00
+- **总体状态：** `degraded`
+- **开发阶段：** `deployed_degraded`
+- **线上版本：** `530a1175b64a219d8771218616a5dbd7abf0233b`
+- **main 最新版本：** `530a1175b64a219d8771218616a5dbd7abf0233b`
+- **线上与 main 同步：** 是
 - **开放 PR：** 0
 - **开放 Issue：** 3
 
 ## 需要关注
 
-- 缺少关键服务: sumeme-web
 - 磁盘使用率达到 80% 警戒线
 
 ## 健康检查
 
 - 本地网关：`ok`
 - 公网入口：`ok`
-- 磁盘使用：`84.8%`，剩余 4.3 GiB
-- 内存使用：`59.9%`，可用 1.5 GiB
+- 磁盘使用：`84.9%`，剩余 4.2 GiB
+- 内存使用：`60.3%`，可用 1.4 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| ai-provider-proxy | running | healthy | Up 48 seconds (healthy) |
+| ai-provider-proxy | running | healthy | Up 2 minutes (healthy) |
 | letta | running | healthy | Up 7 hours (healthy) |
-| lobe | running | - | Up 36 seconds |
-| memory-gateway | running | healthy | Up 42 seconds (healthy) |
+| lobe | running | - | Up 2 minutes |
+| memory-gateway | running | healthy | Up 2 minutes (healthy) |
 | postgresql | running | healthy | Up 7 hours (healthy) |
 | qdrant | running | healthy | Up 7 hours (healthy) |
 | redis | running | healthy | Up 7 hours (healthy) |
 | rustfs | running | healthy | Up 7 hours (healthy) |
 | searxng | running | - | Up 7 hours |
+| sumeme-web | running | healthy | Up 2 minutes (healthy) |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
+| Publish project status | in_progress | main | 2026-07-31T10:04:34Z |
+| Public UI smoke | in_progress | main | 2026-07-31T10:04:28Z |
+| CI | success | main | 2026-07-31T10:04:23Z |
+| Server UI check | success | main | 2026-07-31T10:01:03Z |
+| Public UI smoke | skipped | main | 2026-07-31T10:00:02Z |
+| CI | success | agent/build-sumeme-web-on-deploy | 2026-07-31T09:59:59Z |
+| Server UI check | success | agent/build-sumeme-web-on-deploy | 2026-07-31T09:59:46Z |
 | Public UI smoke | skipped | main | 2026-07-31T09:56:01Z |
-| Publish project status | in_progress | main | 2026-07-31T09:56:03Z |
-| CI | failure | main | 2026-07-31T09:55:58Z |
-| Server UI check | success | main | 2026-07-31T09:53:08Z |
-| Public UI smoke | skipped | main | 2026-07-31T09:52:38Z |
-| CI | success | agent/extensionless-web-assets | 2026-07-31T09:52:26Z |
-| Server UI check | success | agent/extensionless-web-assets | 2026-07-31T09:52:09Z |
-| Public UI smoke | skipped | main | 2026-07-31T09:48:56Z |
 
 ## 开放 PR
 
@@ -60,6 +60,7 @@
 
 ## 最近部署
 
+- `2026-07-31T18:04:11+08:00 530a1175b64a219d8771218616a5dbd7abf0233b`
 - `2026-07-31T17:55:52+08:00 rollback target=8077ba1627b5cb68c306cb762c636e6742a42701 failed=4a8f255c0306ceac8bd38470525c6e1cee180738`
 - `2026-07-31T17:48:37+08:00 rollback target=8077ba1627b5cb68c306cb762c636e6742a42701 failed=8dfeb2f0293a6fa38602200be92cdefce7d42b2d`
 - `2026-07-31T11:09:27+08:00 8077ba1627b5cb68c306cb762c636e6742a42701`
@@ -69,16 +70,15 @@
 - `2026-07-31T10:49:41+08:00 421dbe47d8f8096f41572d2f89221b1c8870d5a3`
 - `2026-07-31T10:41:36+08:00 rollback target=fe9e4a37401cdda1288226990236536cba85288b failed=a7789e85a59277b609eed3b3f89dc14502e7f245`
 - `2026-07-31T10:22:08+08:00 rollback_failed target=fe9e4a37401cdda1288226990236536cba85288b failed=01892424ec7418e0f712334adb168144797c6d4a reason=runtime_recovery_failed`
-- `2026-07-30T23:41:07+08:00 rollback target=fe9e4a37401cdda1288226990236536cba85288b failed=f8de54d84553526c9a10b79cc21ea0f01b1bb0fc`
 
 ## 可靠性信号
 
 - 状态快照发布时年龄：`0s`
 - 状态快照过期：`no`（阈值 2100s）
 - 部署状态：`idle`
-- 当前版本与 main 一致：`no`
+- 当前版本与 main 一致：`yes`
 - deploying SHA：`none`
-- 最近发布结果：`rollback`
+- 最近发布结果：`success`
 - 磁盘保护级别：`warning`
 - Letta 必需：`no`
 - Letta 可用：`yes`
