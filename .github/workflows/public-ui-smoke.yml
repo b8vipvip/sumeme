@@ -27,11 +27,20 @@ jobs:
           python-version: "3.12"
       - name: Compile UI smoke script
         run: python -m py_compile scripts/smoke-public-ui.py
-      - name: Verify public HTML and referenced assets
+      - name: Verify public HTML, assets, login and LobeHub auth
         run: python scripts/smoke-public-ui.py https://sumeme.mv3.cn/
-      - name: Verify SuMeMe control panel
+      - name: Verify FDEX-derived SuMeMe management center
         run: |
           set -euo pipefail
-          curl --fail --silent --show-error --location --max-time 30 \
-            https://sumeme.mv3.cn/sumeme-control/index.html \
-            | grep -F '<title>SuMeMe 控制台</title>'
+          page="$(curl --fail --silent --show-error --location --max-time 30 https://sumeme.mv3.cn/)"
+          grep -F '<title>SuMeMe · 服务端</title>' <<<"${page}"
+          grep -F '服务端管理中心' <<<"${page}"
+          grep -F 'SUMEME OPERATIONS CENTER' <<<"${page}"
+          grep -F 'LobeHub 后端' <<<"${page}"
+
+          signin="$(curl --fail --silent --show-error --location --max-time 30 'https://sumeme.mv3.cn/signin?callbackUrl=%2F')"
+          grep -F '登录 SuMeMe' <<<"${signin}"
+
+          curl --fail --silent --show-error --max-time 30 \
+            -H 'Accept: application/json' \
+            https://sumeme.mv3.cn/api/auth/get-session >/dev/null
