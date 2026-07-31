@@ -2,7 +2,11 @@ name: sumeme
 
 services:
   lobe:
-    image: ${LOBEHUB_IMAGE:-lobehub/lobehub:latest}
+    # Upstream 2.2.11 builds the auth SPA but omits public/_spa-auth from the
+    # final Docker image. CI builds the same tag with that packaging line fixed
+    # and loads it onto the production host before Compose convergence.
+    image: ${LOBEHUB_IMAGE_PIN:-sumeme-lobehub:2.2.11-auth-assets-1}
+    pull_policy: never
     container_name: sumeme-lobehub
     restart: unless-stopped
     ports:
