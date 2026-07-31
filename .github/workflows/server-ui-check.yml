@@ -50,7 +50,7 @@ jobs:
           fixture="${RUNNER_TEMP}/lobe-fixture.conf"
           cat > "${fixture}" <<'EOF'
           server {
-            listen 80;
+            listen 3210;
             location = /api/auth/get-session {
               default_type application/json;
               return 200 '{"session":null,"user":null}';
