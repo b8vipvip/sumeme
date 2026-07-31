@@ -33,7 +33,7 @@ def fetch(url: str, timeout: int) -> dict[str, Any]:
         url,
         headers={
             "Accept": "text/html,application/xhtml+xml,application/javascript,text/css,*/*;q=0.8",
-            "User-Agent": "sumeme-public-ui-smoke/1.0",
+            "User-Agent": "sumeme-public-ui-smoke/2.0",
         },
     )
     try:
@@ -68,7 +68,7 @@ def fetch(url: str, timeout: int) -> dict[str, Any]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Verify that the public SuMeMe HTML and all referenced UI assets load."
+        description="Verify the native public SuMeMe server UI and referenced assets."
     )
     parser.add_argument("url", nargs="?", default="https://sumeme.mv3.cn/")
     parser.add_argument("--timeout", type=int, default=20)
@@ -86,6 +86,20 @@ def main() -> int:
         return 1
 
     html = page["body"].decode("utf-8", errors="replace")
+    required_markers = (
+        "<title>SuMeMe · 服务端</title>",
+        "服务端管理中心",
+        "/api/gateway/",
+        "/sumeme-health",
+    )
+    missing_markers = [marker for marker in required_markers if marker not in html]
+    if missing_markers:
+        print(
+            "Native SuMeMe UI markers are missing: " + ", ".join(missing_markers),
+            file=sys.stderr,
+        )
+        return 1
+
     asset_parser = AssetParser()
     asset_parser.feed(html)
 
@@ -113,6 +127,7 @@ def main() -> int:
         if not result["ok"]:
             failures.append(summary)
 
+    self_contained = checked == 0 and "<style>" in html and "<script>" in html
     print(
         json.dumps(
             {
@@ -120,14 +135,18 @@ def main() -> int:
                     "final_url": final_url,
                     "assets_checked": checked,
                     "asset_failures": len(failures),
+                    "self_contained": self_contained,
                 }
             },
             ensure_ascii=False,
         )
     )
 
-    if checked == 0:
-        print("No first-party scripts or stylesheets were referenced by the HTML.", file=sys.stderr)
+    if checked == 0 and not self_contained:
+        print(
+            "No first-party assets were referenced and the document is not a self-contained UI.",
+            file=sys.stderr,
+        )
         return 1
     return 1 if failures else 0
 
