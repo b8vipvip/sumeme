@@ -1,50 +1,55 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-31T09:38:19+08:00
-- **总体状态：** `healthy`
-- **开发阶段：** `deployment_behind_main`
+- **采集时间：** 2026-07-31T10:22:36+08:00
+- **总体状态：** `unhealthy`
+- **开发阶段：** `deployed_unhealthy`
 - **线上版本：** `fe9e4a37401cdda1288226990236536cba85288b`
-- **main 最新版本：** `f8de54d84553526c9a10b79cc21ea0f01b1bb0fc`
+- **main 最新版本：** `01892424ec7418e0f712334adb168144797c6d4a`
 - **线上与 main 同步：** 否
-- **开放 PR：** 1
+- **开放 PR：** 0
 - **开放 Issue：** 3
+
+## 需要关注
+
+- 关键服务异常: letta(running/starting)
 
 ## 健康检查
 
 - 本地网关：`ok`
 - 公网入口：`ok`
-- 磁盘使用：`83.4%`，剩余 4.8 GiB
-- 内存使用：`61.7%`，可用 1.4 GiB
+- 磁盘使用：`83.8%`，剩余 4.7 GiB
+- 内存使用：`62.2%`，可用 1.4 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| letta | running | healthy | Up 16 minutes (healthy) |
-| lobe | running | - | Up 9 minutes |
-| memory-gateway | running | healthy | Up 9 minutes (healthy) |
-| postgresql | running | healthy | Up 16 minutes (healthy) |
-| qdrant | running | healthy | Up 16 minutes (healthy) |
-| redis | running | healthy | Up 16 minutes (healthy) |
-| rustfs | running | healthy | Up 16 minutes (healthy) |
-| searxng | running | - | Up 16 minutes |
+| ai-provider-proxy | running | healthy | Up 58 seconds (healthy) |
+| letta | running | starting | Up 53 seconds (health: starting) |
+| lobe | running | - | Up 42 seconds |
+| memory-gateway | running | healthy | Up 48 seconds (healthy) |
+| postgresql | running | healthy | Up 58 seconds (healthy) |
+| qdrant | running | healthy | Up 58 seconds (healthy) |
+| redis | running | healthy | Up 58 seconds (healthy) |
+| rustfs | running | healthy | Up 58 seconds (healthy) |
+| searxng | running | - | Up 58 seconds |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
+| Publish project status | in_progress | main | 2026-07-31T02:22:20Z |
+| CI | failure | main | 2026-07-31T02:22:14Z |
+| CI | success | agent/fix-production-reliability | 2026-07-31T02:04:49Z |
+| CI | success | agent/fix-production-reliability | 2026-07-31T02:03:52Z |
+| CI | success | agent/fix-production-reliability | 2026-07-31T02:03:20Z |
 | CI | success | agent/fix-production-reliability | 2026-07-31T01:36:25Z |
 | CI | failure | agent/fix-production-reliability | 2026-07-31T01:34:46Z |
 | CI | success | agent/revalidate-blocked-stages | 2026-07-31T01:28:34Z |
-| Revalidate blocked stages | failure | agent/revalidate-blocked-stages | 2026-07-31T01:29:38Z |
-| CI | success | agent/revalidate-blocked-stages | 2026-07-31T01:28:03Z |
-| Revalidate blocked stages | failure | agent/revalidate-blocked-stages | 2026-07-31T01:29:15Z |
-| CI | success | agent/revalidate-blocked-stages | 2026-07-31T01:16:24Z |
-| Revalidate blocked stages | failure | agent/revalidate-blocked-stages | 2026-07-31T01:26:24Z |
 
 ## 开放 PR
 
-- #49 Fail closed on rollback and scheduled smoke (`agent/fix-production-reliability` → `main`)
+- 无
 
 ## 开放 Issue
 
@@ -54,6 +59,7 @@
 
 ## 最近部署
 
+- `2026-07-31T10:22:08+08:00 rollback_failed target=fe9e4a37401cdda1288226990236536cba85288b failed=01892424ec7418e0f712334adb168144797c6d4a reason=runtime_recovery_failed`
 - `2026-07-30T23:41:07+08:00 rollback target=fe9e4a37401cdda1288226990236536cba85288b failed=f8de54d84553526c9a10b79cc21ea0f01b1bb0fc`
 - `2026-07-30T22:33:25+08:00 rollback target=fe9e4a37401cdda1288226990236536cba85288b failed=d80e539434df8d6f89a198a45a067b332addcb3b`
 - `2026-07-29T15:03:24+08:00 fe9e4a37401cdda1288226990236536cba85288b`
@@ -68,7 +74,7 @@
 - 部署状态：`idle`
 - 当前版本与 main 一致：`no`
 - deploying SHA：`none`
-- 最近发布结果：`rollback`
+- 最近发布结果：`unknown`
 - 磁盘保护级别：`warning`
 - 最近 smoke test：`failure`
 - 自动清理不会删除 Docker 数据卷、数据库或用户附件。

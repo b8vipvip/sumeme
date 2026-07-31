@@ -1,10 +1,11 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-07-31T09:38:19+08:00",
+  "generated_at": "2026-07-31T10:22:36+08:00",
   "repository": "b8vipvip/sumeme",
-  "overall": "degraded",
-  "project_stage": "deployment_behind_main",
+  "overall": "unhealthy",
+  "project_stage": "deployed_unhealthy",
   "reasons": [
+    "关键服务异常: letta(running/starting)",
     "磁盘使用率达到 80% 警戒线"
   ],
   "deployment_in_sync": false,
@@ -17,11 +18,12 @@
       "2026-07-29T15:01:16+08:00 985f62c95ecff62417e9f515c3a683e369fdaf8d",
       "2026-07-29T15:03:24+08:00 fe9e4a37401cdda1288226990236536cba85288b",
       "2026-07-30T22:33:25+08:00 rollback target=fe9e4a37401cdda1288226990236536cba85288b failed=d80e539434df8d6f89a198a45a067b332addcb3b",
-      "2026-07-30T23:41:07+08:00 rollback target=fe9e4a37401cdda1288226990236536cba85288b failed=f8de54d84553526c9a10b79cc21ea0f01b1bb0fc"
+      "2026-07-30T23:41:07+08:00 rollback target=fe9e4a37401cdda1288226990236536cba85288b failed=f8de54d84553526c9a10b79cc21ea0f01b1bb0fc",
+      "2026-07-31T10:22:08+08:00 rollback_failed target=fe9e4a37401cdda1288226990236536cba85288b failed=01892424ec7418e0f712334adb168144797c6d4a reason=runtime_recovery_failed"
     ],
     "deploying_sha": null,
-    "last_result": "rollback",
-    "last_history_entry": "2026-07-30T23:41:07+08:00 rollback target=fe9e4a37401cdda1288226990236536cba85288b failed=f8de54d84553526c9a10b79cc21ea0f01b1bb0fc",
+    "last_result": "unknown",
+    "last_history_entry": "2026-07-31T10:22:08+08:00 rollback_failed target=fe9e4a37401cdda1288226990236536cba85288b failed=01892424ec7418e0f712334adb168144797c6d4a reason=runtime_recovery_failed",
     "state": "idle"
   },
   "health": {
@@ -68,11 +70,19 @@
   },
   "services": [
     {
+      "service": "ai-provider-proxy",
+      "name": "sumeme-ai-provider-proxy",
+      "state": "running",
+      "health": "healthy",
+      "status": "Up 58 seconds (healthy)",
+      "critical": false
+    },
+    {
       "service": "letta",
       "name": "sumeme-letta",
       "state": "running",
-      "health": "healthy",
-      "status": "Up 16 minutes (healthy)",
+      "health": "starting",
+      "status": "Up 53 seconds (health: starting)",
       "critical": true
     },
     {
@@ -80,7 +90,7 @@
       "name": "sumeme-lobehub",
       "state": "running",
       "health": "",
-      "status": "Up 9 minutes",
+      "status": "Up 42 seconds",
       "critical": true
     },
     {
@@ -88,7 +98,7 @@
       "name": "sumeme-memory-gateway",
       "state": "running",
       "health": "healthy",
-      "status": "Up 9 minutes (healthy)",
+      "status": "Up 48 seconds (healthy)",
       "critical": true
     },
     {
@@ -96,7 +106,7 @@
       "name": "sumeme-postgres",
       "state": "running",
       "health": "healthy",
-      "status": "Up 16 minutes (healthy)",
+      "status": "Up 58 seconds (healthy)",
       "critical": true
     },
     {
@@ -104,7 +114,7 @@
       "name": "sumeme-qdrant",
       "state": "running",
       "health": "healthy",
-      "status": "Up 16 minutes (healthy)",
+      "status": "Up 58 seconds (healthy)",
       "critical": true
     },
     {
@@ -112,7 +122,7 @@
       "name": "sumeme-redis",
       "state": "running",
       "health": "healthy",
-      "status": "Up 16 minutes (healthy)",
+      "status": "Up 58 seconds (healthy)",
       "critical": true
     },
     {
@@ -120,7 +130,7 @@
       "name": "sumeme-rustfs",
       "state": "running",
       "health": "healthy",
-      "status": "Up 16 minutes (healthy)",
+      "status": "Up 58 seconds (healthy)",
       "critical": true
     },
     {
@@ -128,39 +138,29 @@
       "name": "sumeme-searxng",
       "state": "running",
       "health": "",
-      "status": "Up 16 minutes",
+      "status": "Up 58 seconds",
       "critical": true
     }
   ],
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 35155316736,
-      "free_bytes": 5159079936,
-      "used_percent": 83.4
+      "used_bytes": 35319865344,
+      "free_bytes": 4994531328,
+      "used_percent": 83.8
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1495306240,
-      "used_percent": 61.7
+      "available_bytes": 1476714496,
+      "used_percent": 62.2
     }
   },
   "github": {
     "schema_version": 1,
     "source": "github-hosted-runner",
     "default_branch": "main",
-    "latest_main_sha": "f8de54d84553526c9a10b79cc21ea0f01b1bb0fc",
-    "open_pull_requests": [
-      {
-        "number": 49,
-        "title": "Fail closed on rollback and scheduled smoke",
-        "draft": false,
-        "head": "agent/fix-production-reliability",
-        "base": "main",
-        "updated_at": "2026-07-31T01:36:52Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/pull/49"
-      }
-    ],
+    "latest_main_sha": "01892424ec7418e0f712334adb168144797c6d4a",
+    "open_pull_requests": [],
     "open_issues": [
       {
         "number": 10,
@@ -177,11 +177,76 @@
       {
         "number": 4,
         "title": "Phase 1.5：端到端验证、状态新鲜度与磁盘保护",
-        "updated_at": "2026-07-31T01:37:06Z",
+        "updated_at": "2026-07-31T01:39:21Z",
         "html_url": "https://github.com/b8vipvip/sumeme/issues/4"
       }
     ],
     "recent_workflows": [
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
+        "status": "in_progress",
+        "conclusion": null,
+        "head_branch": "main",
+        "head_sha": "01892424ec7418e0f712334adb168144797c6d4a",
+        "run_number": 355,
+        "created_at": "2026-07-31T02:22:16Z",
+        "updated_at": "2026-07-31T02:22:20Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30598795891"
+      },
+      {
+        "name": "CI",
+        "display_title": "Merge PR #49: production reliability and simulated acceptance",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_branch": "main",
+        "head_sha": "01892424ec7418e0f712334adb168144797c6d4a",
+        "run_number": 629,
+        "created_at": "2026-07-31T02:20:12Z",
+        "updated_at": "2026-07-31T02:22:14Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30598705077"
+      },
+      {
+        "name": "CI",
+        "display_title": "Fail closed on rollback and scheduled smoke",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/fix-production-reliability",
+        "head_sha": "48521b28d6e58e9f3329d98ccb7c3a54e7f68888",
+        "run_number": 628,
+        "created_at": "2026-07-31T02:04:07Z",
+        "updated_at": "2026-07-31T02:04:49Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30598002920"
+      },
+      {
+        "name": "CI",
+        "display_title": "Fail closed on rollback and scheduled smoke",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/fix-production-reliability",
+        "head_sha": "44e1ed03051b7072171b7953727cf3c763b4c6b9",
+        "run_number": 627,
+        "created_at": "2026-07-31T02:03:15Z",
+        "updated_at": "2026-07-31T02:03:52Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30597963634"
+      },
+      {
+        "name": "CI",
+        "display_title": "Fail closed on rollback and scheduled smoke",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/fix-production-reliability",
+        "head_sha": "af795a4343fb6ade0e4a7c0ae7f3cd99427eaf6f",
+        "run_number": 626,
+        "created_at": "2026-07-31T02:02:43Z",
+        "updated_at": "2026-07-31T02:03:20Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30597939000"
+      },
       {
         "name": "CI",
         "display_title": "Fail closed on rollback and scheduled smoke",
@@ -272,71 +337,6 @@
         "created_at": "2026-07-31T01:15:48Z",
         "updated_at": "2026-07-31T01:16:24Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30595872019"
-      },
-      {
-        "name": "Revalidate blocked stages",
-        "display_title": "Revalidate all previously blocked build and production stages",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/revalidate-blocked-stages",
-        "head_sha": "8af4abf12926415c4ba66312dd068a77a8cb29db",
-        "run_number": 3,
-        "created_at": "2026-07-31T01:15:48Z",
-        "updated_at": "2026-07-31T01:26:24Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30595871708"
-      },
-      {
-        "name": "CI",
-        "display_title": "Revalidate all previously blocked build and production stages",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/revalidate-blocked-stages",
-        "head_sha": "3448249f3c6756c027c9740fb219542e41d9f8d2",
-        "run_number": 620,
-        "created_at": "2026-07-31T01:13:00Z",
-        "updated_at": "2026-07-31T01:13:29Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30595740991"
-      },
-      {
-        "name": "Revalidate blocked stages",
-        "display_title": "Revalidate all previously blocked build and production stages",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/revalidate-blocked-stages",
-        "head_sha": "3448249f3c6756c027c9740fb219542e41d9f8d2",
-        "run_number": 2,
-        "created_at": "2026-07-31T01:13:00Z",
-        "updated_at": "2026-07-31T01:14:42Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30595740642"
-      },
-      {
-        "name": "CI",
-        "display_title": "Revalidate all previously blocked build and production stages",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/revalidate-blocked-stages",
-        "head_sha": "e9f1949c259458fea2b4529941cf697cb07769dc",
-        "run_number": 619,
-        "created_at": "2026-07-31T01:10:54Z",
-        "updated_at": "2026-07-31T01:11:31Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30595646143"
-      },
-      {
-        "name": "Revalidate blocked stages",
-        "display_title": "Revalidate all previously blocked build and production stages",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/revalidate-blocked-stages",
-        "head_sha": "e9f1949c259458fea2b4529941cf697cb07769dc",
-        "run_number": 1,
-        "created_at": "2026-07-31T01:10:54Z",
-        "updated_at": "2026-07-31T01:11:36Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30595645824"
       }
     ]
   },
@@ -354,14 +354,14 @@
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-31T09:38:19+08:00"
+    "generated_at": "2026-07-31T10:22:36+08:00"
   },
   "deployment_consistency": {
     "state": "idle",
     "marker_consistent": true,
     "current_matches_main": false,
     "deploying_matches_main": null,
-    "main_sha": "f8de54d84553526c9a10b79cc21ea0f01b1bb0fc"
+    "main_sha": "01892424ec7418e0f712334adb168144797c6d4a"
   },
   "reliability": {
     "disk": {
@@ -372,10 +372,10 @@
     },
     "smoke_test": {
       "schema_version": 5,
-      "generated_at": "2026-07-30T16:57:28+08:00",
-      "started_at": "2026-07-30T16:47:27+08:00",
-      "finished_at": "2026-07-30T16:57:28+08:00",
-      "duration_seconds": 601,
+      "generated_at": "2026-07-31T10:22:08+08:00",
+      "started_at": "2026-07-31T10:22:04+08:00",
+      "finished_at": "2026-07-31T10:22:08+08:00",
+      "duration_seconds": 4,
       "overall": "failure",
       "deployment_gate": "failure",
       "memory_provider": "mempalace-letta",
@@ -400,12 +400,12 @@
         "letta": false
       },
       "error_codes": [
-        "chat_http_000",
+        "chat_http_403",
         "mempalace_recall_delayed",
         "letta_recall_delayed",
         "service_scope_verification_failed"
       ],
-      "age_seconds_at_publish": 60051,
+      "age_seconds_at_publish": 28,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }
