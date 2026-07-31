@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 
@@ -237,7 +236,7 @@ class BundledLobeHubServer {
 
   String _rewriteRequestUrl(String rawUrl) {
     final Uri? value = Uri.tryParse(rawUrl);
-    if (value == null || value.origin != origin.origin) {
+    if (value == null || !value.hasScheme || value.origin != origin.origin) {
       return rawUrl;
     }
     return remoteOrigin.replace(
