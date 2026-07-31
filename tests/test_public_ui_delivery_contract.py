@@ -91,6 +91,11 @@ class PublicUIDeliveryContractTests(unittest.TestCase):
         self.assertIn("workflows: [CI]", workflow)
         self.assertIn("github.event.workflow_run.conclusion == 'success'", workflow)
         self.assertIn("github.event.workflow_run.head_branch == 'main'", workflow)
+        self.assertIn("FDEX-derived SuMeMe management center", workflow)
+        self.assertIn("LobeHub 后端", workflow)
+        self.assertIn("/api/auth/get-session", workflow)
+        self.assertNotIn("/sumeme-control/", workflow)
+        self.assertNotIn("SuMeMe 控制台", workflow)
         self.assertNotIn("pull_request:", workflow)
 
 
