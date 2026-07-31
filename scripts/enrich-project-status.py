@@ -3,10 +3,12 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import importlib.util
 import json
 import os
 import re
 from pathlib import Path
+from types import ModuleType
 from typing import Any
 
 DEFAULT_REFRESH_SECONDS = 15 * 60
@@ -45,10 +47,128 @@ def read_text(path: Path) -> str:
         return ""
 
 
+def parse_env_value(env_path: Path, key: str, default: str = "") -> str:
+    try:
+        for raw_line in env_path.read_text(encoding="utf-8").splitlines():
+            line = raw_line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            name, value = line.split("=", 1)
+            if name.strip() == key:
+                return value.strip().strip('"').strip("'")
+    except OSError:
+        pass
+    return default
+
+
+def parse_bool(value: Any, default: bool = False) -> bool:
+    if isinstance(value, bool):
+        return value
+    normalized = str(value or "").strip().lower()
+    if normalized in {"1", "true", "yes", "on"}:
+        return True
+    if normalized in {"0", "false", "no", "off"}:
+        return False
+    return default
+
+
 def append_reason(status: dict[str, Any], reason: str) -> None:
     reasons = status.setdefault("reasons", [])
     if isinstance(reasons, list) and reason not in reasons:
         reasons.append(reason)
+
+
+def strip_service_from_reason(reason: str, prefix: str, service: str) -> str | None:
+    if not reason.startswith(prefix):
+        return reason
+    entries = [entry.strip() for entry in reason[len(prefix) :].split(",")]
+    remaining = [
+        entry
+        for entry in entries
+        if entry and entry != service and not entry.startswith(f"{service}(")
+    ]
+    if not remaining:
+        return None
+    return prefix + ", ".join(remaining)
+
+
+def normalize_optional_letta_status(
+    status: dict[str, Any], deploy_dir: Path
+) -> dict[str, Any]:
+    letta_required = parse_bool(
+        parse_env_value(deploy_dir / ".env", "LETTA_REQUIRED", "false")
+    )
+    services = status.get("services")
+    service_items = services if isinstance(services, list) else []
+    letta = next(
+        (
+            item
+            for item in service_items
+            if isinstance(item, dict) and item.get("service") == "letta"
+        ),
+        None,
+    )
+
+    if isinstance(letta, dict):
+        letta["required"] = letta_required
+        letta["critical"] = letta_required
+        state = str(letta.get("state") or "unknown").lower()
+        health = str(letta.get("health") or "").lower()
+        letta_available = state in {"running", "up"} and health in {"", "healthy"}
+    else:
+        letta_available = False
+
+    components = status.setdefault("components", {})
+    if not isinstance(components, dict):
+        components = {}
+        status["components"] = components
+    components["letta"] = {
+        "required": letta_required,
+        "available": letta_available,
+        "state": letta.get("state") if isinstance(letta, dict) else "missing",
+        "health": letta.get("health") if isinstance(letta, dict) else "missing",
+    }
+
+    if letta_required:
+        return components["letta"]
+
+    reasons = status.get("reasons")
+    normalized_reasons: list[str] = []
+    if isinstance(reasons, list):
+        for raw_reason in reasons:
+            reason = str(raw_reason)
+            updated = strip_service_from_reason(reason, "缺少关键服务: ", "letta")
+            if updated is not None:
+                updated = strip_service_from_reason(
+                    updated, "关键服务异常: ", "letta"
+                )
+            if updated:
+                normalized_reasons.append(updated)
+    status["reasons"] = normalized_reasons
+
+    if not letta_available:
+        append_reason(status, "可选 Letta 结构化记忆不可用或尚未就绪")
+
+    hard_failure = any(
+        reason.startswith("缺少关键服务: ")
+        or reason.startswith("关键服务异常: ")
+        or reason == "本地 memory-gateway 健康检查失败"
+        for reason in status.get("reasons", [])
+    )
+    public_health = status.get("health")
+    public_ok = bool(
+        isinstance(public_health, dict)
+        and isinstance(public_health.get("public"), dict)
+        and public_health["public"].get("ok")
+    )
+
+    if hard_failure:
+        status["overall"] = "unhealthy"
+    elif not letta_available or not public_ok:
+        status["overall"] = "degraded"
+    else:
+        status["overall"] = "healthy"
+    return components["letta"]
 
 
 def last_deployment_result(history: Any) -> tuple[str, str | None]:
@@ -126,10 +246,45 @@ def add_deployment_signals(status: dict[str, Any], deploy_dir: Path) -> dict[str
         append_reason(status, "部署状态存在未清理的 deploying_sha 标记")
         if status.get("overall") == "healthy":
             status["overall"] = "degraded"
-    elif deployment_state == "in_progress":
-        status["project_stage"] = "deployment_in_progress"
-
     return status["deployment_consistency"]
+
+
+def update_project_stage(status: dict[str, Any]) -> None:
+    deployment = status.get("deployment")
+    deployment = deployment if isinstance(deployment, dict) else {}
+    github = status.get("github")
+    github = github if isinstance(github, dict) else {}
+
+    if deployment.get("state") == "in_progress":
+        stage = "deployment_in_progress"
+    elif not deployment.get("current_sha"):
+        stage = "deployment_not_recorded"
+    elif status.get("overall") == "unhealthy":
+        stage = "deployed_unhealthy"
+    elif not status.get("deployment_in_sync"):
+        stage = "deployment_behind_main"
+    elif github.get("open_pull_requests"):
+        stage = "development_in_progress"
+    elif status.get("overall") == "degraded":
+        stage = "deployed_degraded"
+    else:
+        stage = "deployed_and_stable"
+    status["project_stage"] = stage
+
+
+def load_status_collector() -> ModuleType:
+    path = Path(__file__).with_name("collect-project-status.py")
+    spec = importlib.util.spec_from_file_location("sumeme_status_collector", path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"Cannot load status collector: {path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def render_base_markdown(status: dict[str, Any]) -> str:
+    collector = load_status_collector()
+    return str(collector.markdown(status))
 
 
 def main() -> int:
@@ -148,6 +303,7 @@ def main() -> int:
 
     json_path = Path(args.json_path)
     markdown_path = Path(args.markdown_path)
+    deploy_dir = Path(args.deploy_dir)
     status = read_json(json_path)
     if status is None:
         raise SystemExit(f"Invalid status JSON: {json_path}")
@@ -169,12 +325,14 @@ def main() -> int:
         "stale_at_publish": stale,
         "generated_at": status.get("generated_at"),
     }
+
+    letta_status = normalize_optional_letta_status(status, deploy_dir)
+    consistency = add_deployment_signals(status, deploy_dir)
+
     if stale:
         append_reason(status, "状态快照在发布时已过期")
         if status.get("overall") == "healthy":
             status["overall"] = "degraded"
-
-    consistency = add_deployment_signals(status, Path(args.deploy_dir))
 
     disk = ((status.get("system") or {}).get("disk") or {})
     used_percent = float(disk.get("used_percent") or 0)
@@ -191,13 +349,15 @@ def main() -> int:
         if status.get("overall") == "healthy":
             status["overall"] = "degraded"
 
+    update_project_stage(status)
     status["reliability"] = {
         "disk": {
             "level": disk_level,
             "warning_percent": DEFAULT_DISK_WARN_PERCENT,
             "failure_percent": DEFAULT_DISK_FAIL_PERCENT,
             "minimum_free_bytes": DEFAULT_MIN_FREE_BYTES,
-        }
+        },
+        "optional_components": {"letta": letta_status},
     }
 
     smoke: dict[str, Any] | None = None
@@ -223,7 +383,6 @@ def main() -> int:
 
     json_path.write_text(json.dumps(status, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
-    markdown = markdown_path.read_text(encoding="utf-8") if markdown_path.exists() else ""
     smoke_status = status["reliability"]["smoke_test"]
     smoke_result = smoke_status.get("overall") or ("unavailable" if not smoke else "unknown")
     deployment = status["deployment"]
@@ -238,11 +397,16 @@ def main() -> int:
         f"- deploying SHA：`{deployment.get('deploying_sha') or 'none'}`",
         f"- 最近发布结果：`{deployment.get('last_result') or 'unknown'}`",
         f"- 磁盘保护级别：`{disk_level}`",
+        f"- Letta 必需：`{'yes' if letta_status.get('required') else 'no'}`",
+        f"- Letta 可用：`{'yes' if letta_status.get('available') else 'no'}`",
         f"- 最近 smoke test：`{smoke_result}`",
         "- 自动清理不会删除 Docker 数据卷、数据库或用户附件。",
         "",
     ]
-    markdown_path.write_text(markdown.rstrip() + "\n" + "\n".join(reliability_section), encoding="utf-8")
+    markdown_path.write_text(
+        render_base_markdown(status).rstrip() + "\n" + "\n".join(reliability_section),
+        encoding="utf-8",
+    )
     print(
         json.dumps(
             {
@@ -251,6 +415,8 @@ def main() -> int:
                 "stale": stale,
                 "deployment_state": deployment.get("state"),
                 "deployment_in_sync": status.get("deployment_in_sync"),
+                "letta_required": letta_status.get("required"),
+                "letta_available": letta_status.get("available"),
             }
         )
     )
