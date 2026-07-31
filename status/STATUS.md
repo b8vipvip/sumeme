@@ -1,12 +1,12 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-31T11:48:47+08:00
+- **采集时间：** 2026-07-31T12:36:40+08:00
 - **总体状态：** `degraded`
-- **开发阶段：** `deployed_degraded`
+- **开发阶段：** `development_in_progress`
 - **线上版本：** `8077ba1627b5cb68c306cb762c636e6742a42701`
 - **main 最新版本：** `8077ba1627b5cb68c306cb762c636e6742a42701`
 - **线上与 main 同步：** 是
-- **开放 PR：** 0
+- **开放 PR：** 1
 - **开放 Issue：** 3
 
 ## 需要关注
@@ -18,38 +18,38 @@
 - 本地网关：`ok`
 - 公网入口：`ok`
 - 磁盘使用：`83.7%`，剩余 4.7 GiB
-- 内存使用：`63.2%`，可用 1.3 GiB
+- 内存使用：`65.0%`，可用 1.3 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| ai-provider-proxy | running | healthy | Up 39 minutes (healthy) |
-| letta | running | healthy | Up 47 minutes (healthy) |
-| lobe | running | - | Up 59 minutes |
-| memory-gateway | running | healthy | Up 39 minutes (healthy) |
-| postgresql | running | healthy | Up 59 minutes (healthy) |
-| qdrant | running | healthy | Up 59 minutes (healthy) |
-| redis | running | healthy | Up 59 minutes (healthy) |
-| rustfs | running | healthy | Up 59 minutes (healthy) |
-| searxng | running | - | Up 59 minutes |
+| ai-provider-proxy | running | healthy | Up About an hour (healthy) |
+| letta | running | healthy | Up 2 hours (healthy) |
+| lobe | running | - | Up 2 hours |
+| memory-gateway | running | healthy | Up About an hour (healthy) |
+| postgresql | running | healthy | Up 2 hours (healthy) |
+| qdrant | running | healthy | Up 2 hours (healthy) |
+| redis | running | healthy | Up 2 hours (healthy) |
+| rustfs | running | healthy | Up 2 hours (healthy) |
+| searxng | running | - | Up 2 hours |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-07-31T03:48:29Z |
-| Smoke production | success | main | 2026-07-31T03:48:18Z |
-| Publish project status | success | main | 2026-07-31T03:10:26Z |
-| CI | success | main | 2026-07-31T03:09:38Z |
-| CI | success | agent/optional-letta-status | 2026-07-31T03:07:38Z |
-| CI | failure | agent/optional-letta-status | 2026-07-31T03:06:47Z |
-| Publish project status | success | main | 2026-07-31T03:02:28Z |
-| CI | success | main | 2026-07-31T03:01:40Z |
+| Publish project status | in_progress | main | 2026-07-31T04:36:21Z |
+| CI | in_progress | agent/fix-blank-public-ui | 2026-07-31T04:36:10Z |
+| CI | in_progress | agent/fix-blank-public-ui | 2026-07-31T04:35:58Z |
+| CI | success | agent/fix-blank-public-ui | 2026-07-31T04:36:03Z |
+| CI | success | agent/fix-blank-public-ui | 2026-07-31T04:34:58Z |
+| Public UI smoke | failure | agent/fix-blank-public-ui | 2026-07-31T04:34:50Z |
+| CI | success | agent/fix-blank-public-ui | 2026-07-31T04:30:56Z |
+| Public UI smoke | failure | agent/fix-blank-public-ui | 2026-07-31T04:30:51Z |
 
 ## 开放 PR
 
-- 无
+- #56 Detect and fix blank public UI assets (`agent/fix-blank-public-ui` → `main`)
 
 ## 开放 Issue
 

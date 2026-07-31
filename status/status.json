@@ -1,9 +1,9 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-07-31T11:48:47+08:00",
+  "generated_at": "2026-07-31T12:36:40+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "degraded",
-  "project_stage": "deployed_degraded",
+  "project_stage": "development_in_progress",
   "reasons": [
     "磁盘使用率达到 80% 警戒线"
   ],
@@ -76,7 +76,7 @@
       "name": "sumeme-ai-provider-proxy",
       "state": "running",
       "health": "healthy",
-      "status": "Up 39 minutes (healthy)",
+      "status": "Up About an hour (healthy)",
       "critical": false
     },
     {
@@ -84,7 +84,7 @@
       "name": "sumeme-letta",
       "state": "running",
       "health": "healthy",
-      "status": "Up 47 minutes (healthy)",
+      "status": "Up 2 hours (healthy)",
       "critical": false,
       "required": false
     },
@@ -93,7 +93,7 @@
       "name": "sumeme-lobehub",
       "state": "running",
       "health": "",
-      "status": "Up 59 minutes",
+      "status": "Up 2 hours",
       "critical": true
     },
     {
@@ -101,7 +101,7 @@
       "name": "sumeme-memory-gateway",
       "state": "running",
       "health": "healthy",
-      "status": "Up 39 minutes (healthy)",
+      "status": "Up About an hour (healthy)",
       "critical": true
     },
     {
@@ -109,7 +109,7 @@
       "name": "sumeme-postgres",
       "state": "running",
       "health": "healthy",
-      "status": "Up 59 minutes (healthy)",
+      "status": "Up 2 hours (healthy)",
       "critical": true
     },
     {
@@ -117,7 +117,7 @@
       "name": "sumeme-qdrant",
       "state": "running",
       "health": "healthy",
-      "status": "Up 59 minutes (healthy)",
+      "status": "Up 2 hours (healthy)",
       "critical": true
     },
     {
@@ -125,7 +125,7 @@
       "name": "sumeme-redis",
       "state": "running",
       "health": "healthy",
-      "status": "Up 59 minutes (healthy)",
+      "status": "Up 2 hours (healthy)",
       "critical": true
     },
     {
@@ -133,7 +133,7 @@
       "name": "sumeme-rustfs",
       "state": "running",
       "health": "healthy",
-      "status": "Up 59 minutes (healthy)",
+      "status": "Up 2 hours (healthy)",
       "critical": true
     },
     {
@@ -141,21 +141,21 @@
       "name": "sumeme-searxng",
       "state": "running",
       "health": "",
-      "status": "Up 59 minutes",
+      "status": "Up 2 hours",
       "critical": true
     }
   ],
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 35276222464,
-      "free_bytes": 5038174208,
+      "used_bytes": 35284074496,
+      "free_bytes": 5030322176,
       "used_percent": 83.7
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1437077504,
-      "used_percent": 63.2
+      "available_bytes": 1366978560,
+      "used_percent": 65.0
     }
   },
   "github": {
@@ -163,7 +163,17 @@
     "source": "github-hosted-runner",
     "default_branch": "main",
     "latest_main_sha": "8077ba1627b5cb68c306cb762c636e6742a42701",
-    "open_pull_requests": [],
+    "open_pull_requests": [
+      {
+        "number": 56,
+        "title": "Detect and fix blank public UI assets",
+        "draft": true,
+        "head": "agent/fix-blank-public-ui",
+        "base": "main",
+        "updated_at": "2026-07-31T04:35:55Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/pull/56"
+      }
+    ],
     "open_issues": [
       {
         "number": 10,
@@ -188,14 +198,118 @@
       {
         "name": "Publish project status",
         "display_title": "Publish project status",
-        "event": "workflow_run",
+        "event": "schedule",
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
         "head_sha": "8077ba1627b5cb68c306cb762c636e6742a42701",
+        "run_number": 363,
+        "created_at": "2026-07-31T04:36:18Z",
+        "updated_at": "2026-07-31T04:36:21Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30604583854"
+      },
+      {
+        "name": "CI",
+        "display_title": "Detect and fix blank public UI assets",
+        "event": "pull_request",
+        "status": "in_progress",
+        "conclusion": null,
+        "head_branch": "agent/fix-blank-public-ui",
+        "head_sha": "c2e90d787a9793113c359ac897aeb9a33739cc66",
+        "run_number": 650,
+        "created_at": "2026-07-31T04:35:59Z",
+        "updated_at": "2026-07-31T04:36:10Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30604570272"
+      },
+      {
+        "name": "CI",
+        "display_title": "Detect and fix blank public UI assets",
+        "event": "pull_request",
+        "status": "in_progress",
+        "conclusion": null,
+        "head_branch": "agent/fix-blank-public-ui",
+        "head_sha": "f9202dc9d69462b1bdf24e11a9f473f3083ab3aa",
+        "run_number": 649,
+        "created_at": "2026-07-31T04:35:49Z",
+        "updated_at": "2026-07-31T04:35:58Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30604563579"
+      },
+      {
+        "name": "CI",
+        "display_title": "Detect and fix blank public UI assets",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/fix-blank-public-ui",
+        "head_sha": "b96c846b624dd95e425a8f5bcb4e0fec524f0ea9",
+        "run_number": 648,
+        "created_at": "2026-07-31T04:35:36Z",
+        "updated_at": "2026-07-31T04:36:03Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30604554102"
+      },
+      {
+        "name": "CI",
+        "display_title": "Detect and fix blank public UI assets",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/fix-blank-public-ui",
+        "head_sha": "fee7651acfe6ce0e9301990001894b6c44a11fb4",
+        "run_number": 647,
+        "created_at": "2026-07-31T04:34:25Z",
+        "updated_at": "2026-07-31T04:34:58Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30604502858"
+      },
+      {
+        "name": "Public UI smoke",
+        "display_title": "Detect and fix blank public UI assets",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_branch": "agent/fix-blank-public-ui",
+        "head_sha": "fee7651acfe6ce0e9301990001894b6c44a11fb4",
+        "run_number": 2,
+        "created_at": "2026-07-31T04:34:24Z",
+        "updated_at": "2026-07-31T04:34:50Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30604502688"
+      },
+      {
+        "name": "CI",
+        "display_title": "Detect and fix blank public UI assets",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/fix-blank-public-ui",
+        "head_sha": "bf7d6f41a5c292326f303aeef24ef0bcac68b13d",
+        "run_number": 646,
+        "created_at": "2026-07-31T04:30:19Z",
+        "updated_at": "2026-07-31T04:30:56Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30604323967"
+      },
+      {
+        "name": "Public UI smoke",
+        "display_title": "Detect and fix blank public UI assets",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "failure",
+        "head_branch": "agent/fix-blank-public-ui",
+        "head_sha": "bf7d6f41a5c292326f303aeef24ef0bcac68b13d",
+        "run_number": 1,
+        "created_at": "2026-07-31T04:30:19Z",
+        "updated_at": "2026-07-31T04:30:51Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30604323674"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "8077ba1627b5cb68c306cb762c636e6742a42701",
         "run_number": 362,
         "created_at": "2026-07-31T03:48:20Z",
-        "updated_at": "2026-07-31T03:48:29Z",
+        "updated_at": "2026-07-31T03:49:05Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30602497675"
       },
       {
@@ -236,110 +350,6 @@
         "created_at": "2026-07-31T03:07:59Z",
         "updated_at": "2026-07-31T03:09:38Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30600788729"
-      },
-      {
-        "name": "CI",
-        "display_title": "Report optional Letta failures as visible degradation",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/optional-letta-status",
-        "head_sha": "2a795bf02df61a1b02e1c9c7b32c2e7270047b22",
-        "run_number": 644,
-        "created_at": "2026-07-31T03:06:59Z",
-        "updated_at": "2026-07-31T03:07:38Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30600743974"
-      },
-      {
-        "name": "CI",
-        "display_title": "Report optional Letta failures as visible degradation",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/optional-letta-status",
-        "head_sha": "f3c325478927aa2066dda53d729c16f539e90e7c",
-        "run_number": 643,
-        "created_at": "2026-07-31T03:06:01Z",
-        "updated_at": "2026-07-31T03:06:47Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30600702306"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "12adbf02d85c101098cb772587540700b20ec644",
-        "run_number": 360,
-        "created_at": "2026-07-31T03:01:42Z",
-        "updated_at": "2026-07-31T03:02:28Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30600507133"
-      },
-      {
-        "name": "CI",
-        "display_title": "Merge PR #54: authenticate the secure Letta healthcheck",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "12adbf02d85c101098cb772587540700b20ec644",
-        "run_number": 642,
-        "created_at": "2026-07-31T03:00:03Z",
-        "updated_at": "2026-07-31T03:01:40Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30600426952"
-      },
-      {
-        "name": "CI",
-        "display_title": "Authenticate the secure Letta container healthcheck",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/authenticate-letta-healthcheck",
-        "head_sha": "19ee8bf060a3459c076c4d95319d0f9a17eac322",
-        "run_number": 641,
-        "created_at": "2026-07-31T02:58:55Z",
-        "updated_at": "2026-07-31T02:59:37Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30600378923"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "aa09d1274c8918baa866e6448d7e713047805553",
-        "run_number": 359,
-        "created_at": "2026-07-31T02:56:18Z",
-        "updated_at": "2026-07-31T02:56:57Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30600271825"
-      },
-      {
-        "name": "CI",
-        "display_title": "Merge PR #53: verify the canonical public health endpoint",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "aa09d1274c8918baa866e6448d7e713047805553",
-        "run_number": 640,
-        "created_at": "2026-07-31T02:54:45Z",
-        "updated_at": "2026-07-31T02:56:17Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30600204573"
-      },
-      {
-        "name": "CI",
-        "display_title": "Use the canonical public health endpoint for GHS verification",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/fix-ghs-public-health-endpoint",
-        "head_sha": "557dd6b2e1a81c95c34dcf62bd14ce238fc8285d",
-        "run_number": 639,
-        "created_at": "2026-07-31T02:53:48Z",
-        "updated_at": "2026-07-31T02:54:17Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30600163132"
       }
     ]
   },
@@ -357,7 +367,7 @@
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-31T11:48:47+08:00"
+    "generated_at": "2026-07-31T12:36:40+08:00"
   },
   "components": {
     "letta": {
@@ -425,7 +435,7 @@
         "service_scope_verification_failed"
       ],
       "deployment_classification": "external_degraded",
-      "age_seconds_at_publish": 2360,
+      "age_seconds_at_publish": 5233,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }
