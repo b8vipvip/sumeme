@@ -1,0 +1,131 @@
+name: Files manager check
+
+on:
+  pull_request:
+    paths:
+      - "web/server-ui/static/files-manager.js"
+      - "web/server-ui/static/files-manager.css"
+      - "web/server-ui/nginx.conf"
+      - "tests/test_files_manager_contract.py"
+      - ".github/workflows/files-manager-check.yml"
+  push:
+    branches: [main]
+    paths:
+      - "web/server-ui/static/files-manager.js"
+      - "web/server-ui/static/files-manager.css"
+      - "web/server-ui/nginx.conf"
+      - "tests/test_files_manager_contract.py"
+      - ".github/workflows/files-manager-check.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  files-manager:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Check files manager JavaScript syntax
+        run: node --check web/server-ui/static/files-manager.js
+      - name: Run files manager contract
+        run: python -m unittest tests.test_files_manager_contract -v
+      - name: Build server UI container
+        run: docker build -t sumeme-web:files-test web/server-ui
+      - name: Start isolated LobeHub fixture and server UI
+        run: |
+          set -euo pipefail
+          docker network create sumeme-files-test
+          fixture="${RUNNER_TEMP}/lobe-files-fixture.conf"
+          cat > "${fixture}" <<'EOF'
+          server {
+            listen 3210;
+            location = /api/auth/get-session {
+              default_type application/json;
+              return 200 '{"session":{"id":"session-fixture"},"user":{"id":"user-fixture","email":"fixture@example.com"}}';
+            }
+            location = /trpc/file.getFiles {
+              default_type application/json;
+              return 200 '{"result":{"data":{"json":[{"id":"file-fixture","name":"Fixture file.pdf","fileType":"application/pdf","size":128,"createdAt":"2026-07-31T10:00:00Z","updatedAt":"2026-07-31T10:00:00Z","finishEmbedding":true,"url":"https://storage.example.invalid/file-fixture"}]}}}';
+            }
+            location = /trpc/file.findById {
+              default_type application/json;
+              return 200 '{"result":{"data":{"json":{"id":"file-fixture","name":"Fixture file.pdf","fileType":"application/pdf","size":128,"fileHash":"fixture-hash","metadata":{"path":"files/fixture.pdf"}}}}}';
+            }
+            location = /trpc/file.checkFileHash {
+              default_type application/json;
+              return 200 '{"result":{"data":{"json":{"isExist":false}}}}';
+            }
+            location = /trpc/upload.createS3PreSignedUrl {
+              default_type application/json;
+              return 200 '{"result":{"data":{"json":"https://storage.example.invalid/signed-upload"}}}';
+            }
+            location = /trpc/file.createFile {
+              default_type application/json;
+              return 200 '{"result":{"data":{"json":{"id":"file-created","url":"https://storage.example.invalid/file-created"}}}}';
+            }
+            location = /trpc/file.updateFile {
+              default_type application/json;
+              return 200 '{"result":{"data":{"json":{"success":true}}}}';
+            }
+            location = /trpc/file.removeFile {
+              default_type application/json;
+              return 200 '{"result":{"data":{"json":null}}}';
+            }
+            location / {
+              default_type text/plain;
+              return 200 'lobe files fixture';
+            }
+          }
+          EOF
+          docker run -d --name lobe --network sumeme-files-test \
+            -v "${fixture}:/etc/nginx/conf.d/default.conf:ro" nginx:1.27-alpine
+          docker run -d --name memory-gateway --network sumeme-files-test nginx:1.27-alpine
+          docker run -d --name sumeme-web-files-test --network sumeme-files-test \
+            -p 127.0.0.1:18081:80 sumeme-web:files-test
+      - name: Verify assets and native LobeHub file proxy
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 20); do
+            curl --fail --silent http://127.0.0.1:18081/healthz >/dev/null && break
+            sleep 1
+          done
+          page="$(curl --fail --silent http://127.0.0.1:18081/)"
+          grep -F '/assets/files-style' <<<"${page}"
+          grep -F '/assets/files-manager' <<<"${page}"
+          script="$(curl --fail --silent http://127.0.0.1:18081/assets/files-manager)"
+          style="$(curl --fail --silent http://127.0.0.1:18081/assets/files-style)"
+          grep -F 'file.getFiles' <<<"${script}"
+          grep -F 'file.removeFile' <<<"${script}"
+          grep -F 'upload.createS3PreSignedUrl' <<<"${script}"
+          grep -F '.files-manager-panel' <<<"${style}"
+          session="$(curl --fail --silent http://127.0.0.1:18081/api/auth/get-session)"
+          grep -F 'user-fixture' <<<"${session}"
+          files="$(curl --fail --silent 'http://127.0.0.1:18081/trpc/file.getFiles?input=%7B%22json%22%3A%7B%22limit%22%3A51%7D%7D')"
+          grep -F 'Fixture file.pdf' <<<"${files}"
+          detail="$(curl --fail --silent 'http://127.0.0.1:18081/trpc/file.findById?input=%7B%22json%22%3A%7B%22id%22%3A%22file-fixture%22%7D%7D')"
+          grep -F 'fixture-hash' <<<"${detail}"
+          rename="$(curl --fail --silent -H 'Content-Type: application/json' -X POST \
+            --data '{"json":{"id":"file-fixture","name":"Renamed.pdf"}}' \
+            http://127.0.0.1:18081/trpc/file.updateFile)"
+          grep -F '"success":true' <<<"${rename}"
+          curl --fail --silent -H 'Content-Type: application/json' -X POST \
+            --data '{"json":{"id":"file-fixture"}}' \
+            http://127.0.0.1:18081/trpc/file.removeFile >/dev/null
+      - name: Print logs on failure
+        if: failure()
+        run: |
+          docker logs sumeme-web-files-test || true
+          docker logs lobe || true
+      - name: Stop test containers
+        if: always()
+        run: |
+          docker rm -f sumeme-web-files-test lobe memory-gateway >/dev/null 2>&1 || true
+          docker network rm sumeme-files-test >/dev/null 2>&1 || true
