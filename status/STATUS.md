@@ -1,6 +1,6 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-31T22:45:09+08:00
+- **采集时间：** 2026-08-01T00:25:03+08:00
 - **总体状态：** `healthy`
 - **开发阶段：** `deployed_and_stable`
 - **线上版本：** `ddddf2ee60fa08dbda449942b276dff2fc28e18e`
@@ -13,36 +13,36 @@
 
 - 本地网关：`ok`
 - 公网入口：`ok`
-- 磁盘使用：`73.7%`，剩余 8.6 GiB
-- 内存使用：`55.6%`，可用 1.6 GiB
+- 磁盘使用：`73.6%`，剩余 8.6 GiB
+- 内存使用：`55.0%`，可用 1.6 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| ai-provider-proxy | running | healthy | Up 36 minutes (healthy) |
-| letta | running | healthy | Up 12 hours (healthy) |
-| lobe | running | - | Up 5 hours |
-| memory-gateway | running | healthy | Up 36 minutes (healthy) |
-| postgresql | running | healthy | Up 12 hours (healthy) |
-| qdrant | running | healthy | Up 12 hours (healthy) |
-| redis | running | healthy | Up 12 hours (healthy) |
-| rustfs | running | healthy | Up 12 hours (healthy) |
-| searxng | running | - | Up 12 hours |
-| sumeme-web | running | healthy | Up 35 minutes (healthy) |
+| ai-provider-proxy | running | healthy | Up 2 hours (healthy) |
+| letta | running | healthy | Up 13 hours (healthy) |
+| lobe | running | - | Up 6 hours |
+| memory-gateway | running | healthy | Up 2 hours (healthy) |
+| postgresql | running | healthy | Up 14 hours (healthy) |
+| qdrant | running | healthy | Up 14 hours (healthy) |
+| redis | running | healthy | Up 14 hours (healthy) |
+| rustfs | running | healthy | Up 14 hours (healthy) |
+| searxng | running | - | Up 14 hours |
+| sumeme-web | running | healthy | Up 2 hours (healthy) |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-07-31T14:44:45Z |
+| Publish project status | in_progress | main | 2026-07-31T16:24:40Z |
+| Publish project status | success | main | 2026-07-31T14:45:29Z |
 | Publish project status | success | main | 2026-07-31T14:34:18Z |
 | Smoke production | success | main | 2026-07-31T14:33:15Z |
 | Publish project status | success | main | 2026-07-31T14:11:26Z |
 | Public UI smoke | success | main | 2026-07-31T14:11:07Z |
 | CI | success | main | 2026-07-31T14:10:28Z |
 | Admin console and managed client check | success | main | 2026-07-31T14:07:57Z |
-| Server UI check | success | main | 2026-07-31T14:07:30Z |
 
 ## 开放 PR
 
