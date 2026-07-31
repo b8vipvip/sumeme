@@ -45,9 +45,7 @@ jobs:
           printf '%s\n' "${SSH_HOST_KEY}" > "${HOME}/.ssh/known_hosts"
           chmod 600 "${HOME}/.ssh/known_hosts"
 
-      - name: Run scoped private-object and application smoke through GHS
-        id: smoke
-        continue-on-error: ${{ github.event_name == 'schedule' || inputs.required == false }}
+      - name: Upload current trusted smoke scripts
         env:
           SSH_HOST: ${{ vars.SUMEME_VPS_HOST }}
           SSH_PORT: ${{ vars.SUMEME_VPS_PORT || '22' }}
@@ -57,20 +55,72 @@ jobs:
           test -n "${SSH_HOST}"
           test -n "${SSH_PORT}"
           test -n "${SSH_USER}"
-
+          remote_dir="/tmp/sumeme-smoke-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          printf 'REMOTE_DIR=%s\n' "${remote_dir}" >> "${GITHUB_ENV}"
           ssh \
             -i "${HOME}/.ssh/id_ed25519" \
             -p "${SSH_PORT}" \
             -o BatchMode=yes \
             -o IdentitiesOnly=yes \
             -o StrictHostKeyChecking=yes \
+            -o ServerAliveInterval=30 \
+            -o ServerAliveCountMax=20 \
             -o UserKnownHostsFile="${HOME}/.ssh/known_hosts" \
             "${SSH_USER}@${SSH_HOST}" \
-            'cd /opt/sumeme &&
-             DEPLOY_DIR=/opt/sumeme bash scripts/smoke-private-object.sh &&
-             DEPLOY_DIR=/opt/sumeme bash scripts/smoke-test.sh'
+            "rm -rf '${remote_dir}' && install -d -m 700 '${remote_dir}'"
+          scp \
+            -i "${HOME}/.ssh/id_ed25519" \
+            -P "${SSH_PORT}" \
+            -o BatchMode=yes \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes \
+            -o ServerAliveInterval=30 \
+            -o ServerAliveCountMax=20 \
+            -o UserKnownHostsFile="${HOME}/.ssh/known_hosts" \
+            scripts/smoke-private-object.sh scripts/smoke-test.sh \
+            "${SSH_USER}@${SSH_HOST}:${remote_dir}/"
 
-      - name: Fetch sanitized smoke reports
+      - name: Run scoped private-object and application smoke through GHS
+        id: smoke
+        continue-on-error: ${{ github.event_name == 'workflow_dispatch' && inputs.required == false }}
+        env:
+          SSH_HOST: ${{ vars.SUMEME_VPS_HOST }}
+          SSH_PORT: ${{ vars.SUMEME_VPS_PORT || '22' }}
+          SSH_USER: ${{ vars.SUMEME_VPS_USER || 'sumeme-runner' }}
+        run: |
+          set -euo pipefail
+          ssh \
+            -i "${HOME}/.ssh/id_ed25519" \
+            -p "${SSH_PORT}" \
+            -o BatchMode=yes \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes \
+            -o ServerAliveInterval=30 \
+            -o ServerAliveCountMax=20 \
+            -o UserKnownHostsFile="${HOME}/.ssh/known_hosts" \
+            "${SSH_USER}@${SSH_HOST}" \
+            "REMOTE_DIR='${REMOTE_DIR}' DEPLOY_DIR=/opt/sumeme bash -s" <<'REMOTE'
+          set -Eeuo pipefail
+          application_report="${REMOTE_DIR}/application.json"
+          private_report="${REMOTE_DIR}/private-object.json"
+          rm -f "${application_report}" "${private_report}"
+
+          set +e
+          PRIVATE_OBJECT_SMOKE_OUTPUT_PATH="${private_report}" \
+            DEPLOY_DIR="${DEPLOY_DIR}" bash "${REMOTE_DIR}/smoke-private-object.sh"
+          private_status=$?
+          SMOKE_OUTPUT_PATH="${application_report}" \
+            DEPLOY_DIR="${DEPLOY_DIR}" bash "${REMOTE_DIR}/smoke-test.sh"
+          application_status=$?
+          set -e
+
+          test -s "${private_report}"
+          test -s "${application_report}"
+          test "${private_status}" -eq 0
+          test "${application_status}" -eq 0
+          REMOTE
+
+      - name: Fetch this run's sanitized smoke reports
         if: always()
         env:
           SSH_HOST: ${{ vars.SUMEME_VPS_HOST }}
@@ -79,7 +129,7 @@ jobs:
         run: |
           set -euo pipefail
           fetch_report() {
-            local remote_path="$1"
+            local remote_name="$1"
             local local_path="$2"
             scp \
               -i "${HOME}/.ssh/id_ed25519" \
@@ -87,19 +137,17 @@ jobs:
               -o BatchMode=yes \
               -o IdentitiesOnly=yes \
               -o StrictHostKeyChecking=yes \
+              -o ServerAliveInterval=30 \
+              -o ServerAliveCountMax=5 \
               -o UserKnownHostsFile="${HOME}/.ssh/known_hosts" \
-              "${SSH_USER}@${SSH_HOST}:${remote_path}" \
+              "${SSH_USER}@${SSH_HOST}:${REMOTE_DIR}/${remote_name}" \
               "${local_path}" >/dev/null 2>&1 || true
           }
 
-          fetch_report \
-            /opt/sumeme/.deploy/smoke/latest.json \
-            "${RUNNER_TEMP}/smoke-latest.json"
-          fetch_report \
-            /opt/sumeme/.deploy/smoke/private-object.json \
-            "${RUNNER_TEMP}/smoke-private-object.json"
+          fetch_report application.json "${RUNNER_TEMP}/smoke-application.json"
+          fetch_report private-object.json "${RUNNER_TEMP}/smoke-private-object.json"
 
-      - name: Print sanitized result
+      - name: Print sanitized result from this run
         if: always()
         run: |
           python3 - <<'PY'
@@ -109,7 +157,7 @@ jobs:
 
           root = Path(os.environ["RUNNER_TEMP"])
           reports = {
-              "application": root / "smoke-latest.json",
+              "application": root / "smoke-application.json",
               "private_object": root / "smoke-private-object.json",
           }
           output = {}
@@ -127,9 +175,33 @@ jobs:
                   "generated_at": value.get("generated_at"),
                   "duration_seconds": value.get("duration_seconds"),
                   "overall": value.get("overall"),
+                  "deployment_gate": value.get("deployment_gate"),
                   "scope": value.get("scope") or value.get("test_scope"),
                   "checks": value.get("checks"),
+                  "write_components": value.get("write_components"),
+                  "recall_components": value.get("recall_components"),
                   "error_codes": value.get("error_codes"),
               }
-          print(json.dumps(output, ensure_ascii=False, indent=2))
+          print(json.dumps(output, ensure_ascii=False, indent=2, sort_keys=True))
           PY
+
+      - name: Remove remote temporary smoke bundle
+        if: always()
+        env:
+          SSH_HOST: ${{ vars.SUMEME_VPS_HOST }}
+          SSH_PORT: ${{ vars.SUMEME_VPS_PORT || '22' }}
+          SSH_USER: ${{ vars.SUMEME_VPS_USER || 'sumeme-runner' }}
+        run: |
+          set +e
+          if [[ -n "${REMOTE_DIR:-}" ]]; then
+            ssh \
+              -i "${HOME}/.ssh/id_ed25519" \
+              -p "${SSH_PORT}" \
+              -o BatchMode=yes \
+              -o IdentitiesOnly=yes \
+              -o StrictHostKeyChecking=yes \
+              -o ServerAliveInterval=30 \
+              -o ServerAliveCountMax=5 \
+              -o UserKnownHostsFile="${HOME}/.ssh/known_hosts" \
+              "${SSH_USER}@${SSH_HOST}" "rm -rf '${REMOTE_DIR}'"
+          fi

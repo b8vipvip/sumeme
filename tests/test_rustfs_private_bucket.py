@@ -8,7 +8,7 @@ REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 COMPOSE_FILE = REPOSITORY_ROOT / "docker-compose.yml"
 ENV_EXAMPLE = REPOSITORY_ROOT / ".env.example"
 PRIVATE_SMOKE = REPOSITORY_ROOT / "scripts" / "smoke-private-object.sh"
-DEPLOY_SCRIPT = REPOSITORY_ROOT / "scripts" / "deploy-production.sh"
+DEPLOY_SCRIPT = REPOSITORY_ROOT / "scripts" / "deploy-production-v2.sh"
 SMOKE_WORKFLOW = REPOSITORY_ROOT / ".github" / "workflows" / "smoke-production.yml"
 
 
@@ -76,8 +76,10 @@ class RustFSPrivateBucketTests(unittest.TestCase):
         self.assertNotIn("runs-on: [self-hosted", workflow)
         self.assertIn("StrictHostKeyChecking=yes", workflow)
         self.assertIn("SUMEME_SSH_HOST_KEY", workflow)
-        self.assertIn("bash scripts/smoke-private-object.sh", workflow)
-        self.assertIn("bash scripts/smoke-test.sh", workflow)
+        self.assertIn("scripts/smoke-private-object.sh scripts/smoke-test.sh", workflow)
+        self.assertIn('bash "${REMOTE_DIR}/smoke-private-object.sh"', workflow)
+        self.assertIn('bash "${REMOTE_DIR}/smoke-test.sh"', workflow)
+        self.assertIn("ServerAliveInterval=30", workflow)
 
 
 if __name__ == "__main__":
