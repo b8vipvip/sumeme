@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-07-31T22:33:55+08:00",
+  "generated_at": "2026-07-31T22:45:09+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "healthy",
   "project_stage": "deployed_and_stable",
@@ -74,7 +74,7 @@
       "name": "sumeme-ai-provider-proxy",
       "state": "running",
       "health": "healthy",
-      "status": "Up 24 minutes (healthy)",
+      "status": "Up 36 minutes (healthy)",
       "critical": false
     },
     {
@@ -99,7 +99,7 @@
       "name": "sumeme-memory-gateway",
       "state": "running",
       "health": "healthy",
-      "status": "Up 24 minutes (healthy)",
+      "status": "Up 36 minutes (healthy)",
       "critical": true
     },
     {
@@ -147,21 +147,21 @@
       "name": "sumeme-web",
       "state": "running",
       "health": "healthy",
-      "status": "Up 24 minutes (healthy)",
+      "status": "Up 35 minutes (healthy)",
       "critical": true
     }
   ],
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 30825816064,
-      "free_bytes": 9488580608,
-      "used_percent": 73.1
+      "used_bytes": 31050477568,
+      "free_bytes": 9263919104,
+      "used_percent": 73.7
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1584599040,
-      "used_percent": 59.4
+      "available_bytes": 1734139904,
+      "used_percent": 55.6
     }
   },
   "github": {
@@ -194,14 +194,27 @@
       {
         "name": "Publish project status",
         "display_title": "Publish project status",
-        "event": "workflow_run",
+        "event": "schedule",
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
         "head_sha": "ddddf2ee60fa08dbda449942b276dff2fc28e18e",
+        "run_number": 387,
+        "created_at": "2026-07-31T14:44:42Z",
+        "updated_at": "2026-07-31T14:44:45Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30639898924"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "ddddf2ee60fa08dbda449942b276dff2fc28e18e",
         "run_number": 386,
         "created_at": "2026-07-31T14:33:17Z",
-        "updated_at": "2026-07-31T14:33:27Z",
+        "updated_at": "2026-07-31T14:34:18Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30639085519"
       },
       {
@@ -333,19 +346,6 @@
         "created_at": "2026-07-31T14:05:43Z",
         "updated_at": "2026-07-31T14:05:50Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30637155475"
-      },
-      {
-        "name": "CI",
-        "display_title": "Require a one-time secret for initial administrator setup",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/protect-admin-bootstrap",
-        "head_sha": "0ec246e4ed3c82938dd61ee57b4bbc2f5fe9bdb6",
-        "run_number": 713,
-        "created_at": "2026-07-31T14:04:58Z",
-        "updated_at": "2026-07-31T14:05:35Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30637101343"
       }
     ]
   },
@@ -363,7 +363,7 @@
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-31T22:33:55+08:00"
+    "generated_at": "2026-07-31T22:45:09+08:00"
   },
   "components": {
     "letta": {
@@ -428,7 +428,7 @@
         "letta_agent_create_failed",
         "letta_recall_delayed"
       ],
-      "age_seconds_at_publish": 1416,
+      "age_seconds_at_publish": 2090,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }
