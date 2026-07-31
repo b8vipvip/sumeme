@@ -80,7 +80,7 @@
             <div class="detail-item"><span>数据库</span><strong>PostgreSQL / Redis</strong></div>
           </div></article>
           <article class="panel"><div class="panel-header"><div><h2>快速入口</h2><p>逐步接入现有能力</p></div></div><div class="quick-list">
-            <a href="#chat" data-jump="chat"><span><b>开始对话</b><small>SuMeMe 原生对话界面</small></span><em>›</em></a>
+            <a href="#chat" data-jump="chat"><span><b>浏览对话</b><small>读取 LobeHub 会话和消息</small></span><em>›</em></a>
             <a href="#memories" data-jump="memories"><span><b>搜索记忆</b><small>MemPalace 与 Letta</small></span><em>›</em></a>
             <a href="#files" data-jump="files"><span><b>管理资料</b><small>附件与私有对象</small></span><em>›</em></a>
           </div></article>
@@ -88,8 +88,45 @@
       </div>
 
       <div class="page" id="page-chat">
-        <div class="page-heading"><div><span class="eyebrow">CONVERSATIONS</span><h2>对话</h2><p>此页面将接入 LobeHub 的会话与消息数据层，不再加载 LobeHub 的视觉界面。</p></div></div>
-        <div class="panel"><div class="empty-state"><span>💬</span><h3>前端适配进行中</h3><p>LobeHub 后端已保留。当前分支先修复认证与资源路由，下一步接入会话列表、消息流和附件。</p></div></div>
+        <div class="page-heading chat-page-heading">
+          <div><span class="eyebrow">CONVERSATIONS</span><h2>LobeHub 对话</h2><p>直接读取原 LobeHub 数据层中的会话主题和消息记录，不加载 LobeHub 的视觉界面。</p></div>
+          <div class="chat-heading-actions">
+            <span class="read-only-badge">第一阶段 · 安全只读</span>
+            <button class="button secondary" id="reloadTopicsButton" type="button">重新读取</button>
+          </div>
+        </div>
+        <div class="chat-workspace panel">
+          <aside class="conversation-column" aria-label="会话列表">
+            <div class="conversation-toolbar">
+              <label class="conversation-search">
+                <span aria-hidden="true">⌕</span>
+                <input id="topicSearchInput" type="search" placeholder="搜索会话标题或最近内容" autocomplete="off">
+              </label>
+              <div class="conversation-summary"><span id="topicCountLabel">正在读取…</span><small>数据来自 LobeHub topic.queryTopics</small></div>
+            </div>
+            <div class="conversation-list" id="topicList" role="list">
+              <div class="conversation-state"><span class="loading-spinner"></span><p>正在读取 LobeHub 会话…</p></div>
+            </div>
+          </aside>
+
+          <section class="message-column" aria-label="消息记录">
+            <header class="message-header" id="messageHeader" hidden>
+              <div><h3 id="activeTopicTitle">未命名会话</h3><p id="activeTopicMeta">—</p></div>
+              <span class="message-count" id="messageCountLabel">0 条消息</span>
+            </header>
+            <div class="message-list" id="messageList" aria-live="polite">
+              <div class="conversation-state message-placeholder">
+                <span>💬</span>
+                <h3>选择一条会话</h3>
+                <p>左侧显示当前账户在 LobeHub 中保存的会话。选择后将在这里读取消息原文。</p>
+              </div>
+            </div>
+            <footer class="chat-readonly-footer">
+              <span>当前版本不会新建、修改或删除 LobeHub 会话数据。</span>
+              <span id="chatConnectionLabel">等待连接</span>
+            </footer>
+          </section>
+        </div>
       </div>
 
       <div class="page" id="page-memories"><div class="page-heading"><div><span class="eyebrow">LONG-TERM MEMORY</span><h2>记忆</h2><p>跨会话检索原文记忆与结构化记忆。</p></div></div><div class="panel"><div class="empty-state"><span>✦</span><h3>记忆服务已保留</h3><p>检索和管理界面将在本前端直接调用 memory-gateway。</p></div></div></div>
