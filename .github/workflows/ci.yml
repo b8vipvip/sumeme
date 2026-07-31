@@ -120,7 +120,7 @@ jobs:
           ADOB_MODE: VSR
           DEPLOY_DIR: /opt/sumeme
           SOURCE_DIR: ${{ github.workspace }}
-        run: bash scripts/deploy-production.sh "${GITHUB_SHA}"
+        run: bash scripts/deploy-production-v2.sh "${GITHUB_SHA}"
 
       - name: Print deployment state
         if: always()
@@ -148,7 +148,7 @@ jobs:
       ssh_port: ${{ vars.SUMEME_VPS_PORT || '22' }}
       ssh_user: ${{ vars.SUMEME_VPS_USER || 'sumeme-runner' }}
       deploy_path: /opt/sumeme
-      deploy_script: scripts/deploy-production.sh
+      deploy_script: scripts/deploy-production-v2.sh
       public_health_url: https://sumeme.mv3.cn/health
       retain_staging_releases: 3
     secrets:
