@@ -1,0 +1,7 @@
+[lint.per-file-ignores]
+# FastAPI dependency defaults are the framework's declarative API. The dependency
+# object is not evaluated as application work at import time.
+"app/admin_api.py" = ["B008", "I001", "PIE810"]
+# UTF-8 is explicit on SSE boundaries and memory persistence is intentionally
+# best-effort after a successful relay response has already reached the client.
+"app/client_api.py" = ["BLE001", "UP012"]
