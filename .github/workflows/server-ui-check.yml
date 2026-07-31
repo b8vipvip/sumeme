@@ -1,0 +1,65 @@
+name: Server UI check
+
+on:
+  pull_request:
+    paths:
+      - "web/server-ui/**"
+      - "docker-compose.yml"
+      - "scripts/health-check.sh"
+      - "scripts/smoke-public-ui.py"
+      - "tests/test_public_ui_delivery_contract.py"
+      - ".github/workflows/server-ui-check.yml"
+  push:
+    branches: [main]
+    paths:
+      - "web/server-ui/**"
+      - "docker-compose.yml"
+      - "scripts/health-check.sh"
+      - "scripts/smoke-public-ui.py"
+      - "tests/test_public_ui_delivery_contract.py"
+      - ".github/workflows/server-ui-check.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  server-ui:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile public UI smoke test
+        run: python -m py_compile scripts/smoke-public-ui.py
+      - name: Run native server UI contract
+        run: python -m unittest tests.test_public_ui_delivery_contract -v
+      - name: Build server UI container
+        run: docker build -t sumeme-web:test web/server-ui
+      - name: Start isolated server UI container
+        run: docker run -d --name sumeme-web-test -p 127.0.0.1:18080:80 sumeme-web:test
+      - name: Verify container health and native UI markers
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 20); do
+            if curl --fail --silent http://127.0.0.1:18080/healthz >/dev/null; then
+              break
+            fi
+            sleep 1
+          done
+          curl --fail --silent http://127.0.0.1:18080/healthz | python -m json.tool >/dev/null
+          page="$(curl --fail --silent http://127.0.0.1:18080/)"
+          grep -F '<title>SuMeMe · 服务端</title>' <<<"${page}"
+          grep -F '服务端管理中心' <<<"${page}"
+          if grep -F '/_spa' <<<"${page}"; then
+            echo 'Legacy SPA asset reference found in native server UI.' >&2
+            exit 1
+          fi
+      - name: Print container logs on failure
+        if: failure()
+        run: docker logs sumeme-web-test || true
+      - name: Stop test container
+        if: always()
+        run: docker rm -f sumeme-web-test >/dev/null 2>&1 || true
