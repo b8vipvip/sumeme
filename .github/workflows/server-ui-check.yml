@@ -38,7 +38,9 @@ jobs:
       - name: Compile public UI smoke test
         run: python -m py_compile scripts/smoke-public-ui.py
       - name: Check frontend JavaScript syntax
-        run: node --check web/server-ui/static/app.js
+        run: |
+          node --check web/server-ui/static/app.js
+          node --check web/server-ui/static/chat-write.js
       - name: Run frontend and backend-boundary contract
         run: python -m unittest tests.test_public_ui_delivery_contract -v
       - name: Build server UI container
@@ -57,11 +59,23 @@ jobs:
             }
             location = /trpc/topic.queryTopics {
               default_type application/json;
-              return 200 '{"result":{"data":{"json":{"items":[{"id":"topic-fixture","title":"Fixture conversation","updatedAt":"2026-07-31T10:00:00Z","lastMessage":{"content":"Fixture preview"}}]}}}}';
+              return 200 '{"result":{"data":{"json":{"items":[{"id":"topic-fixture","agentId":"agent-fixture","title":"Fixture conversation","updatedAt":"2026-07-31T10:00:00Z","lastMessage":{"content":"Fixture preview"}}]}}}}';
             }
             location = /trpc/topic.getTopicTranscript {
               default_type application/json;
               return 200 '{"result":{"data":{"json":{"items":[{"id":"message-fixture","role":"assistant","content":"Fixture transcript","createdAt":"2026-07-31T10:01:00Z"}]}}}}';
+            }
+            location = /trpc/agent.queryAgents {
+              default_type application/json;
+              return 200 '{"result":{"data":{"json":{"items":[{"id":"agent-fixture","title":"Fixture agent"}]}}}}';
+            }
+            location = /trpc/aiAgent.execAgent {
+              default_type application/json;
+              return 200 '{"result":{"data":{"json":{"agentId":"agent-fixture","assistantMessageId":"assistant-fixture","autoStarted":true,"createdAt":"2026-07-31T10:02:00Z","message":"started","operationId":"operation-fixture","status":"running","success":true,"timestamp":"2026-07-31T10:02:00Z","topicId":"topic-fixture","userMessageId":"user-message-fixture"}}}}';
+            }
+            location = /trpc/aiAgent.getOperationStatus {
+              default_type application/json;
+              return 200 '{"result":{"data":{"json":{"currentState":{"status":"done"},"hasError":false,"isCompleted":true}}}}';
             }
             location /_spa-auth/ {
               default_type application/javascript;
@@ -109,19 +123,34 @@ jobs:
           grep -F '服务端管理中心' <<<"${page}"
           grep -F 'SUMEME OPERATIONS CENTER' <<<"${page}"
           grep -F 'id="topicList"' <<<"${page}"
-          grep -F '第一阶段 · 安全只读' <<<"${page}"
           grep -F '/assets/conversation-style' <<<"${page}"
+          grep -F '/assets/chat-runtime' <<<"${page}"
           grep -F '登录 SuMeMe' <<<"${signin}"
           curl --fail --silent http://127.0.0.1:18080/static/admin.css >/dev/null
           curl --fail --silent http://127.0.0.1:18080/static/app.js >/dev/null
           conversation_css="$(curl --fail --silent http://127.0.0.1:18080/assets/conversation-style)"
           grep -F '.chat-workspace' <<<"${conversation_css}"
+          grep -F '.chat-composer' <<<"${conversation_css}"
+          runtime_js="$(curl --fail --silent http://127.0.0.1:18080/assets/chat-runtime)"
+          grep -F 'aiAgent.execAgent' <<<"${runtime_js}"
+          grep -F 'aiAgent.getOperationStatus' <<<"${runtime_js}"
           session="$(curl --fail --silent http://127.0.0.1:18080/api/auth/get-session)"
           grep -F '"session":null' <<<"${session}"
           topics="$(curl --fail --silent 'http://127.0.0.1:18080/trpc/topic.queryTopics?input=%7B%22json%22%3A%7B%7D%7D')"
           transcript="$(curl --fail --silent 'http://127.0.0.1:18080/trpc/topic.getTopicTranscript?input=%7B%22json%22%3A%7B%22topicId%22%3A%22topic-fixture%22%7D%7D')"
+          agents="$(curl --fail --silent 'http://127.0.0.1:18080/trpc/agent.queryAgents?input=%7B%22json%22%3A%7B%22limit%22%3A100%2C%22offset%22%3A0%7D%7D')"
+          execution="$(curl --fail --silent \
+            -H 'Content-Type: application/json' \
+            -X POST \
+            --data '{"json":{"agentId":"agent-fixture","appContext":{"scope":"main","topicId":"topic-fixture"},"autoStart":true,"prompt":"Fixture prompt","trigger":"chat"}}' \
+            http://127.0.0.1:18080/trpc/aiAgent.execAgent)"
+          operation="$(curl --fail --silent 'http://127.0.0.1:18080/trpc/aiAgent.getOperationStatus?input=%7B%22json%22%3A%7B%22historyLimit%22%3A6%2C%22includeHistory%22%3Afalse%2C%22operationId%22%3A%22operation-fixture%22%7D%7D')"
           grep -F 'Fixture conversation' <<<"${topics}"
           grep -F 'Fixture transcript' <<<"${transcript}"
+          grep -F 'Fixture agent' <<<"${agents}"
+          grep -F 'operation-fixture' <<<"${execution}"
+          grep -F 'topic-fixture' <<<"${execution}"
+          grep -F '"isCompleted":true' <<<"${operation}"
           asset="$(curl --fail --silent http://127.0.0.1:18080/_spa-auth/assets/probe.js)"
           grep -F 'auth fixture' <<<"${asset}"
           if grep -F '<script src="/_spa-auth/' <<<"${page}"; then
