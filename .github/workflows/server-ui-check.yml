@@ -55,6 +55,14 @@ jobs:
               default_type application/json;
               return 200 '{"session":null,"user":null}';
             }
+            location = /trpc/topic.queryTopics {
+              default_type application/json;
+              return 200 '{"result":{"data":{"json":{"items":[{"id":"topic-fixture","title":"Fixture conversation","updatedAt":"2026-07-31T10:00:00Z","lastMessage":{"content":"Fixture preview"}}]}}}}';
+            }
+            location = /trpc/topic.getTopicTranscript {
+              default_type application/json;
+              return 200 '{"result":{"data":{"json":{"items":[{"id":"message-fixture","role":"assistant","content":"Fixture transcript","createdAt":"2026-07-31T10:01:00Z"}]}}}}';
+            }
             location /_spa-auth/ {
               default_type application/javascript;
               return 200 'console.log("auth fixture")';
@@ -100,11 +108,20 @@ jobs:
           grep -F '<title>SuMeMe · 服务端</title>' <<<"${page}"
           grep -F '服务端管理中心' <<<"${page}"
           grep -F 'SUMEME OPERATIONS CENTER' <<<"${page}"
+          grep -F 'id="topicList"' <<<"${page}"
+          grep -F '第一阶段 · 安全只读' <<<"${page}"
+          grep -F '/assets/conversation-style' <<<"${page}"
           grep -F '登录 SuMeMe' <<<"${signin}"
           curl --fail --silent http://127.0.0.1:18080/static/admin.css >/dev/null
           curl --fail --silent http://127.0.0.1:18080/static/app.js >/dev/null
+          conversation_css="$(curl --fail --silent http://127.0.0.1:18080/assets/conversation-style)"
+          grep -F '.chat-workspace' <<<"${conversation_css}"
           session="$(curl --fail --silent http://127.0.0.1:18080/api/auth/get-session)"
           grep -F '"session":null' <<<"${session}"
+          topics="$(curl --fail --silent 'http://127.0.0.1:18080/trpc/topic.queryTopics?input=%7B%22json%22%3A%7B%7D%7D')"
+          transcript="$(curl --fail --silent 'http://127.0.0.1:18080/trpc/topic.getTopicTranscript?input=%7B%22json%22%3A%7B%22topicId%22%3A%22topic-fixture%22%7D%7D')"
+          grep -F 'Fixture conversation' <<<"${topics}"
+          grep -F 'Fixture transcript' <<<"${transcript}"
           asset="$(curl --fail --silent http://127.0.0.1:18080/_spa-auth/assets/probe.js)"
           grep -F 'auth fixture' <<<"${asset}"
           if grep -F '<script src="/_spa-auth/' <<<"${page}"; then
