@@ -56,7 +56,10 @@ jobs:
         run: |
           set -euo pipefail
           corepack enable
-          pnpm install --frozen-lockfile
+          # The published v2.2.11 tag contains an overrides/lockfile metadata
+          # mismatch. The production Dockerfile also performs a non-frozen pnpm
+          # install; source and dependency ranges remain pinned by the tag.
+          pnpm install --no-frozen-lockfile
 
       - name: Build desktop and authentication SPAs
         working-directory: .upstream/lobehub
