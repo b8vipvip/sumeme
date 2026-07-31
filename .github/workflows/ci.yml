@@ -115,6 +115,105 @@ jobs:
           cp .env.example .env
           docker compose config >/dev/null
 
+  prepare-lobehub-image-ghs:
+    name: Prepare patched LobeHub image (GHS)
+    if: >-
+      github.event_name == 'push' &&
+      github.ref == 'refs/heads/main' &&
+      vars.SUMEME_DEPLOY_TRANSPORT == 'github-hosted-ssh'
+    needs: [gateway, simulated-acceptance, provider-proxy, reliability, compose]
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      LOBEHUB_UPSTREAM_REF: v2.2.11
+      LOBEHUB_IMAGE_TAG: sumeme-lobehub:2.2.11-auth-assets-1
+      SSH_HOST: ${{ vars.SUMEME_VPS_HOST }}
+      SSH_PORT: ${{ vars.SUMEME_VPS_PORT || '22' }}
+      SSH_USER: ${{ vars.SUMEME_VPS_USER || 'sumeme-runner' }}
+    steps:
+      - name: Check out SuMeMe release scripts
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: Configure pinned SSH trust
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SUMEME_SSH_PRIVATE_KEY }}
+          SSH_HOST_KEY: ${{ secrets.SUMEME_SSH_HOST_KEY }}
+        run: |
+          set -euo pipefail
+          install -d -m 700 "${HOME}/.ssh"
+          printf '%s\n' "${SSH_PRIVATE_KEY}" > "${HOME}/.ssh/sumeme_deploy_key"
+          chmod 600 "${HOME}/.ssh/sumeme_deploy_key"
+          printf '%s\n' "${SSH_HOST_KEY}" > "${HOME}/.ssh/known_hosts"
+          chmod 600 "${HOME}/.ssh/known_hosts"
+
+      - name: Check whether the patched image is already present
+        id: remote-image
+        run: |
+          set -euo pipefail
+          if ssh -i "${HOME}/.ssh/sumeme_deploy_key" \
+            -p "${SSH_PORT}" \
+            -o BatchMode=yes \
+            -o StrictHostKeyChecking=yes \
+            -o UserKnownHostsFile="${HOME}/.ssh/known_hosts" \
+            "${SSH_USER}@${SSH_HOST}" \
+            "docker image inspect '${LOBEHUB_IMAGE_TAG}' >/dev/null 2>&1"; then
+            echo 'present=true' >> "${GITHUB_OUTPUT}"
+            echo "Patched image already exists on the production host."
+          else
+            echo 'present=false' >> "${GITHUB_OUTPUT}"
+            echo "Patched image is absent and will be built from the pinned upstream tag."
+          fi
+
+      - name: Check out pinned LobeHub source
+        if: steps.remote-image.outputs.present != 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: lobehub/lobehub
+          ref: ${{ env.LOBEHUB_UPSTREAM_REF }}
+          path: .upstream/lobehub
+          persist-credentials: false
+
+      - name: Patch only the missing auth SPA packaging instruction
+        if: steps.remote-image.outputs.present != 'true'
+        run: |
+          set -euo pipefail
+          python scripts/patch-lobehub-auth-assets.py .upstream/lobehub/Dockerfile
+          grep -Fx 'COPY --from=builder /app/public/_spa-auth /app/public/_spa-auth' \
+            .upstream/lobehub/Dockerfile
+
+      - name: Build the pinned patched LobeHub image
+        if: steps.remote-image.outputs.present != 'true'
+        run: |
+          set -euo pipefail
+          docker build --pull \
+            --tag "${LOBEHUB_IMAGE_TAG}" \
+            .upstream/lobehub
+          docker image inspect "${LOBEHUB_IMAGE_TAG}" >/dev/null
+
+      - name: Transfer the immutable image to production
+        if: steps.remote-image.outputs.present != 'true'
+        run: |
+          set -euo pipefail
+          archive="${RUNNER_TEMP}/sumeme-lobehub-2.2.11-auth-assets-1.tar.gz"
+          remote_archive="/tmp/sumeme-lobehub-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.tar.gz"
+          docker save "${LOBEHUB_IMAGE_TAG}" | gzip -1 > "${archive}"
+          scp -i "${HOME}/.ssh/sumeme_deploy_key" \
+            -P "${SSH_PORT}" \
+            -o BatchMode=yes \
+            -o StrictHostKeyChecking=yes \
+            -o UserKnownHostsFile="${HOME}/.ssh/known_hosts" \
+            "${archive}" "${SSH_USER}@${SSH_HOST}:${remote_archive}"
+          ssh -i "${HOME}/.ssh/sumeme_deploy_key" \
+            -p "${SSH_PORT}" \
+            -o BatchMode=yes \
+            -o StrictHostKeyChecking=yes \
+            -o UserKnownHostsFile="${HOME}/.ssh/known_hosts" \
+            "${SSH_USER}@${SSH_HOST}" \
+            "set -e; gzip -dc '${remote_archive}' | docker load; rm -f '${remote_archive}'; docker image inspect '${LOBEHUB_IMAGE_TAG}' >/dev/null"
+
   deploy-production-self-hosted:
     name: Deploy production (VSR fallback)
     if: >-
@@ -144,6 +243,13 @@ jobs:
           echo "ADOB mode: VSR"
           echo "Verified release SHA: ${actual}"
 
+      - name: Verify the pinned patched LobeHub image is preloaded
+        run: |
+          docker image inspect sumeme-lobehub:2.2.11-auth-assets-1 >/dev/null || {
+            echo 'Missing sumeme-lobehub:2.2.11-auth-assets-1 on the self-hosted production runner.' >&2
+            exit 1
+          }
+
       - name: Deploy exact verified release to VPS using VSR
         env:
           ADOB_MODE: VSR
@@ -165,7 +271,13 @@ jobs:
       github.event_name == 'push' &&
       github.ref == 'refs/heads/main' &&
       vars.SUMEME_DEPLOY_TRANSPORT == 'github-hosted-ssh'
-    needs: [gateway, simulated-acceptance, provider-proxy, reliability, compose]
+    needs:
+      - gateway
+      - simulated-acceptance
+      - provider-proxy
+      - reliability
+      - compose
+      - prepare-lobehub-image-ghs
     concurrency:
       group: sumeme-production
       cancel-in-progress: false
