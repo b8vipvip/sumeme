@@ -15,14 +15,13 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   android:
     name: Android APK
     runs-on: ubuntu-latest
     timeout-minutes: 45
-
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -47,17 +46,20 @@ jobs:
         working-directory: ${{ runner.temp }}/sumeme_app
         run: >-
           flutter build apk --release
-          --build-name 0.3.0
+          --build-name 0.4.0
           --build-number "${GITHUB_RUN_NUMBER}"
-      - name: Write build provenance
+      - name: Stage Android release file
         run: |
+          cp "${RUNNER_TEMP}/sumeme_app/build/app/outputs/flutter-apk/app-release.apk" \
+             "${RUNNER_TEMP}/SuMeMe-Android-0.4.0.apk"
           {
             echo "repository=${GITHUB_REPOSITORY}"
             echo "commit=${GITHUB_SHA}"
             echo "run=${GITHUB_RUN_ID}"
-            echo "version=0.3.0+${GITHUB_RUN_NUMBER}"
+            echo "version=0.4.0+${GITHUB_RUN_NUMBER}"
             echo "ui=native-flutter"
             echo "webview=false"
+            echo "managed-server-config=true"
             flutter --version | head -n 1
           } > "${RUNNER_TEMP}/sumeme-app-build.txt"
       - name: Upload Android APK
@@ -65,7 +67,7 @@ jobs:
         with:
           name: sumeme-android-apk
           path: |
-            ${{ runner.temp }}/sumeme_app/build/app/outputs/flutter-apk/app-release.apk
+            ${{ runner.temp }}/SuMeMe-Android-0.4.0.apk
             ${{ runner.temp }}/sumeme-app-build.txt
           if-no-files-found: error
           retention-days: 30
@@ -74,7 +76,6 @@ jobs:
     name: Windows EXE
     runs-on: windows-latest
     timeout-minutes: 60
-
     steps:
       - uses: actions/checkout@v4
       - name: Set up Flutter
@@ -96,7 +97,7 @@ jobs:
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
             flutter test
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-            flutter build windows --release --build-name 0.3.0 --build-number "$env:GITHUB_RUN_NUMBER"
+            flutter build windows --release --build-name 0.4.0 --build-number "$env:GITHUB_RUN_NUMBER"
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           }
           finally {
@@ -108,32 +109,32 @@ jobs:
           $exe = Get-ChildItem "$env:RUNNER_TEMP\sumeme_app\build\windows" -Recurse -Filter sumeme_app.exe |
             Select-Object -First 1
           if ($null -eq $exe) { throw "Windows executable was not produced" }
-
           $releaseDir = $exe.Directory.FullName
           $artifactDir = Join-Path $env:RUNNER_TEMP "sumeme-windows-artifacts"
           New-Item -ItemType Directory -Force -Path $artifactDir | Out-Null
           Compress-Archive -Path (Join-Path $releaseDir "*") `
-            -DestinationPath (Join-Path $artifactDir "SuMeMe-Windows-Portable.zip") -Force
-
+            -DestinationPath (Join-Path $artifactDir "SuMeMe-Windows-0.4.0-Portable.zip") -Force
           choco install innosetup --yes --no-progress
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
           if (-not (Test-Path $iscc)) { throw "Inno Setup compiler was not found" }
-
           & $iscc `
-            "/DAppVersion=0.3.$env:GITHUB_RUN_NUMBER" `
+            "/DAppVersion=0.4.$env:GITHUB_RUN_NUMBER" `
             "/DBuildDir=$releaseDir" `
             "/DOutputDir=$artifactDir" `
             "$env:GITHUB_WORKSPACE\clients\sumeme_app\packaging\windows\sumeme.iss"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-
+          $generated = Get-ChildItem $artifactDir -Filter "*.exe" | Select-Object -First 1
+          if ($null -eq $generated) { throw "Installer executable was not produced" }
+          Rename-Item $generated.FullName "SuMeMe-Windows-0.4.0-Setup.exe" -Force
           @(
             "repository=$env:GITHUB_REPOSITORY"
             "commit=$env:GITHUB_SHA"
             "run=$env:GITHUB_RUN_ID"
-            "version=0.3.0+$env:GITHUB_RUN_NUMBER"
+            "version=0.4.0+$env:GITHUB_RUN_NUMBER"
             "ui=native-flutter"
             "webview=false"
+            "managed-server-config=true"
             (flutter --version | Select-Object -First 1)
           ) | Set-Content -Encoding UTF8 (Join-Path $artifactDir "build-info.txt")
       - name: Upload Windows EXE and portable package
@@ -143,3 +144,37 @@ jobs:
           path: ${{ runner.temp }}/sumeme-windows-artifacts/*
           if-no-files-found: error
           retention-days: 30
+
+  publish-release:
+    name: Publish v0.4.0 downloads
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [android, windows]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: sumeme-android-apk
+          path: release/android
+      - uses: actions/download-artifact@v4
+        with:
+          name: sumeme-windows-x64
+          path: release/windows
+      - name: Create or update GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if ! gh release view v0.4.0 --repo "${GITHUB_REPOSITORY}" >/dev/null 2>&1; then
+            gh release create v0.4.0 \
+              --repo "${GITHUB_REPOSITORY}" \
+              --target "${GITHUB_SHA}" \
+              --title "SuMeMe 0.4.0" \
+              --notes "独立 /admin 管理后台、服务端统一 API/模型/云存储配置、原生客户端关于与手动更新。"
+          fi
+          gh release upload v0.4.0 \
+            release/android/SuMeMe-Android-0.4.0.apk \
+            release/windows/SuMeMe-Windows-0.4.0-Setup.exe \
+            release/windows/SuMeMe-Windows-0.4.0-Portable.zip \
+            --repo "${GITHUB_REPOSITORY}" \
+            --clobber
