@@ -33,6 +33,9 @@ class EnrichProjectStatusTests(unittest.TestCase):
             deploy_dir = root / "deploy"
             state_dir = deploy_dir / ".deploy"
             state_dir.mkdir(parents=True)
+            (deploy_dir / ".env").write_text(
+                "LETTA_REQUIRED=false\n", encoding="utf-8"
+            )
 
             generated_at = (
                 dt.datetime.now(dt.timezone.utc)
@@ -42,20 +45,45 @@ class EnrichProjectStatusTests(unittest.TestCase):
             status = {
                 "schema_version": 1,
                 "generated_at": generated_at,
+                "repository": "b8vipvip/sumeme",
                 "overall": "healthy",
                 "project_stage": "deployed_and_stable",
                 "reasons": [],
+                "deployment_in_sync": current_sha == main_sha,
                 "deployment": {
                     "current_sha": current_sha,
                     "previous_sha": "b" * 40,
                     "history": deployment_history,
                 },
-                "github": {"latest_main_sha": main_sha},
+                "health": {
+                    "local_gateway": {"ok": True, "status": 200},
+                    "public": {"ok": True, "status": 200},
+                },
+                "services": [
+                    {
+                        "service": "letta",
+                        "name": "sumeme-letta",
+                        "state": "running",
+                        "health": "healthy",
+                        "status": "Up (healthy)",
+                        "critical": True,
+                    }
+                ],
+                "github": {
+                    "latest_main_sha": main_sha,
+                    "open_pull_requests": [],
+                    "open_issues": [],
+                    "recent_workflows": [],
+                },
                 "system": {
                     "disk": {
                         "used_percent": used_percent,
                         "free_bytes": free_bytes,
-                    }
+                    },
+                    "memory": {
+                        "used_percent": 50.0,
+                        "available_bytes": 2 * 1024**3,
+                    },
                 },
             }
             smoke = {
@@ -116,6 +144,8 @@ class EnrichProjectStatusTests(unittest.TestCase):
         self.assertTrue(status["deployment_in_sync"])
         self.assertEqual(status["deployment"]["state"], "idle")
         self.assertEqual(status["deployment"]["last_result"], "success")
+        self.assertFalse(status["components"]["letta"]["required"])
+        self.assertTrue(status["components"]["letta"]["available"])
 
     def test_stale_deploying_marker_is_visible_and_degraded(self) -> None:
         sha = "c" * 40
