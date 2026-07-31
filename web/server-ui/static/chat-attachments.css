@@ -1,0 +1,165 @@
+.chat-attachment-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 9px;
+  color: #98a2b3;
+  font-size: 10px;
+}
+
+.attachment-button {
+  flex: none;
+  min-height: 32px;
+  border: 1px solid #d6dee9;
+  border-radius: 9px;
+  padding: 0 11px;
+  background: #fff;
+  color: #475467;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: .16s ease;
+}
+
+.attachment-button:hover:not(:disabled) {
+  border-color: #80b4ff;
+  color: #1677ff;
+  box-shadow: 0 3px 12px rgba(22,119,255,.08);
+}
+
+.attachment-button:disabled {
+  opacity: .55;
+  cursor: progress;
+}
+
+.chat-attachment-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.chat-attachment-item {
+  position: relative;
+  min-width: 190px;
+  max-width: 320px;
+  display: grid;
+  grid-template-columns: 30px minmax(0,1fr) 24px;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
+  border: 1px solid #dce4ee;
+  border-radius: 10px;
+  padding: 8px 8px 8px 9px;
+  background: #f9fbfd;
+}
+
+.chat-attachment-item.ready {
+  border-color: #bfe6cd;
+  background: #f1fbf5;
+}
+
+.chat-attachment-item.error {
+  border-color: #f3b7b2;
+  background: #fff4f3;
+}
+
+.attachment-icon {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: #eaf3ff;
+  color: #1766c2;
+  font-size: 14px;
+}
+
+.chat-attachment-item.ready .attachment-icon {
+  background: #dff5e7;
+  color: #14733c;
+}
+
+.chat-attachment-item.error .attachment-icon {
+  background: #fee4e2;
+  color: #b42318;
+}
+
+.attachment-details {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.attachment-details strong,
+.attachment-details small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.attachment-details strong {
+  color: #344054;
+  font-size: 11px;
+}
+
+.attachment-details small {
+  color: #98a2b3;
+  font-size: 9px;
+}
+
+.chat-attachment-item.error .attachment-details small {
+  color: #b42318;
+}
+
+.attachment-remove {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #98a2b3;
+  font-size: 17px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.attachment-remove:hover:not(:disabled) {
+  background: #eef2f6;
+  color: #344054;
+}
+
+.attachment-remove:disabled {
+  opacity: .45;
+  cursor: progress;
+}
+
+.attachment-progress {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  max-width: 100%;
+  background: #1677ff;
+  transition: width .18s ease;
+}
+
+@media (max-width: 620px) {
+  .chat-attachment-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .chat-attachment-list {
+    flex-direction: column;
+  }
+
+  .chat-attachment-item {
+    width: 100%;
+    max-width: none;
+  }
+}
