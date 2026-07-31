@@ -15,6 +15,7 @@ read_env() {
 GATEWAY_PORT="$(read_env GATEWAY_PORT 8010)"
 APP_URL="$(read_env APP_URL https://sumeme.mv3.cn)"
 PUBLIC_HEALTH_URL="${PUBLIC_HEALTH_URL:-${APP_URL%/}/sumeme-health}"
+PUBLIC_UI_SMOKE_MODE="$(read_env PUBLIC_UI_SMOKE_MODE required)"
 
 expected_services=(
   lobe
@@ -72,11 +73,41 @@ fi
 
 if curl --fail --silent --show-error --location --max-time 30 \
   "${APP_URL}" >/dev/null; then
-  echo "[ OK ] public app: ${APP_URL}"
+  echo "[ OK ] public app HTML: ${APP_URL}"
 else
-  echo "[FAIL] public app: ${APP_URL}"
+  echo "[FAIL] public app HTML: ${APP_URL}"
   failed=1
 fi
+
+case "${PUBLIC_UI_SMOKE_MODE}" in
+  off)
+    echo "[SKIP] public UI asset smoke is disabled"
+    ;;
+  warn|required)
+    ui_ok=false
+    for attempt in 1 2 3 4 5; do
+      echo "Public UI asset smoke attempt ${attempt}/5..."
+      if python3 scripts/smoke-public-ui.py "${APP_URL%/}/" --timeout 30; then
+        ui_ok=true
+        break
+      fi
+      sleep 5
+    done
+
+    if [[ "${ui_ok}" == "true" ]]; then
+      echo "[ OK ] public UI HTML and referenced assets"
+    elif [[ "${PUBLIC_UI_SMOKE_MODE}" == "required" ]]; then
+      echo "[FAIL] public UI references missing or unavailable assets"
+      failed=1
+    else
+      echo "[WARN] public UI references missing or unavailable assets"
+    fi
+    ;;
+  *)
+    echo "[FAIL] invalid PUBLIC_UI_SMOKE_MODE=${PUBLIC_UI_SMOKE_MODE}; expected off, warn, or required"
+    failed=1
+    ;;
+esac
 
 if (( failed != 0 )); then
   echo "SuMeMe health check failed." >&2
