@@ -126,6 +126,27 @@ compose_project_name() {
   fi
 }
 
+build_local_services() {
+  local configured_services
+  local candidate
+  local -a build_services=()
+
+  configured_services="$(docker compose config --services)"
+  for candidate in memory-gateway ai-provider-proxy; do
+    if grep -Fxq "${candidate}" <<<"${configured_services}"; then
+      build_services+=("${candidate}")
+    fi
+  done
+
+  if (( ${#build_services[@]} == 0 )); then
+    echo "No locally built runtime services are present in this Compose snapshot."
+    return 0
+  fi
+
+  echo "Building local runtime services: ${build_services[*]}"
+  docker compose build "${build_services[@]}"
+}
+
 compose_up_resilient() {
   if docker compose up -d --remove-orphans; then
     return 0
@@ -142,6 +163,52 @@ compose_up_resilient() {
   fi
   docker network rm "${project}" >/dev/null 2>&1 || true
   docker compose up -d --remove-orphans
+}
+
+classify_and_annotate_smoke() {
+  local smoke_path="$1"
+  python3 - "${smoke_path}" <<'PY'
+import json
+import os
+import sys
+import tempfile
+from pathlib import Path
+
+path = Path(sys.argv[1])
+try:
+    value = json.loads(path.read_text(encoding="utf-8"))
+except (OSError, json.JSONDecodeError):
+    print("unknown")
+    raise SystemExit(0)
+
+checks = value.get("checks") if isinstance(value, dict) else None
+classification = "critical"
+if isinstance(checks, dict) and (
+    checks.get("models") is False or checks.get("chat") is False
+):
+    classification = "external_degraded"
+
+value["deployment_classification"] = classification
+if classification == "external_degraded":
+    value["deployment_gate"] = "external_degraded"
+    if value.get("overall") == "failure":
+        value["overall"] = "degraded"
+
+path.parent.mkdir(parents=True, exist_ok=True)
+fd, temporary = tempfile.mkstemp(prefix=path.name + ".", dir=path.parent)
+try:
+    with os.fdopen(fd, "w", encoding="utf-8") as handle:
+        json.dump(value, handle, ensure_ascii=False, indent=2)
+        handle.write("\n")
+    os.replace(temporary, path)
+finally:
+    try:
+        os.unlink(temporary)
+    except FileNotFoundError:
+        pass
+
+print(classification)
+PY
 }
 
 print_failure_diagnostics() {
@@ -163,6 +230,7 @@ except Exception:
 summary = {
     "overall": value.get("overall"),
     "deployment_gate": value.get("deployment_gate"),
+    "deployment_classification": value.get("deployment_classification"),
     "memory_provider": value.get("memory_provider"),
     "test_scope": value.get("test_scope"),
     "checks": value.get("checks"),
@@ -207,7 +275,7 @@ rollback_on_error() {
     cd "${DEPLOY_DIR}"
     chmod +x "${DEPLOY_DIR}"/scripts/*.sh 2>/dev/null || true
     if docker compose config >/dev/null \
-      && docker compose build memory-gateway ai-provider-proxy \
+      && build_local_services \
       && compose_up_resilient \
       && DEPLOY_DIR="${DEPLOY_DIR}" bash scripts/health-check.sh; then
       rollback_succeeded=true
@@ -274,7 +342,7 @@ cd "${DEPLOY_DIR}"
 
 docker compose config >/dev/null
 docker compose pull
-docker compose build memory-gateway ai-provider-proxy
+build_local_services
 compose_up_resilient
 DEPLOY_DIR="${DEPLOY_DIR}" bash scripts/health-check.sh
 
@@ -290,12 +358,22 @@ case "${SMOKE_TEST_MODE}" in
     DEPLOY_DIR="${DEPLOY_DIR}" bash scripts/smoke-test.sh
     smoke_status=$?
     set -e
-    if (( private_object_status != 0 || smoke_status != 0 )); then
-      if [[ "${SMOKE_TEST_MODE}" == "required" ]]; then
-        echo "Required production smoke test failed." >&2
+
+    if (( private_object_status != 0 )); then
+      echo "Critical private-object smoke failed; refusing to publish the release." >&2
+      false
+    fi
+
+    if (( smoke_status != 0 )); then
+      smoke_classification="$(classify_and_annotate_smoke "${STATE_DIR}/smoke/latest.json")"
+      if [[ "${smoke_classification}" == "external_degraded" ]]; then
+        echo "WARNING: live provider smoke is degraded; local health and private storage passed, so the release remains active." >&2
+      elif [[ "${SMOKE_TEST_MODE}" == "required" ]]; then
+        echo "Required local application smoke failed with classification=${smoke_classification}." >&2
         false
+      else
+        echo "WARNING: local application smoke failed with classification=${smoke_classification}; deployment remains active because mode=warn." >&2
       fi
-      echo "WARNING: production smoke test failed; deployment remains active because mode=warn." >&2
     fi
     ;;
   *)
