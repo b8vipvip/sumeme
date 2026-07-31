@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>SuMeMe 管理后台</title>
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+  <link rel="stylesheet" href="/admin/assets/style">
+</head>
+<body>
+<section class="auth-shell" id="adminAuth">
+  <div class="auth-card">
+    <div class="brand-mark">Su</div>
+    <p class="eyebrow">SUMEME CONTROL PLANE</p>
+    <h1 id="authTitle">管理后台登录</h1>
+    <p class="muted" id="authDescription">这里只管理服务端配置、用户、存储、模块和客户端版本，不包含普通用户功能。</p>
+    <form id="adminAuthForm" class="stack">
+      <label><span>管理员邮箱</span><input id="adminEmail" type="email" autocomplete="username" required></label>
+      <label id="displayNameField" hidden><span>管理员名称</span><input id="adminDisplayName" autocomplete="name"></label>
+      <label><span>密码</span><input id="adminPassword" type="password" autocomplete="current-password" minlength="12" required></label>
+      <label id="confirmPasswordField" hidden><span>确认密码</span><input id="adminPasswordConfirm" type="password" autocomplete="new-password" minlength="12"></label>
+      <div class="alert" id="authError" hidden></div>
+      <button class="primary full" id="authSubmit" type="submit">登录</button>
+    </form>
+    <p class="auth-note" id="authNote">管理员账户与普通 LobeHub 用户账户相互独立。</p>
+  </div>
+</section>
+
+<div class="admin-shell" id="adminApp" hidden>
+  <aside class="sidebar">
+    <div class="brand"><span class="brand-mark small">Su</span><span><b>SuMeMe</b><small>服务端管理后台</small></span></div>
+    <nav>
+      <button class="nav-item active" data-page="overview"><span>◫</span>系统总览</button>
+      <button class="nav-item" data-page="api"><span>◎</span>API 与模型</button>
+      <button class="nav-item" data-page="users"><span>♙</span>用户管理</button>
+      <button class="nav-item" data-page="storage"><span>▣</span>云存储</button>
+      <button class="nav-item" data-page="modules"><span>⬡</span>模块与模式</button>
+      <button class="nav-item" data-page="releases"><span>⇧</span>客户端版本</button>
+      <button class="nav-item" data-page="audit"><span>↗</span>审计记录</button>
+    </nav>
+    <div class="sidebar-footer"><span id="adminIdentity">—</span><button id="adminLogout" class="ghost">退出</button></div>
+  </aside>
+
+  <main>
+    <header class="topbar">
+      <div><h1 id="pageTitle">系统总览</h1><p id="pageSubtitle">服务端控制面与运行状态</p></div>
+      <div class="top-actions"><a class="ghost link-button" href="/" target="_blank" rel="noopener">打开 Web 客户端</a><button class="ghost" id="refreshAdmin">刷新</button></div>
+    </header>
+
+    <section class="content">
+      <section class="page active" data-page-view="overview">
+        <div class="hero"><div><p class="eyebrow">SERVER ADMINISTRATION</p><h2>独立服务端控制面</h2><p>普通客户端不再保存第三方 API Key、管理员令牌或对象存储密钥。</p></div><span class="status" id="systemStatus">检测中</span></div>
+        <div class="metrics">
+          <article><span>记忆引擎</span><strong id="metricMemory">—</strong><small>memory-gateway</small></article>
+          <article><span>用户数据库</span><strong id="metricDatabase">—</strong><small>LobeHub PostgreSQL</small></article>
+          <article><span>私有对象</span><strong id="metricObjects">—</strong><small>RustFS / S3</small></article>
+          <article><span>发布通道</span><strong id="metricChannel">stable</strong><small>Android / Windows</small></article>
+        </div>
+        <div class="panel"><div class="panel-head"><div><h2>配置边界</h2><p>配置只保存在服务器端</p></div></div><div class="kv-grid">
+          <div><span>公开 Web 客户端</span><b>https://sumeme.mv3.cn</b></div>
+          <div><span>管理后台</span><b>/admin</b></div>
+          <div><span>客户端 API</span><b>/api/client/*</b></div>
+          <div><span>管理 API</span><b>/api/admin/*</b></div>
+        </div></div>
+      </section>
+
+      <section class="page" data-page-view="api">
+        <div class="heading"><div><p class="eyebrow">PROVIDER CONFIGURATION</p><h2>API 与模型</h2><p>配置 OpenAI 兼容中转站及默认模型。API Key 加密保存且不回显明文。</p></div></div>
+        <form class="panel form-grid" id="apiForm">
+          <label class="wide"><span>API Base URL</span><input name="api.relay_base_url" type="url" placeholder="https://provider.example/v1"></label>
+          <label class="wide"><span>API Key</span><input name="api.relay_api_key" type="password" placeholder="留空表示不修改"><small id="apiKeyState">未配置</small></label>
+          <label><span>默认聊天模型</span><input name="api.chat_model" placeholder="gpt-5.6"></label>
+          <label><span>记忆整理模型</span><input name="api.memory_model"></label>
+          <label><span>Embedding 模型</span><input name="api.embedding_model"></label>
+          <label><span>模型白名单</span><input name="api.model_list" placeholder="model-a,model-b"></label>
+          <div class="form-actions wide"><span class="hint">API 配置立即用于原生客户端新请求；不需要在客户端填写密钥。</span><button class="primary" type="submit">保存 API 配置</button></div>
+        </form>
+      </section>
+
+      <section class="page" data-page-view="users">
+        <div class="heading"><div><p class="eyebrow">ACCOUNT MANAGEMENT</p><h2>用户管理</h2><p>读取 LobeHub 用户表，可调整角色、封禁账户并注销其活动会话。</p></div><div class="inline"><input id="userSearch" type="search" placeholder="搜索邮箱、昵称"><button class="ghost" id="reloadUsers">查询</button></div></div>
+        <div class="panel table-wrap"><table><thead><tr><th>用户</th><th>角色</th><th>状态</th><th>活动会话</th><th>最近活动</th><th>操作</th></tr></thead><tbody id="userTable"><tr><td colspan="6">正在读取…</td></tr></tbody></table></div>
+      </section>
+
+      <section class="page" data-page-view="storage">
+        <div class="heading"><div><p class="eyebrow">OBJECT STORAGE</p><h2>云存储</h2><p>管理 LobeHub 附件和 SuMeMe 私有 Vault 使用的 S3/RustFS 配置。</p></div></div>
+        <form class="panel form-grid" id="storageForm">
+          <label class="wide"><span>S3 Endpoint</span><input name="storage.endpoint" type="url"></label>
+          <label><span>附件 Bucket</span><input name="storage.bucket"></label>
+          <label><span>私有 Vault Bucket</span><input name="storage.private_bucket"></label>
+          <label><span>Region</span><input name="storage.region" placeholder="auto"></label>
+          <label class="switch"><input name="storage.path_style" type="checkbox"><span>启用 Path Style</span></label>
+          <label><span>Access Key</span><input name="storage.access_key" type="password" placeholder="留空表示不修改"><small id="storageAccessState">未配置</small></label>
+          <label><span>Secret Key</span><input name="storage.secret_key" type="password" placeholder="留空表示不修改"><small id="storageSecretState">未配置</small></label>
+          <div class="form-actions wide"><span class="hint">存储配置保存后需要重新部署相关容器；后台不会挂载 Docker Socket。</span><button class="primary" type="submit">保存存储配置</button></div>
+        </form>
+      </section>
+
+      <section class="page" data-page-view="modules">
+        <div class="heading"><div><p class="eyebrow">MODULES & MODES</p><h2>模块与模式</h2><p>集中管理记忆引擎、对象 API、公开注册和身份/存储策略。</p></div></div>
+        <form class="panel module-form" id="modulesForm">
+          <div class="switch-grid">
+            <label><input name="modules.mempalace_enabled" type="checkbox"><span><b>MemPalace</b><small>原文记忆与向量检索</small></span></label>
+            <label><input name="modules.letta_enabled" type="checkbox"><span><b>Letta</b><small>结构化个人记忆</small></span></label>
+            <label><input name="modules.object_api_enabled" type="checkbox"><span><b>私有对象 API</b><small>Vault 文件与签名 URL</small></span></label>
+            <label><input name="modules.searxng_enabled" type="checkbox"><span><b>SearXNG</b><small>联网搜索模块</small></span></label>
+            <label><input name="modules.public_registration_enabled" type="checkbox"><span><b>开放注册</b><small>允许新用户创建账户</small></span></label>
+          </div>
+          <div class="form-grid">
+            <label><span>记忆 Provider</span><select name="modes.memory_provider"><option value="mempalace-letta">MemPalace + Letta</option><option value="supermemory">Supermemory</option></select></label>
+            <label><span>默认存储模式</span><select name="modes.default_storage_mode"><option value="local-only">local-only</option><option value="cloud">cloud</option><option value="hybrid">hybrid</option></select></label>
+            <label><span>身份模式</span><select name="modes.identity_mode"><option value="legacy-client-asserted">legacy-client-asserted</option><option value="trusted-openai-user">trusted-openai-user</option><option value="jwt-preferred">jwt-preferred</option><option value="jwt-required">jwt-required</option></select></label>
+            <label><span>客户端发布通道</span><select name="modes.release_channel"><option value="stable">stable</option><option value="beta">beta</option></select></label>
+          </div>
+          <div class="form-actions"><span class="hint">公开注册与发布通道立即生效；服务模块和身份模式需要重新部署。</span><button class="primary" type="submit">保存模块与模式</button></div>
+        </form>
+      </section>
+
+      <section class="page" data-page-view="releases">
+        <div class="heading"><div><p class="eyebrow">CLIENT DISTRIBUTION</p><h2>客户端版本</h2><p>维护客户端“关于”页面读取的最新版本、最低版本、下载地址和更新说明。</p></div></div>
+        <div class="release-grid">
+          <form class="panel release-form" data-platform="windows"><h3>Windows</h3><input name="platform" value="windows" hidden><label><span>通道</span><select name="channel"><option>stable</option><option>beta</option></select></label><label><span>最新版本</span><input name="latest_version" placeholder="0.4.0"></label><label><span>最低支持版本</span><input name="minimum_version"></label><label><span>下载地址</span><input name="download_url" type="url"></label><label><span>更新说明</span><textarea name="notes" rows="5"></textarea></label><button class="primary" type="submit">保存 Windows 版本</button></form>
+          <form class="panel release-form" data-platform="android"><h3>Android</h3><input name="platform" value="android" hidden><label><span>通道</span><select name="channel"><option>stable</option><option>beta</option></select></label><label><span>最新版本</span><input name="latest_version" placeholder="0.4.0"></label><label><span>最低支持版本</span><input name="minimum_version"></label><label><span>下载地址</span><input name="download_url" type="url"></label><label><span>更新说明</span><textarea name="notes" rows="5"></textarea></label><button class="primary" type="submit">保存 Android 版本</button></form>
+        </div>
+      </section>
+
+      <section class="page" data-page-view="audit">
+        <div class="heading"><div><p class="eyebrow">AUDIT LOG</p><h2>审计记录</h2><p>记录管理员登录、配置、用户和版本操作，不记录密钥明文。</p></div></div>
+        <div class="panel table-wrap"><table><thead><tr><th>时间</th><th>管理员</th><th>操作</th><th>目标</th><th>摘要</th></tr></thead><tbody id="auditTable"><tr><td colspan="5">正在读取…</td></tr></tbody></table></div>
+      </section>
+    </section>
+  </main>
+</div>
+<div class="toast" id="adminToast"></div>
+<script src="/admin/assets/runtime" defer></script>
+</body>
+</html>
