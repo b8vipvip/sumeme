@@ -263,7 +263,8 @@ rollback_on_error() {
   local rollback_succeeded=false
   trap - ERR
 
-  echo "Deployment failed with exit code ${deployment_exit_code}." >&2
+  echo "Deployment failed after release synchronization began; starting runtime rollback." >&2
+  echo "Deployment exit code: ${deployment_exit_code}." >&2
   print_failure_diagnostics
 
   if [[ "${CURRENT_SHA}" == "initial" ]]; then
@@ -297,38 +298,69 @@ rollback_on_error() {
   echo "Important: code rollback does not reverse database migrations." >&2
   exit "${deployment_exit_code}"
 }
-trap rollback_on_error ERR
 
 run_disk_preflight() {
-  local output status level
-  set +e
-  output="$(DEPLOY_DIR="${DEPLOY_DIR}" bash "${SOURCE_DIR}/scripts/preflight-disk.sh" --json)"
-  status=$?
-  set -e
+  local output status level aggressive
+
+  # Commands evaluated as an `if` condition do not fire the global ERR trap.
+  # This is important because an exit code of 2 means "cleanup required", not
+  # that the currently running release needs a rollback.
+  if output="$(DEPLOY_DIR="${DEPLOY_DIR}" bash "${SOURCE_DIR}/scripts/preflight-disk.sh" --json)"; then
+    status=0
+  else
+    status=$?
+  fi
   echo "Disk preflight: ${output}"
   level="$(python3 -c 'import json,sys; print(json.loads(sys.stdin.read()).get("level", "unknown"))' <<<"${output}" 2>/dev/null || echo unknown)"
 
-  if [[ "${level}" == "warning" || "${status}" -eq 2 ]]; then
-    echo "Running safe cleanup before image pull/build..."
-    DEPLOY_DIR="${DEPLOY_DIR}" bash "${SOURCE_DIR}/scripts/cleanup-runtime.sh"
-    set +e
-    output="$(DEPLOY_DIR="${DEPLOY_DIR}" bash "${SOURCE_DIR}/scripts/preflight-disk.sh" --json)"
-    status=$?
-    set -e
+  if [[ "${level}" == "warning" || "${level}" == "critical" || "${status}" -eq 2 ]]; then
+    aggressive=false
+    if [[ "${level}" == "critical" || "${status}" -eq 2 ]]; then
+      aggressive=true
+    fi
+    echo "Running safe cleanup before image pull/build (aggressive=${aggressive})..."
+    if ! DEPLOY_DIR="${DEPLOY_DIR}" \
+      SOURCE_DIR="${SOURCE_DIR}" \
+      AGGRESSIVE_CLEANUP="${aggressive}" \
+      bash "${SOURCE_DIR}/scripts/cleanup-runtime.sh"; then
+      echo "Safe cleanup failed; deployment is blocked before runtime changes." >&2
+      return 1
+    fi
+
+    if output="$(DEPLOY_DIR="${DEPLOY_DIR}" bash "${SOURCE_DIR}/scripts/preflight-disk.sh" --json)"; then
+      status=0
+    else
+      status=$?
+    fi
     echo "Disk preflight after cleanup: ${output}"
   fi
 
   if [[ "${status}" -ne 0 ]]; then
-    echo "Disk preflight failed; deployment is blocked to protect production data." >&2
+    echo "Disk preflight failed; deployment is blocked before code or containers are changed." >&2
     return "${status}"
   fi
 }
 
-run_disk_preflight
+# Preflight and snapshot creation occur before the ERR rollback trap is installed.
+# A failure here leaves the running release untouched and therefore must not try
+# to restore a snapshot that may not exist yet.
+if run_disk_preflight; then
+  :
+else
+  preflight_status=$?
+  record_history "preflight_blocked current=${CURRENT_SHA} target=${TARGET_SHA} reason=disk"
+  echo "Deployment stopped safely during preflight; current release ${CURRENT_SHA} remains active." >&2
+  exit "${preflight_status}"
+fi
+
 snapshot_current "${CURRENT_SHA}"
 
 printf '%s\n' "${CURRENT_SHA}" > "${STATE_DIR}/previous_sha"
 printf '%s\n' "${TARGET_SHA}" > "${STATE_DIR}/deploying_sha"
+
+# From this point onward rsync or Compose may partially change the runtime, so
+# failures must restore the snapshot created immediately above.
+trap rollback_on_error ERR
 
 rsync -a --delete \
   --exclude=.env \
