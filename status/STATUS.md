@@ -1,11 +1,11 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-31T19:29:29+08:00
+- **采集时间：** 2026-07-31T20:17:16+08:00
 - **总体状态：** `healthy`
-- **开发阶段：** `deployed_and_stable`
+- **开发阶段：** `deployment_in_progress`
 - **线上版本：** `4a88ed68344be6778b4acbdd484fca8dd89a5d48`
-- **main 最新版本：** `4a88ed68344be6778b4acbdd484fca8dd89a5d48`
-- **线上与 main 同步：** 是
+- **main 最新版本：** `7fec9c27f5570bca44ebad70fb20c7577a4ea86a`
+- **线上与 main 同步：** 否
 - **开放 PR：** 0
 - **开放 Issue：** 3
 
@@ -13,16 +13,16 @@
 
 - 本地网关：`ok`
 - 公网入口：`ok`
-- 磁盘使用：`72.5%`，剩余 9.1 GiB
-- 内存使用：`55.1%`，可用 1.6 GiB
+- 磁盘使用：`72.3%`，剩余 9.1 GiB
+- 内存使用：`56.6%`，可用 1.6 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| ai-provider-proxy | running | healthy | Up 2 minutes (healthy) |
-| letta | running | healthy | Up 8 hours (healthy) |
-| lobe | running | - | Up About an hour |
+| ai-provider-proxy | running | healthy | Up About a minute (healthy) |
+| letta | running | healthy | Up 9 hours (healthy) |
+| lobe | running | - | Up 2 hours |
 | memory-gateway | running | healthy | Up About a minute (healthy) |
 | postgresql | running | healthy | Up 9 hours (healthy) |
 | qdrant | running | healthy | Up 9 hours (healthy) |
@@ -35,14 +35,14 @@
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-07-31T11:29:07Z |
-| Public UI smoke | in_progress | main | 2026-07-31T11:29:07Z |
-| CI | success | main | 2026-07-31T11:29:01Z |
-| Server UI check | success | main | 2026-07-31T11:26:19Z |
-| Public UI smoke | skipped | main | 2026-07-31T11:25:35Z |
-| CI | success | agent/lobehub-human-interventions | 2026-07-31T11:25:32Z |
-| Server UI check | success | agent/lobehub-human-interventions | 2026-07-31T11:25:22Z |
-| Publish project status | success | main | 2026-07-31T11:21:44Z |
+| Publish project status | in_progress | main | 2026-07-31T12:16:58Z |
+| CI | in_progress | main | 2026-07-31T12:15:17Z |
+| Server UI check | success | main | 2026-07-31T12:14:41Z |
+| Files manager check | success | main | 2026-07-31T12:14:43Z |
+| Public UI smoke | skipped | main | 2026-07-31T12:14:06Z |
+| CI | success | agent/lobehub-files-manager | 2026-07-31T12:14:02Z |
+| Files manager check | success | agent/lobehub-files-manager | 2026-07-31T12:13:25Z |
+| Server UI check | success | agent/lobehub-files-manager | 2026-07-31T12:13:30Z |
 
 ## 开放 PR
 
@@ -71,9 +71,9 @@
 
 - 状态快照发布时年龄：`0s`
 - 状态快照过期：`no`（阈值 2100s）
-- 部署状态：`idle`
-- 当前版本与 main 一致：`yes`
-- deploying SHA：`none`
+- 部署状态：`in_progress`
+- 当前版本与 main 一致：`no`
+- deploying SHA：`7fec9c27f5570bca44ebad70fb20c7577a4ea86a`
 - 最近发布结果：`success`
 - 磁盘保护级别：`ok`
 - Letta 必需：`no`
