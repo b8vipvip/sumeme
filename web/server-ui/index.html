@@ -2,181 +2,107 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="color-scheme" content="light dark">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
   <title>SuMeMe · 服务端</title>
-  <style>
-    :root {
-      color-scheme: light;
-      --bg:#f6f6fb; --surface:#ffffff; --surface-2:#f0f0f7; --surface-3:#e9e8f3;
-      --text:#171721; --muted:#717184; --border:#dedee9; --primary:#6558e8;
-      --primary-soft:#e9e6ff; --good:#0c8d63; --good-soft:#ddf7ec; --warn:#a35f00;
-      --warn-soft:#ffedcb; --bad:#c43d50; --bad-soft:#ffe2e7; --shadow:0 16px 45px #2d2c5012;
-      --sidebar:238px;
-    }
-    @media (prefers-color-scheme:dark) {
-      :root { color-scheme:dark; --bg:#111218; --surface:#191a22; --surface-2:#22232d;
-        --surface-3:#2b2c38; --text:#f3f2f8; --muted:#aaa9bb; --border:#333442;
-        --primary:#a89fff; --primary-soft:#302d57; --good:#63d6aa; --good-soft:#173b30;
-        --warn:#ffc068; --warn-soft:#49351d; --bad:#ff8897; --bad-soft:#4a222b;
-        --shadow:0 18px 45px #00000035; }
-    }
-    *{box-sizing:border-box} html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text)}
-    button,input,select,textarea{font:inherit} button{cursor:pointer}
-    .app{min-height:100vh;display:grid;grid-template-columns:var(--sidebar) minmax(0,1fr)}
-    aside{position:sticky;top:0;height:100vh;background:var(--surface);border-right:1px solid var(--border);padding:18px 14px;display:flex;flex-direction:column;z-index:5}
-    .brand{display:flex;gap:12px;align-items:center;padding:2px 8px 24px}.mark{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(145deg,#8b7dff,#6558e8 55%,#3f31bd);color:white;font-weight:900;box-shadow:0 10px 25px #6558e840}.brand strong{display:block;font-size:18px}.brand small{color:var(--muted)}
-    .nav-title{font-size:11px;color:var(--muted);font-weight:800;letter-spacing:.1em;padding:4px 11px 8px}.nav{display:grid;gap:4px}.nav button{border:0;background:transparent;color:var(--muted);display:flex;gap:12px;align-items:center;width:100%;padding:11px 12px;border-radius:12px;text-align:left}.nav button:hover{background:var(--surface-2);color:var(--text)}.nav button.active{background:var(--primary-soft);color:var(--primary);font-weight:750}.nav .icon{font-size:18px;width:22px;text-align:center}
-    .side-footer{margin-top:auto;border:1px solid var(--border);background:var(--surface-2);padding:12px;border-radius:14px}.connection{display:flex;align-items:center;gap:8px;font-weight:700}.dot{width:9px;height:9px;border-radius:50%;background:var(--bad)}.dot.good{background:var(--good)}.side-footer small{color:var(--muted);display:block;margin-top:6px;word-break:break-all}
-    main{min-width:0}.topbar{height:68px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;position:sticky;top:0;z-index:4}.topbar h1{font-size:18px;margin:0}.top-actions{margin-left:auto;display:flex;align-items:center;gap:8px}.icon-btn,.btn{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:12px;padding:10px 13px}.icon-btn{width:42px;height:42px;padding:0}.btn.primary{background:var(--primary);color:white;border-color:var(--primary)}.btn.tonal{background:var(--primary-soft);color:var(--primary);border-color:transparent}.btn.danger{background:var(--bad-soft);color:var(--bad);border-color:transparent}.btn:disabled{opacity:.5;cursor:not-allowed}
-    .content{padding:24px;max-width:1440px;margin:0 auto}.page{display:none}.page.active{display:block}.heading{display:flex;gap:20px;align-items:flex-end;justify-content:space-between;margin-bottom:22px}.eyebrow{color:var(--primary);font-size:11px;font-weight:850;letter-spacing:.14em}.heading h2{font-size:34px;line-height:1.15;margin:7px 0 8px;letter-spacing:-.04em}.heading p{margin:0;color:var(--muted);line-height:1.7;max-width:760px}.heading-actions{display:flex;gap:9px;flex-wrap:wrap}
-    .grid{display:grid;gap:16px}.metrics{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:16px}.two{grid-template-columns:minmax(0,1.55fr) minmax(300px,.85fr)}.three{grid-template-columns:repeat(3,minmax(0,1fr))}.card{background:var(--surface);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow)}.pad{padding:19px}.metric .m-icon{width:40px;height:40px;border-radius:12px;background:var(--primary-soft);color:var(--primary);display:grid;place-items:center;font-size:20px}.metric label{display:block;color:var(--muted);font-size:12px;margin-top:18px}.metric strong{display:block;font-size:25px;margin:3px 0}.metric small{color:var(--muted);overflow-wrap:anywhere}.card-head{display:flex;align-items:flex-start;gap:12px;padding:18px 19px;border-bottom:1px solid var(--border)}.card-head h3{margin:0;font-size:17px}.card-head p{margin:4px 0 0;color:var(--muted);font-size:13px}.card-head .right{margin-left:auto}
-    .status-hero{padding:22px;display:flex;gap:16px;align-items:center}.status-icon{width:54px;height:54px;border-radius:18px;display:grid;place-items:center;background:var(--warn-soft);color:var(--warn);font-size:26px}.status-hero.good .status-icon{background:var(--good-soft);color:var(--good)}.status-hero.bad .status-icon{background:var(--bad-soft);color:var(--bad)}.status-hero h3{margin:0 0 5px}.status-hero p{margin:0;color:var(--muted)}.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border-radius:999px;background:var(--surface-2);font-size:12px;color:var(--muted)}.chip.good{background:var(--good-soft);color:var(--good)}.chip.warn{background:var(--warn-soft);color:var(--warn)}.chip.bad{background:var(--bad-soft);color:var(--bad)}
-    .list{padding:7px 19px 13px}.row{display:grid;grid-template-columns:minmax(150px,1.2fr) .7fr .7fr .7fr;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)}.row:last-child{border-bottom:0}.row.header{font-size:12px;color:var(--muted);font-weight:750}.service-name{display:flex;align-items:center;gap:10px;font-weight:700}.service-icon{width:32px;height:32px;border-radius:10px;background:var(--primary-soft);color:var(--primary);display:grid;place-items:center}.badge{display:inline-flex;width:max-content;border-radius:999px;padding:5px 8px;background:var(--surface-2);font-size:12px}.badge.good{background:var(--good-soft);color:var(--good)}.badge.warn{background:var(--warn-soft);color:var(--warn)}.badge.bad{background:var(--bad-soft);color:var(--bad)}
-    .toolbar{display:flex;gap:10px;align-items:center;margin-bottom:14px}.field{width:100%;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:13px;padding:11px 13px;outline:none}.field:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}textarea.field{min-height:160px;resize:vertical}.toolbar .field{flex:1}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.form-group label{font-size:12px;color:var(--muted);display:block;margin:0 0 7px}.form-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:14px}.result{white-space:pre-wrap;line-height:1.65;min-height:140px;background:var(--surface-2);border-radius:14px;padding:15px;overflow:auto}.empty{padding:38px 20px;text-align:center;color:var(--muted)}.empty .big{font-size:42px;margin-bottom:10px}.empty strong{display:block;color:var(--text);font-size:17px;margin-bottom:6px}
-    .vault-card{padding:19px;margin-bottom:13px}.vault-top{display:flex;align-items:center;gap:13px}.vault-symbol{width:46px;height:46px;border-radius:14px;background:var(--primary-soft);display:grid;place-items:center;font-size:22px}.vault-top h3{margin:0}.vault-top p{margin:4px 0 0;color:var(--muted)}.vault-top select{margin-left:auto;max-width:180px}.progress{height:9px;border-radius:99px;background:var(--surface-2);overflow:hidden;margin-top:17px}.progress span{display:block;height:100%;width:18%;background:var(--primary)}
-    .kv{display:grid;grid-template-columns:1fr auto;gap:10px;padding:11px 0;border-bottom:1px solid var(--border)}.kv:last-child{border-bottom:0}.kv span:first-child{color:var(--muted)}.code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12px;background:var(--surface-2);padding:2px 5px;border-radius:5px;overflow-wrap:anywhere}
-    .notice{border-radius:15px;padding:14px 16px;margin-bottom:15px;background:var(--primary-soft);color:var(--primary);display:flex;gap:10px}.notice.warn{background:var(--warn-soft);color:var(--warn)}.notice.bad{background:var(--bad-soft);color:var(--bad)}
-    dialog{border:1px solid var(--border);border-radius:20px;background:var(--surface);color:var(--text);padding:0;max-width:620px;width:calc(100% - 32px);box-shadow:0 24px 90px #0005}dialog::backdrop{background:#10111a88;backdrop-filter:blur(4px)}.dialog-head{padding:20px 22px;border-bottom:1px solid var(--border)}.dialog-head h3{margin:0}.dialog-head p{margin:6px 0 0;color:var(--muted)}.dialog-body{padding:20px 22px}.dialog-actions{padding:0 22px 20px;display:flex;justify-content:flex-end;gap:9px}
-    .mobile-menu{display:none}.toast{position:fixed;right:20px;bottom:20px;background:var(--text);color:var(--surface);padding:12px 15px;border-radius:12px;box-shadow:var(--shadow);opacity:0;transform:translateY(12px);pointer-events:none;transition:.2s;z-index:20}.toast.show{opacity:1;transform:translateY(0)}
-    @media(max-width:1100px){.metrics{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}.three{grid-template-columns:1fr}.row{grid-template-columns:1.2fr .7fr .7fr}.row>*:last-child{display:none}}
-    @media(max-width:760px){:root{--sidebar:0px}.app{display:block}aside{position:fixed;left:0;top:0;width:260px;transform:translateX(-105%);transition:.2s;box-shadow:0 0 40px #0004}.app.menu-open aside{transform:translateX(0)}.mobile-menu{display:inline-grid}.topbar{padding:0 13px}.content{padding:17px}.heading{display:block}.heading h2{font-size:28px}.heading-actions{margin-top:15px}.metrics{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.row{grid-template-columns:1fr .7fr}.row>*:nth-child(n+3){display:none}.topbar h1{font-size:16px}}
-  </style>
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+  <link rel="stylesheet" href="/static/admin.css">
 </head>
 <body>
-<div class="app" id="app">
-  <aside>
-    <div class="brand"><div class="mark">Su</div><div><strong>SuMeMe</strong><small>服务端管理中心</small></div></div>
-    <div class="nav-title">管理</div>
-    <nav class="nav" id="nav">
-      <button class="active" data-page="overview"><span class="icon">⌂</span>总览</button>
-      <button data-page="memories"><span class="icon">✦</span>记忆</button>
-      <button data-page="files"><span class="icon">▣</span>资料与对象</button>
-      <button data-page="vaults"><span class="icon">⬡</span>Vault</button>
-      <button data-page="models"><span class="icon">◎</span>模型与供应商</button>
-      <button data-page="operations"><span class="icon">↗</span>运维</button>
-      <button data-page="settings"><span class="icon">⚙</span>连接设置</button>
-    </nav>
-    <div class="side-footer"><div class="connection"><span class="dot" id="sideDot"></span><span id="sideStatus">正在连接</span></div><small id="sideOrigin">sumeme.mv3.cn</small></div>
-  </aside>
-  <main>
-    <header class="topbar">
-      <button class="icon-btn mobile-menu" id="menuButton" aria-label="菜单">☰</button>
-      <h1 id="topTitle">总览</h1>
-      <div class="top-actions">
-        <button class="icon-btn" id="refreshButton" title="刷新">↻</button>
-        <button class="btn tonal" id="credentialsButton">安全凭据</button>
-      </div>
-    </header>
-    <div class="content">
-      <section class="page active" id="page-overview">
-        <div class="heading"><div><div class="eyebrow">SUMEME SERVER</div><h2>服务端总览</h2><p>查看记忆网关、对象存储、向量库与部署状态。此页面由 SuMeMe 自己提供，不再加载 LobeHub 界面。</p></div><div class="heading-actions"><button class="btn primary" data-jump="memories">检索记忆</button><button class="btn" data-jump="vaults">管理 Vault</button></div></div>
-        <div class="grid metrics">
-          <div class="card pad metric"><div class="m-icon">☁</div><label>服务状态</label><strong id="metricStatus">连接中</strong><small id="metricStatusDetail">读取 /sumeme-health</small></div>
-          <div class="card pad metric"><div class="m-icon">✦</div><label>记忆引擎</label><strong id="metricMemory">--</strong><small id="metricMemoryDetail">等待服务器响应</small></div>
-          <div class="card pad metric"><div class="m-icon">⬡</div><label>默认存储</label><strong id="metricStorage">--</strong><small>Vault 策略</small></div>
-          <div class="card pad metric"><div class="m-icon">♙</div><label>身份模式</label><strong id="metricIdentity">--</strong><small id="metricIdentityDetail">账户隔离状态</small></div>
-        </div>
-        <div class="grid two">
-          <div class="card"><div class="status-hero" id="statusHero"><div class="status-icon">!</div><div><h3 id="heroTitle">正在检查系统</h3><p id="heroText">等待网关健康信息。</p><div class="chips" id="heroChips"></div></div></div><div class="card-head"><div><h3>运行组件</h3><p>由公开健康信息推断的核心能力</p></div></div><div class="list" id="serviceList"></div></div>
-          <div class="card"><div class="card-head"><div><h3>安全边界</h3><p>客户端与服务端分离</p></div></div><div class="pad"><div class="kv"><span>浏览器中保存的凭据</span><strong>仅当前会话</strong></div><div class="kv"><span>服务器密钥</span><strong>不下发</strong></div><div class="kv"><span>危险运维操作</span><strong>默认关闭</strong></div><div class="kv"><span>API 入口</span><span class="code">/api/gateway</span></div><div class="kv"><span>公开健康</span><span class="code">/sumeme-health</span></div></div></div>
-        </div>
-      </section>
-
-      <section class="page" id="page-memories">
-        <div class="heading"><div><div class="eyebrow">MEMORY EXPLORER</div><h2>记忆管理</h2><p>在指定账户和 Vault 内执行作用域检索。当前接口返回模型可用的记忆上下文，逐条编辑和删除将在专用记忆管理 API 完成后开放。</p></div></div>
-        <div class="notice warn" id="memoryCredentialNotice">⚠ 记忆搜索需要管理员凭据，请先打开“安全凭据”。</div>
-        <div class="card pad">
-          <div class="form-grid"><div class="form-group"><label>账户 ID</label><input class="field" id="memoryAccount" value="personal"></div><div class="form-group"><label>Vault ID</label><input class="field" id="memoryVault" value="default"></div></div>
-          <div class="form-group" style="margin-top:13px"><label>自然语言查询</label><textarea class="field" id="memoryQuery" placeholder="例如：我为什么决定把客户端改成 Flutter 原生界面？"></textarea></div>
-          <div class="form-actions"><button class="btn" id="clearMemory">清空</button><button class="btn primary" id="searchMemory">搜索记忆</button></div>
-        </div>
-        <div class="card" style="margin-top:16px"><div class="card-head"><div><h3>检索结果</h3><p id="memoryMeta">尚未执行检索</p></div></div><div class="pad"><div class="result" id="memoryResult">输入查询后，结果会显示在这里。</div></div></div>
-      </section>
-
-      <section class="page" id="page-files">
-        <div class="heading"><div><div class="eyebrow">PRIVATE OBJECTS</div><h2>资料与对象</h2><p>查看当前账户与 Vault 中的私有对象。服务器已经具备预签名上传、完整性校验、短时下载和安全删除协议。</p></div><div class="heading-actions"><button class="btn primary" id="refreshFiles">刷新列表</button></div></div>
-        <div class="notice warn" id="fileIdentityNotice">⚠ 正式私有对象访问要求可信身份；legacy-client-asserted 模式会拒绝普通账户请求。</div>
-        <div class="toolbar"><input class="field" id="fileSearch" placeholder="搜索文件名或类型"><select class="field" style="max-width:190px" id="fileType"><option value="">全部类型</option><option value="image/">图片</option><option value="audio/">音频</option><option value="video/">视频</option><option value="application/pdf">PDF</option></select></div>
-        <div class="card"><div class="row header"><div>文件</div><div>大小</div><div>状态</div><div>更新时间</div></div><div class="list" id="fileList"><div class="empty"><div class="big">▣</div><strong>尚未读取资料</strong><span>填写凭据后点击刷新列表。</span></div></div></div>
-      </section>
-
-      <section class="page" id="page-vaults">
-        <div class="heading"><div><div class="eyebrow">PRIVACY VAULTS</div><h2>Vault 策略</h2><p>local-only、cloud 与 hybrid 策略由服务端执行。修改策略需要管理员凭据。</p></div><div class="heading-actions"><button class="btn primary" id="refreshVaults">读取策略</button></div></div>
-        <div class="notice warn" id="vaultCredentialNotice">⚠ Vault 管理需要管理员凭据。</div>
-        <div id="vaultList"><div class="card empty"><div class="big">⬡</div><strong>尚未读取 Vault</strong><span>点击“读取策略”查看服务端 Vault。</span></div></div>
-        <div class="card pad" style="margin-top:16px"><h3 style="margin-top:0">存储模式说明</h3><div class="kv"><span>local-only</span><strong>不召回、不自动云端写入</strong></div><div class="kv"><span>cloud</span><strong>正常召回并持久化</strong></div><div class="kv"><span>hybrid</span><strong>只接受显式脱敏派生内容</strong></div></div>
-      </section>
-
-      <section class="page" id="page-models">
-        <div class="heading"><div><div class="eyebrow">AI PROVIDERS</div><h2>模型与供应商</h2><p>模型由 memory-gateway 统一转发到配置的 OpenAI-compatible 中转站。浏览器不会读取中转站密钥。</p></div><div class="heading-actions"><button class="btn primary" id="refreshModels">读取模型</button></div></div>
-        <div class="grid three">
-          <div class="card pad metric"><div class="m-icon">◎</div><label>模型数量</label><strong id="modelCount">--</strong><small>当前凭据可见</small></div>
-          <div class="card pad metric"><div class="m-icon">↗</div><label>中转站</label><strong id="relayOrigin">--</strong><small>由健康接口公开的基地址</small></div>
-          <div class="card pad metric"><div class="m-icon">◈</div><label>Embedding</label><strong>remote-only</strong><small>客户端不加载本地模型</small></div>
-        </div>
-        <div class="card" style="margin-top:16px"><div class="card-head"><div><h3>可用模型</h3><p>来自 /v1/models</p></div></div><div class="list" id="modelList"><div class="empty"><div class="big">◎</div><strong>尚未读取模型</strong><span>填写 Gateway 凭据后点击读取。</span></div></div></div>
-      </section>
-
-      <section class="page" id="page-operations">
-        <div class="heading"><div><div class="eyebrow">OPERATIONS</div><h2>运维与部署</h2><p>该页面只显示安全的摘要。容器重启、回滚、备份恢复和密钥变更必须走经过审查的服务器流程。</p></div></div>
-        <div class="notice">ℹ 危险操作不会直接暴露在浏览器中，直到管理员身份、二次确认与审计日志全部完成。</div>
-        <div class="grid three">
-          <div class="card pad"><h3>部署模式</h3><p style="color:var(--muted)">GitHub-hosted SSH</p><div class="chip good">GHS</div></div>
-          <div class="card pad"><h3>数据安全</h3><p style="color:var(--muted)">数据库、对象存储和 Docker volumes 不随代码覆盖。</p><div class="chip good">持久卷保护</div></div>
-          <div class="card pad"><h3>回滚门禁</h3><p style="color:var(--muted)">本地关键服务或私有对象失败时才回滚。</p><div class="chip warn">外部供应商可降级</div></div>
-        </div>
-        <div class="card" style="margin-top:16px"><div class="card-head"><div><h3>运维检查清单</h3><p>当前 UI 的可见范围</p></div></div><div class="pad"><div class="kv"><span>服务健康</span><strong>可查看</strong></div><div class="kv"><span>模型列表</span><strong>需 Gateway 凭据</strong></div><div class="kv"><span>Vault 策略</span><strong>需管理员凭据</strong></div><div class="kv"><span>记忆检索</span><strong>需管理员凭据</strong></div><div class="kv"><span>重启/回滚/删库</span><strong style="color:var(--bad)">浏览器禁用</strong></div></div></div>
-      </section>
-
-      <section class="page" id="page-settings">
-        <div class="heading"><div><div class="eyebrow">CONNECTION</div><h2>连接设置</h2><p>凭据只写入当前标签页的 sessionStorage，关闭标签页后自动清除。服务器 .env 与中转站密钥永不下发。</p></div></div>
-        <div class="card pad">
-          <div class="form-grid"><div class="form-group"><label>Gateway 凭据</label><input class="field" type="password" id="gatewayToken" autocomplete="off" placeholder="用于模型、聊天与对象 API"></div><div class="form-group"><label>管理员凭据</label><input class="field" type="password" id="adminToken" autocomplete="off" placeholder="用于 Vault 与记忆管理"></div><div class="form-group"><label>默认账户</label><input class="field" id="defaultAccount" value="personal"></div><div class="form-group"><label>默认 Vault</label><input class="field" id="defaultVault" value="default"></div></div>
-          <div class="form-actions"><button class="btn danger" id="clearCredentials">清除凭据</button><button class="btn primary" id="saveCredentials">保存到当前会话</button></div>
-        </div>
-        <div class="card pad" style="margin-top:16px"><h3 style="margin-top:0">客户端连接说明</h3><p style="color:var(--muted);line-height:1.7">Android 与 Windows 原生客户端不会嵌入这个网页。它们直接通过 <span class="code">/api/gateway</span> 调用同一组服务端 API，并把凭据存入 Android Keystore 或 Windows Credential Manager。</p></div>
-      </section>
+<section class="login-body" id="authView" hidden>
+  <div class="login-shell">
+    <div class="login-card">
+      <div class="login-brand"><span class="brand-mark large">Su</span></div>
+      <h1 id="authTitle">登录 SuMeMe</h1>
+      <p class="muted" id="authDescription">使用 LobeHub 账户系统登录，账户、会话和附件数据仍由原后端管理。</p>
+      <div class="alert alert-error" id="authError" hidden><span></span></div>
+      <form class="form-stack" id="loginForm">
+        <label class="field signup-only" hidden><span>昵称</span><input id="nameInput" autocomplete="name" placeholder="你的昵称"></label>
+        <label class="field"><span>邮箱</span><input id="emailInput" type="email" autocomplete="email" required placeholder="name@example.com"></label>
+        <label class="field"><span>密码</span><input id="passwordInput" type="password" autocomplete="current-password" minlength="8" required placeholder="至少 8 位"></label>
+        <button class="button primary full" id="authSubmit" type="submit">登录</button>
+      </form>
+      <button class="text-action" id="authModeButton" type="button">没有账户？创建账户</button>
+      <p class="login-note">认证请求直接发送到同域 LobeHub 后端；SuMeMe 前端不保存明文密码。</p>
     </div>
+  </div>
+</section>
+
+<div class="app-shell" id="appView" hidden>
+  <aside class="sidebar" id="sidebar">
+    <a class="brand" href="#overview">
+      <span class="brand-mark">Su</span>
+      <span><strong>SuMeMe</strong><small>服务端管理中心</small></span>
+    </a>
+    <nav class="nav-list" aria-label="后台导航">
+      <a href="#overview" class="nav-item active" data-page="overview"><span>◫</span>总览</a>
+      <a href="#chat" class="nav-item" data-page="chat"><span>💬</span>对话</a>
+      <a href="#memories" class="nav-item" data-page="memories"><span>✦</span>记忆</a>
+      <a href="#files" class="nav-item" data-page="files"><span>▣</span>资料与对象</a>
+      <a href="#vaults" class="nav-item" data-page="vaults"><span>⬡</span>Vault</a>
+      <a href="#models" class="nav-item" data-page="models"><span>◎</span>模型</a>
+      <a href="#operations" class="nav-item" data-page="operations"><span>↗</span>运维</a>
+      <a href="#settings" class="nav-item" data-page="settings"><span>⚙</span>设置</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="server-dot"><i id="serverDot"></i><span id="serverLabel">正在连接</span></div>
+      <small id="accountLabel">读取登录状态…</small>
+      <button class="logout-button" id="logoutButton" type="button">退出登录</button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="topbar">
+      <button type="button" class="menu-button" id="menuButton" aria-label="打开菜单">☰</button>
+      <div><h1 id="pageTitle">总览</h1><p id="pageSubtitle">LobeHub 后端与 SuMeMe 记忆服务运行状态</p></div>
+      <div class="topbar-actions"><button class="button secondary" id="refreshButton">刷新</button></div>
+    </header>
+
+    <section class="page-content">
+      <div class="page active" id="page-overview">
+        <div class="hero-panel">
+          <div><span class="eyebrow">SUMEME OPERATIONS CENTER</span><h2>服务端管理中心</h2><p>界面沿用 FDEX 的导航、卡片和表单体系；认证、会话、附件、数据库与模型能力继续由 LobeHub 和 SuMeMe 服务提供。</p></div>
+          <span class="hero-status" id="heroStatus">检测中</span>
+        </div>
+        <div class="stat-grid">
+          <article class="stat-card"><div class="stat-icon success">✓</div><div><span>记忆网关</span><strong id="gatewayStatus">检测中</strong><small id="gatewayDetail">/sumeme-health</small></div></article>
+          <article class="stat-card"><div class="stat-icon">L</div><div><span>LobeHub 后端</span><strong id="lobeStatus">保留</strong><small>认证、会话、附件与数据库</small></div></article>
+          <article class="stat-card"><div class="stat-icon">V</div><div><span>Vault 模式</span><strong id="vaultMode">—</strong><small>服务端存储策略</small></div></article>
+          <article class="stat-card"><div class="stat-icon warning">AI</div><div><span>记忆 Provider</span><strong id="providerName">—</strong><small>远程模型出口</small></div></article>
+        </div>
+        <div class="content-grid two-thirds">
+          <article class="panel"><div class="panel-header"><div><h2>架构边界</h2><p>只替换前端，不删除 LobeHub 能力</p></div></div><div class="detail-grid">
+            <div class="detail-item"><span>前端</span><strong>SuMeMe · FDEX 风格</strong></div>
+            <div class="detail-item"><span>账户与会话</span><strong>LobeHub</strong></div>
+            <div class="detail-item"><span>记忆</span><strong>memory-gateway</strong></div>
+            <div class="detail-item"><span>附件</span><strong>LobeHub + RustFS</strong></div>
+            <div class="detail-item"><span>模型出口</span><strong>ai-provider-proxy</strong></div>
+            <div class="detail-item"><span>数据库</span><strong>PostgreSQL / Redis</strong></div>
+          </div></article>
+          <article class="panel"><div class="panel-header"><div><h2>快速入口</h2><p>逐步接入现有能力</p></div></div><div class="quick-list">
+            <a href="#chat" data-jump="chat"><span><b>开始对话</b><small>SuMeMe 原生对话界面</small></span><em>›</em></a>
+            <a href="#memories" data-jump="memories"><span><b>搜索记忆</b><small>MemPalace 与 Letta</small></span><em>›</em></a>
+            <a href="#files" data-jump="files"><span><b>管理资料</b><small>附件与私有对象</small></span><em>›</em></a>
+          </div></article>
+        </div>
+      </div>
+
+      <div class="page" id="page-chat">
+        <div class="page-heading"><div><span class="eyebrow">CONVERSATIONS</span><h2>对话</h2><p>此页面将接入 LobeHub 的会话与消息数据层，不再加载 LobeHub 的视觉界面。</p></div></div>
+        <div class="panel"><div class="empty-state"><span>💬</span><h3>前端适配进行中</h3><p>LobeHub 后端已保留。当前分支先修复认证与资源路由，下一步接入会话列表、消息流和附件。</p></div></div>
+      </div>
+
+      <div class="page" id="page-memories"><div class="page-heading"><div><span class="eyebrow">LONG-TERM MEMORY</span><h2>记忆</h2><p>跨会话检索原文记忆与结构化记忆。</p></div></div><div class="panel"><div class="empty-state"><span>✦</span><h3>记忆服务已保留</h3><p>检索和管理界面将在本前端直接调用 memory-gateway。</p></div></div></div>
+      <div class="page" id="page-files"><div class="page-heading"><div><span class="eyebrow">FILES & OBJECTS</span><h2>资料与对象</h2><p>LobeHub 附件功能和 RustFS 对象存储保持不变。</p></div></div><div class="panel"><div class="empty-state"><span>▣</span><h3>资料接口待接入</h3><p>不会删除原有附件数据或数据库记录。</p></div></div></div>
+      <div class="page" id="page-vaults"><div class="page-heading"><div><span class="eyebrow">VAULT</span><h2>Vault</h2><p>本地、云端和混合存储策略。</p></div></div><div class="panel"><div class="kv-list"><div><dt>当前默认模式</dt><dd id="vaultModeDetail">—</dd></div><div><dt>作用域模式</dt><dd id="scopeMode">—</dd></div></div></div></div>
+      <div class="page" id="page-models"><div class="page-heading"><div><span class="eyebrow">MODELS</span><h2>模型</h2><p>模型请求继续经过 memory-gateway 与 ai-provider-proxy。</p></div></div><div class="panel"><div class="empty-state"><span>◎</span><h3>模型能力保持不变</h3><p>前端模型选择器将在后续提交接入现有模型列表。</p></div></div></div>
+      <div class="page" id="page-operations"><div class="page-heading"><div><span class="eyebrow">OPERATIONS</span><h2>运维</h2><p>查看公开健康信息和部署状态。</p></div></div><div class="panel"><pre class="log-viewer" id="healthJson">正在读取…</pre></div></div>
+      <div class="page" id="page-settings"><div class="page-heading"><div><span class="eyebrow">SETTINGS</span><h2>设置</h2><p>账户设置仍由 LobeHub 后端保存，SuMeMe 只替换表现层。</p></div></div><div class="content-grid equal"><article class="panel"><div class="panel-header"><div><h2>当前账户</h2><p>Better Auth 会话</p></div></div><div class="kv-list"><div><dt>邮箱</dt><dd id="settingsEmail">—</dd></div><div><dt>用户 ID</dt><dd class="wrap" id="settingsUserId">—</dd></div></div></article><article class="panel"><div class="panel-header"><div><h2>服务地址</h2><p>客户端默认连接入口</p></div></div><div class="kv-list"><div><dt>公开入口</dt><dd>https://sumeme.mv3.cn</dd></div><div><dt>健康检查</dt><dd>/sumeme-health</dd></div></div></article></div></div>
+    </section>
   </main>
 </div>
 
-<dialog id="credentialDialog"><div class="dialog-head"><h3>安全凭据</h3><p>只保存在当前浏览器标签页；不会提交到 GitHub 或写入服务器文件。</p></div><div class="dialog-body"><div class="form-group"><label>Gateway 凭据</label><input class="field" type="password" id="dialogGateway" autocomplete="off"></div><div class="form-group" style="margin-top:13px"><label>管理员凭据</label><input class="field" type="password" id="dialogAdmin" autocomplete="off"></div></div><div class="dialog-actions"><button class="btn" id="dialogCancel">取消</button><button class="btn primary" id="dialogSave">保存</button></div></dialog>
 <div class="toast" id="toast"></div>
-<script>
-  const state={health:null,models:[],files:[],vaults:[],page:'overview'};
-  const $=id=>document.getElementById(id);
-  const token=kind=>sessionStorage.getItem(`sumeme.${kind}`)||'';
-  const headers=kind=>({'Accept':'application/json','Content-Type':'application/json',...(token(kind)?{'Authorization':`Bearer ${token(kind)}`}:{})});
-  const safeText=value=>value==null?'--':String(value);
-  function toast(message){const node=$('toast');node.textContent=message;node.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>node.classList.remove('show'),2600)}
-  function setPage(page){state.page=page;document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===`page-${page}`));document.querySelectorAll('#nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===page));const active=document.querySelector(`#nav button[data-page="${page}"]`);$('topTitle').textContent=active?active.textContent.trim():'SuMeMe';$('app').classList.remove('menu-open')}
-  document.querySelectorAll('#nav button').forEach(button=>button.addEventListener('click',()=>setPage(button.dataset.page)));
-  document.querySelectorAll('[data-jump]').forEach(button=>button.addEventListener('click',()=>setPage(button.dataset.jump)));
-  $('menuButton').addEventListener('click',()=> $('app').classList.toggle('menu-open'));
-  document.addEventListener('click',event=>{if(innerWidth<=760&&!event.target.closest('aside')&&!event.target.closest('#menuButton'))$('app').classList.remove('menu-open')});
-  async function api(path,{method='GET',kind='gateway',body}={}){const response=await fetch(`/api/gateway/${path.replace(/^\/+/, '')}`,{method,headers:headers(kind),body:body===undefined?undefined:JSON.stringify(body)});let data;try{data=await response.json()}catch{data={detail:await response.text()}}if(!response.ok){const message=data?.detail||data?.error?.message||`HTTP ${response.status}`;throw new Error(message)}return data}
-  function setConnected(ok){$('sideDot').classList.toggle('good',ok);$('sideStatus').textContent=ok?'服务在线':'连接失败';$('metricStatus').textContent=ok?'在线':'不可用';$('metricStatusDetail').textContent=ok?'公开健康接口正常':'请检查服务器与反向代理'}
-  function renderHealth(){const h=state.health||{};setConnected(h.status==='ok');$('metricMemory').textContent=safeText(h.memory_provider);$('metricMemoryDetail').textContent=`MemPalace ${h.mempalace_enabled?'启用':'关闭'} · Letta ${h.letta_enabled?'启用':'关闭'}`;$('metricStorage').textContent=safeText(h.default_storage_mode);$('metricIdentity').textContent=safeText(h.identity_enforcement);$('metricIdentityDetail').textContent=h.identity_enforcement==='legacy-client-asserted'?'尚未达到正式多账户安全边界':'服务端可信身份已启用';$('relayOrigin').textContent=safeText(h.relay_base_url);
-    const good=h.status==='ok';const hero=$('statusHero');hero.className=`status-hero ${good?'good':'bad'}`;$('heroTitle').textContent=good?'核心服务可访问':'系统需要检查';$('heroText').textContent=good?'记忆网关已响应，进一步能力取决于凭据与供应商状态。':'无法读取公开健康信息。';$('heroChips').innerHTML=[['MemPalace',h.mempalace_enabled],['Letta',h.letta_enabled],['记忆检查点',h.memory_checkpoint],['可信身份',h.identity_enforcement!=='legacy-client-asserted']].map(([name,on])=>`<span class="chip ${on?'good':'warn'}">${name} · ${on?'可用':'未启用'}</span>`).join('');
-    const services=[['memory-gateway','记忆与模型网关',good],['mempalace','原文记忆',h.mempalace_enabled],['letta','结构化记忆',h.letta_enabled],['vault-registry','Vault Registry',h.vault_registry==='sqlite'],['object-store','私有对象接口',good],['identity','账户身份',h.identity_enforcement!=='legacy-client-asserted']];$('serviceList').innerHTML='<div class="row header"><div>组件</div><div>状态</div><div>级别</div><div>说明</div></div>'+services.map(([name,desc,on])=>`<div class="row"><div class="service-name"><span class="service-icon">◈</span><span>${name}<small style="display:block;color:var(--muted);font-weight:400">${desc}</small></span></div><div><span class="badge ${on?'good':'warn'}">${on?'可用':'受限'}</span></div><div><span class="badge">${name==='letta'?'可选':'核心'}</span></div><div>${on?'接口已报告可用':'等待配置或迁移'}</div></div>`).join('');
-    const trusted=h.identity_enforcement!=='legacy-client-asserted';$('fileIdentityNotice').style.display=trusted?'none':'flex';
-  }
-  async function refreshHealth(){try{const response=await fetch('/sumeme-health',{headers:{Accept:'application/json'}});if(!response.ok)throw new Error(`HTTP ${response.status}`);state.health=await response.json();renderHealth()}catch(error){state.health=null;setConnected(false);$('heroTitle').textContent='无法连接服务端';$('heroText').textContent=error.message;toast(`健康检查失败：${error.message}`)}}
-  async function loadModels(){if(!token('gateway'))return toast('请先填写 Gateway 凭据');try{const result=await api('v1/models');state.models=Array.isArray(result.data)?result.data:[];$('modelCount').textContent=state.models.length;$('modelList').innerHTML=state.models.length?state.models.map(model=>`<div class="row"><div class="service-name"><span class="service-icon">◎</span><span>${safeText(model.id)}</span></div><div><span class="badge good">可见</span></div><div>${safeText(model.owned_by||'relay')}</div><div>${model.created?new Date(model.created*1000).toLocaleDateString():'--'}</div></div>`).join(''):'<div class="empty"><strong>模型列表为空</strong></div>';toast('模型列表已刷新')}catch(error){toast(`读取模型失败：${error.message}`)}}
-  async function searchMemory(){if(!token('admin'))return toast('请先填写管理员凭据');const query=$('memoryQuery').value.trim();if(!query)return toast('请输入检索内容');$('memoryResult').textContent='正在检索…';try{const result=await api('api/memory/search',{method:'POST',kind:'admin',body:{principal_type:'account',account_id:$('memoryAccount').value.trim()||'personal',vault_id:$('memoryVault').value.trim()||'default',query}});$('memoryResult').textContent=result.context||'没有检索到可显示的记忆。';$('memoryMeta').textContent=`${safeText(result.provider)} · ${safeText(result.storage_mode)} · ${safeText(result.scope)}`}catch(error){$('memoryResult').textContent=`检索失败：${error.message}`}}
-  async function loadVaults(){if(!token('admin'))return toast('请先填写管理员凭据');try{const result=await api('api/vaults/list',{method:'POST',kind:'admin',body:{principal_type:'account',account_id:$('defaultAccount').value.trim()||'personal'}});state.vaults=Array.isArray(result.vaults)?result.vaults:[];renderVaults();toast('Vault 策略已刷新')}catch(error){toast(`读取 Vault 失败：${error.message}`)}}
-  function renderVaults(){const host=$('vaultList');if(!state.vaults.length){host.innerHTML='<div class="card empty"><strong>没有返回 Vault</strong><span>当前账户可能尚未创建 Vault。</span></div>';return}host.innerHTML=state.vaults.map(v=>`<div class="card vault-card"><div class="vault-top"><div class="vault-symbol">⬡</div><div><h3>${safeText(v.vault_id)}</h3><p>${safeText(v.principal_type)} · ${safeText(v.account_id)}</p></div><select class="field vault-mode" data-vault="${safeText(v.vault_id)}"><option value="local-only" ${v.storage_mode==='local-only'?'selected':''}>local-only</option><option value="cloud" ${v.storage_mode==='cloud'?'selected':''}>cloud</option><option value="hybrid" ${v.storage_mode==='hybrid'?'selected':''}>hybrid</option></select></div><div class="progress"><span></span></div></div>`).join('');document.querySelectorAll('.vault-mode').forEach(select=>select.addEventListener('change',()=>updateVault(select.dataset.vault,select.value)))}
-  async function updateVault(vaultId,storageMode){if(!token('admin'))return toast('请先填写管理员凭据');try{await api('api/vaults/policy',{method:'PUT',kind:'admin',body:{principal_type:'account',account_id:$('defaultAccount').value.trim()||'personal',vault_id:vaultId,storage_mode:storageMode}});toast(`${vaultId} 已切换为 ${storageMode}`)}catch(error){toast(`修改失败：${error.message}`);loadVaults()}}
-  async function loadFiles(){if(!token('gateway'))return toast('请先填写 Gateway 凭据');try{const result=await api('api/objects/list',{method:'POST',body:{user:$('defaultAccount').value.trim()||'personal',metadata:{vault_id:$('defaultVault').value.trim()||'default'},limit:200}});state.files=Array.isArray(result.objects)?result.objects:[];renderFiles();toast('资料列表已刷新')}catch(error){$('fileList').innerHTML=`<div class="empty"><strong>读取失败</strong><span>${error.message}</span></div>`;toast(`读取资料失败：${error.message}`)}}
-  function renderFiles(){const query=$('fileSearch').value.trim().toLowerCase(),type=$('fileType').value;const rows=state.files.filter(f=>(!query||safeText(f.original_name).toLowerCase().includes(query))&&(!type||safeText(f.content_type).startsWith(type)));$('fileList').innerHTML=rows.length?rows.map(f=>`<div class="row"><div class="service-name"><span class="service-icon">▣</span><span>${safeText(f.original_name)}<small style="display:block;color:var(--muted);font-weight:400">${safeText(f.content_type)}</small></span></div><div>${formatBytes(f.size_bytes)}</div><div><span class="badge ${f.state==='ready'?'good':'warn'}">${safeText(f.state)}</span></div><div>${f.updated_at?new Date(f.updated_at).toLocaleString():'--'}</div></div>`).join(''):'<div class="empty"><div class="big">▣</div><strong>没有匹配的资料</strong></div>'}
-  function formatBytes(value){const n=Number(value||0);if(n<1024)return `${n} B`;if(n<1048576)return `${(n/1024).toFixed(1)} KiB`;if(n<1073741824)return `${(n/1048576).toFixed(1)} MiB`;return `${(n/1073741824).toFixed(1)} GiB`}
-  function syncCredentialUI(){const gateway=token('gateway'),admin=token('admin');$('gatewayToken').value=gateway;$('adminToken').value=admin;$('dialogGateway').value=gateway;$('dialogAdmin').value=admin;$('memoryCredentialNotice').style.display=admin?'none':'flex';$('vaultCredentialNotice').style.display=admin?'none':'flex'}
-  function saveCredentials(gateway,admin){sessionStorage.setItem('sumeme.gateway',gateway.trim());sessionStorage.setItem('sumeme.admin',admin.trim());syncCredentialUI();toast('凭据已保存到当前会话')}
-  $('credentialsButton').addEventListener('click',()=>{syncCredentialUI();$('credentialDialog').showModal()});$('dialogCancel').addEventListener('click',()=>$('credentialDialog').close());$('dialogSave').addEventListener('click',()=>{saveCredentials($('dialogGateway').value,$('dialogAdmin').value);$('credentialDialog').close()});$('saveCredentials').addEventListener('click',()=>saveCredentials($('gatewayToken').value,$('adminToken').value));$('clearCredentials').addEventListener('click',()=>{sessionStorage.removeItem('sumeme.gateway');sessionStorage.removeItem('sumeme.admin');syncCredentialUI();toast('当前会话凭据已清除')});
-  $('refreshButton').addEventListener('click',async()=>{await refreshHealth();if(state.page==='models'&&token('gateway'))loadModels()});$('refreshModels').addEventListener('click',loadModels);$('searchMemory').addEventListener('click',searchMemory);$('clearMemory').addEventListener('click',()=>{$('memoryQuery').value='';$('memoryResult').textContent='输入查询后，结果会显示在这里。'});$('refreshVaults').addEventListener('click',loadVaults);$('refreshFiles').addEventListener('click',loadFiles);$('fileSearch').addEventListener('input',renderFiles);$('fileType').addEventListener('change',renderFiles);
-  $('defaultAccount').value=sessionStorage.getItem('sumeme.account')||'personal';$('defaultVault').value=sessionStorage.getItem('sumeme.vault')||'default';$('defaultAccount').addEventListener('change',()=>sessionStorage.setItem('sumeme.account',$('defaultAccount').value));$('defaultVault').addEventListener('change',()=>sessionStorage.setItem('sumeme.vault',$('defaultVault').value));$('memoryAccount').value=$('defaultAccount').value;$('memoryVault').value=$('defaultVault').value;
-  $('sideOrigin').textContent=location.host;syncCredentialUI();refreshHealth();
-</script>
+<script src="/static/app.js" defer></script>
 </body>
 </html>
