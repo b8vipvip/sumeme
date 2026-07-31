@@ -14,9 +14,11 @@ SERVER_UI = ROOT / "web" / "server-ui" / "index.html"
 SERVER_JS = ROOT / "web" / "server-ui" / "static" / "app.js"
 CHAT_WRITE_JS = ROOT / "web" / "server-ui" / "static" / "chat-write.js"
 CHAT_ATTACHMENTS_JS = ROOT / "web" / "server-ui" / "static" / "chat-attachments.js"
+CHAT_INTERVENTIONS_JS = ROOT / "web" / "server-ui" / "static" / "chat-interventions.js"
 SERVER_CSS = ROOT / "web" / "server-ui" / "static" / "admin.css"
 CONVERSATION_CSS = ROOT / "web" / "server-ui" / "static" / "conversations.css"
 ATTACHMENT_CSS = ROOT / "web" / "server-ui" / "static" / "chat-attachments.css"
+INTERVENTION_CSS = ROOT / "web" / "server-ui" / "static" / "chat-interventions.css"
 SERVER_NGINX = ROOT / "web" / "server-ui" / "nginx.conf"
 SERVER_DOCKERFILE = ROOT / "web" / "server-ui" / "Dockerfile"
 
@@ -151,6 +153,32 @@ class PublicUIDeliveryContractTests(unittest.TestCase):
         self.assertIn("/assets/chat-attachments", nginx)
         self.assertIn("chat-attachments.css", nginx)
         self.assertIn("chat-attachments.js", nginx)
+
+    def test_human_interventions_require_explicit_lobehub_decisions(self) -> None:
+        javascript = CHAT_INTERVENTIONS_JS.read_text(encoding="utf-8")
+        css = INTERVENTION_CSS.read_text(encoding="utf-8")
+        nginx = SERVER_NGINX.read_text(encoding="utf-8")
+
+        self.assertIn("aiAgent.getPendingInterventions", javascript)
+        self.assertIn("aiAgent.processHumanIntervention", javascript)
+        self.assertIn("action: 'approve'", javascript)
+        self.assertIn("action: 'reject'", javascript)
+        self.assertIn("action: 'reject_continue'", javascript)
+        self.assertIn("action: 'input'", javascript)
+        self.assertIn("action: 'select'", javascript)
+        self.assertIn("approvedToolCall: call", javascript)
+        self.assertIn("toolMessageId", javascript)
+        self.assertIn("系统不会在缺少关联 ID 时自动批准", javascript)
+        self.assertIn("textContent = callArguments", javascript)
+        self.assertNotIn("approvalMode: 'headless'", javascript)
+        self.assertNotIn("autoApprove", javascript)
+        self.assertNotIn("action: 'approve', data: { approvedToolCall: call }, toolMessageId: ''", javascript)
+        self.assertIn(".intervention-panel", css)
+        self.assertIn(".danger-outline", css)
+        self.assertIn("/assets/intervention-style", nginx)
+        self.assertIn("/assets/chat-interventions", nginx)
+        self.assertIn("chat-interventions.css", nginx)
+        self.assertIn("chat-interventions.js", nginx)
 
     def test_health_check_requires_sumeme_frontend(self) -> None:
         health = HEALTH_CHECK.read_text(encoding="utf-8")
