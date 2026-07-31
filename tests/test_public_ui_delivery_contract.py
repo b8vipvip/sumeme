@@ -6,6 +6,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 COMPOSE = ROOT / "docker-compose.yml"
+COMPOSE_OVERRIDE = ROOT / "docker-compose.override.yml"
 UI_WORKFLOW = ROOT / ".github" / "workflows" / "public-ui-smoke.yml"
 HEALTH_CHECK = ROOT / "scripts" / "health-check.sh"
 UI_SMOKE = ROOT / "scripts" / "smoke-public-ui.py"
@@ -31,6 +32,14 @@ class PublicUIDeliveryContractTests(unittest.TestCase):
         self.assertIn("account, conversation, attachment", lobe)
         self.assertNotIn("migration only", lobe)
         self.assertIn("APP_URL: ${APP_URL:-https://sumeme.mv3.cn}", lobe)
+
+    def test_production_compose_always_rebuilds_the_public_frontend(self) -> None:
+        override = COMPOSE_OVERRIDE.read_text(encoding="utf-8")
+        web = override.split("  sumeme-web:\n", 1)[1].split("\n  lobe:\n", 1)[0]
+
+        self.assertIn("pull_policy: build", web)
+        self.assertIn("exact release source", web)
+        self.assertNotIn("image:", web)
 
     def test_server_ui_uses_fdex_style_and_lobehub_auth_api(self) -> None:
         html = SERVER_UI.read_text(encoding="utf-8")
