@@ -59,11 +59,36 @@ def materialize(output: Path) -> None:
         if source.exists():
             shutil.copytree(source, destination)
 
+    shell = output / "lib" / "app_shell.dart"
     # Flutter 3.44 separates inherited component themes from ThemeData values.
+    replace_required(shell, "cardTheme: CardTheme(", "cardTheme: CardThemeData(")
+    # Keep the checked-in source compatible with the older analyzer while making
+    # the generated release project pass the current strict const lint set.
     replace_required(
-        output / "lib" / "app_shell.dart",
-        "cardTheme: CardTheme(",
-        "cardTheme: CardThemeData(",
+        shell,
+        "          Padding(\n"
+        "            padding: const EdgeInsets.symmetric(horizontal: 14),\n"
+        "            child: TextField(\n"
+        "              decoration: const InputDecoration(\n"
+        "                hintText: '搜索本机会话',",
+        "          const Padding(\n"
+        "            padding: EdgeInsets.symmetric(horizontal: 14),\n"
+        "            child: TextField(\n"
+        "              decoration: InputDecoration(\n"
+        "                hintText: '搜索本机会话',",
+    )
+    replace_required(
+        shell,
+        "          Wrap(\n"
+        "            spacing: 8,\n"
+        "            runSpacing: 8,\n"
+        "            children: const <Widget>[\n"
+        "              Chip(label: Text('全部')),",
+        "          const Wrap(\n"
+        "            spacing: 8,\n"
+        "            runSpacing: 8,\n"
+        "            children: <Widget>[\n"
+        "              Chip(label: Text('全部')),",
     )
 
     manifest = output / "android" / "app" / "src" / "main" / "AndroidManifest.xml"
