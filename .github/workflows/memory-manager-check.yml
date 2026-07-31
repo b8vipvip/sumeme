@@ -1,0 +1,146 @@
+name: Memory manager check
+
+on:
+  pull_request:
+    paths:
+      - "services/memory-gateway/app/browser_memory.py"
+      - "services/memory-gateway/app/browser_memory_store.py"
+      - "services/memory-gateway/app/entry.py"
+      - "services/memory-gateway/tests/test_browser_memory_store.py"
+      - "web/server-ui/static/memory-manager.js"
+      - "web/server-ui/static/memory-manager.css"
+      - "web/server-ui/nginx.conf"
+      - "tests/test_memory_manager_contract.py"
+      - ".github/workflows/memory-manager-check.yml"
+  push:
+    branches: [main]
+    paths:
+      - "services/memory-gateway/app/browser_memory.py"
+      - "services/memory-gateway/app/browser_memory_store.py"
+      - "services/memory-gateway/app/entry.py"
+      - "services/memory-gateway/tests/test_browser_memory_store.py"
+      - "web/server-ui/static/memory-manager.js"
+      - "web/server-ui/static/memory-manager.css"
+      - "web/server-ui/nginx.conf"
+      - "tests/test_memory_manager_contract.py"
+      - ".github/workflows/memory-manager-check.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  memory-manager:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: services/memory-gateway/requirements-dev.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Install gateway development dependencies
+        working-directory: services/memory-gateway
+        run: pip install -r requirements-dev.txt
+      - name: Check memory manager JavaScript syntax
+        run: node --check web/server-ui/static/memory-manager.js
+      - name: Check memory gateway formatting and imports
+        working-directory: services/memory-gateway
+        run: ruff check app/browser_memory.py app/browser_memory_store.py tests/test_browser_memory_store.py
+      - name: Run account and Vault isolation tests
+        working-directory: services/memory-gateway
+        run: PYTHONPATH=. pytest -q tests/test_browser_memory_store.py
+      - name: Run frontend and gateway boundary contract
+        run: python -m unittest tests.test_memory_manager_contract -v
+      - name: Compile memory gateway routes
+        working-directory: services/memory-gateway
+        run: python -m compileall app/browser_memory.py app/browser_memory_store.py app/entry.py
+      - name: Build memory gateway container
+        run: docker build -t sumeme-memory-gateway:memory-test services/memory-gateway
+      - name: Build server UI container
+        run: docker build -t sumeme-web:memory-test web/server-ui
+      - name: Start isolated frontend fixtures
+        run: |
+          set -euo pipefail
+          docker network create sumeme-memory-test
+          lobe_fixture="${RUNNER_TEMP}/lobe-memory-fixture.conf"
+          gateway_fixture="${RUNNER_TEMP}/gateway-memory-fixture.conf"
+          cat > "${lobe_fixture}" <<'EOF'
+          server {
+            listen 3210;
+            location = /api/auth/get-session {
+              default_type application/json;
+              return 200 '{"session":{"id":"session-fixture"},"user":{"id":"user-fixture","email":"fixture@example.com"}}';
+            }
+            location / {
+              default_type text/plain;
+              return 200 'lobe fixture';
+            }
+          }
+          EOF
+          cat > "${gateway_fixture}" <<'EOF'
+          server {
+            listen 8000;
+            location = /health {
+              default_type application/json;
+              return 200 '{"status":"ok","memory_provider":"fixture","default_storage_mode":"cloud"}';
+            }
+            location = /api/ui/memory/stats {
+              default_type application/json;
+              return 200 '{"account":{"id":"user-fixture"},"provider":"mempalace-letta","scope":"account:user-fixture/default","storage_mode":"cloud","stats":{"total":2,"bytes":128,"conversations":1}}';
+            }
+            location = /api/ui/memory/list {
+              default_type application/json;
+              return 200 '{"provider":"mempalace-letta","scope":"account:user-fixture/default","storage_mode":"cloud","total":1,"has_more":false,"items":[{"drawer_id":"drawer-fixture","role":"user","preview":"Fixture memory","conversation_id":"fixture-conversation","created_at":"2026-07-31T10:00:00Z"}]}';
+            }
+            location / {
+              default_type application/json;
+              return 404 '{"detail":"not found"}';
+            }
+          }
+          EOF
+          docker run -d --name lobe --network sumeme-memory-test \
+            -v "${lobe_fixture}:/etc/nginx/conf.d/default.conf:ro" nginx:1.27-alpine
+          docker run -d --name memory-gateway --network sumeme-memory-test \
+            -v "${gateway_fixture}:/etc/nginx/conf.d/default.conf:ro" nginx:1.27-alpine
+          docker run -d --name sumeme-web-memory-test --network sumeme-memory-test \
+            -p 127.0.0.1:18082:80 sumeme-web:memory-test
+      - name: Verify memory assets and gateway proxy
+        run: |
+          set -euo pipefail
+          ready=false
+          for attempt in $(seq 1 20); do
+            if curl --fail --silent http://127.0.0.1:18082/healthz >/dev/null; then
+              ready=true
+              break
+            fi
+            sleep 1
+          done
+          test "${ready}" = true
+          page="$(curl --fail --silent http://127.0.0.1:18082/)"
+          grep -F '/assets/memory-style' <<<"${page}"
+          grep -F '/assets/memory-manager' <<<"${page}"
+          script="$(curl --fail --silent http://127.0.0.1:18082/assets/memory-manager)"
+          style="$(curl --fail --silent http://127.0.0.1:18082/assets/memory-style)"
+          grep -F '/api/gateway/api/ui/memory' <<<"${script}"
+          grep -F 'window.confirm' <<<"${script}"
+          grep -F '.memory-manager-panel' <<<"${style}"
+          stats="$(curl --fail --silent http://127.0.0.1:18082/api/gateway/api/ui/memory/stats)"
+          grep -F 'user-fixture' <<<"${stats}"
+          list="$(curl --fail --silent 'http://127.0.0.1:18082/api/gateway/api/ui/memory/list?limit=40&offset=0')"
+          grep -F 'Fixture memory' <<<"${list}"
+      - name: Print logs on failure
+        if: failure()
+        run: |
+          docker logs sumeme-web-memory-test || true
+          docker logs memory-gateway || true
+          docker logs lobe || true
+      - name: Stop test containers
+        if: always()
+        run: |
+          docker rm -f sumeme-web-memory-test memory-gateway lobe >/dev/null 2>&1 || true
+          docker network rm sumeme-memory-test >/dev/null 2>&1 || true
