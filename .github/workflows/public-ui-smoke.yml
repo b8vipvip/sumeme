@@ -29,3 +29,9 @@ jobs:
         run: python -m py_compile scripts/smoke-public-ui.py
       - name: Verify public HTML and referenced assets
         run: python scripts/smoke-public-ui.py https://sumeme.mv3.cn/
+      - name: Verify SuMeMe control panel
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location --max-time 30 \
+            https://sumeme.mv3.cn/sumeme-control/index.html \
+            | grep -F '<title>SuMeMe 控制台</title>'
