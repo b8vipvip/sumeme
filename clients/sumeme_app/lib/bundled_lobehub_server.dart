@@ -73,10 +73,7 @@ class BundledLobeHubServer {
       }
 
       if (path.startsWith('/_spa/') || path.startsWith('/_spa-auth/')) {
-        if (await _tryServeAsset(
-          request.response,
-          'assets/lobehub$path',
-        )) {
+        if (await _tryServeAsset(request.response, 'assets/lobehub$path')) {
           return;
         }
         await _notFound(request.response, 'Bundled LobeHub asset is missing: $path');
@@ -112,12 +109,16 @@ class BundledLobeHubServer {
         contentType: ContentType.html,
       );
     } on Object catch (error) {
-      if (!request.response.headersSent) {
+      // The upstream response may already have started before a socket error.
+      // Best-effort rendering avoids a second exception masking the original.
+      try {
         request.response.statusCode = HttpStatus.internalServerError;
         request.response.headers.contentType = ContentType.html;
+        request.response.write(_errorDocument(error.toString()));
+        await request.response.close();
+      } on Object {
+        // Ignore a secondary write/close failure on an already committed response.
       }
-      request.response.write(_errorDocument(error.toString()));
-      await request.response.close();
     }
   }
 
@@ -128,13 +129,14 @@ class BundledLobeHubServer {
       '/webapi',
       '/oidc',
       '/oauth',
-      '/f/',
+      '/f',
       '/webhooks',
       '/.well-known',
       '/sumeme-health',
     ];
-    return prefixes.any((String prefix) =>
-        path == prefix || path.startsWith(prefix.endsWith('/') ? prefix : '$prefix/'));
+    return prefixes.any(
+      (String prefix) => path == prefix || path.startsWith('$prefix/'),
+    );
   }
 
   bool _isAuthRoute(String path) {
@@ -228,8 +230,18 @@ class BundledLobeHubServer {
     if (location == null) {
       return rawLocation;
     }
+
     if (location.hasScheme && location.origin == remoteOrigin.origin) {
-      return origin.resolveUri(location.replace(scheme: '', host: '', port: 0)).toString();
+      final String relative = StringBuffer()
+        ..write(location.path.isEmpty ? '/' : location.path)
+        ..write(location.hasQuery ? '?${location.query}' : '')
+        ..write(location.hasFragment ? '#${location.fragment}' : '')
+        .toString();
+      return origin.resolve(relative).toString();
+    }
+
+    if (!location.hasScheme && rawLocation.startsWith('/')) {
+      return origin.resolve(rawLocation).toString();
     }
     return rawLocation;
   }
@@ -246,11 +258,14 @@ class BundledLobeHubServer {
       );
       response.statusCode = HttpStatus.ok;
       response.headers.contentType = _contentType(key);
-      response.headers.set(HttpHeaders.cacheControlHeader, 'public, max-age=31536000, immutable');
+      response.headers.set(
+        HttpHeaders.cacheControlHeader,
+        'public, max-age=31536000, immutable',
+      );
       response.add(bytes);
       await response.close();
       return true;
-    } on FlutterError {
+    } on Object {
       return false;
     }
   }
@@ -265,9 +280,11 @@ class BundledLobeHubServer {
       response.statusCode = HttpStatus.ok;
       response.headers.contentType = contentType ?? _contentType(key);
       response.headers.set(HttpHeaders.cacheControlHeader, 'no-cache');
-      response.add(data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
+      response.add(
+        data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes),
+      );
       await response.close();
-    } on FlutterError {
+    } on Object {
       response.statusCode = HttpStatus.serviceUnavailable;
       response.headers.contentType = ContentType.html;
       response.write(_errorDocument(
@@ -297,11 +314,17 @@ class BundledLobeHubServer {
     if (lower.endsWith('.js') || lower.endsWith('.mjs')) {
       return ContentType('application', 'javascript', charset: 'utf-8');
     }
-    if (lower.endsWith('.css')) return ContentType('text', 'css', charset: 'utf-8');
-    if (lower.endsWith('.json') || lower.endsWith('.map')) return ContentType.json;
+    if (lower.endsWith('.css')) {
+      return ContentType('text', 'css', charset: 'utf-8');
+    }
+    if (lower.endsWith('.json') || lower.endsWith('.map')) {
+      return ContentType.json;
+    }
     if (lower.endsWith('.svg')) return ContentType('image', 'svg+xml');
     if (lower.endsWith('.png')) return ContentType('image', 'png');
-    if (lower.endsWith('.jpg') || lower.endsWith('.jpeg')) return ContentType('image', 'jpeg');
+    if (lower.endsWith('.jpg') || lower.endsWith('.jpeg')) {
+      return ContentType('image', 'jpeg');
+    }
     if (lower.endsWith('.webp')) return ContentType('image', 'webp');
     if (lower.endsWith('.ico')) return ContentType('image', 'x-icon');
     if (lower.endsWith('.woff2')) return ContentType('font', 'woff2');
