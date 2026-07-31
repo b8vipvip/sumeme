@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-08-01T03:37:39+08:00",
+  "generated_at": "2026-08-01T03:50:57+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "healthy",
   "project_stage": "deployed_and_stable",
@@ -74,7 +74,7 @@
       "name": "sumeme-ai-provider-proxy",
       "state": "running",
       "health": "healthy",
-      "status": "Up 5 hours (healthy)",
+      "status": "Up 6 hours (healthy)",
       "critical": false
     },
     {
@@ -99,7 +99,7 @@
       "name": "sumeme-memory-gateway",
       "state": "running",
       "health": "healthy",
-      "status": "Up 5 hours (healthy)",
+      "status": "Up 6 hours (healthy)",
       "critical": true
     },
     {
@@ -147,21 +147,21 @@
       "name": "sumeme-web",
       "state": "running",
       "health": "healthy",
-      "status": "Up 5 hours (healthy)",
+      "status": "Up 6 hours (healthy)",
       "critical": true
     }
   ],
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 31070871552,
-      "free_bytes": 9243525120,
+      "used_bytes": 31072878592,
+      "free_bytes": 9241518080,
       "used_percent": 73.7
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1748471808,
-      "used_percent": 55.2
+      "available_bytes": 1763934208,
+      "used_percent": 54.8
     }
   },
   "github": {
@@ -194,14 +194,40 @@
       {
         "name": "Publish project status",
         "display_title": "Publish project status",
-        "event": "schedule",
+        "event": "workflow_run",
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
         "head_sha": "ddddf2ee60fa08dbda449942b276dff2fc28e18e",
+        "run_number": 391,
+        "created_at": "2026-07-31T19:50:36Z",
+        "updated_at": "2026-07-31T19:50:39Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30660622321"
+      },
+      {
+        "name": "Smoke production",
+        "display_title": "Smoke production",
+        "event": "schedule",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "ddddf2ee60fa08dbda449942b276dff2fc28e18e",
+        "run_number": 10,
+        "created_at": "2026-07-31T19:49:55Z",
+        "updated_at": "2026-07-31T19:50:34Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30660578416"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "schedule",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "ddddf2ee60fa08dbda449942b276dff2fc28e18e",
         "run_number": 390,
         "created_at": "2026-07-31T19:37:11Z",
-        "updated_at": "2026-07-31T19:37:21Z",
+        "updated_at": "2026-07-31T19:37:55Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30659788136"
       },
       {
@@ -320,32 +346,6 @@
         "created_at": "2026-07-31T14:07:07Z",
         "updated_at": "2026-07-31T14:07:57Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30637255108"
-      },
-      {
-        "name": "Server UI check",
-        "display_title": "Merge PR #73: protect administrator bootstrap",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "ddddf2ee60fa08dbda449942b276dff2fc28e18e",
-        "run_number": 37,
-        "created_at": "2026-07-31T14:07:07Z",
-        "updated_at": "2026-07-31T14:07:30Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30637255106"
-      },
-      {
-        "name": "Memory manager check",
-        "display_title": "Merge PR #73: protect administrator bootstrap",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "ddddf2ee60fa08dbda449942b276dff2fc28e18e",
-        "run_number": 10,
-        "created_at": "2026-07-31T14:07:07Z",
-        "updated_at": "2026-07-31T14:07:56Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30637255076"
       }
     ]
   },
@@ -363,7 +363,7 @@
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-08-01T03:37:39+08:00"
+    "generated_at": "2026-08-01T03:50:57+08:00"
   },
   "components": {
     "letta": {
@@ -428,7 +428,7 @@
         "letta_agent_create_failed",
         "letta_recall_delayed"
       ],
-      "age_seconds_at_publish": 19640,
+      "age_seconds_at_publish": 20438,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }
