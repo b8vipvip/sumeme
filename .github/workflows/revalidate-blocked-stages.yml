@@ -82,7 +82,7 @@ jobs:
           printf '%s\n' "${SSH_HOST_KEY}" > "${HOME}/.ssh/known_hosts"
           chmod 600 "${HOME}/.ssh/known_hosts"
 
-      - name: Upload trusted validation scripts
+      - name: Upload trusted validation bundle
         env:
           SSH_HOST: ${{ vars.SUMEME_VPS_HOST }}
           SSH_PORT: ${{ vars.SUMEME_VPS_PORT || '22' }}
@@ -96,15 +96,18 @@ jobs:
           printf 'REMOTE_DIR=%s\n' "${remote_dir}" >> "${GITHUB_ENV}"
           ssh -i "${HOME}/.ssh/id_ed25519" -p "${SSH_PORT}" \
             -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            -o ServerAliveInterval=30 -o ServerAliveCountMax=20 \
             -o UserKnownHostsFile="${HOME}/.ssh/known_hosts" \
             "${SSH_USER}@${SSH_HOST}" \
             "rm -rf '${remote_dir}' && install -d -m 700 '${remote_dir}'"
           scp -i "${HOME}/.ssh/id_ed25519" -P "${SSH_PORT}" \
             -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            -o ServerAliveInterval=30 -o ServerAliveCountMax=20 \
             -o UserKnownHostsFile="${HOME}/.ssh/known_hosts" \
             scripts/health-check.sh scripts/preflight-disk.sh \
             scripts/cleanup-runtime.sh scripts/smoke-private-object.sh \
-            scripts/smoke-test.sh \
+            scripts/smoke-test.sh scripts/redact-log-stream.py \
+            scripts/revalidate-production.sh \
             "${SSH_USER}@${SSH_HOST}:${remote_dir}/"
 
       - name: Recover production and rerun blocked acceptance
@@ -116,101 +119,10 @@ jobs:
           set -euo pipefail
           ssh -i "${HOME}/.ssh/id_ed25519" -p "${SSH_PORT}" \
             -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            -o ServerAliveInterval=30 -o ServerAliveCountMax=20 \
             -o UserKnownHostsFile="${HOME}/.ssh/known_hosts" \
             "${SSH_USER}@${SSH_HOST}" \
-            "REMOTE_DIR='${REMOTE_DIR}' DEPLOY_DIR=/opt/sumeme bash -s" <<'REMOTE'
-          set -Eeuo pipefail
-          cd "${DEPLOY_DIR}"
-          test -f .env
-          docker compose config >/dev/null
-
-          echo "== Disk protection revalidation =="
-          set +e
-          disk_json="$(DEPLOY_DIR="${DEPLOY_DIR}" bash "${REMOTE_DIR}/preflight-disk.sh" --json)"
-          disk_status=$?
-          set -e
-          printf '%s\n' "${disk_json}"
-          disk_level="$(python3 -c 'import json,sys; print(json.loads(sys.stdin.read()).get("level", "unknown"))' <<<"${disk_json}")"
-          if [[ "${disk_level}" == "warning" || "${disk_status}" -eq 2 ]]; then
-            DEPLOY_DIR="${DEPLOY_DIR}" bash "${REMOTE_DIR}/cleanup-runtime.sh"
-            DEPLOY_DIR="${DEPLOY_DIR}" bash "${REMOTE_DIR}/preflight-disk.sh" --json
-          elif [[ "${disk_status}" -ne 0 ]]; then
-            exit "${disk_status}"
-          fi
-
-          recreate_project_containers() {
-            echo "Recreating Compose project containers without removing volumes."
-            mapfile -t ids < <(docker ps -aq --filter label=com.docker.compose.project=sumeme)
-            if (( ${#ids[@]} > 0 )); then
-              docker rm -f "${ids[@]}"
-            fi
-            docker network rm sumeme >/dev/null 2>&1 || true
-            docker compose up -d --remove-orphans
-          }
-
-          echo "== Production container recovery =="
-          if ! docker compose up -d --remove-orphans; then
-            recreate_project_containers
-          fi
-          if ! DEPLOY_DIR="${DEPLOY_DIR}" bash "${REMOTE_DIR}/health-check.sh"; then
-            echo "Existing images were not healthy; rebuilding local runtime services."
-            docker compose build memory-gateway ai-provider-proxy
-            recreate_project_containers
-            DEPLOY_DIR="${DEPLOY_DIR}" bash "${REMOTE_DIR}/health-check.sh"
-          fi
-
-          echo "== Sanitized deployment state =="
-          printf 'current_sha=%s\n' "$(cat .deploy/current_sha 2>/dev/null || echo unknown)"
-          printf 'deploying_sha=%s\n' "$(cat .deploy/deploying_sha 2>/dev/null || echo empty)"
-          docker compose ps --format json | python3 -c '
-          import json, sys
-          rows=[]
-          for line in sys.stdin:
-              line=line.strip()
-              if line:
-                  item=json.loads(line)
-                  rows.append({"service": item.get("Service"), "state": item.get("State"), "health": item.get("Health")})
-          print(json.dumps(rows, ensure_ascii=False, sort_keys=True))
-          '
-
-          private_report="${REMOTE_DIR}/private-object.json"
-          application_report="${REMOTE_DIR}/application.json"
-          set +e
-          PRIVATE_OBJECT_SMOKE_OUTPUT_PATH="${private_report}" \
-            DEPLOY_DIR="${DEPLOY_DIR}" bash "${REMOTE_DIR}/smoke-private-object.sh"
-          private_status=$?
-          SMOKE_OUTPUT_PATH="${application_report}" \
-            DEPLOY_DIR="${DEPLOY_DIR}" bash "${REMOTE_DIR}/smoke-test.sh"
-          application_status=$?
-          set -e
-
-          python3 - "${private_report}" "${application_report}" <<'PY'
-          import json, sys
-          output={}
-          for name, path in (("private_object", sys.argv[1]), ("application", sys.argv[2])):
-              try:
-                  with open(path, encoding="utf-8") as handle:
-                      value=json.load(handle)
-              except Exception:
-                  output[name]={"available": False}
-                  continue
-              output[name]={
-                  "available": True,
-                  "overall": value.get("overall"),
-                  "deployment_gate": value.get("deployment_gate"),
-                  "scope": value.get("scope") or value.get("test_scope"),
-                  "checks": value.get("checks"),
-                  "write_components": value.get("write_components"),
-                  "recall_components": value.get("recall_components"),
-                  "error_codes": value.get("error_codes"),
-                  "duration_seconds": value.get("duration_seconds"),
-              }
-          print(json.dumps(output, ensure_ascii=False, indent=2, sort_keys=True))
-          PY
-
-          test "${private_status}" -eq 0
-          test "${application_status}" -eq 0
-          REMOTE
+            "REMOTE_DIR='${REMOTE_DIR}' DEPLOY_DIR=/opt/sumeme bash '${REMOTE_DIR}/revalidate-production.sh'"
 
       - name: Remove remote validation bundle
         if: always()
@@ -223,6 +135,7 @@ jobs:
           if [[ -n "${REMOTE_DIR:-}" ]]; then
             ssh -i "${HOME}/.ssh/id_ed25519" -p "${SSH_PORT}" \
               -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+              -o ServerAliveInterval=30 -o ServerAliveCountMax=5 \
               -o UserKnownHostsFile="${HOME}/.ssh/known_hosts" \
               "${SSH_USER}@${SSH_HOST}" "rm -rf '${REMOTE_DIR}'"
           fi
