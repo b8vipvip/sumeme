@@ -41,6 +41,7 @@ jobs:
         run: |
           node --check web/server-ui/static/app.js
           node --check web/server-ui/static/chat-write.js
+          node --check web/server-ui/static/chat-attachments.js
       - name: Run frontend and backend-boundary contract
         run: python -m unittest tests.test_public_ui_delivery_contract -v
       - name: Build server UI container
@@ -68,6 +69,18 @@ jobs:
             location = /trpc/agent.queryAgents {
               default_type application/json;
               return 200 '{"result":{"data":{"json":{"items":[{"id":"agent-fixture","title":"Fixture agent"}]}}}}';
+            }
+            location = /trpc/file.checkFileHash {
+              default_type application/json;
+              return 200 '{"result":{"data":{"json":{"isExist":false}}}}';
+            }
+            location = /trpc/upload.createS3PreSignedUrl {
+              default_type application/json;
+              return 200 '{"result":{"data":{"json":"https://storage.example.invalid/signed-upload"}}}';
+            }
+            location = /trpc/file.createFile {
+              default_type application/json;
+              return 200 '{"result":{"data":{"json":{"id":"file-fixture","url":"https://storage.example.invalid/file-fixture"}}}}';
             }
             location = /trpc/aiAgent.execAgent {
               default_type application/json;
@@ -124,30 +137,45 @@ jobs:
           grep -F 'SUMEME OPERATIONS CENTER' <<<"${page}"
           grep -F 'id="topicList"' <<<"${page}"
           grep -F '/assets/conversation-style' <<<"${page}"
+          grep -F '/assets/attachment-style' <<<"${page}"
           grep -F '/assets/chat-runtime' <<<"${page}"
+          grep -F '/assets/chat-attachments' <<<"${page}"
           grep -F '登录 SuMeMe' <<<"${signin}"
           curl --fail --silent http://127.0.0.1:18080/static/admin.css >/dev/null
           curl --fail --silent http://127.0.0.1:18080/static/app.js >/dev/null
           conversation_css="$(curl --fail --silent http://127.0.0.1:18080/assets/conversation-style)"
+          attachment_css="$(curl --fail --silent http://127.0.0.1:18080/assets/attachment-style)"
           grep -F '.chat-workspace' <<<"${conversation_css}"
           grep -F '.chat-composer' <<<"${conversation_css}"
+          grep -F '.chat-attachment-item' <<<"${attachment_css}"
           runtime_js="$(curl --fail --silent http://127.0.0.1:18080/assets/chat-runtime)"
+          attachment_js="$(curl --fail --silent http://127.0.0.1:18080/assets/chat-attachments)"
           grep -F 'aiAgent.execAgent' <<<"${runtime_js}"
           grep -F 'aiAgent.getOperationStatus' <<<"${runtime_js}"
+          grep -F 'file.checkFileHash' <<<"${attachment_js}"
+          grep -F 'upload.createS3PreSignedUrl' <<<"${attachment_js}"
+          grep -F 'file.createFile' <<<"${attachment_js}"
+          grep -F 'value.json.fileIds' <<<"${attachment_js}"
           session="$(curl --fail --silent http://127.0.0.1:18080/api/auth/get-session)"
           grep -F '"session":null' <<<"${session}"
           topics="$(curl --fail --silent 'http://127.0.0.1:18080/trpc/topic.queryTopics?input=%7B%22json%22%3A%7B%7D%7D')"
           transcript="$(curl --fail --silent 'http://127.0.0.1:18080/trpc/topic.getTopicTranscript?input=%7B%22json%22%3A%7B%22topicId%22%3A%22topic-fixture%22%7D%7D')"
           agents="$(curl --fail --silent 'http://127.0.0.1:18080/trpc/agent.queryAgents?input=%7B%22json%22%3A%7B%22limit%22%3A100%2C%22offset%22%3A0%7D%7D')"
+          hash_check="$(curl --fail --silent -H 'Content-Type: application/json' -X POST --data '{"json":{"hash":"fixture-hash"}}' http://127.0.0.1:18080/trpc/file.checkFileHash)"
+          signed_url="$(curl --fail --silent -H 'Content-Type: application/json' -X POST --data '{"json":{"pathname":"files/fixture/file.txt"}}' http://127.0.0.1:18080/trpc/upload.createS3PreSignedUrl)"
+          file_record="$(curl --fail --silent -H 'Content-Type: application/json' -X POST --data '{"json":{"fileType":"text/plain","hash":"fixture-hash","metadata":{"path":"files/fixture/file.txt"},"name":"file.txt","size":7,"source":"sumeme-chat","url":"files/fixture/file.txt"}}' http://127.0.0.1:18080/trpc/file.createFile)"
           execution="$(curl --fail --silent \
             -H 'Content-Type: application/json' \
             -X POST \
-            --data '{"json":{"agentId":"agent-fixture","appContext":{"scope":"main","topicId":"topic-fixture"},"autoStart":true,"prompt":"Fixture prompt","trigger":"chat"}}' \
+            --data '{"json":{"agentId":"agent-fixture","appContext":{"scope":"main","topicId":"topic-fixture"},"autoStart":true,"fileIds":["file-fixture"],"prompt":"Fixture prompt","trigger":"chat"}}' \
             http://127.0.0.1:18080/trpc/aiAgent.execAgent)"
           operation="$(curl --fail --silent 'http://127.0.0.1:18080/trpc/aiAgent.getOperationStatus?input=%7B%22json%22%3A%7B%22historyLimit%22%3A6%2C%22includeHistory%22%3Afalse%2C%22operationId%22%3A%22operation-fixture%22%7D%7D')"
           grep -F 'Fixture conversation' <<<"${topics}"
           grep -F 'Fixture transcript' <<<"${transcript}"
           grep -F 'Fixture agent' <<<"${agents}"
+          grep -F '"isExist":false' <<<"${hash_check}"
+          grep -F 'signed-upload' <<<"${signed_url}"
+          grep -F 'file-fixture' <<<"${file_record}"
           grep -F 'operation-fixture' <<<"${execution}"
           grep -F 'topic-fixture' <<<"${execution}"
           grep -F '"isCompleted":true' <<<"${operation}"
