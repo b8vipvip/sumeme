@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sumeme_app/app_state.dart';
+import 'package:sumeme_app/client_state.dart';
 
 void main() {
   test('chat messages round-trip through local persistence JSON', () {

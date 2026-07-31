@@ -5,6 +5,8 @@ pydantic-settings>=2.8,<3
 anyio>=4.8,<5
 PyJWT[crypto]>=2.10,<3
 boto3>=1.37,<2
+cryptography>=44,<46
+psycopg[binary]>=3.2,<4
 # Pin the current generated SDK used by the Letta 0.16.x API. The previous <1
 # cap installed a legacy client against the current server and obscured agent
 # creation failures behind response-model incompatibilities.

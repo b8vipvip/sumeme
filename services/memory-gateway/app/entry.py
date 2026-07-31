@@ -1,9 +1,13 @@
 from __future__ import annotations
 
 import asyncio
+import os
 from contextlib import asynccontextmanager, suppress
 
+from .admin_api import build_admin_router
+from .admin_store import AdminStore
 from .browser_memory import build_browser_memory_router
+from .client_api import build_client_router
 from .main import app, require_gateway_auth, settings
 from .object_api import build_object_router
 from .object_config import get_object_settings
@@ -15,10 +19,31 @@ object_settings = get_object_settings()
 _base_lifespan = app.router.lifespan_context
 
 
+def _lobe_database_url() -> str:
+    configured = os.getenv("LOBE_DATABASE_URL", "").strip()
+    if configured:
+        return configured
+    password = os.getenv("POSTGRES_PASSWORD", "").strip()
+    database = os.getenv("LOBE_DB_NAME", "").strip()
+    if not password or not database:
+        return ""
+    return f"postgresql://postgres:{password}@postgresql:5432/{database}"
+
+
 @asynccontextmanager
 async def application_lifespan(application):
     cleanup_task: asyncio.Task[None] | None = None
     async with _base_lifespan(application):
+        master_secret = os.getenv("SUMEME_ADMIN_MASTER_KEY", "").strip() or (
+            settings.gateway_admin_token.get_secret_value()
+        )
+        application.state.admin_store = AdminStore(
+            os.getenv("SUMEME_ADMIN_DB_PATH", "/data/gateway/admin.sqlite3"),
+            master_secret=master_secret,
+            lobe_database_url=_lobe_database_url(),
+        )
+        await application.state.admin_store.initialize()
+
         if object_settings.object_api_enabled:
             application.state.objects = ObjectRegistry(
                 object_settings.object_registry_path,
@@ -64,3 +89,5 @@ app.include_router(
     )
 )
 app.include_router(build_browser_memory_router(settings))
+app.include_router(build_client_router())
+app.include_router(build_admin_router())

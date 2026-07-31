@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 
-import 'app_shell.dart';
+import 'client_app.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const SuMeMeRoot());
+  runApp(const SuMeMeClientApp());
 }

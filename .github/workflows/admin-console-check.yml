@@ -1,0 +1,61 @@
+name: Admin console and managed client check
+
+on:
+  pull_request:
+    paths:
+      - "services/memory-gateway/**"
+      - "web/server-ui/**"
+      - "clients/sumeme_app/**"
+      - "docker-compose.yml"
+      - "tests/test_admin_client_boundary.py"
+      - ".github/workflows/admin-console-check.yml"
+  push:
+    branches: [main]
+    paths:
+      - "services/memory-gateway/**"
+      - "web/server-ui/**"
+      - "clients/sumeme_app/**"
+      - "docker-compose.yml"
+      - "tests/test_admin_client_boundary.py"
+      - ".github/workflows/admin-console-check.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  control-plane:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: services/memory-gateway/requirements-dev.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install gateway development dependencies
+        working-directory: services/memory-gateway
+        run: pip install -r requirements-dev.txt
+      - name: Check administration and client JavaScript
+        run: |
+          node --check web/server-ui/admin/admin.js
+          node --check web/server-ui/static/client-branding.js
+      - name: Check Python control plane
+        working-directory: services/memory-gateway
+        run: |
+          ruff check app tests/test_admin_store.py
+          PYTHONPATH=. pytest -q tests/test_admin_store.py
+          python -m compileall app
+      - name: Check frontend and native-client boundaries
+        run: python -m unittest tests.test_admin_client_boundary -v
+      - name: Validate Compose
+        run: |
+          cp .env.example .env
+          docker compose config >/dev/null
+      - name: Build administration services
+        run: |
+          docker build -t sumeme-memory-gateway:admin-test services/memory-gateway
+          docker build -t sumeme-web:admin-test web/server-ui
