@@ -15,6 +15,13 @@ def run(*args: str, cwd: Path | None = None) -> None:
     subprocess.run(args, check=True, cwd=cwd)
 
 
+def resolve_flutter() -> str:
+    executable = shutil.which("flutter.bat") or shutil.which("flutter")
+    if executable is None:
+        raise RuntimeError("flutter is not available on PATH")
+    return executable
+
+
 def replace_required(path: Path, old: str, new: str) -> None:
     content = path.read_text(encoding="utf-8")
     if old not in content:
@@ -23,8 +30,7 @@ def replace_required(path: Path, old: str, new: str) -> None:
 
 
 def materialize(output: Path) -> None:
-    if shutil.which("flutter") is None:
-        raise RuntimeError("flutter is not available on PATH")
+    flutter = resolve_flutter()
     if not CLIENT_SOURCE.is_dir():
         raise RuntimeError(f"Missing client source: {CLIENT_SOURCE}")
 
@@ -33,7 +39,7 @@ def materialize(output: Path) -> None:
     output.parent.mkdir(parents=True, exist_ok=True)
 
     run(
-        "flutter",
+        flutter,
         "create",
         "--platforms=android,windows",
         "--org",
@@ -70,7 +76,7 @@ def materialize(output: Path) -> None:
     windows_main = output / "windows" / "runner" / "main.cpp"
     replace_required(windows_main, 'L"sumeme_app"', 'L"SuMeMe"')
 
-    run("flutter", "pub", "get", cwd=output)
+    run(flutter, "pub", "get", cwd=output)
 
 
 def main() -> int:
