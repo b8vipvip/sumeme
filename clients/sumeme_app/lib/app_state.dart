@@ -63,10 +63,13 @@ class Conversation {
         title: json['title']?.toString() ?? '新对话',
         updatedAt: DateTime.tryParse(json['updated_at']?.toString() ?? '') ??
             DateTime.now(),
-        messages: (json['messages'] as List? ?? const <Object>[])
-            .whereType<Map>()
-            .map((Map item) =>
-                ChatMessage.fromJson(Map<String, dynamic>.from(item)))
+        messages: (json['messages'] as List<Object?>? ?? const <Object?>[])
+            .whereType<Map<Object?, Object?>>()
+            .map(
+              (Map<Object?, Object?> item) => ChatMessage.fromJson(
+                Map<String, dynamic>.from(item),
+              ),
+            )
             .toList(),
       );
 }
@@ -147,11 +150,14 @@ class SuMeMeAppState extends ChangeNotifier {
     if (encoded != null && encoded.isNotEmpty) {
       try {
         final Object? decoded = jsonDecode(encoded);
-        if (decoded is List) {
+        if (decoded is List<Object?>) {
           conversations = decoded
-              .whereType<Map>()
-              .map((Map item) =>
-                  Conversation.fromJson(Map<String, dynamic>.from(item)))
+              .whereType<Map<Object?, Object?>>()
+              .map(
+                (Map<Object?, Object?> item) => Conversation.fromJson(
+                  Map<String, dynamic>.from(item),
+                ),
+              )
               .where((Conversation item) => item.id.isNotEmpty)
               .toList();
         }
@@ -318,10 +324,12 @@ class SuMeMeAppState extends ChangeNotifier {
     try {
       final List<Map<String, String>> requestMessages = conversation.messages
           .where((ChatMessage item) => item.id != assistant.id)
-          .map((ChatMessage item) => <String, String>{
-                'role': item.role,
-                'content': item.text,
-              })
+          .map(
+            (ChatMessage item) => <String, String>{
+              'role': item.role,
+              'content': item.text,
+            },
+          )
           .toList();
       if (!memoryEnabled) {
         requestMessages.insert(0, const <String, String>{
@@ -468,7 +476,9 @@ class SuMeMeAppState extends ChangeNotifier {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString(
       _conversationKey,
-      jsonEncode(conversations.map((Conversation item) => item.toJson()).toList()),
+      jsonEncode(
+        conversations.map((Conversation item) => item.toJson()).toList(),
+      ),
     );
   }
 
