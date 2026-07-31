@@ -40,6 +40,15 @@ def main() -> int:
     snapshot = read_snapshot(Path(args.github_snapshot))
     collector_path = Path(args.collector)
     collector = load_collector(collector_path)
+
+    # The native SuMeMe web service owns the public entrypoint. The historical
+    # lobe container is retained only as an internal migration source and must
+    # not make the product unavailable when it is intentionally stopped later.
+    critical_services = getattr(collector, "CRITICAL_SERVICES", None)
+    if isinstance(critical_services, set):
+        critical_services.discard("lobe")
+        critical_services.add("sumeme-web")
+
     collector.github_snapshot = lambda: snapshot
 
     original_argv = sys.argv
