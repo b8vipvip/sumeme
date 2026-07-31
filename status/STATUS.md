@@ -1,10 +1,10 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-31T10:53:13+08:00
+- **采集时间：** 2026-07-31T10:56:40+08:00
 - **总体状态：** `unhealthy`
 - **开发阶段：** `deployed_unhealthy`
-- **线上版本：** `73eb76fa6d6f0e1fc5bc4aa192e587870d051315`
-- **main 最新版本：** `73eb76fa6d6f0e1fc5bc4aa192e587870d051315`
+- **线上版本：** `aa09d1274c8918baa866e6448d7e713047805553`
+- **main 最新版本：** `aa09d1274c8918baa866e6448d7e713047805553`
 - **线上与 main 同步：** 是
 - **开放 PR：** 0
 - **开放 Issue：** 3
@@ -17,35 +17,35 @@
 
 - 本地网关：`ok`
 - 公网入口：`ok`
-- 磁盘使用：`83.8%`，剩余 4.6 GiB
-- 内存使用：`62.4%`，可用 1.4 GiB
+- 磁盘使用：`83.8%`，剩余 4.7 GiB
+- 内存使用：`62.6%`，可用 1.4 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| ai-provider-proxy | running | healthy | Up About a minute (healthy) |
-| letta | running | starting | Up 3 minutes (health: starting) |
-| lobe | running | - | Up 3 minutes |
-| memory-gateway | running | healthy | Up About a minute (healthy) |
-| postgresql | running | healthy | Up 4 minutes (healthy) |
-| qdrant | running | healthy | Up 4 minutes (healthy) |
-| redis | running | healthy | Up 4 minutes (healthy) |
-| rustfs | running | healthy | Up 4 minutes (healthy) |
-| searxng | running | - | Up 4 minutes |
+| ai-provider-proxy | running | healthy | Up 49 seconds (healthy) |
+| letta | running | starting | Up 7 minutes (health: starting) |
+| lobe | running | - | Up 7 minutes |
+| memory-gateway | running | healthy | Up 43 seconds (healthy) |
+| postgresql | running | healthy | Up 7 minutes (healthy) |
+| qdrant | running | healthy | Up 7 minutes (healthy) |
+| redis | running | healthy | Up 7 minutes (healthy) |
+| rustfs | running | healthy | Up 7 minutes (healthy) |
+| searxng | running | - | Up 7 minutes |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-07-31T02:52:56Z |
+| Publish project status | in_progress | main | 2026-07-31T02:56:22Z |
+| CI | success | main | 2026-07-31T02:56:17Z |
+| CI | success | agent/fix-ghs-public-health-endpoint | 2026-07-31T02:54:17Z |
+| Publish project status | success | main | 2026-07-31T02:53:30Z |
 | Publish project status | success | main | 2026-07-31T02:51:38Z |
 | CI | failure | main | 2026-07-31T02:52:45Z |
 | Build Android and Windows clients | in_progress | main | 2026-07-31T02:50:29Z |
 | CI | failure | main | 2026-07-31T02:50:52Z |
-| CI | success | agent/capture-expected-smoke-failures | 2026-07-31T02:47:32Z |
-| CI | success | agent/first-flutter-clients | 2026-07-31T02:44:14Z |
-| Build Android and Windows clients | success | agent/first-flutter-clients | 2026-07-31T02:49:14Z |
 
 ## 开放 PR
 
@@ -59,6 +59,7 @@
 
 ## 最近部署
 
+- `2026-07-31T10:56:07+08:00 aa09d1274c8918baa866e6448d7e713047805553`
 - `2026-07-31T10:51:34+08:00 73eb76fa6d6f0e1fc5bc4aa192e587870d051315`
 - `2026-07-31T10:49:41+08:00 421dbe47d8f8096f41572d2f89221b1c8870d5a3`
 - `2026-07-31T10:41:36+08:00 rollback target=fe9e4a37401cdda1288226990236536cba85288b failed=a7789e85a59277b609eed3b3f89dc14502e7f245`
@@ -68,7 +69,6 @@
 - `2026-07-29T15:03:24+08:00 fe9e4a37401cdda1288226990236536cba85288b`
 - `2026-07-29T15:01:16+08:00 985f62c95ecff62417e9f515c3a683e369fdaf8d`
 - `2026-07-29T15:00:27+08:00 efe5b594b0b0d05509a1e7717f2eadc95adabf84`
-- `2026-07-29T14:35:43+08:00 b2b0ab82a712af7e2a1aeda930989f368522caf7`
 
 ## 可靠性信号
 

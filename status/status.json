@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-07-31T10:53:13+08:00",
+  "generated_at": "2026-07-31T10:56:40+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "unhealthy",
   "project_stage": "deployed_unhealthy",
@@ -10,10 +10,9 @@
   ],
   "deployment_in_sync": true,
   "deployment": {
-    "current_sha": "73eb76fa6d6f0e1fc5bc4aa192e587870d051315",
-    "previous_sha": "421dbe47d8f8096f41572d2f89221b1c8870d5a3",
+    "current_sha": "aa09d1274c8918baa866e6448d7e713047805553",
+    "previous_sha": "73eb76fa6d6f0e1fc5bc4aa192e587870d051315",
     "history": [
-      "2026-07-29T14:35:43+08:00 b2b0ab82a712af7e2a1aeda930989f368522caf7",
       "2026-07-29T15:00:27+08:00 efe5b594b0b0d05509a1e7717f2eadc95adabf84",
       "2026-07-29T15:01:16+08:00 985f62c95ecff62417e9f515c3a683e369fdaf8d",
       "2026-07-29T15:03:24+08:00 fe9e4a37401cdda1288226990236536cba85288b",
@@ -22,11 +21,12 @@
       "2026-07-31T10:22:08+08:00 rollback_failed target=fe9e4a37401cdda1288226990236536cba85288b failed=01892424ec7418e0f712334adb168144797c6d4a reason=runtime_recovery_failed",
       "2026-07-31T10:41:36+08:00 rollback target=fe9e4a37401cdda1288226990236536cba85288b failed=a7789e85a59277b609eed3b3f89dc14502e7f245",
       "2026-07-31T10:49:41+08:00 421dbe47d8f8096f41572d2f89221b1c8870d5a3",
-      "2026-07-31T10:51:34+08:00 73eb76fa6d6f0e1fc5bc4aa192e587870d051315"
+      "2026-07-31T10:51:34+08:00 73eb76fa6d6f0e1fc5bc4aa192e587870d051315",
+      "2026-07-31T10:56:07+08:00 aa09d1274c8918baa866e6448d7e713047805553"
     ],
     "deploying_sha": null,
     "last_result": "success",
-    "last_history_entry": "2026-07-31T10:51:34+08:00 73eb76fa6d6f0e1fc5bc4aa192e587870d051315",
+    "last_history_entry": "2026-07-31T10:56:07+08:00 aa09d1274c8918baa866e6448d7e713047805553",
     "state": "idle"
   },
   "health": {
@@ -77,7 +77,7 @@
       "name": "sumeme-ai-provider-proxy",
       "state": "running",
       "health": "healthy",
-      "status": "Up About a minute (healthy)",
+      "status": "Up 49 seconds (healthy)",
       "critical": false
     },
     {
@@ -85,7 +85,7 @@
       "name": "sumeme-letta",
       "state": "running",
       "health": "starting",
-      "status": "Up 3 minutes (health: starting)",
+      "status": "Up 7 minutes (health: starting)",
       "critical": true
     },
     {
@@ -93,7 +93,7 @@
       "name": "sumeme-lobehub",
       "state": "running",
       "health": "",
-      "status": "Up 3 minutes",
+      "status": "Up 7 minutes",
       "critical": true
     },
     {
@@ -101,7 +101,7 @@
       "name": "sumeme-memory-gateway",
       "state": "running",
       "health": "healthy",
-      "status": "Up About a minute (healthy)",
+      "status": "Up 43 seconds (healthy)",
       "critical": true
     },
     {
@@ -109,7 +109,7 @@
       "name": "sumeme-postgres",
       "state": "running",
       "health": "healthy",
-      "status": "Up 4 minutes (healthy)",
+      "status": "Up 7 minutes (healthy)",
       "critical": true
     },
     {
@@ -117,7 +117,7 @@
       "name": "sumeme-qdrant",
       "state": "running",
       "health": "healthy",
-      "status": "Up 4 minutes (healthy)",
+      "status": "Up 7 minutes (healthy)",
       "critical": true
     },
     {
@@ -125,7 +125,7 @@
       "name": "sumeme-redis",
       "state": "running",
       "health": "healthy",
-      "status": "Up 4 minutes (healthy)",
+      "status": "Up 7 minutes (healthy)",
       "critical": true
     },
     {
@@ -133,7 +133,7 @@
       "name": "sumeme-rustfs",
       "state": "running",
       "health": "healthy",
-      "status": "Up 4 minutes (healthy)",
+      "status": "Up 7 minutes (healthy)",
       "critical": true
     },
     {
@@ -141,28 +141,28 @@
       "name": "sumeme-searxng",
       "state": "running",
       "health": "",
-      "status": "Up 4 minutes",
+      "status": "Up 7 minutes",
       "critical": true
     }
   ],
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 35330469888,
-      "free_bytes": 4983926784,
+      "used_bytes": 35317149696,
+      "free_bytes": 4997246976,
       "used_percent": 83.8
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1467625472,
-      "used_percent": 62.4
+      "available_bytes": 1459707904,
+      "used_percent": 62.6
     }
   },
   "github": {
     "schema_version": 1,
     "source": "github-hosted-runner",
     "default_branch": "main",
-    "latest_main_sha": "73eb76fa6d6f0e1fc5bc4aa192e587870d051315",
+    "latest_main_sha": "aa09d1274c8918baa866e6448d7e713047805553",
     "open_pull_requests": [],
     "open_issues": [
       {
@@ -192,10 +192,49 @@
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
+        "head_sha": "aa09d1274c8918baa866e6448d7e713047805553",
+        "run_number": 359,
+        "created_at": "2026-07-31T02:56:18Z",
+        "updated_at": "2026-07-31T02:56:22Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30600271825"
+      },
+      {
+        "name": "CI",
+        "display_title": "Merge PR #53: verify the canonical public health endpoint",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "aa09d1274c8918baa866e6448d7e713047805553",
+        "run_number": 640,
+        "created_at": "2026-07-31T02:54:45Z",
+        "updated_at": "2026-07-31T02:56:17Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30600204573"
+      },
+      {
+        "name": "CI",
+        "display_title": "Use the canonical public health endpoint for GHS verification",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/fix-ghs-public-health-endpoint",
+        "head_sha": "557dd6b2e1a81c95c34dcf62bd14ce238fc8285d",
+        "run_number": 639,
+        "created_at": "2026-07-31T02:53:48Z",
+        "updated_at": "2026-07-31T02:54:17Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30600163132"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
         "head_sha": "73eb76fa6d6f0e1fc5bc4aa192e587870d051315",
         "run_number": 358,
         "created_at": "2026-07-31T02:52:47Z",
-        "updated_at": "2026-07-31T02:52:56Z",
+        "updated_at": "2026-07-31T02:53:30Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30600118208"
       },
       {
@@ -301,45 +340,6 @@
         "created_at": "2026-07-31T02:42:41Z",
         "updated_at": "2026-07-31T02:43:29Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30599685243"
-      },
-      {
-        "name": "Build Android and Windows clients",
-        "display_title": "Build first Android APK and Windows EXE clients",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "failure",
-        "head_branch": "agent/first-flutter-clients",
-        "head_sha": "971856937ab9beb940715ae52f8fd542443e59aa",
-        "run_number": 2,
-        "created_at": "2026-07-31T02:42:40Z",
-        "updated_at": "2026-07-31T02:48:26Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30599684995"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "a7789e85a59277b609eed3b3f89dc14502e7f245",
-        "run_number": 356,
-        "created_at": "2026-07-31T02:41:44Z",
-        "updated_at": "2026-07-31T02:42:32Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30599643669"
-      },
-      {
-        "name": "CI",
-        "display_title": "Build first Android APK and Windows EXE clients",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/first-flutter-clients",
-        "head_sha": "46274c93c1cd05052a9522c98aac9c2e4739857a",
-        "run_number": 633,
-        "created_at": "2026-07-31T02:40:40Z",
-        "updated_at": "2026-07-31T02:41:26Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30599597954"
       }
     ]
   },
@@ -357,14 +357,14 @@
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-31T10:53:13+08:00"
+    "generated_at": "2026-07-31T10:56:40+08:00"
   },
   "deployment_consistency": {
     "state": "idle",
     "marker_consistent": true,
     "current_matches_main": true,
     "deploying_matches_main": null,
-    "main_sha": "73eb76fa6d6f0e1fc5bc4aa192e587870d051315"
+    "main_sha": "aa09d1274c8918baa866e6448d7e713047805553"
   },
   "reliability": {
     "disk": {
@@ -375,10 +375,10 @@
     },
     "smoke_test": {
       "schema_version": 5,
-      "generated_at": "2026-07-31T10:51:34+08:00",
-      "started_at": "2026-07-31T10:51:31+08:00",
-      "finished_at": "2026-07-31T10:51:34+08:00",
-      "duration_seconds": 3,
+      "generated_at": "2026-07-31T10:56:06+08:00",
+      "started_at": "2026-07-31T10:56:04+08:00",
+      "finished_at": "2026-07-31T10:56:06+08:00",
+      "duration_seconds": 2,
       "overall": "degraded",
       "deployment_gate": "external_degraded",
       "memory_provider": "mempalace-letta",
@@ -409,7 +409,7 @@
         "service_scope_verification_failed"
       ],
       "deployment_classification": "external_degraded",
-      "age_seconds_at_publish": 99,
+      "age_seconds_at_publish": 34,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }
