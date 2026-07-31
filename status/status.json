@@ -1,18 +1,15 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-07-31T18:33:07+08:00",
+  "generated_at": "2026-07-31T18:55:22+08:00",
   "repository": "b8vipvip/sumeme",
-  "overall": "degraded",
-  "project_stage": "deployment_behind_main",
-  "reasons": [
-    "磁盘空间低于安全部署阈值"
-  ],
-  "deployment_in_sync": false,
+  "overall": "healthy",
+  "project_stage": "deployed_and_stable",
+  "reasons": [],
+  "deployment_in_sync": true,
   "deployment": {
-    "current_sha": "d090da52d3dfd06711d173949473ac5a514f82a4",
-    "previous_sha": "530a1175b64a219d8771218616a5dbd7abf0233b",
+    "current_sha": "556007b956d06ca04857be3a817a09bba6aa2065",
+    "previous_sha": "d090da52d3dfd06711d173949473ac5a514f82a4",
     "history": [
-      "2026-07-31T11:01:29+08:00 12adbf02d85c101098cb772587540700b20ec644",
       "2026-07-31T11:09:27+08:00 8077ba1627b5cb68c306cb762c636e6742a42701",
       "2026-07-31T17:48:37+08:00 rollback target=8077ba1627b5cb68c306cb762c636e6742a42701 failed=8dfeb2f0293a6fa38602200be92cdefce7d42b2d",
       "2026-07-31T17:55:52+08:00 rollback target=8077ba1627b5cb68c306cb762c636e6742a42701 failed=4a8f255c0306ceac8bd38470525c6e1cee180738",
@@ -21,11 +18,12 @@
       "2026-07-31T18:23:31+08:00 rollback_failed target=d090da52d3dfd06711d173949473ac5a514f82a4 failed=1b09d1a909116950acd5ad9c7309d6be23a8ac17 reason=snapshot_restore_failed",
       "2026-07-31T18:23:32+08:00 rollback_failed target=d090da52d3dfd06711d173949473ac5a514f82a4 failed=1b09d1a909116950acd5ad9c7309d6be23a8ac17 reason=snapshot_restore_failed",
       "2026-07-31T18:32:38+08:00 rollback_failed target=d090da52d3dfd06711d173949473ac5a514f82a4 failed=626f41b285a6ef4ee328fb4cba1c274ced733d39 reason=snapshot_restore_failed",
-      "2026-07-31T18:32:38+08:00 rollback_failed target=d090da52d3dfd06711d173949473ac5a514f82a4 failed=626f41b285a6ef4ee328fb4cba1c274ced733d39 reason=snapshot_restore_failed"
+      "2026-07-31T18:32:38+08:00 rollback_failed target=d090da52d3dfd06711d173949473ac5a514f82a4 failed=626f41b285a6ef4ee328fb4cba1c274ced733d39 reason=snapshot_restore_failed",
+      "2026-07-31T18:54:35+08:00 556007b956d06ca04857be3a817a09bba6aa2065"
     ],
     "deploying_sha": null,
-    "last_result": "unknown",
-    "last_history_entry": "2026-07-31T18:32:38+08:00 rollback_failed target=d090da52d3dfd06711d173949473ac5a514f82a4 failed=626f41b285a6ef4ee328fb4cba1c274ced733d39 reason=snapshot_restore_failed",
+    "last_result": "success",
+    "last_history_entry": "2026-07-31T18:54:35+08:00 556007b956d06ca04857be3a817a09bba6aa2065",
     "state": "idle"
   },
   "health": {
@@ -76,7 +74,7 @@
       "name": "sumeme-ai-provider-proxy",
       "state": "running",
       "health": "healthy",
-      "status": "Up 22 minutes (healthy)",
+      "status": "Up 2 minutes (healthy)",
       "critical": false
     },
     {
@@ -93,7 +91,7 @@
       "name": "sumeme-lobehub",
       "state": "running",
       "health": "",
-      "status": "Up 30 minutes",
+      "status": "Up 52 minutes",
       "critical": true
     },
     {
@@ -101,7 +99,7 @@
       "name": "sumeme-memory-gateway",
       "state": "running",
       "health": "healthy",
-      "status": "Up 22 minutes (healthy)",
+      "status": "Up 2 minutes (healthy)",
       "critical": true
     },
     {
@@ -149,28 +147,28 @@
       "name": "sumeme-web",
       "state": "running",
       "health": "healthy",
-      "status": "Up 22 minutes (healthy)",
+      "status": "Up About a minute (healthy)",
       "critical": true
     }
   ],
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 37716541440,
-      "free_bytes": 2597855232,
-      "used_percent": 89.5
+      "used_bytes": 30546079744,
+      "free_bytes": 9768316928,
+      "used_percent": 72.5
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1688682496,
-      "used_percent": 56.7
+      "available_bytes": 1784647680,
+      "used_percent": 54.3
     }
   },
   "github": {
     "schema_version": 1,
     "source": "github-hosted-runner",
     "default_branch": "main",
-    "latest_main_sha": "626f41b285a6ef4ee328fb4cba1c274ced733d39",
+    "latest_main_sha": "556007b956d06ca04857be3a817a09bba6aa2065",
     "open_pull_requests": [],
     "open_issues": [
       {
@@ -197,6 +195,71 @@
         "name": "Public UI smoke",
         "display_title": "Public UI smoke",
         "event": "workflow_run",
+        "status": "in_progress",
+        "conclusion": null,
+        "head_branch": "main",
+        "head_sha": "556007b956d06ca04857be3a817a09bba6aa2065",
+        "run_number": 46,
+        "created_at": "2026-07-31T10:54:50Z",
+        "updated_at": "2026-07-31T10:54:59Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30625179047"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
+        "status": "in_progress",
+        "conclusion": null,
+        "head_branch": "main",
+        "head_sha": "556007b956d06ca04857be3a817a09bba6aa2065",
+        "run_number": 377,
+        "created_at": "2026-07-31T10:54:50Z",
+        "updated_at": "2026-07-31T10:54:59Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30625179036"
+      },
+      {
+        "name": "CI",
+        "display_title": "Merge PR #66: safe disk preflight recovery",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "556007b956d06ca04857be3a817a09bba6aa2065",
+        "run_number": 696,
+        "created_at": "2026-07-31T10:38:34Z",
+        "updated_at": "2026-07-31T10:54:46Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30624248419"
+      },
+      {
+        "name": "Public UI smoke",
+        "display_title": "Public UI smoke",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "skipped",
+        "head_branch": "main",
+        "head_sha": "626f41b285a6ef4ee328fb4cba1c274ced733d39",
+        "run_number": 45,
+        "created_at": "2026-07-31T10:38:08Z",
+        "updated_at": "2026-07-31T10:38:09Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30624223869"
+      },
+      {
+        "name": "CI",
+        "display_title": "Recover disk space safely before production deployment",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/safe-disk-preflight-recovery",
+        "head_sha": "e9aa340abca440f8bf4964445cd27cd2655681a5",
+        "run_number": 695,
+        "created_at": "2026-07-31T10:37:34Z",
+        "updated_at": "2026-07-31T10:38:07Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30624191905"
+      },
+      {
+        "name": "Public UI smoke",
+        "display_title": "Public UI smoke",
+        "event": "workflow_run",
         "status": "completed",
         "conclusion": "skipped",
         "head_branch": "main",
@@ -210,13 +273,13 @@
         "name": "Publish project status",
         "display_title": "Publish project status",
         "event": "workflow_run",
-        "status": "in_progress",
-        "conclusion": null,
+        "status": "completed",
+        "conclusion": "success",
         "head_branch": "main",
         "head_sha": "626f41b285a6ef4ee328fb4cba1c274ced733d39",
         "run_number": 376,
         "created_at": "2026-07-31T10:32:45Z",
-        "updated_at": "2026-07-31T10:32:48Z",
+        "updated_at": "2026-07-31T10:33:26Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30623915979"
       },
       {
@@ -283,71 +346,6 @@
         "created_at": "2026-07-31T10:30:14Z",
         "updated_at": "2026-07-31T10:30:33Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30623767188"
-      },
-      {
-        "name": "Public UI smoke",
-        "display_title": "Public UI smoke",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "skipped",
-        "head_branch": "main",
-        "head_sha": "d090da52d3dfd06711d173949473ac5a514f82a4",
-        "run_number": 42,
-        "created_at": "2026-07-31T10:23:39Z",
-        "updated_at": "2026-07-31T10:23:46Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30623397154"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "d090da52d3dfd06711d173949473ac5a514f82a4",
-        "run_number": 375,
-        "created_at": "2026-07-31T10:23:39Z",
-        "updated_at": "2026-07-31T10:24:23Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30623397149"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "schedule",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "d090da52d3dfd06711d173949473ac5a514f82a4",
-        "run_number": 374,
-        "created_at": "2026-07-31T10:13:44Z",
-        "updated_at": "2026-07-31T10:14:35Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30622820392"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "d090da52d3dfd06711d173949473ac5a514f82a4",
-        "run_number": 373,
-        "created_at": "2026-07-31T10:12:01Z",
-        "updated_at": "2026-07-31T10:12:48Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30622714514"
-      },
-      {
-        "name": "Public UI smoke",
-        "display_title": "Public UI smoke",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "d090da52d3dfd06711d173949473ac5a514f82a4",
-        "run_number": 41,
-        "created_at": "2026-07-31T10:12:01Z",
-        "updated_at": "2026-07-31T10:12:19Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30622714505"
       }
     ]
   },
@@ -365,7 +363,7 @@
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-07-31T18:33:07+08:00"
+    "generated_at": "2026-07-31T18:55:22+08:00"
   },
   "components": {
     "letta": {
@@ -378,13 +376,13 @@
   "deployment_consistency": {
     "state": "idle",
     "marker_consistent": true,
-    "current_matches_main": false,
+    "current_matches_main": true,
     "deploying_matches_main": null,
-    "main_sha": "626f41b285a6ef4ee328fb4cba1c274ced733d39"
+    "main_sha": "556007b956d06ca04857be3a817a09bba6aa2065"
   },
   "reliability": {
     "disk": {
-      "level": "critical",
+      "level": "ok",
       "warning_percent": 80.0,
       "failure_percent": 90.0,
       "minimum_free_bytes": 3221225472
@@ -399,10 +397,10 @@
     },
     "smoke_test": {
       "schema_version": 5,
-      "generated_at": "2026-07-31T18:11:46+08:00",
-      "started_at": "2026-07-31T18:10:36+08:00",
-      "finished_at": "2026-07-31T18:11:46+08:00",
-      "duration_seconds": 70,
+      "generated_at": "2026-07-31T18:54:35+08:00",
+      "started_at": "2026-07-31T18:53:30+08:00",
+      "finished_at": "2026-07-31T18:54:35+08:00",
+      "duration_seconds": 65,
       "overall": "degraded",
       "deployment_gate": "success",
       "memory_provider": "mempalace-letta",
@@ -430,7 +428,7 @@
         "letta_agent_create_failed",
         "letta_recall_delayed"
       ],
-      "age_seconds_at_publish": 1281,
+      "age_seconds_at_publish": 47,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }
