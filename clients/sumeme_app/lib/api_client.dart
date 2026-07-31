@@ -60,10 +60,10 @@ class SuMeMeApiClient {
         .timeout(const Duration(seconds: 20));
     final Map<String, dynamic> body = _decodeObject(response);
     final Object? raw = body['data'];
-    if (raw is! List) return const <String>[];
+    if (raw is! List<Object?>) return const <String>[];
     return raw
-        .whereType<Map>()
-        .map((Map item) => item['id']?.toString() ?? '')
+        .whereType<Map<Object?, Object?>>()
+        .map((Map<Object?, Object?> item) => item['id']?.toString() ?? '')
         .where((String value) => value.isNotEmpty)
         .toList(growable: false);
   }
@@ -115,11 +115,11 @@ class SuMeMeApiClient {
         final Object? decoded = jsonDecode(payload);
         if (decoded is! Map<String, dynamic>) continue;
         final Object? choices = decoded['choices'];
-        if (choices is! List || choices.isEmpty) continue;
+        if (choices is! List<Object?> || choices.isEmpty) continue;
         final Object? first = choices.first;
-        if (first is! Map) continue;
+        if (first is! Map<Object?, Object?>) continue;
         final Object? delta = first['delta'];
-        if (delta is! Map) continue;
+        if (delta is! Map<Object?, Object?>) continue;
         final Object? content = delta['content'];
         if (content is String && content.isNotEmpty) {
           yield content;
@@ -169,10 +169,10 @@ class SuMeMeApiClient {
         .timeout(const Duration(seconds: 20));
     final Map<String, dynamic> body = _decodeObject(response);
     final Object? raw = body['vaults'];
-    if (raw is! List) return const <Map<String, dynamic>>[];
+    if (raw is! List<Object?>) return const <Map<String, dynamic>>[];
     return raw
-        .whereType<Map>()
-        .map((Map value) => Map<String, dynamic>.from(value))
+        .whereType<Map<Object?, Object?>>()
+        .map((Map<Object?, Object?> value) => Map<String, dynamic>.from(value))
         .toList(growable: false);
   }
 
@@ -217,10 +217,10 @@ class SuMeMeApiClient {
         .timeout(const Duration(seconds: 25));
     final Map<String, dynamic> body = _decodeObject(response);
     final Object? raw = body['objects'];
-    if (raw is! List) return const <Map<String, dynamic>>[];
+    if (raw is! List<Object?>) return const <Map<String, dynamic>>[];
     return raw
-        .whereType<Map>()
-        .map((Map value) => Map<String, dynamic>.from(value))
+        .whereType<Map<Object?, Object?>>()
+        .map((Map<Object?, Object?> value) => Map<String, dynamic>.from(value))
         .toList(growable: false);
   }
 
@@ -238,18 +238,20 @@ class SuMeMeApiClient {
       );
     }
     if (decoded is Map<String, dynamic>) return decoded;
-    if (decoded is Map) return Map<String, dynamic>.from(decoded);
+    if (decoded is Map<Object?, Object?>) {
+      return Map<String, dynamic>.from(decoded);
+    }
     throw const SuMeMeApiException('服务器返回了无法识别的数据');
   }
 
   String _safeError(String body, String fallback) {
     try {
       final Object? decoded = jsonDecode(body);
-      if (decoded is Map) {
+      if (decoded is Map<Object?, Object?>) {
         final Object? detail = decoded['detail'];
         if (detail != null) return detail.toString();
         final Object? error = decoded['error'];
-        if (error is Map && error['message'] != null) {
+        if (error is Map<Object?, Object?> && error['message'] != null) {
           return error['message'].toString();
         }
       }
@@ -258,7 +260,9 @@ class SuMeMeApiClient {
     }
     final String normalized = body.trim().replaceAll(RegExp(r'\s+'), ' ');
     if (normalized.isEmpty) return fallback;
-    return normalized.length > 240 ? '${normalized.substring(0, 240)}…' : normalized;
+    return normalized.length > 240
+        ? '${normalized.substring(0, 240)}…'
+        : normalized;
   }
 
   void close() => _client.close();
