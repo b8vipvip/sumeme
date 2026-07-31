@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 from contextlib import asynccontextmanager, suppress
 
+from .browser_memory import build_browser_memory_router
 from .main import app, require_gateway_auth, settings
 from .object_api import build_object_router
 from .object_config import get_object_settings
@@ -62,3 +63,4 @@ app.include_router(
         require_gateway_auth,
     )
 )
+app.include_router(build_browser_memory_router(settings))
