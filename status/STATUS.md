@@ -1,6 +1,6 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-07-31T11:10:07+08:00
+- **采集时间：** 2026-07-31T11:48:47+08:00
 - **总体状态：** `degraded`
 - **开发阶段：** `deployed_degraded`
 - **线上版本：** `8077ba1627b5cb68c306cb762c636e6742a42701`
@@ -17,35 +17,35 @@
 
 - 本地网关：`ok`
 - 公网入口：`ok`
-- 磁盘使用：`83.8%`，剩余 4.6 GiB
-- 内存使用：`62.5%`，可用 1.4 GiB
+- 磁盘使用：`83.7%`，剩余 4.7 GiB
+- 内存使用：`63.2%`，可用 1.3 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| ai-provider-proxy | running | healthy | Up 56 seconds (healthy) |
-| letta | running | healthy | Up 8 minutes (healthy) |
-| lobe | running | - | Up 20 minutes |
-| memory-gateway | running | healthy | Up 50 seconds (healthy) |
-| postgresql | running | healthy | Up 20 minutes (healthy) |
-| qdrant | running | healthy | Up 20 minutes (healthy) |
-| redis | running | healthy | Up 20 minutes (healthy) |
-| rustfs | running | healthy | Up 20 minutes (healthy) |
-| searxng | running | - | Up 20 minutes |
+| ai-provider-proxy | running | healthy | Up 39 minutes (healthy) |
+| letta | running | healthy | Up 47 minutes (healthy) |
+| lobe | running | - | Up 59 minutes |
+| memory-gateway | running | healthy | Up 39 minutes (healthy) |
+| postgresql | running | healthy | Up 59 minutes (healthy) |
+| qdrant | running | healthy | Up 59 minutes (healthy) |
+| redis | running | healthy | Up 59 minutes (healthy) |
+| rustfs | running | healthy | Up 59 minutes (healthy) |
+| searxng | running | - | Up 59 minutes |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-07-31T03:09:48Z |
+| Publish project status | in_progress | main | 2026-07-31T03:48:29Z |
+| Smoke production | success | main | 2026-07-31T03:48:18Z |
+| Publish project status | success | main | 2026-07-31T03:10:26Z |
 | CI | success | main | 2026-07-31T03:09:38Z |
 | CI | success | agent/optional-letta-status | 2026-07-31T03:07:38Z |
 | CI | failure | agent/optional-letta-status | 2026-07-31T03:06:47Z |
 | Publish project status | success | main | 2026-07-31T03:02:28Z |
 | CI | success | main | 2026-07-31T03:01:40Z |
-| CI | success | agent/authenticate-letta-healthcheck | 2026-07-31T02:59:37Z |
-| Publish project status | success | main | 2026-07-31T02:56:57Z |
 
 ## 开放 PR
 
