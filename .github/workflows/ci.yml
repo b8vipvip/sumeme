@@ -178,7 +178,7 @@ jobs:
       ssh_user: ${{ vars.SUMEME_VPS_USER || 'sumeme-runner' }}
       deploy_path: /opt/sumeme
       deploy_script: scripts/deploy-production-v2.sh
-      public_health_url: https://sumeme.mv3.cn/health
+      public_health_url: https://sumeme.mv3.cn/sumeme-health
       retain_staging_releases: 3
     secrets:
       ssh_private_key: ${{ secrets.SUMEME_SSH_PRIVATE_KEY }}

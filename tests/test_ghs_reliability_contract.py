@@ -111,6 +111,10 @@ class GHSReliabilityContractTests(unittest.TestCase):
             "vars.SUMEME_DEPLOY_TRANSPORT == 'github-hosted-ssh'", workflow
         )
         self.assertIn("Deploy production (VSR fallback)", workflow)
+        self.assertIn(
+            "public_health_url: https://sumeme.mv3.cn/sumeme-health", workflow
+        )
+        self.assertNotIn("public_health_url: https://sumeme.mv3.cn/health", workflow)
         self.assertEqual(workflow.count("deploy-production-v2.sh"), 2)
         self.assertNotIn("deploy_script: scripts/deploy-production.sh", workflow)
 
