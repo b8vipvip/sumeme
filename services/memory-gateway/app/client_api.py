@@ -345,19 +345,22 @@ def build_client_router() -> APIRouter:
             raise HTTPException(status_code=404, detail="unsupported_platform")
         release = await _store(request).get_release(platform_value, channel_value)
         if release is None and channel_value == "stable":
-            base = "https://github.com/b8vipvip/sumeme/releases/download/v0.4.0"
+            base = "https://github.com/b8vipvip/sumeme/releases/download/v0.5.0"
             filename = (
-                "SuMeMe-Android-0.4.0.apk"
+                "SuMeMe-Android-0.5.0.apk"
                 if platform_value == "android"
-                else "SuMeMe-Windows-0.4.0-Setup.exe"
+                else "SuMeMe-Windows-0.5.0-Setup.exe"
             )
             release = {
                 "platform": platform_value,
                 "channel": channel_value,
-                "latest_version": "0.4.0",
-                "minimum_version": "0.3.0",
+                "latest_version": "0.5.0",
+                "minimum_version": "0.4.0",
                 "download_url": f"{base}/{filename}",
-                "notes": "新增独立 /admin 管理后台、服务端统一 API 配置和客户端手动更新。",
+                "notes": (
+                    "全新单对话客户端：历史跨重启常驻、隐藏历史模式、"
+                    "聊天与记忆检索、附件上传和带时间轴的资料库。"
+                ),
                 "published_at": "",
             }
         if release is None:
