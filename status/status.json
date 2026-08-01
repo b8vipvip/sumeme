@@ -1,16 +1,15 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-08-01T08:51:36+08:00",
+  "generated_at": "2026-08-01T09:28:59+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "healthy",
   "project_stage": "deployed_and_stable",
   "reasons": [],
   "deployment_in_sync": true,
   "deployment": {
-    "current_sha": "549e8beddc921ec4f5cef69bef6748c2bf2af22f",
-    "previous_sha": "ddddf2ee60fa08dbda449942b276dff2fc28e18e",
+    "current_sha": "e6d9007524633325b7005aa2751a9e97364f5432",
+    "previous_sha": "549e8beddc921ec4f5cef69bef6748c2bf2af22f",
     "history": [
-      "2026-07-31T18:32:38+08:00 rollback_failed target=d090da52d3dfd06711d173949473ac5a514f82a4 failed=626f41b285a6ef4ee328fb4cba1c274ced733d39 reason=snapshot_restore_failed",
       "2026-07-31T18:54:35+08:00 556007b956d06ca04857be3a817a09bba6aa2065",
       "2026-07-31T19:10:53+08:00 adddeac3918de48859647db5a8b0e90ec1259196",
       "2026-07-31T19:20:51+08:00 9621f00a6ff32e996229c8b3f490ae98dcfd0a96",
@@ -19,11 +18,12 @@
       "2026-07-31T20:26:00+08:00 1858ee28dacc133f737b8e7028f4bfba05c13a7b",
       "2026-07-31T22:06:14+08:00 2fd8e6aa85fd2048443029be322d9e14e557a9b4",
       "2026-07-31T22:10:19+08:00 ddddf2ee60fa08dbda449942b276dff2fc28e18e",
-      "2026-08-01T08:51:02+08:00 549e8beddc921ec4f5cef69bef6748c2bf2af22f"
+      "2026-08-01T08:51:02+08:00 549e8beddc921ec4f5cef69bef6748c2bf2af22f",
+      "2026-08-01T09:28:26+08:00 e6d9007524633325b7005aa2751a9e97364f5432"
     ],
     "deploying_sha": null,
     "last_result": "success",
-    "last_history_entry": "2026-08-01T08:51:02+08:00 549e8beddc921ec4f5cef69bef6748c2bf2af22f",
+    "last_history_entry": "2026-08-01T09:28:26+08:00 e6d9007524633325b7005aa2751a9e97364f5432",
     "state": "idle"
   },
   "health": {
@@ -74,7 +74,7 @@
       "name": "sumeme-ai-provider-proxy",
       "state": "running",
       "health": "healthy",
-      "status": "Up 53 seconds (healthy)",
+      "status": "Up 51 seconds (healthy)",
       "critical": false
     },
     {
@@ -99,7 +99,7 @@
       "name": "sumeme-memory-gateway",
       "state": "running",
       "health": "healthy",
-      "status": "Up 47 seconds (healthy)",
+      "status": "Up 45 seconds (healthy)",
       "critical": true
     },
     {
@@ -107,7 +107,7 @@
       "name": "sumeme-postgres",
       "state": "running",
       "health": "healthy",
-      "status": "Up 22 hours (healthy)",
+      "status": "Up 23 hours (healthy)",
       "critical": true
     },
     {
@@ -115,7 +115,7 @@
       "name": "sumeme-qdrant",
       "state": "running",
       "health": "healthy",
-      "status": "Up 22 hours (healthy)",
+      "status": "Up 23 hours (healthy)",
       "critical": true
     },
     {
@@ -123,7 +123,7 @@
       "name": "sumeme-redis",
       "state": "running",
       "health": "healthy",
-      "status": "Up 22 hours (healthy)",
+      "status": "Up 23 hours (healthy)",
       "critical": true
     },
     {
@@ -131,7 +131,7 @@
       "name": "sumeme-rustfs",
       "state": "running",
       "health": "healthy",
-      "status": "Up 22 hours (healthy)",
+      "status": "Up 23 hours (healthy)",
       "critical": true
     },
     {
@@ -139,7 +139,7 @@
       "name": "sumeme-searxng",
       "state": "running",
       "health": "",
-      "status": "Up 53 seconds",
+      "status": "Up 38 minutes",
       "critical": true
     },
     {
@@ -147,28 +147,28 @@
       "name": "sumeme-web",
       "state": "running",
       "health": "healthy",
-      "status": "Up 41 seconds (healthy)",
+      "status": "Up 39 seconds (healthy)",
       "critical": true
     }
   ],
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 31493636096,
-      "free_bytes": 8820760576,
+      "used_bytes": 31509114880,
+      "free_bytes": 8805281792,
       "used_percent": 74.7
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1704828928,
-      "used_percent": 56.3
+      "available_bytes": 1699368960,
+      "used_percent": 56.5
     }
   },
   "github": {
     "schema_version": 1,
     "source": "github-hosted-runner",
     "default_branch": "main",
-    "latest_main_sha": "549e8beddc921ec4f5cef69bef6748c2bf2af22f",
+    "latest_main_sha": "e6d9007524633325b7005aa2751a9e97364f5432",
     "open_pull_requests": [],
     "open_issues": [
       {
@@ -192,69 +192,82 @@
     ],
     "recent_workflows": [
       {
+        "name": "Public UI smoke",
+        "display_title": "Public UI smoke",
+        "event": "workflow_run",
+        "status": "in_progress",
+        "conclusion": null,
+        "head_branch": "main",
+        "head_sha": "e6d9007524633325b7005aa2751a9e97364f5432",
+        "run_number": 78,
+        "created_at": "2026-08-01T01:28:38Z",
+        "updated_at": "2026-08-01T01:28:43Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30677990844"
+      },
+      {
         "name": "Publish project status",
         "display_title": "Publish project status",
         "event": "workflow_run",
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
-        "head_sha": "549e8beddc921ec4f5cef69bef6748c2bf2af22f",
-        "run_number": 396,
-        "created_at": "2026-08-01T00:51:15Z",
-        "updated_at": "2026-08-01T00:51:18Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30676550945"
+        "head_sha": "e6d9007524633325b7005aa2751a9e97364f5432",
+        "run_number": 397,
+        "created_at": "2026-08-01T01:28:38Z",
+        "updated_at": "2026-08-01T01:28:42Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30677990839"
       },
       {
-        "name": "Public UI smoke",
-        "display_title": "Public UI smoke",
-        "event": "workflow_run",
+        "name": "CI",
+        "display_title": "Merge PR #75: persistent single-chat native clients",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "e6d9007524633325b7005aa2751a9e97364f5432",
+        "run_number": 728,
+        "created_at": "2026-08-01T01:26:30Z",
+        "updated_at": "2026-08-01T01:28:37Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30677916424"
+      },
+      {
+        "name": "Client source check",
+        "display_title": "Merge PR #75: persistent single-chat native clients",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "e6d9007524633325b7005aa2751a9e97364f5432",
+        "run_number": 37,
+        "created_at": "2026-08-01T01:26:30Z",
+        "updated_at": "2026-08-01T01:27:28Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30677916251"
+      },
+      {
+        "name": "Build Android and Windows clients",
+        "display_title": "Merge PR #75: persistent single-chat native clients",
+        "event": "push",
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
-        "head_sha": "549e8beddc921ec4f5cef69bef6748c2bf2af22f",
-        "run_number": 67,
-        "created_at": "2026-08-01T00:51:15Z",
-        "updated_at": "2026-08-01T00:51:19Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30676550825"
-      },
-      {
-        "name": "CI",
-        "display_title": "Merge PR #74: fix packaged admin console",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "549e8beddc921ec4f5cef69bef6748c2bf2af22f",
-        "run_number": 717,
-        "created_at": "2026-08-01T00:47:53Z",
-        "updated_at": "2026-08-01T00:51:13Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30676416896"
-      },
-      {
-        "name": "Server UI check",
-        "display_title": "Merge PR #74: fix packaged admin console",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "549e8beddc921ec4f5cef69bef6748c2bf2af22f",
-        "run_number": 40,
-        "created_at": "2026-08-01T00:47:52Z",
-        "updated_at": "2026-08-01T00:48:15Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30676416747"
+        "head_sha": "e6d9007524633325b7005aa2751a9e97364f5432",
+        "run_number": 45,
+        "created_at": "2026-08-01T01:26:30Z",
+        "updated_at": "2026-08-01T01:26:34Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30677916240"
       },
       {
         "name": "Admin console and managed client check",
-        "display_title": "Merge PR #74: fix packaged admin console",
+        "display_title": "Merge PR #75: persistent single-chat native clients",
         "event": "push",
         "status": "completed",
         "conclusion": "success",
         "head_branch": "main",
-        "head_sha": "549e8beddc921ec4f5cef69bef6748c2bf2af22f",
-        "run_number": 11,
-        "created_at": "2026-08-01T00:47:52Z",
-        "updated_at": "2026-08-01T00:48:58Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30676416739"
+        "head_sha": "e6d9007524633325b7005aa2751a9e97364f5432",
+        "run_number": 22,
+        "created_at": "2026-08-01T01:26:30Z",
+        "updated_at": "2026-08-01T01:27:20Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30677916225"
       },
       {
         "name": "Public UI smoke",
@@ -263,50 +276,63 @@
         "status": "completed",
         "conclusion": "skipped",
         "head_branch": "main",
-        "head_sha": "ddddf2ee60fa08dbda449942b276dff2fc28e18e",
-        "run_number": 66,
-        "created_at": "2026-08-01T00:42:51Z",
-        "updated_at": "2026-08-01T00:42:52Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30676211049"
+        "head_sha": "549e8beddc921ec4f5cef69bef6748c2bf2af22f",
+        "run_number": 77,
+        "created_at": "2026-08-01T01:20:46Z",
+        "updated_at": "2026-08-01T01:20:47Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30677709812"
       },
       {
         "name": "CI",
-        "display_title": "Fix packaged admin console and /admin redirect loop",
+        "display_title": "Redesign native clients around one persistent chat timeline",
         "event": "pull_request",
         "status": "completed",
         "conclusion": "success",
-        "head_branch": "agent/fix-admin-route-loop",
-        "head_sha": "ded92c76879b14ad0f96abf2731a21f1359cb8f2",
-        "run_number": 716,
-        "created_at": "2026-08-01T00:42:12Z",
-        "updated_at": "2026-08-01T00:42:49Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30676184000"
+        "head_branch": "agent/chinese-single-chat-client",
+        "head_sha": "16e05616c745052b14708798129c25245b4034bc",
+        "run_number": 727,
+        "created_at": "2026-08-01T01:20:06Z",
+        "updated_at": "2026-08-01T01:20:44Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30677683239"
       },
       {
-        "name": "Server UI check",
-        "display_title": "Fix packaged admin console and /admin redirect loop",
+        "name": "Client source check",
+        "display_title": "Redesign native clients around one persistent chat timeline",
         "event": "pull_request",
         "status": "completed",
         "conclusion": "success",
-        "head_branch": "agent/fix-admin-route-loop",
-        "head_sha": "ded92c76879b14ad0f96abf2731a21f1359cb8f2",
-        "run_number": 39,
-        "created_at": "2026-08-01T00:42:12Z",
-        "updated_at": "2026-08-01T00:42:37Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30676183803"
+        "head_branch": "agent/chinese-single-chat-client",
+        "head_sha": "16e05616c745052b14708798129c25245b4034bc",
+        "run_number": 36,
+        "created_at": "2026-08-01T01:20:06Z",
+        "updated_at": "2026-08-01T01:21:03Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30677682944"
       },
       {
         "name": "Admin console and managed client check",
-        "display_title": "Fix packaged admin console and /admin redirect loop",
+        "display_title": "Redesign native clients around one persistent chat timeline",
         "event": "pull_request",
         "status": "completed",
         "conclusion": "success",
-        "head_branch": "agent/fix-admin-route-loop",
-        "head_sha": "ded92c76879b14ad0f96abf2731a21f1359cb8f2",
-        "run_number": 10,
-        "created_at": "2026-08-01T00:42:12Z",
-        "updated_at": "2026-08-01T00:42:58Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30676183795"
+        "head_branch": "agent/chinese-single-chat-client",
+        "head_sha": "16e05616c745052b14708798129c25245b4034bc",
+        "run_number": 21,
+        "created_at": "2026-08-01T01:20:06Z",
+        "updated_at": "2026-08-01T01:21:06Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30677682930"
+      },
+      {
+        "name": "Build Android and Windows clients",
+        "display_title": "Redesign native clients around one persistent chat timeline",
+        "event": "pull_request",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "agent/chinese-single-chat-client",
+        "head_sha": "16e05616c745052b14708798129c25245b4034bc",
+        "run_number": 44,
+        "created_at": "2026-08-01T01:20:06Z",
+        "updated_at": "2026-08-01T01:26:01Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30677682919"
       },
       {
         "name": "Public UI smoke",
@@ -315,37 +341,11 @@
         "status": "completed",
         "conclusion": "skipped",
         "head_branch": "main",
-        "head_sha": "ddddf2ee60fa08dbda449942b276dff2fc28e18e",
-        "run_number": 65,
-        "created_at": "2026-08-01T00:38:05Z",
-        "updated_at": "2026-08-01T00:38:12Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30676020421"
-      },
-      {
-        "name": "CI",
-        "display_title": "Fix packaged admin console and /admin redirect loop",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/fix-admin-route-loop",
-        "head_sha": "a7d7d0f7a3207654ec5008b1640df66b053ea676",
-        "run_number": 715,
-        "created_at": "2026-08-01T00:37:24Z",
-        "updated_at": "2026-08-01T00:38:03Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30675992975"
-      },
-      {
-        "name": "Server UI check",
-        "display_title": "Fix packaged admin console and /admin redirect loop",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/fix-admin-route-loop",
-        "head_sha": "a7d7d0f7a3207654ec5008b1640df66b053ea676",
-        "run_number": 38,
-        "created_at": "2026-08-01T00:37:24Z",
-        "updated_at": "2026-08-01T00:37:39Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30675992720"
+        "head_sha": "549e8beddc921ec4f5cef69bef6748c2bf2af22f",
+        "run_number": 76,
+        "created_at": "2026-08-01T01:19:53Z",
+        "updated_at": "2026-08-01T01:20:04Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30677673968"
       }
     ]
   },
@@ -363,7 +363,7 @@
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-08-01T08:51:36+08:00"
+    "generated_at": "2026-08-01T09:28:59+08:00"
   },
   "components": {
     "letta": {
@@ -378,7 +378,7 @@
     "marker_consistent": true,
     "current_matches_main": true,
     "deploying_matches_main": null,
-    "main_sha": "549e8beddc921ec4f5cef69bef6748c2bf2af22f"
+    "main_sha": "e6d9007524633325b7005aa2751a9e97364f5432"
   },
   "reliability": {
     "disk": {
@@ -397,9 +397,9 @@
     },
     "smoke_test": {
       "schema_version": 5,
-      "generated_at": "2026-08-01T08:51:01+08:00",
-      "started_at": "2026-08-01T08:50:59+08:00",
-      "finished_at": "2026-08-01T08:51:01+08:00",
+      "generated_at": "2026-08-01T09:28:26+08:00",
+      "started_at": "2026-08-01T09:28:24+08:00",
+      "finished_at": "2026-08-01T09:28:26+08:00",
       "duration_seconds": 2,
       "overall": "degraded",
       "deployment_gate": "external_degraded",
@@ -431,7 +431,7 @@
         "service_scope_verification_failed"
       ],
       "deployment_classification": "external_degraded",
-      "age_seconds_at_publish": 35,
+      "age_seconds_at_publish": 33,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }
