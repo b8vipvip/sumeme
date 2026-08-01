@@ -1,37 +1,19 @@
 part of 'client_state.dart';
 
 extension SuMeMeClientLibraryState on SuMeMeClientState {
-  Future<void> pickAndUploadFiles({bool imagesOnly = false}) async {
-    if (!loggedIn || uploading) return;
-    final FilePickerResult? selection = await FilePicker.platform.pickFiles(
-      allowMultiple: true,
-      type: imagesOnly ? FileType.image : FileType.any,
-      withData: true,
-    );
-    if (selection == null || selection.files.isEmpty) return;
+  Future<void> uploadFiles(List<UploadFileData> files) async {
+    if (!loggedIn || uploading || files.isEmpty) return;
     uploading = true;
     errorMessage = null;
     notifyListeners();
     try {
-      for (final PlatformFile platformFile in selection.files) {
-        Uint8List? bytes = platformFile.bytes;
-        if (bytes == null && platformFile.path != null) {
-          bytes = await File(platformFile.path!).readAsBytes();
-        }
-        if (bytes == null) {
-          throw SuMeMeClientException('无法读取文件：${platformFile.name}');
-        }
-        final UploadFileData data = UploadFileData(
-          name: platformFile.name,
-          bytes: bytes,
-          mimeType: platformFile.mimeType ?? _guessMime(platformFile.name),
-        );
+      for (final UploadFileData file in files) {
         final LibraryItem item = await _api.uploadFile(
           cookie: sessionCookie,
-          file: data,
+          file: file,
           onProgress: (double progress, String stage) {
-            uploadProgress[platformFile.name] = UploadProgress(
-              name: platformFile.name,
+            uploadProgress[file.name] = UploadProgress(
+              name: file.name,
               progress: progress,
               stage: stage,
             );
@@ -51,25 +33,6 @@ extension SuMeMeClientLibraryState on SuMeMeClientState {
       });
       notifyListeners();
     }
-  }
-
-  String _guessMime(String name) {
-    final String extension = name.split('.').last.toLowerCase();
-    return switch (extension) {
-      'png' => 'image/png',
-      'jpg' || 'jpeg' => 'image/jpeg',
-      'webp' => 'image/webp',
-      'gif' => 'image/gif',
-      'pdf' => 'application/pdf',
-      'txt' => 'text/plain',
-      'md' => 'text/markdown',
-      'json' => 'application/json',
-      'csv' => 'text/csv',
-      'mp3' => 'audio/mpeg',
-      'wav' => 'audio/wav',
-      'mp4' => 'video/mp4',
-      _ => 'application/octet-stream',
-    };
   }
 
   void removePendingAttachment(String id) {
