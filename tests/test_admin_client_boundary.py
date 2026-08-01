@@ -18,7 +18,7 @@ class AdminClientBoundaryTest(unittest.TestCase):
         self.assertNotIn('id="page-files"', admin)
 
     def test_native_client_contains_no_server_secret_configuration(self) -> None:
-        client_files = list((ROOT / "clients/sumeme_app/lib").glob("client_*.dart"))
+        client_files = list((ROOT / "clients/sumeme_app/lib").glob("*.dart"))
         text = "\n".join(path.read_text(encoding="utf-8") for path in client_files)
         forbidden = (
             "gatewayToken",
@@ -34,6 +34,29 @@ class AdminClientBoundaryTest(unittest.TestCase):
         self.assertIn("/api/client/config", text)
         self.assertIn("/api/client/releases/", text)
         self.assertIn("关于与更新", text)
+
+    def test_native_client_is_single_chat_and_not_dashboard_navigation(self) -> None:
+        app = (ROOT / "clients/sumeme_app/lib/client_app.dart").read_text(
+            encoding="utf-8"
+        )
+        state = (ROOT / "clients/sumeme_app/lib/client_state.dart").read_text(
+            encoding="utf-8"
+        )
+        chat = (ROOT / "clients/sumeme_app/lib/chat_page.dart").read_text(
+            encoding="utf-8"
+        )
+        library = (ROOT / "clients/sumeme_app/lib/library_page.dart").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("SuMeMeChatPage", app)
+        self.assertIn("查找记忆记录", app)
+        self.assertIn("隐藏历史对话", app)
+        self.assertIn("sumeme.single_timeline.v1", state)
+        self.assertIn("载入更早的聊天", chat)
+        self.assertIn("上传文件", chat)
+        self.assertIn("_TimelineRail", library)
+        self.assertNotIn("NavigationRail", app)
+        self.assertNotIn("createConversation", state)
 
     def test_nginx_routes_admin_and_client_apis_independently(self) -> None:
         nginx = (ROOT / "web/server-ui/nginx.conf").read_text(encoding="utf-8")

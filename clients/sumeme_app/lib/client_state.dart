@@ -9,77 +9,21 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'client_api.dart';
+import 'client_models.dart';
 
-class ChatMessage {
-  ChatMessage({
-    required this.id,
-    required this.role,
-    required this.text,
-    required this.createdAt,
-    this.streaming = false,
-  });
-
-  final String id;
-  final String role;
-  String text;
-  final DateTime createdAt;
-  bool streaming;
-
-  Map<String, Object?> toJson() => <String, Object?>{
-        'id': id,
-        'role': role,
-        'text': text,
-        'created_at': createdAt.toIso8601String(),
-      };
-
-  factory ChatMessage.fromJson(Map<String, dynamic> json) => ChatMessage(
-        id: json['id']?.toString() ?? '',
-        role: json['role']?.toString() ?? 'user',
-        text: json['text']?.toString() ?? '',
-        createdAt: DateTime.tryParse(json['created_at']?.toString() ?? '') ??
-            DateTime.now(),
-      );
-}
-
-class Conversation {
-  Conversation({
-    required this.id,
-    required this.title,
-    required this.updatedAt,
-    List<ChatMessage>? messages,
-  }) : messages = messages ?? <ChatMessage>[];
-
-  final String id;
-  String title;
-  DateTime updatedAt;
-  final List<ChatMessage> messages;
-
-  Map<String, Object?> toJson() => <String, Object?>{
-        'id': id,
-        'title': title,
-        'updated_at': updatedAt.toIso8601String(),
-        'messages': messages.map((ChatMessage item) => item.toJson()).toList(),
-      };
-
-  factory Conversation.fromJson(Map<String, dynamic> json) => Conversation(
-        id: json['id']?.toString() ?? '',
-        title: json['title']?.toString() ?? '新对话',
-        updatedAt: DateTime.tryParse(json['updated_at']?.toString() ?? '') ??
-            DateTime.now(),
-        messages: (json['messages'] as List<Object?>? ?? const <Object?>[])
-            .whereType<Map<Object?, Object?>>()
-            .map((Map<Object?, Object?> item) =>
-                ChatMessage.fromJson(Map<String, dynamic>.from(item)))
-            .toList(),
-      );
-}
+part 'client_state_auth.dart';
+part 'client_state_chat.dart';
+part 'client_state_library.dart';
 
 class SuMeMeClientState extends ChangeNotifier {
   SuMeMeClientState({SuMeMeClientApi? api}) : _api = api ?? SuMeMeClientApi();
 
   static const FlutterSecureStorage _secure = FlutterSecureStorage();
   static const String _sessionKey = 'sumeme.session.cookie.v2';
-  static const String _conversationKey = 'sumeme.conversations.v2';
+  static const String _legacyConversationKey = 'sumeme.conversations.v2';
+  static const String _timelineKey = 'sumeme.single_timeline.v1';
+  static const String _hideHistoryKey = 'sumeme.hide_history.v1';
+  static const String _historyCutoffKey = 'sumeme.history_cutoff.v1';
 
   final SuMeMeClientApi _api;
   final Random _random = Random.secure();
@@ -91,8 +35,14 @@ class SuMeMeClientState extends ChangeNotifier {
   bool checkingUpdate = false;
   bool darkMode = false;
   bool memoryEnabled = true;
-  int selectedIndex = 0;
+  bool hideHistory = false;
+  bool autoScroll = true;
+  bool loadingLibrary = false;
+  bool uploading = false;
+  int visibleMessageLimit = 80;
+  double textScale = 1;
   String? errorMessage;
+  String currentSection = 'chat';
 
   String sessionCookie = '';
   Map<String, dynamic>? user;
@@ -100,8 +50,12 @@ class SuMeMeClientState extends ChangeNotifier {
   Map<String, dynamic>? serverConfig;
   List<String> models = <String>[];
   String selectedModel = '';
-  List<Conversation> conversations = <Conversation>[];
-  String? activeConversationId;
+  final List<ChatMessage> timeline = <ChatMessage>[];
+  DateTime? historyCutoff;
+  final List<ChatAttachment> pendingAttachments = <ChatAttachment>[];
+  final Map<String, UploadProgress> uploadProgress = <String, UploadProgress>{};
+  List<LibraryItem> libraryItems = <LibraryItem>[];
+  String libraryQuery = '';
   String currentVersion = '0.0.0';
   int currentBuild = 0;
   ReleaseInfo? latestRelease;
@@ -110,57 +64,121 @@ class SuMeMeClientState extends ChangeNotifier {
 
   bool get loggedIn => user != null && sessionCookie.isNotEmpty;
   bool get isConnected => health?['status'] == 'ok';
-  bool get registrationEnabled =>
-      serverConfig?['registration_enabled'] != false;
+  bool get registrationEnabled => serverConfig?['registration_enabled'] != false;
   String get platformName => Platform.isAndroid ? 'android' : 'windows';
-  bool get hasUpdate =>
-      latestRelease != null &&
+  bool get hasUpdate => latestRelease != null &&
       latestRelease!.available &&
       compareVersions(latestRelease!.version, currentVersion) > 0;
+  String get accountId => user?['id']?.toString() ?? 'anonymous';
+  String get conversationId => 'sumeme-single-$accountId';
 
-  Conversation? get activeConversation {
-    for (final Conversation item in conversations) {
-      if (item.id == activeConversationId) return item;
-    }
-    return null;
+  List<ChatMessage> get visibleTimeline {
+    final DateTime? cutoff = hideHistory ? historyCutoff : null;
+    if (cutoff == null) return List<ChatMessage>.unmodifiable(timeline);
+    return timeline
+        .where((ChatMessage message) => !message.createdAt.isBefore(cutoff))
+        .toList(growable: false);
+  }
+
+  List<ChatMessage> get displayedMessages {
+    final List<ChatMessage> source = visibleTimeline;
+    if (source.length <= visibleMessageLimit) return source;
+    return source.sublist(source.length - visibleMessageLimit);
+  }
+
+  bool get canLoadOlder => visibleTimeline.length > visibleMessageLimit;
+
+  List<LibraryItem> get filteredLibraryItems {
+    final String query = libraryQuery.trim().toLowerCase();
+    if (query.isEmpty) return List<LibraryItem>.unmodifiable(libraryItems);
+    return libraryItems
+        .where((LibraryItem item) =>
+            item.name.toLowerCase().contains(query) ||
+            item.fileType.toLowerCase().contains(query))
+        .toList(growable: false);
   }
 
   Future<void> initialize() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     darkMode = prefs.getBool('dark_mode') ?? false;
     memoryEnabled = prefs.getBool('memory_enabled') ?? true;
+    autoScroll = prefs.getBool('auto_scroll') ?? true;
+    textScale = prefs.getDouble('text_scale') ?? 1;
     selectedModel = prefs.getString('selected_model') ?? '';
     sessionCookie = await _secure.read(key: _sessionKey) ?? '';
     final PackageInfo package = await PackageInfo.fromPlatform();
     currentVersion = package.version;
     currentBuild = int.tryParse(package.buildNumber) ?? 0;
-    _restoreConversations(prefs.getString(_conversationKey));
     initialized = true;
     notifyListeners();
     await refreshConnection(silent: true);
-    if (sessionCookie.isNotEmpty) await restoreSession();
+    if (sessionCookie.isNotEmpty) {
+      await restoreSession();
+    } else {
+      await _restoreTimeline('anonymous');
+    }
     await checkForUpdates(silent: true);
   }
 
-  void _restoreConversations(String? raw) {
-    if (raw == null || raw.isEmpty) return;
-    try {
-      final Object? decoded = jsonDecode(raw);
-      if (decoded is List<Object?>) {
-        conversations = decoded
-            .whereType<Map<Object?, Object?>>()
-            .map((Map<Object?, Object?> item) =>
-                Conversation.fromJson(Map<String, dynamic>.from(item)))
-            .where((Conversation item) => item.id.isNotEmpty)
-            .toList();
+  String _scopedKey(String base, String id) => '$base.$id';
+
+  Future<void> _restoreTimeline(String id) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    timeline.clear();
+    final String? raw = prefs.getString(_scopedKey(_timelineKey, id));
+    if (raw != null && raw.isNotEmpty) {
+      try {
+        final Object? decoded = jsonDecode(raw);
+        if (decoded is List<Object?>) {
+          timeline.addAll(decoded
+              .whereType<Map<Object?, Object?>>()
+              .map((Map<Object?, Object?> item) => ChatMessage.fromJson(
+                    Map<String, dynamic>.from(item),
+                  ))
+              .where((ChatMessage item) => item.id.isNotEmpty));
+        }
+      } on FormatException {
+        timeline.clear();
       }
-    } on FormatException {
-      conversations = <Conversation>[];
+    } else {
+      await _migrateLegacyConversations(prefs, id);
     }
-    conversations.sort(
-      (Conversation a, Conversation b) => b.updatedAt.compareTo(a.updatedAt),
+    timeline.sort((ChatMessage a, ChatMessage b) =>
+        a.createdAt.compareTo(b.createdAt));
+    hideHistory = prefs.getBool(_scopedKey(_hideHistoryKey, id)) ?? false;
+    historyCutoff = DateTime.tryParse(
+      prefs.getString(_scopedKey(_historyCutoffKey, id)) ?? '',
     );
-    if (conversations.isNotEmpty) activeConversationId = conversations.first.id;
+    if (hideHistory && historyCutoff == null) historyCutoff = DateTime.now();
+    visibleMessageLimit = 80;
+    notifyListeners();
+  }
+
+  Future<void> _migrateLegacyConversations(
+    SharedPreferences prefs,
+    String id,
+  ) async {
+    final String? legacy = prefs.getString(_legacyConversationKey);
+    if (legacy == null || legacy.isEmpty) return;
+    try {
+      final Object? decoded = jsonDecode(legacy);
+      if (decoded is! List<Object?>) return;
+      for (final Object? rawConversation in decoded) {
+        if (rawConversation is! Map<Object?, Object?>) continue;
+        final Object? rawMessages = rawConversation['messages'];
+        if (rawMessages is! List<Object?>) continue;
+        timeline.addAll(rawMessages
+            .whereType<Map<Object?, Object?>>()
+            .map((Map<Object?, Object?> item) => ChatMessage.fromJson(
+                  Map<String, dynamic>.from(item),
+                )));
+      }
+      timeline.sort((ChatMessage a, ChatMessage b) =>
+          a.createdAt.compareTo(b.createdAt));
+      await _persistTimeline(id: id);
+    } on FormatException {
+      return;
+    }
   }
 
   Future<void> refreshConnection({bool silent = false}) async {
@@ -184,110 +202,12 @@ class SuMeMeClientState extends ChangeNotifier {
     }
   }
 
-  Future<void> restoreSession() async {
-    try {
-      final Map<String, dynamic> value = await _api.session(sessionCookie);
-      user = value['user'] is Map<Object?, Object?>
-          ? Map<String, dynamic>.from(
-              value['user'] as Map<Object?, Object?>,
-            )
-          : null;
-      if (user != null) await refreshModels();
-    } on Object {
-      await _clearSession();
+  void setSection(String section) {
+    currentSection = section;
+    notifyListeners();
+    if (section == 'library' && loggedIn && libraryItems.isEmpty) {
+      refreshLibrary();
     }
-    notifyListeners();
-  }
-
-  Future<bool> signIn(String email, String password) async {
-    authenticating = true;
-    errorMessage = null;
-    notifyListeners();
-    try {
-      final AuthResult result =
-          await _api.signIn(email: email, password: password);
-      if (result.cookie.isEmpty) {
-        throw const SuMeMeClientException('服务器未返回登录会话');
-      }
-      sessionCookie = result.cookie;
-      await _secure.write(key: _sessionKey, value: sessionCookie);
-      await restoreSession();
-      return loggedIn;
-    } on Object catch (error) {
-      errorMessage = error.toString();
-      return false;
-    } finally {
-      authenticating = false;
-      notifyListeners();
-    }
-  }
-
-  Future<bool> signUp(String name, String email, String password) async {
-    authenticating = true;
-    errorMessage = null;
-    notifyListeners();
-    try {
-      final AuthResult result = await _api.signUp(
-        name: name,
-        email: email,
-        password: password,
-      );
-      if (result.cookie.isEmpty) {
-        throw const SuMeMeClientException('账户已创建，但服务器未返回登录会话');
-      }
-      sessionCookie = result.cookie;
-      await _secure.write(key: _sessionKey, value: sessionCookie);
-      await restoreSession();
-      return loggedIn;
-    } on Object catch (error) {
-      errorMessage = error.toString();
-      return false;
-    } finally {
-      authenticating = false;
-      notifyListeners();
-    }
-  }
-
-  Future<void> signOut() async {
-    try {
-      if (sessionCookie.isNotEmpty) await _api.signOut(sessionCookie);
-    } on Object {
-      // Local sign-out must still complete if the server session already expired.
-    }
-    await _clearSession();
-    notifyListeners();
-  }
-
-  Future<void> _clearSession() async {
-    sessionCookie = '';
-    user = null;
-    models = <String>[];
-    selectedModel = '';
-    await _secure.delete(key: _sessionKey);
-  }
-
-  Future<void> refreshModels() async {
-    if (!loggedIn) return;
-    try {
-      models = await _api.models(sessionCookie);
-      final String serverDefault =
-          serverConfig?['default_model']?.toString() ?? '';
-      if (selectedModel.isEmpty || !models.contains(selectedModel)) {
-        selectedModel = models.contains(serverDefault)
-            ? serverDefault
-            : (models.isEmpty ? serverDefault : models.first);
-      }
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('selected_model', selectedModel);
-    } on Object catch (error) {
-      errorMessage = error.toString();
-    }
-    notifyListeners();
-  }
-
-  void selectPage(int index) {
-    selectedIndex = index;
-    notifyListeners();
   }
 
   void selectModel(String value) {
@@ -312,110 +232,52 @@ class SuMeMeClientState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Conversation createConversation() {
-    final Conversation conversation = Conversation(
-      id: _id(),
-      title: '新对话',
-      updatedAt: DateTime.now(),
-    );
-    conversations.insert(0, conversation);
-    activeConversationId = conversation.id;
-    _persistConversations();
-    notifyListeners();
-    return conversation;
-  }
-
-  void activateConversation(String id) {
-    activeConversationId = id;
+  Future<void> setAutoScroll(bool value) async {
+    autoScroll = value;
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('auto_scroll', value);
     notifyListeners();
   }
 
-  Future<void> sendMessage(String text) async {
-    final String normalized = text.trim();
-    if (normalized.isEmpty || sending) return;
-    if (!loggedIn) {
-      errorMessage = '请先登录 SuMeMe 账户';
-      notifyListeners();
-      return;
-    }
-    if (selectedModel.isEmpty) {
-      errorMessage = '服务端尚未配置可用模型，请联系管理员在 /admin 设置';
-      notifyListeners();
-      return;
-    }
-    final Conversation conversation = activeConversation ?? createConversation();
-    final ChatMessage userMessage = ChatMessage(
-      id: _id(),
-      role: 'user',
-      text: normalized,
-      createdAt: DateTime.now(),
-    );
-    final ChatMessage assistant = ChatMessage(
-      id: _id(),
-      role: 'assistant',
-      text: '',
-      createdAt: DateTime.now(),
-      streaming: true,
-    );
-    conversation.messages.addAll(<ChatMessage>[userMessage, assistant]);
-    if (conversation.title == '新对话') {
-      conversation.title = normalized.length > 24
-          ? '${normalized.substring(0, 24)}…'
-          : normalized;
-    }
-    sending = true;
-    errorMessage = null;
+  Future<void> setTextScale(double value) async {
+    textScale = value.clamp(0.9, 1.3);
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble('text_scale', textScale);
     notifyListeners();
-    try {
-      final List<Map<String, String>> messages = conversation.messages
-          .where((ChatMessage item) => item.id != assistant.id)
-          .map(
-            (ChatMessage item) => <String, String>{
-              'role': item.role,
-              'content': item.text,
-            },
-          )
-          .toList(growable: false);
-      await for (final String chunk in _api.streamChat(
-        cookie: sessionCookie,
-        conversationId: conversation.id,
-        model: selectedModel,
-        messages: messages,
-        memoryEnabled: memoryEnabled,
-      )) {
-        assistant.text += chunk;
-        notifyListeners();
-      }
-      if (assistant.text.trim().isEmpty) {
-        assistant.text = '服务器没有返回可显示的文本。';
-      }
-    } on Object catch (error) {
-      assistant.text = '请求失败：$error';
-      errorMessage = error.toString();
-    } finally {
-      assistant.streaming = false;
-      sending = false;
-      conversation.updatedAt = DateTime.now();
-      conversations.sort(
-        (Conversation a, Conversation b) => b.updatedAt.compareTo(a.updatedAt),
+  }
+
+  Future<void> setHideHistory(bool value) async {
+    hideHistory = value;
+    historyCutoff = value ? DateTime.now() : null;
+    visibleMessageLimit = 80;
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_scopedKey(_hideHistoryKey, accountId), value);
+    if (historyCutoff == null) {
+      await prefs.remove(_scopedKey(_historyCutoffKey, accountId));
+    } else {
+      await prefs.setString(
+        _scopedKey(_historyCutoffKey, accountId),
+        historyCutoff!.toIso8601String(),
       );
-      await _persistConversations();
-      notifyListeners();
     }
+    notifyListeners();
   }
 
-  Future<void> searchMemory(String query) async {
-    final String normalized = query.trim();
-    if (!loggedIn || normalized.isEmpty) return;
-    try {
-      final Map<String, dynamic> result = await _api.searchMemory(
-        cookie: sessionCookie,
-        query: normalized,
+  void loadOlderMessages() {
+    if (!canLoadOlder) return;
+    visibleMessageLimit = min(visibleTimeline.length, visibleMessageLimit + 100);
+    notifyListeners();
+  }
+
+  Future<void> clearVisibleHistory() async {
+    if (hideHistory && historyCutoff != null) {
+      timeline.removeWhere(
+        (ChatMessage message) => !message.createdAt.isBefore(historyCutoff!),
       );
-      memoryResult = result['context']?.toString() ?? '没有找到相关记忆。';
-    } on Object catch (error) {
-      errorMessage = error.toString();
+    } else {
+      timeline.clear();
     }
+    await _persistTimeline();
     notifyListeners();
   }
 
@@ -460,6 +322,14 @@ class SuMeMeClientState extends ChangeNotifier {
     return opened;
   }
 
+  Future<void> _persistTimeline({String? id}) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+      _scopedKey(_timelineKey, id ?? accountId),
+      jsonEncode(timeline.map((ChatMessage item) => item.toJson()).toList()),
+    );
+  }
+
   void clearError() {
     errorMessage = null;
     notifyListeners();
@@ -469,16 +339,6 @@ class SuMeMeClientState extends ChangeNotifier {
     final int now = DateTime.now().microsecondsSinceEpoch;
     final int salt = _random.nextInt(1 << 32);
     return '${now.toRadixString(16)}${salt.toRadixString(16).padLeft(8, '0')}';
-  }
-
-  Future<void> _persistConversations() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString(
-      _conversationKey,
-      jsonEncode(
-        conversations.map((Conversation item) => item.toJson()).toList(),
-      ),
-    );
   }
 
   @override
@@ -495,7 +355,7 @@ int compareVersions(String left, String right) {
       .split('-')
       .first
       .split('.')
-      .map((String item) => int.tryParse(item) ?? 0)
+      .map((String part) => int.tryParse(part) ?? 0)
       .toList();
   final List<int> a = parse(left);
   final List<int> b = parse(right);
