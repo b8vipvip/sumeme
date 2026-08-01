@@ -1,6 +1,6 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-08-02T02:54:54+08:00
+- **采集时间：** 2026-08-02T03:32:18+08:00
 - **总体状态：** `healthy`
 - **开发阶段：** `deployed_and_stable`
 - **线上版本：** `e6d9007524633325b7005aa2751a9e97364f5432`
@@ -20,29 +20,29 @@
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| ai-provider-proxy | running | healthy | Up 17 hours (healthy) |
-| letta | running | healthy | Up 40 hours (healthy) |
+| ai-provider-proxy | running | healthy | Up 18 hours (healthy) |
+| letta | running | healthy | Up 41 hours (healthy) |
 | lobe | running | - | Up 33 hours |
-| memory-gateway | running | healthy | Up 17 hours (healthy) |
-| postgresql | running | healthy | Up 40 hours (healthy) |
-| qdrant | running | healthy | Up 40 hours (healthy) |
-| redis | running | healthy | Up 40 hours (healthy) |
-| rustfs | running | healthy | Up 40 hours (healthy) |
-| searxng | running | - | Up 18 hours |
-| sumeme-web | running | healthy | Up 17 hours (healthy) |
+| memory-gateway | running | healthy | Up 18 hours (healthy) |
+| postgresql | running | healthy | Up 41 hours (healthy) |
+| qdrant | running | healthy | Up 41 hours (healthy) |
+| redis | running | healthy | Up 41 hours (healthy) |
+| rustfs | running | healthy | Up 41 hours (healthy) |
+| searxng | running | - | Up 19 hours |
+| sumeme-web | running | healthy | Up 18 hours (healthy) |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-08-01T18:54:35Z |
+| Publish project status | in_progress | main | 2026-08-01T19:32:01Z |
+| Smoke production | success | main | 2026-08-01T19:31:55Z |
+| Publish project status | success | main | 2026-08-01T18:55:12Z |
 | Publish project status | success | main | 2026-08-01T17:53:31Z |
 | Publish project status | success | main | 2026-08-01T16:49:14Z |
 | Publish project status | success | main | 2026-08-01T15:53:38Z |
 | Publish project status | success | main | 2026-08-01T14:52:35Z |
 | Publish project status | success | main | 2026-08-01T13:53:38Z |
-| Publish project status | cancelled | main | 2026-08-01T13:52:52Z |
-| Smoke production | success | main | 2026-08-01T13:52:36Z |
 
 ## 开放 PR
 
@@ -69,7 +69,7 @@
 
 ## 可靠性信号
 
-- 状态快照发布时年龄：`0s`
+- 状态快照发布时年龄：`1s`
 - 状态快照过期：`no`（阈值 2100s）
 - 部署状态：`idle`
 - 当前版本与 main 一致：`yes`
