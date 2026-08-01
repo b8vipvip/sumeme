@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-08-01T19:04:33+08:00",
+  "generated_at": "2026-08-01T20:11:35+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "healthy",
   "project_stage": "deployed_and_stable",
@@ -74,7 +74,7 @@
       "name": "sumeme-ai-provider-proxy",
       "state": "running",
       "health": "healthy",
-      "status": "Up 10 hours (healthy)",
+      "status": "Up 11 hours (healthy)",
       "critical": false
     },
     {
@@ -82,7 +82,7 @@
       "name": "sumeme-letta",
       "state": "running",
       "health": "healthy",
-      "status": "Up 32 hours (healthy)",
+      "status": "Up 33 hours (healthy)",
       "critical": false,
       "required": false
     },
@@ -91,7 +91,7 @@
       "name": "sumeme-lobehub",
       "state": "running",
       "health": "",
-      "status": "Up 25 hours",
+      "status": "Up 26 hours",
       "critical": true
     },
     {
@@ -99,7 +99,7 @@
       "name": "sumeme-memory-gateway",
       "state": "running",
       "health": "healthy",
-      "status": "Up 10 hours (healthy)",
+      "status": "Up 11 hours (healthy)",
       "critical": true
     },
     {
@@ -107,7 +107,7 @@
       "name": "sumeme-postgres",
       "state": "running",
       "health": "healthy",
-      "status": "Up 32 hours (healthy)",
+      "status": "Up 33 hours (healthy)",
       "critical": true
     },
     {
@@ -115,7 +115,7 @@
       "name": "sumeme-qdrant",
       "state": "running",
       "health": "healthy",
-      "status": "Up 32 hours (healthy)",
+      "status": "Up 33 hours (healthy)",
       "critical": true
     },
     {
@@ -123,7 +123,7 @@
       "name": "sumeme-redis",
       "state": "running",
       "health": "healthy",
-      "status": "Up 32 hours (healthy)",
+      "status": "Up 33 hours (healthy)",
       "critical": true
     },
     {
@@ -131,7 +131,7 @@
       "name": "sumeme-rustfs",
       "state": "running",
       "health": "healthy",
-      "status": "Up 32 hours (healthy)",
+      "status": "Up 33 hours (healthy)",
       "critical": true
     },
     {
@@ -139,7 +139,7 @@
       "name": "sumeme-searxng",
       "state": "running",
       "health": "",
-      "status": "Up 10 hours",
+      "status": "Up 11 hours",
       "critical": true
     },
     {
@@ -147,21 +147,21 @@
       "name": "sumeme-web",
       "state": "running",
       "health": "healthy",
-      "status": "Up 10 hours (healthy)",
+      "status": "Up 11 hours (healthy)",
       "critical": true
     }
   ],
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 31307341824,
-      "free_bytes": 9007054848,
+      "used_bytes": 31317254144,
+      "free_bytes": 8997142528,
       "used_percent": 74.3
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1870770176,
-      "used_percent": 52.1
+      "available_bytes": 1855815680,
+      "used_percent": 52.5
     }
   },
   "github": {
@@ -199,9 +199,22 @@
         "conclusion": null,
         "head_branch": "main",
         "head_sha": "e6d9007524633325b7005aa2751a9e97364f5432",
+        "run_number": 405,
+        "created_at": "2026-08-01T12:11:12Z",
+        "updated_at": "2026-08-01T12:11:17Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30699188469"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "schedule",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "e6d9007524633325b7005aa2751a9e97364f5432",
         "run_number": 404,
         "created_at": "2026-08-01T11:04:06Z",
-        "updated_at": "2026-08-01T11:04:11Z",
+        "updated_at": "2026-08-01T11:04:55Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30696958243"
       },
       {
@@ -333,19 +346,6 @@
         "created_at": "2026-08-01T01:28:38Z",
         "updated_at": "2026-08-01T01:29:16Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30677990839"
-      },
-      {
-        "name": "CI",
-        "display_title": "Merge PR #75: persistent single-chat native clients",
-        "event": "push",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "e6d9007524633325b7005aa2751a9e97364f5432",
-        "run_number": 728,
-        "created_at": "2026-08-01T01:26:30Z",
-        "updated_at": "2026-08-01T01:28:37Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30677916424"
       }
     ]
   },
@@ -363,7 +363,7 @@
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-08-01T19:04:33+08:00"
+    "generated_at": "2026-08-01T20:11:35+08:00"
   },
   "components": {
     "letta": {
@@ -431,7 +431,7 @@
         "service_scope_verification_failed"
       ],
       "deployment_classification": "external_degraded",
-      "age_seconds_at_publish": 34567,
+      "age_seconds_at_publish": 38589,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }
