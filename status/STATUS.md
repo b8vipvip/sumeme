@@ -1,6 +1,6 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-08-01T16:33:45+08:00
+- **采集时间：** 2026-08-01T17:35:27+08:00
 - **总体状态：** `healthy`
 - **开发阶段：** `deployed_and_stable`
 - **线上版本：** `e6d9007524633325b7005aa2751a9e97364f5432`
@@ -14,35 +14,35 @@
 - 本地网关：`ok`
 - 公网入口：`ok`
 - 磁盘使用：`74.2%`，剩余 8.4 GiB
-- 内存使用：`52.1%`，可用 1.7 GiB
+- 内存使用：`52.4%`，可用 1.7 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| ai-provider-proxy | running | healthy | Up 7 hours (healthy) |
-| letta | running | healthy | Up 30 hours (healthy) |
-| lobe | running | - | Up 23 hours |
-| memory-gateway | running | healthy | Up 7 hours (healthy) |
-| postgresql | running | healthy | Up 30 hours (healthy) |
-| qdrant | running | healthy | Up 30 hours (healthy) |
-| redis | running | healthy | Up 30 hours (healthy) |
-| rustfs | running | healthy | Up 30 hours (healthy) |
-| searxng | running | - | Up 8 hours |
-| sumeme-web | running | healthy | Up 7 hours (healthy) |
+| ai-provider-proxy | running | healthy | Up 8 hours (healthy) |
+| letta | running | healthy | Up 31 hours (healthy) |
+| lobe | running | - | Up 24 hours |
+| memory-gateway | running | healthy | Up 8 hours (healthy) |
+| postgresql | running | healthy | Up 31 hours (healthy) |
+| qdrant | running | healthy | Up 31 hours (healthy) |
+| redis | running | healthy | Up 31 hours (healthy) |
+| rustfs | running | healthy | Up 31 hours (healthy) |
+| searxng | running | - | Up 9 hours |
+| sumeme-web | running | healthy | Up 8 hours (healthy) |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-08-01T08:33:23Z |
+| Publish project status | in_progress | main | 2026-08-01T09:35:00Z |
+| Publish project status | success | main | 2026-08-01T08:34:04Z |
 | Smoke production | success | main | 2026-08-01T08:33:18Z |
 | Publish project status | success | main | 2026-08-01T07:41:05Z |
 | Publish project status | success | main | 2026-08-01T05:19:21Z |
 | Publish project status | success | main | 2026-08-01T03:48:34Z |
 | Smoke production | success | main | 2026-08-01T03:47:50Z |
 | Publish project status | success | main | 2026-08-01T01:54:30Z |
-| Public UI smoke | success | main | 2026-08-01T01:35:30Z |
 
 ## 开放 PR
 
