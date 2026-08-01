@@ -259,7 +259,7 @@ class _ClientShellState extends State<_ClientShell> {
             selectedIcon: Icon(Icons.settings_rounded),
             label: Text('设置'),
           ),
-          const Spacer(),
+          const SizedBox(height: 28),
           Padding(
             padding: const EdgeInsets.all(18),
             child: Container(
@@ -325,8 +325,6 @@ class _ClientShellState extends State<_ClientShell> {
                 } else if (value == 'hide') {
                   widget.state.setHideHistory(!widget.state.hideHistory);
                 } else if (value == 'bottom') {
-                  // Rebuilding the chat page causes its auto-scroll policy to
-                  // move to the newest message without exposing a global key.
                   widget.state.setSection('chat');
                 }
               },
