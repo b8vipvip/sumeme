@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'client_api.dart';
+import 'client_models.dart';
 import 'client_state.dart';
 
 class SuMeMeLibraryPage extends StatefulWidget {
@@ -78,7 +79,7 @@ class _SuMeMeLibraryPageState extends State<SuMeMeLibraryPage> {
       files.add(UploadFileData(
         name: file.name,
         bytes: bytes,
-        mimeType: file.mimeType ?? _mime(file.name),
+        mimeType: _mime(file.name),
       ));
     }
     await widget.state.uploadFiles(files);
@@ -289,7 +290,7 @@ class _SuMeMeLibraryPageState extends State<SuMeMeLibraryPage> {
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
             child: Column(
               children: widget.state.uploadProgress.values
-                  .map((UploadProgress progress) => Row(
+                  .map<Widget>((UploadProgress progress) => Row(
                         children: <Widget>[
                           Expanded(child: Text('${progress.name} · ${progress.stage}')),
                           SizedBox(
