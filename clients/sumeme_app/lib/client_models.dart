@@ -1,6 +1,17 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart' as services;
 
 import 'client_api.dart';
+
+extension PlatformFileMimeCompatibility on PlatformFile {
+  String? get mimeType => null;
+}
+
+class HardwareKeyboard {
+  static services.HardwareKeyboard get instance =>
+      services.HardwareKeyboard.instance;
+}
 
 class ChatMessage {
   ChatMessage({
