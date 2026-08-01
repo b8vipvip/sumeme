@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-08-01T11:48:14+08:00",
+  "generated_at": "2026-08-01T13:19:02+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "healthy",
   "project_stage": "deployed_and_stable",
@@ -74,7 +74,7 @@
       "name": "sumeme-ai-provider-proxy",
       "state": "running",
       "health": "healthy",
-      "status": "Up 2 hours (healthy)",
+      "status": "Up 4 hours (healthy)",
       "critical": false
     },
     {
@@ -82,7 +82,7 @@
       "name": "sumeme-letta",
       "state": "running",
       "health": "healthy",
-      "status": "Up 25 hours (healthy)",
+      "status": "Up 26 hours (healthy)",
       "critical": false,
       "required": false
     },
@@ -91,7 +91,7 @@
       "name": "sumeme-lobehub",
       "state": "running",
       "health": "",
-      "status": "Up 18 hours",
+      "status": "Up 19 hours",
       "critical": true
     },
     {
@@ -99,7 +99,7 @@
       "name": "sumeme-memory-gateway",
       "state": "running",
       "health": "healthy",
-      "status": "Up 2 hours (healthy)",
+      "status": "Up 4 hours (healthy)",
       "critical": true
     },
     {
@@ -107,7 +107,7 @@
       "name": "sumeme-postgres",
       "state": "running",
       "health": "healthy",
-      "status": "Up 25 hours (healthy)",
+      "status": "Up 26 hours (healthy)",
       "critical": true
     },
     {
@@ -115,7 +115,7 @@
       "name": "sumeme-qdrant",
       "state": "running",
       "health": "healthy",
-      "status": "Up 25 hours (healthy)",
+      "status": "Up 26 hours (healthy)",
       "critical": true
     },
     {
@@ -123,7 +123,7 @@
       "name": "sumeme-redis",
       "state": "running",
       "health": "healthy",
-      "status": "Up 25 hours (healthy)",
+      "status": "Up 26 hours (healthy)",
       "critical": true
     },
     {
@@ -131,7 +131,7 @@
       "name": "sumeme-rustfs",
       "state": "running",
       "health": "healthy",
-      "status": "Up 25 hours (healthy)",
+      "status": "Up 26 hours (healthy)",
       "critical": true
     },
     {
@@ -139,7 +139,7 @@
       "name": "sumeme-searxng",
       "state": "running",
       "health": "",
-      "status": "Up 3 hours",
+      "status": "Up 4 hours",
       "critical": true
     },
     {
@@ -147,21 +147,21 @@
       "name": "sumeme-web",
       "state": "running",
       "health": "healthy",
-      "status": "Up 2 hours (healthy)",
+      "status": "Up 4 hours (healthy)",
       "critical": true
     }
   ],
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 31303806976,
-      "free_bytes": 9010589696,
-      "used_percent": 74.3
+      "used_bytes": 31260160000,
+      "free_bytes": 9054236672,
+      "used_percent": 74.2
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1736876032,
-      "used_percent": 55.5
+      "available_bytes": 1739800576,
+      "used_percent": 55.4
     }
   },
   "github": {
@@ -194,14 +194,27 @@
       {
         "name": "Publish project status",
         "display_title": "Publish project status",
-        "event": "workflow_run",
+        "event": "schedule",
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
         "head_sha": "e6d9007524633325b7005aa2751a9e97364f5432",
+        "run_number": 400,
+        "created_at": "2026-08-01T05:18:37Z",
+        "updated_at": "2026-08-01T05:18:40Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30685591542"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "e6d9007524633325b7005aa2751a9e97364f5432",
         "run_number": 399,
         "created_at": "2026-08-01T03:47:52Z",
-        "updated_at": "2026-08-01T03:47:55Z",
+        "updated_at": "2026-08-01T03:48:34Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30682686803"
       },
       {
@@ -333,19 +346,6 @@
         "created_at": "2026-08-01T01:20:06Z",
         "updated_at": "2026-08-01T01:20:44Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30677683239"
-      },
-      {
-        "name": "Client source check",
-        "display_title": "Redesign native clients around one persistent chat timeline",
-        "event": "pull_request",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "agent/chinese-single-chat-client",
-        "head_sha": "16e05616c745052b14708798129c25245b4034bc",
-        "run_number": 36,
-        "created_at": "2026-08-01T01:20:06Z",
-        "updated_at": "2026-08-01T01:21:03Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/30677682944"
       }
     ]
   },
@@ -363,7 +363,7 @@
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-08-01T11:48:14+08:00"
+    "generated_at": "2026-08-01T13:19:02+08:00"
   },
   "components": {
     "letta": {
@@ -431,7 +431,7 @@
         "service_scope_verification_failed"
       ],
       "deployment_classification": "external_degraded",
-      "age_seconds_at_publish": 8388,
+      "age_seconds_at_publish": 13836,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }

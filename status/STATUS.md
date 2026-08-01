@@ -1,6 +1,6 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-08-01T11:48:14+08:00
+- **采集时间：** 2026-08-01T13:19:02+08:00
 - **总体状态：** `healthy`
 - **开发阶段：** `deployed_and_stable`
 - **线上版本：** `e6d9007524633325b7005aa2751a9e97364f5432`
@@ -13,36 +13,36 @@
 
 - 本地网关：`ok`
 - 公网入口：`ok`
-- 磁盘使用：`74.3%`，剩余 8.4 GiB
-- 内存使用：`55.5%`，可用 1.6 GiB
+- 磁盘使用：`74.2%`，剩余 8.4 GiB
+- 内存使用：`55.4%`，可用 1.6 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| ai-provider-proxy | running | healthy | Up 2 hours (healthy) |
-| letta | running | healthy | Up 25 hours (healthy) |
-| lobe | running | - | Up 18 hours |
-| memory-gateway | running | healthy | Up 2 hours (healthy) |
-| postgresql | running | healthy | Up 25 hours (healthy) |
-| qdrant | running | healthy | Up 25 hours (healthy) |
-| redis | running | healthy | Up 25 hours (healthy) |
-| rustfs | running | healthy | Up 25 hours (healthy) |
-| searxng | running | - | Up 3 hours |
-| sumeme-web | running | healthy | Up 2 hours (healthy) |
+| ai-provider-proxy | running | healthy | Up 4 hours (healthy) |
+| letta | running | healthy | Up 26 hours (healthy) |
+| lobe | running | - | Up 19 hours |
+| memory-gateway | running | healthy | Up 4 hours (healthy) |
+| postgresql | running | healthy | Up 26 hours (healthy) |
+| qdrant | running | healthy | Up 26 hours (healthy) |
+| redis | running | healthy | Up 26 hours (healthy) |
+| rustfs | running | healthy | Up 26 hours (healthy) |
+| searxng | running | - | Up 4 hours |
+| sumeme-web | running | healthy | Up 4 hours (healthy) |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-08-01T03:47:55Z |
+| Publish project status | in_progress | main | 2026-08-01T05:18:40Z |
+| Publish project status | success | main | 2026-08-01T03:48:34Z |
 | Smoke production | success | main | 2026-08-01T03:47:50Z |
 | Publish project status | success | main | 2026-08-01T01:54:30Z |
 | Public UI smoke | success | main | 2026-08-01T01:35:30Z |
 | Publish project status | success | main | 2026-08-01T01:29:16Z |
 | CI | success | main | 2026-08-01T01:28:37Z |
 | Client source check | success | main | 2026-08-01T01:27:28Z |
-| Build Android and Windows clients | success | main | 2026-08-01T01:32:58Z |
 
 ## 开放 PR
 
