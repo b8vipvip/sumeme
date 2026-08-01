@@ -1,10 +1,10 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-08-01T07:53:49+08:00
+- **采集时间：** 2026-08-01T08:51:36+08:00
 - **总体状态：** `healthy`
 - **开发阶段：** `deployed_and_stable`
-- **线上版本：** `ddddf2ee60fa08dbda449942b276dff2fc28e18e`
-- **main 最新版本：** `ddddf2ee60fa08dbda449942b276dff2fc28e18e`
+- **线上版本：** `549e8beddc921ec4f5cef69bef6748c2bf2af22f`
+- **main 最新版本：** `549e8beddc921ec4f5cef69bef6748c2bf2af22f`
 - **线上与 main 同步：** 是
 - **开放 PR：** 0
 - **开放 Issue：** 3
@@ -13,36 +13,36 @@
 
 - 本地网关：`ok`
 - 公网入口：`ok`
-- 磁盘使用：`73.8%`，剩余 8.6 GiB
-- 内存使用：`53.8%`，可用 1.7 GiB
+- 磁盘使用：`74.7%`，剩余 8.2 GiB
+- 内存使用：`56.3%`，可用 1.6 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| ai-provider-proxy | running | healthy | Up 10 hours (healthy) |
-| letta | running | healthy | Up 21 hours (healthy) |
-| lobe | running | - | Up 14 hours |
-| memory-gateway | running | healthy | Up 10 hours (healthy) |
-| postgresql | running | healthy | Up 21 hours (healthy) |
-| qdrant | running | healthy | Up 21 hours (healthy) |
-| redis | running | healthy | Up 21 hours (healthy) |
-| rustfs | running | healthy | Up 21 hours (healthy) |
-| searxng | running | - | Up 21 hours |
-| sumeme-web | running | healthy | Up 10 hours (healthy) |
+| ai-provider-proxy | running | healthy | Up 53 seconds (healthy) |
+| letta | running | healthy | Up 22 hours (healthy) |
+| lobe | running | - | Up 15 hours |
+| memory-gateway | running | healthy | Up 47 seconds (healthy) |
+| postgresql | running | healthy | Up 22 hours (healthy) |
+| qdrant | running | healthy | Up 22 hours (healthy) |
+| redis | running | healthy | Up 22 hours (healthy) |
+| rustfs | running | healthy | Up 22 hours (healthy) |
+| searxng | running | - | Up 53 seconds |
+| sumeme-web | running | healthy | Up 41 seconds (healthy) |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-07-31T23:53:32Z |
-| Publish project status | success | main | 2026-07-31T22:52:10Z |
-| Publish project status | success | main | 2026-07-31T21:48:19Z |
-| Publish project status | success | main | 2026-07-31T20:45:42Z |
-| Publish project status | success | main | 2026-07-31T19:51:15Z |
-| Smoke production | success | main | 2026-07-31T19:50:34Z |
-| Publish project status | success | main | 2026-07-31T19:37:55Z |
-| Publish project status | success | main | 2026-07-31T18:00:20Z |
+| Publish project status | in_progress | main | 2026-08-01T00:51:18Z |
+| Public UI smoke | in_progress | main | 2026-08-01T00:51:19Z |
+| CI | success | main | 2026-08-01T00:51:13Z |
+| Server UI check | success | main | 2026-08-01T00:48:15Z |
+| Admin console and managed client check | success | main | 2026-08-01T00:48:58Z |
+| Public UI smoke | skipped | main | 2026-08-01T00:42:52Z |
+| CI | success | agent/fix-admin-route-loop | 2026-08-01T00:42:49Z |
+| Server UI check | success | agent/fix-admin-route-loop | 2026-08-01T00:42:37Z |
 
 ## 开放 PR
 
@@ -56,6 +56,7 @@
 
 ## 最近部署
 
+- `2026-08-01T08:51:02+08:00 549e8beddc921ec4f5cef69bef6748c2bf2af22f`
 - `2026-07-31T22:10:19+08:00 ddddf2ee60fa08dbda449942b276dff2fc28e18e`
 - `2026-07-31T22:06:14+08:00 2fd8e6aa85fd2048443029be322d9e14e557a9b4`
 - `2026-07-31T20:26:00+08:00 1858ee28dacc133f737b8e7028f4bfba05c13a7b`
@@ -64,7 +65,6 @@
 - `2026-07-31T19:20:51+08:00 9621f00a6ff32e996229c8b3f490ae98dcfd0a96`
 - `2026-07-31T19:10:53+08:00 adddeac3918de48859647db5a8b0e90ec1259196`
 - `2026-07-31T18:54:35+08:00 556007b956d06ca04857be3a817a09bba6aa2065`
-- `2026-07-31T18:32:38+08:00 rollback_failed target=d090da52d3dfd06711d173949473ac5a514f82a4 failed=626f41b285a6ef4ee328fb4cba1c274ced733d39 reason=snapshot_restore_failed`
 - `2026-07-31T18:32:38+08:00 rollback_failed target=d090da52d3dfd06711d173949473ac5a514f82a4 failed=626f41b285a6ef4ee328fb4cba1c274ced733d39 reason=snapshot_restore_failed`
 
 ## 可靠性信号
