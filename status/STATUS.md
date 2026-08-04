@@ -1,6 +1,6 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-08-04T09:28:34+08:00
+- **采集时间：** 2026-08-04T11:35:15+08:00
 - **总体状态：** `healthy`
 - **开发阶段：** `deployed_and_stable`
 - **线上版本：** `e6d9007524633325b7005aa2751a9e97364f5432`
@@ -13,7 +13,7 @@
 
 - 本地网关：`ok`
 - 公网入口：`ok`
-- 磁盘使用：`74.5%`，剩余 8.3 GiB
+- 磁盘使用：`74.6%`，剩余 8.3 GiB
 - 内存使用：`54.9%`，可用 1.6 GiB
 
 ## 容器服务
@@ -21,13 +21,13 @@
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
 | ai-provider-proxy | running | healthy | Up 3 days (healthy) |
-| letta | running | healthy | Up 3 days (healthy) |
+| letta | running | healthy | Up 4 days (healthy) |
 | lobe | running | - | Up 3 days |
 | memory-gateway | running | healthy | Up 3 days (healthy) |
-| postgresql | running | healthy | Up 3 days (healthy) |
-| qdrant | running | healthy | Up 3 days (healthy) |
-| redis | running | healthy | Up 3 days (healthy) |
-| rustfs | running | healthy | Up 3 days (healthy) |
+| postgresql | running | healthy | Up 4 days (healthy) |
+| qdrant | running | healthy | Up 4 days (healthy) |
+| redis | running | healthy | Up 4 days (healthy) |
+| rustfs | running | healthy | Up 4 days (healthy) |
 | searxng | running | - | Up 3 days |
 | sumeme-web | running | healthy | Up 3 days (healthy) |
 
@@ -35,14 +35,14 @@
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-08-04T01:28:13Z |
+| Publish project status | in_progress | main | 2026-08-04T03:34:51Z |
+| Smoke production | success | main | 2026-08-04T03:34:46Z |
+| Publish project status | success | main | 2026-08-04T01:28:52Z |
 | Publish project status | success | main | 2026-08-03T23:46:07Z |
 | Publish project status | success | main | 2026-08-03T22:32:50Z |
 | Publish project status | success | main | 2026-08-03T21:20:00Z |
 | Publish project status | success | main | 2026-08-03T20:09:51Z |
 | Publish project status | success | main | 2026-08-03T19:56:12Z |
-| Smoke production | success | main | 2026-08-03T19:55:34Z |
-| Publish project status | success | main | 2026-08-03T18:27:32Z |
 
 ## 开放 PR
 
