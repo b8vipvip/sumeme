@@ -1,6 +1,6 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-08-07T16:46:26+08:00
+- **采集时间：** 2026-08-07T17:51:40+08:00
 - **总体状态：** `healthy`
 - **开发阶段：** `deployed_and_stable`
 - **线上版本：** `e6d9007524633325b7005aa2751a9e97364f5432`
@@ -14,7 +14,7 @@
 - 本地网关：`ok`
 - 公网入口：`ok`
 - 磁盘使用：`76.3%`，剩余 7.6 GiB
-- 内存使用：`48.2%`，可用 1.9 GiB
+- 内存使用：`47.7%`，可用 1.9 GiB
 
 ## 容器服务
 
@@ -22,7 +22,7 @@
 |---|---|---|---|
 | ai-provider-proxy | running | healthy | Up 6 days (healthy) |
 | letta | running | healthy | Up 7 days (healthy) |
-| lobe | running | - | Up 6 days |
+| lobe | running | - | Up 7 days |
 | memory-gateway | running | healthy | Up 6 days (healthy) |
 | postgresql | running | healthy | Up 7 days (healthy) |
 | qdrant | running | healthy | Up 7 days (healthy) |
@@ -35,14 +35,14 @@
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-08-07T08:46:04Z |
+| Publish project status | in_progress | main | 2026-08-07T09:51:24Z |
+| Publish project status | success | main | 2026-08-07T08:46:49Z |
 | Publish project status | success | main | 2026-08-07T07:50:32Z |
 | Publish project status | success | main | 2026-08-07T07:40:44Z |
 | Smoke production | success | main | 2026-08-07T07:39:41Z |
 | Publish project status | success | main | 2026-08-07T06:17:10Z |
 | Publish project status | success | main | 2026-08-07T05:03:44Z |
 | Publish project status | success | main | 2026-08-07T03:16:03Z |
-| Publish project status | cancelled | main | 2026-08-07T03:15:23Z |
 
 ## 开放 PR
 
