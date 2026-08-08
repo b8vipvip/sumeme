@@ -1,6 +1,6 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-08-08T08:54:13+08:00
+- **采集时间：** 2026-08-08T10:20:30+08:00
 - **总体状态：** `healthy`
 - **开发阶段：** `deployed_and_stable`
 - **线上版本：** `e6d9007524633325b7005aa2751a9e97364f5432`
@@ -20,29 +20,29 @@
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| ai-provider-proxy | running | healthy | Up 6 days (healthy) |
+| ai-provider-proxy | running | healthy | Up 7 days (healthy) |
 | letta | running | healthy | Up 7 days (healthy) |
 | lobe | running | - | Up 7 days |
-| memory-gateway | running | healthy | Up 6 days (healthy) |
-| postgresql | running | healthy | Up 7 days (healthy) |
-| qdrant | running | healthy | Up 7 days (healthy) |
-| redis | running | healthy | Up 7 days (healthy) |
-| rustfs | running | healthy | Up 7 days (healthy) |
+| memory-gateway | running | healthy | Up 7 days (healthy) |
+| postgresql | running | healthy | Up 8 days (healthy) |
+| qdrant | running | healthy | Up 8 days (healthy) |
+| redis | running | healthy | Up 8 days (healthy) |
+| rustfs | running | healthy | Up 8 days (healthy) |
 | searxng | running | - | Up 7 days |
-| sumeme-web | running | healthy | Up 6 days (healthy) |
+| sumeme-web | running | healthy | Up 7 days (healthy) |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-08-08T00:53:55Z |
+| Publish project status | in_progress | main | 2026-08-08T02:20:11Z |
+| Smoke production | success | main | 2026-08-08T02:20:01Z |
+| Publish project status | success | main | 2026-08-08T00:54:32Z |
 | Publish project status | success | main | 2026-08-07T23:46:23Z |
 | Publish project status | success | main | 2026-08-07T23:02:38Z |
 | Publish project status | success | main | 2026-08-07T22:17:02Z |
 | Publish project status | success | main | 2026-08-07T21:32:26Z |
 | Publish project status | success | main | 2026-08-07T20:56:43Z |
-| Publish project status | success | main | 2026-08-07T20:06:18Z |
-| Publish project status | success | main | 2026-08-07T19:29:50Z |
 
 ## 开放 PR
 
