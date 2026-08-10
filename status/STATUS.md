@@ -1,6 +1,6 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-08-10T08:59:49+08:00
+- **采集时间：** 2026-08-10T10:32:23+08:00
 - **总体状态：** `healthy`
 - **开发阶段：** `deployed_and_stable`
 - **线上版本：** `e6d9007524633325b7005aa2751a9e97364f5432`
@@ -14,20 +14,20 @@
 - 本地网关：`ok`
 - 公网入口：`ok`
 - 磁盘使用：`76.5%`，剩余 7.5 GiB
-- 内存使用：`49.8%`，可用 1.8 GiB
+- 内存使用：`49.7%`，可用 1.8 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
 | ai-provider-proxy | running | healthy | Up 9 days (healthy) |
-| letta | running | healthy | Up 9 days (healthy) |
+| letta | running | healthy | Up 10 days (healthy) |
 | lobe | running | - | Up 9 days |
 | memory-gateway | running | healthy | Up 9 days (healthy) |
-| postgresql | running | healthy | Up 9 days (healthy) |
-| qdrant | running | healthy | Up 9 days (healthy) |
-| redis | running | healthy | Up 9 days (healthy) |
-| rustfs | running | healthy | Up 9 days (healthy) |
+| postgresql | running | healthy | Up 10 days (healthy) |
+| qdrant | running | healthy | Up 10 days (healthy) |
+| redis | running | healthy | Up 10 days (healthy) |
+| rustfs | running | healthy | Up 10 days (healthy) |
 | searxng | running | - | Up 9 days |
 | sumeme-web | running | healthy | Up 9 days (healthy) |
 
@@ -35,14 +35,14 @@
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-08-10T00:59:32Z |
+| Publish project status | in_progress | main | 2026-08-10T02:32:05Z |
+| Smoke production | success | main | 2026-08-10T02:32:00Z |
+| Publish project status | success | main | 2026-08-10T01:00:09Z |
 | Publish project status | success | main | 2026-08-09T23:55:44Z |
 | Publish project status | success | main | 2026-08-09T23:21:27Z |
 | Publish project status | success | main | 2026-08-09T22:48:03Z |
 | Publish project status | success | main | 2026-08-09T22:02:55Z |
 | Publish project status | success | main | 2026-08-09T21:34:30Z |
-| Publish project status | success | main | 2026-08-09T20:59:57Z |
-| Publish project status | success | main | 2026-08-09T20:20:36Z |
 
 ## 开放 PR
 
@@ -69,7 +69,7 @@
 
 ## 可靠性信号
 
-- 状态快照发布时年龄：`1s`
+- 状态快照发布时年龄：`0s`
 - 状态快照过期：`no`（阈值 2100s）
 - 部署状态：`idle`
 - 当前版本与 main 一致：`yes`
