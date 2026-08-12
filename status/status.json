@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-08-12T07:44:11+08:00",
+  "generated_at": "2026-08-12T08:42:41+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "healthy",
   "project_stage": "deployed_and_stable",
@@ -139,7 +139,7 @@
       "name": "sumeme-searxng",
       "state": "running",
       "health": "",
-      "status": "Up 10 days",
+      "status": "Up 11 days",
       "critical": true
     },
     {
@@ -154,13 +154,13 @@
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 32721936384,
-      "free_bytes": 7592460288,
+      "used_bytes": 32731922432,
+      "free_bytes": 7582474240,
       "used_percent": 77.6
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 2074050560,
+      "available_bytes": 2071543808,
       "used_percent": 46.9
     }
   },
@@ -199,9 +199,22 @@
         "conclusion": null,
         "head_branch": "main",
         "head_sha": "e6d9007524633325b7005aa2751a9e97364f5432",
+        "run_number": 653,
+        "created_at": "2026-08-12T00:42:20Z",
+        "updated_at": "2026-08-12T00:42:23Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/31551127231"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "schedule",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "e6d9007524633325b7005aa2751a9e97364f5432",
         "run_number": 652,
         "created_at": "2026-08-11T23:43:52Z",
-        "updated_at": "2026-08-11T23:43:55Z",
+        "updated_at": "2026-08-11T23:44:26Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/31547583687"
       },
       {
@@ -333,19 +346,6 @@
         "created_at": "2026-08-11T16:32:16Z",
         "updated_at": "2026-08-11T16:33:13Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/31512917713"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "schedule",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "e6d9007524633325b7005aa2751a9e97364f5432",
-        "run_number": 642,
-        "created_at": "2026-08-11T15:37:09Z",
-        "updated_at": "2026-08-11T15:38:05Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/31508015227"
       }
     ]
   },
@@ -363,7 +363,7 @@
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-08-12T07:44:11+08:00"
+    "generated_at": "2026-08-12T08:42:41+08:00"
   },
   "components": {
     "letta": {
@@ -431,7 +431,7 @@
         "service_scope_verification_failed"
       ],
       "deployment_classification": "external_degraded",
-      "age_seconds_at_publish": 944145,
+      "age_seconds_at_publish": 947655,
       "stale_at_publish": true,
       "stale_after_seconds": 86400
     }

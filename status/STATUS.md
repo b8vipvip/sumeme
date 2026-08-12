@@ -1,6 +1,6 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-08-12T07:44:11+08:00
+- **采集时间：** 2026-08-12T08:42:41+08:00
 - **总体状态：** `healthy`
 - **开发阶段：** `deployed_and_stable`
 - **线上版本：** `e6d9007524633325b7005aa2751a9e97364f5432`
@@ -28,21 +28,21 @@
 | qdrant | running | healthy | Up 11 days (healthy) |
 | redis | running | healthy | Up 11 days (healthy) |
 | rustfs | running | healthy | Up 11 days (healthy) |
-| searxng | running | - | Up 10 days |
+| searxng | running | - | Up 11 days |
 | sumeme-web | running | healthy | Up 10 days (healthy) |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-08-11T23:43:55Z |
+| Publish project status | in_progress | main | 2026-08-12T00:42:23Z |
+| Publish project status | success | main | 2026-08-11T23:44:26Z |
 | Publish project status | success | main | 2026-08-11T23:00:32Z |
 | Publish project status | success | main | 2026-08-11T22:03:28Z |
 | Publish project status | success | main | 2026-08-11T21:11:59Z |
 | Publish project status | success | main | 2026-08-11T20:24:42Z |
 | Publish project status | success | main | 2026-08-11T19:44:24Z |
 | Publish project status | success | main | 2026-08-11T19:18:40Z |
-| Smoke production | success | main | 2026-08-11T19:17:53Z |
 
 ## 开放 PR
 
