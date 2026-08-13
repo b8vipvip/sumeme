@@ -1,6 +1,6 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-08-13T21:43:46+08:00
+- **采集时间：** 2026-08-13T21:45:28+08:00
 - **总体状态：** `healthy`
 - **开发阶段：** `deployed_and_stable`
 - **线上版本：** `e6d9007524633325b7005aa2751a9e97364f5432`
@@ -14,7 +14,7 @@
 - 本地网关：`ok`
 - 公网入口：`ok`
 - 磁盘使用：`77.9%`，剩余 7.0 GiB
-- 内存使用：`58.4%`，可用 1.5 GiB
+- 内存使用：`58.0%`，可用 1.5 GiB
 
 ## 容器服务
 
@@ -35,14 +35,14 @@
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-08-13T13:43:15Z |
+| Publish project status | in_progress | main | 2026-08-13T13:44:55Z |
+| Smoke production | success | main | 2026-08-13T13:44:50Z |
+| Publish project status | success | main | 2026-08-13T13:44:07Z |
 | Publish project status | success | main | 2026-08-13T12:09:06Z |
 | Publish project status | success | main | 2026-08-13T11:28:09Z |
 | Publish project status | success | main | 2026-08-13T10:43:06Z |
 | Publish project status | success | main | 2026-08-13T09:31:44Z |
 | Publish project status | success | main | 2026-08-13T08:05:41Z |
-| Publish project status | success | main | 2026-08-13T07:52:12Z |
-| Smoke production | success | main | 2026-08-13T07:51:16Z |
 
 ## 开放 PR
 
