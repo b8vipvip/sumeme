@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-08-16T02:47:52+08:00",
+  "generated_at": "2026-08-16T03:14:33+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "healthy",
   "project_stage": "deployed_and_stable",
@@ -154,14 +154,14 @@
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 33581682688,
-      "free_bytes": 6732713984,
+      "used_bytes": 33585991680,
+      "free_bytes": 6728404992,
       "used_percent": 79.7
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1693708288,
-      "used_percent": 56.6
+      "available_bytes": 1677975552,
+      "used_percent": 57.0
     }
   },
   "github": {
@@ -199,9 +199,22 @@
         "conclusion": null,
         "head_branch": "main",
         "head_sha": "e6d9007524633325b7005aa2751a9e97364f5432",
+        "run_number": 777,
+        "created_at": "2026-08-15T19:14:13Z",
+        "updated_at": "2026-08-15T19:14:16Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/31903343487"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "schedule",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "e6d9007524633325b7005aa2751a9e97364f5432",
         "run_number": 776,
         "created_at": "2026-08-15T18:47:31Z",
-        "updated_at": "2026-08-15T18:47:35Z",
+        "updated_at": "2026-08-15T18:48:10Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/31902101312"
       },
       {
@@ -333,19 +346,6 @@
         "created_at": "2026-08-15T15:42:15Z",
         "updated_at": "2026-08-15T15:43:10Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/31893467831"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "schedule",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "e6d9007524633325b7005aa2751a9e97364f5432",
-        "run_number": 766,
-        "created_at": "2026-08-15T15:22:02Z",
-        "updated_at": "2026-08-15T15:22:51Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/31892510672"
       }
     ]
   },
@@ -363,7 +363,7 @@
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-08-16T02:47:52+08:00"
+    "generated_at": "2026-08-16T03:14:33+08:00"
   },
   "components": {
     "letta": {
@@ -431,7 +431,7 @@
         "service_scope_verification_failed"
       ],
       "deployment_classification": "external_degraded",
-      "age_seconds_at_publish": 1271966,
+      "age_seconds_at_publish": 1273567,
       "stale_at_publish": true,
       "stale_after_seconds": 86400
     }
