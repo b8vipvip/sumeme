@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-08-18T06:41:46+08:00",
+  "generated_at": "2026-08-18T06:59:28+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "healthy",
   "project_stage": "deployed_and_stable",
@@ -74,7 +74,7 @@
       "name": "sumeme-ai-provider-proxy",
       "state": "running",
       "health": "healthy",
-      "status": "Up 17 hours (healthy)",
+      "status": "Up 18 hours (healthy)",
       "critical": false
     },
     {
@@ -82,7 +82,7 @@
       "name": "sumeme-letta",
       "state": "running",
       "health": "healthy",
-      "status": "Up 17 hours (healthy)",
+      "status": "Up 18 hours (healthy)",
       "critical": false,
       "required": false
     },
@@ -91,7 +91,7 @@
       "name": "sumeme-lobehub",
       "state": "running",
       "health": "",
-      "status": "Up 17 hours",
+      "status": "Up 18 hours",
       "critical": true
     },
     {
@@ -99,7 +99,7 @@
       "name": "sumeme-memory-gateway",
       "state": "running",
       "health": "healthy",
-      "status": "Up 17 hours (healthy)",
+      "status": "Up 18 hours (healthy)",
       "critical": true
     },
     {
@@ -107,7 +107,7 @@
       "name": "sumeme-postgres",
       "state": "running",
       "health": "healthy",
-      "status": "Up 17 hours (healthy)",
+      "status": "Up 18 hours (healthy)",
       "critical": true
     },
     {
@@ -115,7 +115,7 @@
       "name": "sumeme-qdrant",
       "state": "running",
       "health": "healthy",
-      "status": "Up 17 hours (healthy)",
+      "status": "Up 18 hours (healthy)",
       "critical": true
     },
     {
@@ -123,7 +123,7 @@
       "name": "sumeme-redis",
       "state": "running",
       "health": "healthy",
-      "status": "Up 17 hours (healthy)",
+      "status": "Up 18 hours (healthy)",
       "critical": true
     },
     {
@@ -131,7 +131,7 @@
       "name": "sumeme-rustfs",
       "state": "running",
       "health": "healthy",
-      "status": "Up 17 hours (healthy)",
+      "status": "Up 18 hours (healthy)",
       "critical": true
     },
     {
@@ -139,7 +139,7 @@
       "name": "sumeme-searxng",
       "state": "running",
       "health": "",
-      "status": "Up 17 hours",
+      "status": "Up 18 hours",
       "critical": true
     },
     {
@@ -147,21 +147,21 @@
       "name": "sumeme-web",
       "state": "running",
       "health": "healthy",
-      "status": "Up 17 hours (healthy)",
+      "status": "Up 18 hours (healthy)",
       "critical": true
     }
   ],
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 26962800640,
-      "free_bytes": 13351596032,
+      "used_bytes": 26965176320,
+      "free_bytes": 13349220352,
       "used_percent": 64.0
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1792131072,
-      "used_percent": 54.1
+      "available_bytes": 1786253312,
+      "used_percent": 54.2
     }
   },
   "github": {
@@ -199,9 +199,22 @@
         "conclusion": null,
         "head_branch": "main",
         "head_sha": "e6d9007524633325b7005aa2751a9e97364f5432",
+        "run_number": 890,
+        "created_at": "2026-08-17T22:59:08Z",
+        "updated_at": "2026-08-17T22:59:12Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/32078466271"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "schedule",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "e6d9007524633325b7005aa2751a9e97364f5432",
         "run_number": 889,
         "created_at": "2026-08-17T22:41:25Z",
-        "updated_at": "2026-08-17T22:41:28Z",
+        "updated_at": "2026-08-17T22:42:03Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/32077128026"
       },
       {
@@ -333,19 +346,6 @@
         "created_at": "2026-08-17T18:55:14Z",
         "updated_at": "2026-08-17T18:55:45Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/32057450666"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "schedule",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "e6d9007524633325b7005aa2751a9e97364f5432",
-        "run_number": 879,
-        "created_at": "2026-08-17T18:22:58Z",
-        "updated_at": "2026-08-17T18:23:40Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/32054635375"
       }
     ]
   },
@@ -363,7 +363,7 @@
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-08-18T06:41:46+08:00"
+    "generated_at": "2026-08-18T06:59:28+08:00"
   },
   "components": {
     "letta": {
@@ -431,7 +431,7 @@
         "service_scope_verification_failed"
       ],
       "deployment_classification": "external_degraded",
-      "age_seconds_at_publish": 1458800,
+      "age_seconds_at_publish": 1459862,
       "stale_at_publish": true,
       "stale_after_seconds": 86400
     }
