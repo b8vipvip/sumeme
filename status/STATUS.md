@@ -1,48 +1,52 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-08-18T11:58:19+08:00
-- **总体状态：** `healthy`
-- **开发阶段：** `deployed_and_stable`
+- **采集时间：** 2026-08-18T12:33:33+08:00
+- **总体状态：** `degraded`
+- **开发阶段：** `deployed_degraded`
 - **线上版本：** `e6d9007524633325b7005aa2751a9e97364f5432`
 - **main 最新版本：** `e6d9007524633325b7005aa2751a9e97364f5432`
 - **线上与 main 同步：** 是
 - **开放 PR：** 0
 - **开放 Issue：** 3
 
+## 需要关注
+
+- 可选 Letta 结构化记忆不可用或尚未就绪
+
 ## 健康检查
 
 - 本地网关：`ok`
 - 公网入口：`ok`
-- 磁盘使用：`65.1%`，剩余 12.0 GiB
-- 内存使用：`71.8%`，可用 1.0 GiB
+- 磁盘使用：`64.8%`，剩余 12.1 GiB
+- 内存使用：`69.3%`，可用 1.1 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| ai-provider-proxy | running | healthy | Up 23 hours (healthy) |
-| letta | running | healthy | Up 23 hours (healthy) |
-| lobe | running | - | Up 23 hours |
-| memory-gateway | running | healthy | Up 23 hours (healthy) |
-| postgresql | running | healthy | Up 23 hours (healthy) |
-| qdrant | running | healthy | Up 23 hours (healthy) |
-| redis | running | healthy | Up 23 hours (healthy) |
-| rustfs | running | healthy | Up 23 hours (healthy) |
-| searxng | running | - | Up 23 hours |
-| sumeme-web | running | healthy | Up 23 hours (healthy) |
+| ai-provider-proxy | running | healthy | Up About a minute (healthy) |
+| letta | running | starting | Up About a minute (health: starting) |
+| lobe | running | - | Up About a minute |
+| memory-gateway | running | healthy | Up About a minute (healthy) |
+| postgresql | running | healthy | Up About a minute (healthy) |
+| qdrant | running | healthy | Up About a minute (healthy) |
+| redis | running | healthy | Up About a minute (healthy) |
+| rustfs | running | healthy | Up About a minute (healthy) |
+| searxng | running | - | Up About a minute |
+| sumeme-web | running | healthy | Up About a minute (healthy) |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-08-18T03:58:01Z |
+| Publish project status | in_progress | main | 2026-08-18T04:33:14Z |
+| Publish project status | success | main | 2026-08-18T03:58:38Z |
 | Publish project status | success | main | 2026-08-18T03:14:39Z |
 | Publish project status | success | main | 2026-08-18T02:20:57Z |
 | Publish project status | success | main | 2026-08-18T01:49:53Z |
 | Smoke production | success | main | 2026-08-18T01:49:11Z |
 | Publish project status | success | main | 2026-08-18T01:06:49Z |
 | Publish project status | success | main | 2026-08-17T23:58:34Z |
-| Publish project status | success | main | 2026-08-17T23:43:51Z |
 
 ## 开放 PR
 
@@ -77,6 +81,6 @@
 - 最近发布结果：`success`
 - 磁盘保护级别：`ok`
 - Letta 必需：`no`
-- Letta 可用：`yes`
+- Letta 可用：`no`
 - 最近 smoke test：`degraded`
 - 自动清理不会删除 Docker 数据卷、数据库或用户附件。
