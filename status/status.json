@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-08-19T15:03:11+08:00",
+  "generated_at": "2026-08-19T15:04:09+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "healthy",
   "project_stage": "deployed_and_stable",
@@ -154,13 +154,13 @@
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 26838556672,
-      "free_bytes": 13475840000,
+      "used_bytes": 26838929408,
+      "free_bytes": 13475467264,
       "used_percent": 63.7
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 2482913280,
+      "available_bytes": 2481569792,
       "used_percent": 36.4
     }
   },
@@ -194,14 +194,40 @@
       {
         "name": "Publish project status",
         "display_title": "Publish project status",
-        "event": "schedule",
+        "event": "workflow_run",
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
         "head_sha": "e6d9007524633325b7005aa2751a9e97364f5432",
+        "run_number": 950,
+        "created_at": "2026-08-19T07:03:44Z",
+        "updated_at": "2026-08-19T07:03:46Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/32226092807"
+      },
+      {
+        "name": "Smoke production",
+        "display_title": "Smoke production",
+        "event": "schedule",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "e6d9007524633325b7005aa2751a9e97364f5432",
+        "run_number": 84,
+        "created_at": "2026-08-19T07:03:05Z",
+        "updated_at": "2026-08-19T07:03:42Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/32226044536"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "schedule",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "e6d9007524633325b7005aa2751a9e97364f5432",
         "run_number": 949,
         "created_at": "2026-08-19T07:02:43Z",
-        "updated_at": "2026-08-19T07:02:46Z",
+        "updated_at": "2026-08-19T07:03:34Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/32226014744"
       },
       {
@@ -320,32 +346,6 @@
         "created_at": "2026-08-19T01:51:14Z",
         "updated_at": "2026-08-19T01:51:43Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/32206421138"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "schedule",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "e6d9007524633325b7005aa2751a9e97364f5432",
-        "run_number": 940,
-        "created_at": "2026-08-19T00:53:06Z",
-        "updated_at": "2026-08-19T00:53:47Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/32202915826"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "schedule",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "e6d9007524633325b7005aa2751a9e97364f5432",
-        "run_number": 939,
-        "created_at": "2026-08-18T23:56:18Z",
-        "updated_at": "2026-08-18T23:56:53Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/32199248231"
       }
     ]
   },
@@ -363,7 +363,7 @@
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-08-19T15:03:11+08:00"
+    "generated_at": "2026-08-19T15:04:09+08:00"
   },
   "components": {
     "letta": {
@@ -431,7 +431,7 @@
         "service_scope_verification_failed"
       ],
       "deployment_classification": "external_degraded",
-      "age_seconds_at_publish": 1575285,
+      "age_seconds_at_publish": 1575343,
       "stale_at_publish": true,
       "stale_after_seconds": 86400
     }
