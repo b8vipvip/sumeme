@@ -1,6 +1,6 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-08-19T21:23:26+08:00
+- **采集时间：** 2026-08-19T22:04:22+08:00
 - **总体状态：** `healthy`
 - **开发阶段：** `deployed_and_stable`
 - **线上版本：** `e6d9007524633325b7005aa2751a9e97364f5432`
@@ -13,36 +13,36 @@
 
 - 本地网关：`ok`
 - 公网入口：`ok`
-- 磁盘使用：`63.7%`，剩余 12.5 GiB
-- 内存使用：`36.3%`，可用 2.3 GiB
+- 磁盘使用：`63.8%`，剩余 12.5 GiB
+- 内存使用：`36.9%`，可用 2.3 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| ai-provider-proxy | running | healthy | Up 33 hours (healthy) |
-| letta | running | healthy | Up 33 hours (healthy) |
-| lobe | running | - | Up 33 hours |
-| memory-gateway | running | healthy | Up 33 hours (healthy) |
-| postgresql | running | healthy | Up 33 hours (healthy) |
-| qdrant | running | healthy | Up 33 hours (healthy) |
-| redis | running | healthy | Up 33 hours (healthy) |
-| rustfs | running | healthy | Up 33 hours (healthy) |
-| searxng | running | - | Up 33 hours |
-| sumeme-web | running | healthy | Up 33 hours (healthy) |
+| ai-provider-proxy | running | healthy | Up 34 hours (healthy) |
+| letta | running | healthy | Up 34 hours (healthy) |
+| lobe | running | - | Up 34 hours |
+| memory-gateway | running | healthy | Up 34 hours (healthy) |
+| postgresql | running | healthy | Up 34 hours (healthy) |
+| qdrant | running | healthy | Up 34 hours (healthy) |
+| redis | running | healthy | Up 34 hours (healthy) |
+| rustfs | running | healthy | Up 34 hours (healthy) |
+| searxng | running | - | Up 34 hours |
+| sumeme-web | running | healthy | Up 34 hours (healthy) |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-08-19T13:22:58Z |
+| Publish project status | in_progress | main | 2026-08-19T14:03:54Z |
+| Publish project status | success | main | 2026-08-19T13:23:47Z |
 | Publish project status | success | main | 2026-08-19T13:08:11Z |
 | Smoke production | success | main | 2026-08-19T13:07:23Z |
 | Publish project status | success | main | 2026-08-19T12:24:43Z |
 | Publish project status | success | main | 2026-08-19T11:47:57Z |
 | Publish project status | success | main | 2026-08-19T11:17:06Z |
 | Publish project status | success | main | 2026-08-19T10:52:51Z |
-| Publish project status | success | main | 2026-08-19T10:19:30Z |
 
 ## 开放 PR
 
