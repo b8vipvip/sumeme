@@ -1,6 +1,6 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-08-21T11:15:22+08:00
+- **采集时间：** 2026-08-21T12:02:44+08:00
 - **总体状态：** `healthy`
 - **开发阶段：** `deployed_and_stable`
 - **线上版本：** `e6d9007524633325b7005aa2751a9e97364f5432`
@@ -14,35 +14,35 @@
 - 本地网关：`ok`
 - 公网入口：`ok`
 - 磁盘使用：`64.0%`，剩余 12.4 GiB
-- 内存使用：`38.1%`，可用 2.3 GiB
+- 内存使用：`38.5%`，可用 2.2 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| ai-provider-proxy | running | healthy | Up 2 days (healthy) |
-| letta | running | healthy | Up 2 days (healthy) |
-| lobe | running | - | Up 2 days |
-| memory-gateway | running | healthy | Up 2 days (healthy) |
-| postgresql | running | healthy | Up 2 days (healthy) |
-| qdrant | running | healthy | Up 2 days (healthy) |
-| redis | running | healthy | Up 2 days (healthy) |
-| rustfs | running | healthy | Up 2 days (healthy) |
-| searxng | running | - | Up 2 days |
-| sumeme-web | running | healthy | Up 2 days (healthy) |
+| ai-provider-proxy | running | healthy | Up 3 days (healthy) |
+| letta | running | healthy | Up 3 days (healthy) |
+| lobe | running | - | Up 3 days |
+| memory-gateway | running | healthy | Up 3 days (healthy) |
+| postgresql | running | healthy | Up 3 days (healthy) |
+| qdrant | running | healthy | Up 3 days (healthy) |
+| redis | running | healthy | Up 3 days (healthy) |
+| rustfs | running | healthy | Up 3 days (healthy) |
+| searxng | running | - | Up 3 days |
+| sumeme-web | running | healthy | Up 3 days (healthy) |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-08-21T03:15:03Z |
+| Publish project status | in_progress | main | 2026-08-21T04:02:27Z |
+| Publish project status | success | main | 2026-08-21T03:15:40Z |
 | Publish project status | success | main | 2026-08-21T02:12:55Z |
 | Publish project status | success | main | 2026-08-21T01:56:50Z |
 | Smoke production | success | main | 2026-08-21T01:56:09Z |
 | Publish project status | success | main | 2026-08-21T00:43:10Z |
 | Publish project status | success | main | 2026-08-20T23:47:22Z |
 | Publish project status | success | main | 2026-08-20T23:17:01Z |
-| Publish project status | success | main | 2026-08-20T22:52:24Z |
 
 ## 开放 PR
 
@@ -69,7 +69,7 @@
 
 ## 可靠性信号
 
-- 状态快照发布时年龄：`0s`
+- 状态快照发布时年龄：`1s`
 - 状态快照过期：`no`（阈值 2100s）
 - 部署状态：`idle`
 - 当前版本与 main 一致：`yes`
