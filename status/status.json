@@ -1,16 +1,17 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-09-04T08:23:51+08:00",
+  "generated_at": "2026-09-04T12:20:09+08:00",
   "repository": "b8vipvip/sumeme",
-  "overall": "healthy",
-  "project_stage": "deployed_and_stable",
-  "reasons": [],
+  "overall": "degraded",
+  "project_stage": "deployed_degraded",
+  "reasons": [
+    "磁盘使用率达到 80% 警戒线"
+  ],
   "deployment_in_sync": true,
   "deployment": {
-    "current_sha": "e6d9007524633325b7005aa2751a9e97364f5432",
-    "previous_sha": "549e8beddc921ec4f5cef69bef6748c2bf2af22f",
+    "current_sha": "d902a3ca02dc035b93200372dcced9c1c3db80d3",
+    "previous_sha": "e6d9007524633325b7005aa2751a9e97364f5432",
     "history": [
-      "2026-07-31T18:54:35+08:00 556007b956d06ca04857be3a817a09bba6aa2065",
       "2026-07-31T19:10:53+08:00 adddeac3918de48859647db5a8b0e90ec1259196",
       "2026-07-31T19:20:51+08:00 9621f00a6ff32e996229c8b3f490ae98dcfd0a96",
       "2026-07-31T19:28:50+08:00 4a88ed68344be6778b4acbdd484fca8dd89a5d48",
@@ -19,11 +20,12 @@
       "2026-07-31T22:06:14+08:00 2fd8e6aa85fd2048443029be322d9e14e557a9b4",
       "2026-07-31T22:10:19+08:00 ddddf2ee60fa08dbda449942b276dff2fc28e18e",
       "2026-08-01T08:51:02+08:00 549e8beddc921ec4f5cef69bef6748c2bf2af22f",
-      "2026-08-01T09:28:26+08:00 e6d9007524633325b7005aa2751a9e97364f5432"
+      "2026-08-01T09:28:26+08:00 e6d9007524633325b7005aa2751a9e97364f5432",
+      "2026-09-04T12:19:36+08:00 d902a3ca02dc035b93200372dcced9c1c3db80d3"
     ],
     "deploying_sha": null,
     "last_result": "success",
-    "last_history_entry": "2026-08-01T09:28:26+08:00 e6d9007524633325b7005aa2751a9e97364f5432",
+    "last_history_entry": "2026-09-04T12:19:36+08:00 d902a3ca02dc035b93200372dcced9c1c3db80d3",
     "state": "idle"
   },
   "health": {
@@ -74,7 +76,7 @@
       "name": "sumeme-ai-provider-proxy",
       "state": "running",
       "health": "healthy",
-      "status": "Up 2 weeks (healthy)",
+      "status": "Up 59 seconds (healthy)",
       "critical": false
     },
     {
@@ -99,7 +101,7 @@
       "name": "sumeme-memory-gateway",
       "state": "running",
       "health": "healthy",
-      "status": "Up 2 weeks (healthy)",
+      "status": "Up 48 seconds (healthy)",
       "critical": true
     },
     {
@@ -107,7 +109,7 @@
       "name": "sumeme-postgres",
       "state": "running",
       "health": "healthy",
-      "status": "Up 2 weeks (healthy)",
+      "status": "Up 59 seconds (healthy)",
       "critical": true
     },
     {
@@ -115,7 +117,7 @@
       "name": "sumeme-qdrant",
       "state": "running",
       "health": "healthy",
-      "status": "Up 2 weeks (healthy)",
+      "status": "Up 59 seconds (healthy)",
       "critical": true
     },
     {
@@ -123,7 +125,7 @@
       "name": "sumeme-redis",
       "state": "running",
       "health": "healthy",
-      "status": "Up 2 weeks (healthy)",
+      "status": "Up 59 seconds (healthy)",
       "critical": true
     },
     {
@@ -139,7 +141,7 @@
       "name": "sumeme-searxng",
       "state": "running",
       "health": "",
-      "status": "Up 2 weeks",
+      "status": "Up 59 seconds",
       "critical": true
     },
     {
@@ -147,28 +149,28 @@
       "name": "sumeme-web",
       "state": "running",
       "health": "healthy",
-      "status": "Up 2 weeks (healthy)",
+      "status": "Up 42 seconds (healthy)",
       "critical": true
     }
   ],
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 33643573248,
-      "free_bytes": 6670823424,
-      "used_percent": 79.8
+      "used_bytes": 35073536000,
+      "free_bytes": 5240860672,
+      "used_percent": 83.2
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1849409536,
-      "used_percent": 52.6
+      "available_bytes": 1721143296,
+      "used_percent": 55.9
     }
   },
   "github": {
     "schema_version": 1,
     "source": "github-hosted-runner",
     "default_branch": "main",
-    "latest_main_sha": "e6d9007524633325b7005aa2751a9e97364f5432",
+    "latest_main_sha": "d902a3ca02dc035b93200372dcced9c1c3db80d3",
     "open_pull_requests": [],
     "open_issues": [
       {
@@ -192,16 +194,55 @@
     ],
     "recent_workflows": [
       {
+        "name": "Public UI smoke",
+        "display_title": "Public UI smoke",
+        "event": "workflow_run",
+        "status": "in_progress",
+        "conclusion": null,
+        "head_branch": "main",
+        "head_sha": "d902a3ca02dc035b93200372dcced9c1c3db80d3",
+        "run_number": 79,
+        "created_at": "2026-09-04T04:19:49Z",
+        "updated_at": "2026-09-04T04:19:52Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/33836403052"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
+        "status": "in_progress",
+        "conclusion": null,
+        "head_branch": "main",
+        "head_sha": "d902a3ca02dc035b93200372dcced9c1c3db80d3",
+        "run_number": 1359,
+        "created_at": "2026-09-04T04:19:49Z",
+        "updated_at": "2026-09-04T04:19:54Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/33836403031"
+      },
+      {
+        "name": "CI",
+        "display_title": "chore: add proprietary LICENSE",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "d902a3ca02dc035b93200372dcced9c1c3db80d3",
+        "run_number": 729,
+        "created_at": "2026-09-04T04:06:15Z",
+        "updated_at": "2026-09-04T04:19:47Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/33835568160"
+      },
+      {
         "name": "Publish project status",
         "display_title": "Publish project status",
         "event": "schedule",
-        "status": "in_progress",
-        "conclusion": null,
+        "status": "completed",
+        "conclusion": "success",
         "head_branch": "main",
         "head_sha": "e6d9007524633325b7005aa2751a9e97364f5432",
         "run_number": 1358,
         "created_at": "2026-09-04T00:23:29Z",
-        "updated_at": "2026-09-04T00:23:35Z",
+        "updated_at": "2026-09-04T00:24:07Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/33821599621"
       },
       {
@@ -307,45 +348,6 @@
         "created_at": "2026-09-03T14:10:26Z",
         "updated_at": "2026-09-03T14:11:20Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/33765297657"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "e6d9007524633325b7005aa2751a9e97364f5432",
-        "run_number": 1351,
-        "created_at": "2026-09-03T11:10:15Z",
-        "updated_at": "2026-09-03T11:10:55Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/33748215592"
-      },
-      {
-        "name": "Smoke production",
-        "display_title": "Smoke production",
-        "event": "schedule",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "e6d9007524633325b7005aa2751a9e97364f5432",
-        "run_number": 138,
-        "created_at": "2026-09-03T11:09:31Z",
-        "updated_at": "2026-09-03T11:10:13Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/33748147246"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "schedule",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "e6d9007524633325b7005aa2751a9e97364f5432",
-        "run_number": 1350,
-        "created_at": "2026-09-03T09:58:34Z",
-        "updated_at": "2026-09-03T09:59:11Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/33741783131"
       }
     ]
   },
@@ -363,7 +365,7 @@
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-09-04T08:23:51+08:00"
+    "generated_at": "2026-09-04T12:20:09+08:00"
   },
   "components": {
     "letta": {
@@ -378,11 +380,11 @@
     "marker_consistent": true,
     "current_matches_main": true,
     "deploying_matches_main": null,
-    "main_sha": "e6d9007524633325b7005aa2751a9e97364f5432"
+    "main_sha": "d902a3ca02dc035b93200372dcced9c1c3db80d3"
   },
   "reliability": {
     "disk": {
-      "level": "ok",
+      "level": "warning",
       "warning_percent": 80.0,
       "failure_percent": 90.0,
       "minimum_free_bytes": 3221225472
@@ -397,10 +399,10 @@
     },
     "smoke_test": {
       "schema_version": 5,
-      "generated_at": "2026-08-01T09:28:26+08:00",
-      "started_at": "2026-08-01T09:28:24+08:00",
-      "finished_at": "2026-08-01T09:28:26+08:00",
-      "duration_seconds": 2,
+      "generated_at": "2026-09-04T12:19:36+08:00",
+      "started_at": "2026-09-04T12:19:33+08:00",
+      "finished_at": "2026-09-04T12:19:36+08:00",
+      "duration_seconds": 3,
       "overall": "degraded",
       "deployment_gate": "external_degraded",
       "memory_provider": "mempalace-letta",
@@ -425,14 +427,14 @@
         "letta": false
       },
       "error_codes": [
-        "chat_http_503",
+        "chat_http_403",
         "mempalace_recall_delayed",
         "letta_recall_delayed",
         "service_scope_verification_failed"
       ],
       "deployment_classification": "external_degraded",
-      "age_seconds_at_publish": 2933725,
-      "stale_at_publish": true,
+      "age_seconds_at_publish": 33,
+      "stale_at_publish": false,
       "stale_after_seconds": 86400
     }
   }

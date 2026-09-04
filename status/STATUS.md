@@ -1,48 +1,52 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-09-04T08:23:51+08:00
-- **总体状态：** `healthy`
-- **开发阶段：** `deployed_and_stable`
-- **线上版本：** `e6d9007524633325b7005aa2751a9e97364f5432`
-- **main 最新版本：** `e6d9007524633325b7005aa2751a9e97364f5432`
+- **采集时间：** 2026-09-04T12:20:09+08:00
+- **总体状态：** `degraded`
+- **开发阶段：** `deployed_degraded`
+- **线上版本：** `d902a3ca02dc035b93200372dcced9c1c3db80d3`
+- **main 最新版本：** `d902a3ca02dc035b93200372dcced9c1c3db80d3`
 - **线上与 main 同步：** 是
 - **开放 PR：** 0
 - **开放 Issue：** 3
+
+## 需要关注
+
+- 磁盘使用率达到 80% 警戒线
 
 ## 健康检查
 
 - 本地网关：`ok`
 - 公网入口：`ok`
-- 磁盘使用：`79.8%`，剩余 6.2 GiB
-- 内存使用：`52.6%`，可用 1.7 GiB
+- 磁盘使用：`83.2%`，剩余 4.9 GiB
+- 内存使用：`55.9%`，可用 1.6 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| ai-provider-proxy | running | healthy | Up 2 weeks (healthy) |
+| ai-provider-proxy | running | healthy | Up 59 seconds (healthy) |
 | letta | running | healthy | Up 2 weeks (healthy) |
 | lobe | running | - | Up 2 weeks |
-| memory-gateway | running | healthy | Up 2 weeks (healthy) |
-| postgresql | running | healthy | Up 2 weeks (healthy) |
-| qdrant | running | healthy | Up 2 weeks (healthy) |
-| redis | running | healthy | Up 2 weeks (healthy) |
+| memory-gateway | running | healthy | Up 48 seconds (healthy) |
+| postgresql | running | healthy | Up 59 seconds (healthy) |
+| qdrant | running | healthy | Up 59 seconds (healthy) |
+| redis | running | healthy | Up 59 seconds (healthy) |
 | rustfs | running | healthy | Up 2 weeks (healthy) |
-| searxng | running | - | Up 2 weeks |
-| sumeme-web | running | healthy | Up 2 weeks (healthy) |
+| searxng | running | - | Up 59 seconds |
+| sumeme-web | running | healthy | Up 42 seconds (healthy) |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-09-04T00:23:35Z |
+| Public UI smoke | in_progress | main | 2026-09-04T04:19:52Z |
+| Publish project status | in_progress | main | 2026-09-04T04:19:54Z |
+| CI | success | main | 2026-09-04T04:19:47Z |
+| Publish project status | success | main | 2026-09-04T00:24:07Z |
 | Publish project status | success | main | 2026-09-03T22:41:08Z |
 | Publish project status | success | main | 2026-09-03T21:00:29Z |
 | Smoke production | success | main | 2026-09-03T20:59:49Z |
 | Publish project status | success | main | 2026-09-03T20:18:05Z |
-| Publish project status | success | main | 2026-09-03T17:50:21Z |
-| Publish project status | success | main | 2026-09-03T16:24:20Z |
-| Smoke production | success | main | 2026-09-03T16:23:32Z |
 
 ## 开放 PR
 
@@ -56,6 +60,7 @@
 
 ## 最近部署
 
+- `2026-09-04T12:19:36+08:00 d902a3ca02dc035b93200372dcced9c1c3db80d3`
 - `2026-08-01T09:28:26+08:00 e6d9007524633325b7005aa2751a9e97364f5432`
 - `2026-08-01T08:51:02+08:00 549e8beddc921ec4f5cef69bef6748c2bf2af22f`
 - `2026-07-31T22:10:19+08:00 ddddf2ee60fa08dbda449942b276dff2fc28e18e`
@@ -65,7 +70,6 @@
 - `2026-07-31T19:28:50+08:00 4a88ed68344be6778b4acbdd484fca8dd89a5d48`
 - `2026-07-31T19:20:51+08:00 9621f00a6ff32e996229c8b3f490ae98dcfd0a96`
 - `2026-07-31T19:10:53+08:00 adddeac3918de48859647db5a8b0e90ec1259196`
-- `2026-07-31T18:54:35+08:00 556007b956d06ca04857be3a817a09bba6aa2065`
 
 ## 可靠性信号
 
@@ -75,7 +79,7 @@
 - 当前版本与 main 一致：`yes`
 - deploying SHA：`none`
 - 最近发布结果：`success`
-- 磁盘保护级别：`ok`
+- 磁盘保护级别：`warning`
 - Letta 必需：`no`
 - Letta 可用：`yes`
 - 最近 smoke test：`degraded`
