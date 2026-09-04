@@ -1,6 +1,6 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-09-04T19:14:46+08:00
+- **采集时间：** 2026-09-04T21:31:21+08:00
 - **总体状态：** `degraded`
 - **开发阶段：** `deployed_degraded`
 - **线上版本：** `d902a3ca02dc035b93200372dcced9c1c3db80d3`
@@ -17,36 +17,36 @@
 
 - 本地网关：`ok`
 - 公网入口：`ok`
-- 磁盘使用：`83.3%`，剩余 4.8 GiB
-- 内存使用：`46.5%`，可用 1.9 GiB
+- 磁盘使用：`83.5%`，剩余 4.8 GiB
+- 内存使用：`49.8%`，可用 1.8 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| ai-provider-proxy | running | healthy | Up 7 hours (healthy) |
+| ai-provider-proxy | running | healthy | Up 9 hours (healthy) |
 | letta | running | healthy | Up 2 weeks (healthy) |
 | lobe | running | - | Up 2 weeks |
-| memory-gateway | running | healthy | Up 7 hours (healthy) |
-| postgresql | running | healthy | Up 7 hours (healthy) |
-| qdrant | running | healthy | Up 7 hours (healthy) |
-| redis | running | healthy | Up 7 hours (healthy) |
+| memory-gateway | running | healthy | Up 9 hours (healthy) |
+| postgresql | running | healthy | Up 9 hours (healthy) |
+| qdrant | running | healthy | Up 9 hours (healthy) |
+| redis | running | healthy | Up 9 hours (healthy) |
 | rustfs | running | healthy | Up 2 weeks (healthy) |
-| searxng | running | - | Up 7 hours |
-| sumeme-web | running | healthy | Up 7 hours (healthy) |
+| searxng | running | - | Up 9 hours |
+| sumeme-web | running | healthy | Up 9 hours (healthy) |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-09-04T11:14:27Z |
+| Publish project status | in_progress | main | 2026-09-04T13:31:01Z |
+| Publish project status | success | main | 2026-09-04T11:15:05Z |
 | Smoke production | success | main | 2026-09-04T11:14:22Z |
 | Publish project status | success | main | 2026-09-04T09:12:21Z |
 | Publish project status | success | main | 2026-09-04T04:49:41Z |
 | Publish project status | success | main | 2026-09-04T04:28:45Z |
 | Smoke production | success | main | 2026-09-04T04:28:04Z |
 | Public UI smoke | success | main | 2026-09-04T04:20:21Z |
-| Publish project status | success | main | 2026-09-04T04:20:24Z |
 
 ## 开放 PR
 
