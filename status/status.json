@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-09-04T12:28:27+08:00",
+  "generated_at": "2026-09-04T12:49:19+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "degraded",
   "project_stage": "deployed_degraded",
@@ -76,7 +76,7 @@
       "name": "sumeme-ai-provider-proxy",
       "state": "running",
       "health": "healthy",
-      "status": "Up 9 minutes (healthy)",
+      "status": "Up 30 minutes (healthy)",
       "critical": false
     },
     {
@@ -101,7 +101,7 @@
       "name": "sumeme-memory-gateway",
       "state": "running",
       "health": "healthy",
-      "status": "Up 9 minutes (healthy)",
+      "status": "Up 29 minutes (healthy)",
       "critical": true
     },
     {
@@ -109,7 +109,7 @@
       "name": "sumeme-postgres",
       "state": "running",
       "health": "healthy",
-      "status": "Up 9 minutes (healthy)",
+      "status": "Up 30 minutes (healthy)",
       "critical": true
     },
     {
@@ -117,7 +117,7 @@
       "name": "sumeme-qdrant",
       "state": "running",
       "health": "healthy",
-      "status": "Up 9 minutes (healthy)",
+      "status": "Up 30 minutes (healthy)",
       "critical": true
     },
     {
@@ -125,7 +125,7 @@
       "name": "sumeme-redis",
       "state": "running",
       "health": "healthy",
-      "status": "Up 9 minutes (healthy)",
+      "status": "Up 30 minutes (healthy)",
       "critical": true
     },
     {
@@ -141,7 +141,7 @@
       "name": "sumeme-searxng",
       "state": "running",
       "health": "",
-      "status": "Up 9 minutes",
+      "status": "Up 30 minutes",
       "critical": true
     },
     {
@@ -149,20 +149,20 @@
       "name": "sumeme-web",
       "state": "running",
       "health": "healthy",
-      "status": "Up 9 minutes (healthy)",
+      "status": "Up 29 minutes (healthy)",
       "critical": true
     }
   ],
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 35075121152,
-      "free_bytes": 5239275520,
+      "used_bytes": 35079258112,
+      "free_bytes": 5235138560,
       "used_percent": 83.2
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1728622592,
+      "available_bytes": 1729175552,
       "used_percent": 55.7
     }
   },
@@ -196,14 +196,27 @@
       {
         "name": "Publish project status",
         "display_title": "Publish project status",
-        "event": "workflow_run",
+        "event": "schedule",
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
         "head_sha": "d902a3ca02dc035b93200372dcced9c1c3db80d3",
+        "run_number": 1361,
+        "created_at": "2026-09-04T04:48:54Z",
+        "updated_at": "2026-09-04T04:48:57Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/33838190127"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "workflow_run",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "d902a3ca02dc035b93200372dcced9c1c3db80d3",
         "run_number": 1360,
         "created_at": "2026-09-04T04:28:06Z",
-        "updated_at": "2026-09-04T04:28:10Z",
+        "updated_at": "2026-09-04T04:28:45Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/33836912017"
       },
       {
@@ -335,19 +348,6 @@
         "created_at": "2026-09-03T17:49:39Z",
         "updated_at": "2026-09-03T17:50:21Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/33786845925"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "e6d9007524633325b7005aa2751a9e97364f5432",
-        "run_number": 1353,
-        "created_at": "2026-09-03T16:23:34Z",
-        "updated_at": "2026-09-03T16:24:20Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/33778335742"
       }
     ]
   },
@@ -365,7 +365,7 @@
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-09-04T12:28:27+08:00"
+    "generated_at": "2026-09-04T12:49:19+08:00"
   },
   "components": {
     "letta": {
@@ -433,7 +433,7 @@
         "service_scope_verification_failed"
       ],
       "deployment_classification": "external_degraded",
-      "age_seconds_at_publish": 531,
+      "age_seconds_at_publish": 1783,
       "stale_at_publish": false,
       "stale_after_seconds": 86400
     }
