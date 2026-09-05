@@ -1,6 +1,6 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-09-05T21:06:47+08:00
+- **采集时间：** 2026-09-05T23:11:29+08:00
 - **总体状态：** `degraded`
 - **开发阶段：** `deployed_degraded`
 - **线上版本：** `d902a3ca02dc035b93200372dcced9c1c3db80d3`
@@ -17,36 +17,36 @@
 
 - 本地网关：`ok`
 - 公网入口：`ok`
-- 磁盘使用：`83.8%`，剩余 4.6 GiB
-- 内存使用：`47.4%`，可用 1.9 GiB
+- 磁盘使用：`83.9%`，剩余 4.6 GiB
+- 内存使用：`53.6%`，可用 1.7 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| ai-provider-proxy | running | healthy | Up 33 hours (healthy) |
+| ai-provider-proxy | running | healthy | Up 35 hours (healthy) |
 | letta | running | healthy | Up 2 weeks (healthy) |
 | lobe | running | - | Up 2 weeks |
-| memory-gateway | running | healthy | Up 33 hours (healthy) |
-| postgresql | running | healthy | Up 33 hours (healthy) |
-| qdrant | running | healthy | Up 33 hours (healthy) |
-| redis | running | healthy | Up 33 hours (healthy) |
+| memory-gateway | running | healthy | Up 35 hours (healthy) |
+| postgresql | running | healthy | Up 35 hours (healthy) |
+| qdrant | running | healthy | Up 35 hours (healthy) |
+| redis | running | healthy | Up 35 hours (healthy) |
 | rustfs | running | healthy | Up 2 weeks (healthy) |
-| searxng | running | - | Up 33 hours |
-| sumeme-web | running | healthy | Up 33 hours (healthy) |
+| searxng | running | - | Up 35 hours |
+| sumeme-web | running | healthy | Up 35 hours (healthy) |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-09-05T13:06:20Z |
+| Publish project status | in_progress | main | 2026-09-05T15:11:04Z |
+| Smoke production | success | main | 2026-09-05T15:10:59Z |
+| Publish project status | success | main | 2026-09-05T13:07:07Z |
 | Publish project status | success | main | 2026-09-05T10:32:22Z |
 | Smoke production | success | main | 2026-09-05T10:31:40Z |
 | Publish project status | success | main | 2026-09-05T09:55:26Z |
 | Publish project status | success | main | 2026-09-05T05:57:58Z |
 | Publish project status | success | main | 2026-09-05T04:24:09Z |
-| Smoke production | success | main | 2026-09-05T04:23:27Z |
-| Publish project status | success | main | 2026-09-05T01:23:48Z |
 
 ## 开放 PR
 
