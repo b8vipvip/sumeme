@@ -1,6 +1,6 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-09-15T19:41:04+08:00
+- **采集时间：** 2026-09-15T20:07:54+08:00
 - **总体状态：** `degraded`
 - **开发阶段：** `deployed_degraded`
 - **线上版本：** `d902a3ca02dc035b93200372dcced9c1c3db80d3`
@@ -11,14 +11,14 @@
 
 ## 需要关注
 
-- 磁盘使用率达到 80% 警戒线
+- 磁盘空间低于安全部署阈值
 
 ## 健康检查
 
 - 本地网关：`ok`
 - 公网入口：`ok`
-- 磁盘使用：`88.0%`，剩余 3.0 GiB
-- 内存使用：`50.2%`，可用 1.8 GiB
+- 磁盘使用：`88.1%`，剩余 3.0 GiB
+- 内存使用：`51.4%`，可用 1.8 GiB
 
 ## 容器服务
 
@@ -39,14 +39,14 @@
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-09-15T11:40:44Z |
+| Publish project status | in_progress | main | 2026-09-15T12:07:34Z |
+| Publish project status | success | main | 2026-09-15T11:41:23Z |
 | Smoke production | success | main | 2026-09-15T11:40:38Z |
 | Publish project status | success | main | 2026-09-15T06:41:56Z |
 | Publish project status | success | main | 2026-09-15T04:51:37Z |
 | Smoke production | success | main | 2026-09-15T04:50:54Z |
 | Publish project status | success | main | 2026-09-15T01:41:19Z |
 | Publish project status | success | main | 2026-09-14T23:27:54Z |
-| Publish project status | success | main | 2026-09-14T21:48:32Z |
 
 ## 开放 PR
 
@@ -79,7 +79,7 @@
 - 当前版本与 main 一致：`yes`
 - deploying SHA：`none`
 - 最近发布结果：`success`
-- 磁盘保护级别：`warning`
+- 磁盘保护级别：`critical`
 - Letta 必需：`no`
 - Letta 可用：`yes`
 - 最近 smoke test：`degraded`
