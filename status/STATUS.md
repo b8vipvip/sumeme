@@ -1,6 +1,6 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-09-16T08:47:46+08:00
+- **采集时间：** 2026-09-16T12:46:17+08:00
 - **总体状态：** `degraded`
 - **开发阶段：** `deployed_degraded`
 - **线上版本：** `d902a3ca02dc035b93200372dcced9c1c3db80d3`
@@ -11,42 +11,42 @@
 
 ## 需要关注
 
-- 磁盘使用率达到 80% 警戒线
+- 磁盘空间低于安全部署阈值
 
 ## 健康检查
 
 - 本地网关：`ok`
 - 公网入口：`ok`
-- 磁盘使用：`87.9%`，剩余 3.0 GiB
-- 内存使用：`46.4%`，可用 1.9 GiB
+- 磁盘使用：`88.0%`，剩余 3.0 GiB
+- 内存使用：`46.5%`，可用 1.9 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
-| ai-provider-proxy | running | healthy | Up 11 days (healthy) |
+| ai-provider-proxy | running | healthy | Up 12 days (healthy) |
 | letta | running | healthy | Up 4 weeks (healthy) |
 | lobe | running | - | Up 4 weeks |
-| memory-gateway | running | healthy | Up 11 days (healthy) |
-| postgresql | running | healthy | Up 11 days (healthy) |
-| qdrant | running | healthy | Up 11 days (healthy) |
-| redis | running | healthy | Up 11 days (healthy) |
+| memory-gateway | running | healthy | Up 12 days (healthy) |
+| postgresql | running | healthy | Up 12 days (healthy) |
+| qdrant | running | healthy | Up 12 days (healthy) |
+| redis | running | healthy | Up 12 days (healthy) |
 | rustfs | running | healthy | Up 4 weeks (healthy) |
-| searxng | running | - | Up 11 days |
-| sumeme-web | running | healthy | Up 11 days (healthy) |
+| searxng | running | - | Up 12 days |
+| sumeme-web | running | healthy | Up 12 days (healthy) |
 
 ## 最近工作流
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-09-16T00:47:28Z |
+| Publish project status | in_progress | main | 2026-09-16T04:46:00Z |
+| Smoke production | success | main | 2026-09-16T04:45:55Z |
+| Publish project status | success | main | 2026-09-16T00:48:04Z |
 | Publish project status | success | main | 2026-09-15T22:32:58Z |
 | Publish project status | success | main | 2026-09-15T21:18:37Z |
 | Smoke production | success | main | 2026-09-15T21:17:55Z |
 | Publish project status | success | main | 2026-09-15T19:55:29Z |
 | Publish project status | success | main | 2026-09-15T16:56:54Z |
-| Smoke production | success | main | 2026-09-15T16:56:00Z |
-| Publish project status | success | main | 2026-09-15T16:55:23Z |
 
 ## 开放 PR
 
@@ -73,13 +73,13 @@
 
 ## 可靠性信号
 
-- 状态快照发布时年龄：`0s`
+- 状态快照发布时年龄：`1s`
 - 状态快照过期：`no`（阈值 2100s）
 - 部署状态：`idle`
 - 当前版本与 main 一致：`yes`
 - deploying SHA：`none`
 - 最近发布结果：`success`
-- 磁盘保护级别：`warning`
+- 磁盘保护级别：`critical`
 - Letta 必需：`no`
 - Letta 可用：`yes`
 - 最近 smoke test：`degraded`
