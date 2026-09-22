@@ -1,6 +1,6 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-09-22T09:09:18+08:00
+- **采集时间：** 2026-09-22T12:51:12+08:00
 - **总体状态：** `degraded`
 - **开发阶段：** `deployed_degraded`
 - **线上版本：** `d902a3ca02dc035b93200372dcced9c1c3db80d3`
@@ -17,21 +17,21 @@
 
 - 本地网关：`ok`
 - 公网入口：`ok`
-- 磁盘使用：`85.0%`，剩余 4.2 GiB
-- 内存使用：`47.4%`，可用 1.9 GiB
+- 磁盘使用：`85.4%`，剩余 4.0 GiB
+- 内存使用：`41.4%`，可用 2.1 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
 | ai-provider-proxy | running | healthy | Up 2 weeks (healthy) |
-| letta | running | healthy | Up 4 weeks (healthy) |
-| lobe | running | - | Up 4 weeks |
+| letta | running | healthy | Up 5 weeks (healthy) |
+| lobe | running | - | Up 5 weeks |
 | memory-gateway | running | healthy | Up 2 weeks (healthy) |
 | postgresql | running | healthy | Up 2 weeks (healthy) |
 | qdrant | running | healthy | Up 2 weeks (healthy) |
 | redis | running | healthy | Up 2 weeks (healthy) |
-| rustfs | running | healthy | Up 4 weeks (healthy) |
+| rustfs | running | healthy | Up 5 weeks (healthy) |
 | searxng | running | - | Up 2 weeks |
 | sumeme-web | running | healthy | Up 2 weeks (healthy) |
 
@@ -39,14 +39,14 @@
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-09-22T01:08:59Z |
+| Publish project status | in_progress | main | 2026-09-22T04:50:50Z |
+| Smoke production | success | main | 2026-09-22T04:50:46Z |
+| Publish project status | success | main | 2026-09-22T01:09:36Z |
 | Publish project status | success | main | 2026-09-21T22:40:49Z |
 | Publish project status | success | main | 2026-09-21T21:58:01Z |
 | Smoke production | success | main | 2026-09-21T21:57:15Z |
 | Publish project status | success | main | 2026-09-21T19:24:13Z |
 | Publish project status | success | main | 2026-09-21T14:04:13Z |
-| Publish project status | success | main | 2026-09-21T12:44:18Z |
-| Smoke production | success | main | 2026-09-21T12:43:28Z |
 
 ## 开放 PR
 
