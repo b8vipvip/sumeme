@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-09-22T19:32:26+08:00",
+  "generated_at": "2026-09-22T19:34:34+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "degraded",
   "project_stage": "deployed_degraded",
@@ -156,14 +156,14 @@
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 36082515968,
-      "free_bytes": 4231880704,
+      "used_bytes": 36083290112,
+      "free_bytes": 4231106560,
       "used_percent": 85.6
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 2145722368,
-      "used_percent": 45.0
+      "available_bytes": 2085457920,
+      "used_percent": 46.6
     }
   },
   "github": {
@@ -196,14 +196,40 @@
       {
         "name": "Publish project status",
         "display_title": "Publish project status",
-        "event": "schedule",
+        "event": "workflow_run",
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
         "head_sha": "d902a3ca02dc035b93200372dcced9c1c3db80d3",
+        "run_number": 1560,
+        "created_at": "2026-09-22T11:34:05Z",
+        "updated_at": "2026-09-22T11:34:14Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/35722163418"
+      },
+      {
+        "name": "Smoke production",
+        "display_title": "Smoke production",
+        "event": "schedule",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "d902a3ca02dc035b93200372dcced9c1c3db80d3",
+        "run_number": 211,
+        "created_at": "2026-09-22T11:33:07Z",
+        "updated_at": "2026-09-22T11:34:03Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/35722071211"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "schedule",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "d902a3ca02dc035b93200372dcced9c1c3db80d3",
         "run_number": 1559,
         "created_at": "2026-09-22T11:32:03Z",
-        "updated_at": "2026-09-22T11:32:07Z",
+        "updated_at": "2026-09-22T11:32:44Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/35721977036"
       },
       {
@@ -322,32 +348,6 @@
         "created_at": "2026-09-21T14:03:19Z",
         "updated_at": "2026-09-21T14:04:13Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/35609563621"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "workflow_run",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "d902a3ca02dc035b93200372dcced9c1c3db80d3",
-        "run_number": 1551,
-        "created_at": "2026-09-21T12:43:30Z",
-        "updated_at": "2026-09-21T12:44:18Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/35601197047"
-      },
-      {
-        "name": "Smoke production",
-        "display_title": "Smoke production",
-        "event": "schedule",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "d902a3ca02dc035b93200372dcced9c1c3db80d3",
-        "run_number": 208,
-        "created_at": "2026-09-21T12:42:46Z",
-        "updated_at": "2026-09-21T12:43:28Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/35601125631"
       }
     ]
   },
@@ -365,7 +365,7 @@
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-09-22T19:32:26+08:00"
+    "generated_at": "2026-09-22T19:34:34+08:00"
   },
   "components": {
     "letta": {
@@ -433,7 +433,7 @@
         "service_scope_verification_failed"
       ],
       "deployment_classification": "external_degraded",
-      "age_seconds_at_publish": 1581170,
+      "age_seconds_at_publish": 1581298,
       "stale_at_publish": true,
       "stale_after_seconds": 86400
     }
