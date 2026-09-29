@@ -1,6 +1,6 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-09-29T09:15:08+08:00
+- **采集时间：** 2026-09-29T13:40:46+08:00
 - **总体状态：** `degraded`
 - **开发阶段：** `deployed_degraded`
 - **线上版本：** `d902a3ca02dc035b93200372dcced9c1c3db80d3`
@@ -11,27 +11,27 @@
 
 ## 需要关注
 
-- 磁盘使用率达到 80% 警戒线
+- 磁盘空间低于安全部署阈值
 
 ## 健康检查
 
 - 本地网关：`ok`
 - 公网入口：`ok`
-- 磁盘使用：`88.0%`，剩余 3.0 GiB
-- 内存使用：`49.4%`，可用 1.8 GiB
+- 磁盘使用：`88.1%`，剩余 3.0 GiB
+- 内存使用：`46.7%`，可用 1.9 GiB
 
 ## 容器服务
 
 | 服务 | 状态 | 健康 | 说明 |
 |---|---|---|---|
 | ai-provider-proxy | running | healthy | Up 3 weeks (healthy) |
-| letta | running | healthy | Up 5 weeks (healthy) |
-| lobe | running | - | Up 5 weeks |
+| letta | running | healthy | Up 6 weeks (healthy) |
+| lobe | running | - | Up 6 weeks |
 | memory-gateway | running | healthy | Up 3 weeks (healthy) |
 | postgresql | running | healthy | Up 3 weeks (healthy) |
 | qdrant | running | healthy | Up 3 weeks (healthy) |
 | redis | running | healthy | Up 3 weeks (healthy) |
-| rustfs | running | healthy | Up 5 weeks (healthy) |
+| rustfs | running | healthy | Up 6 weeks (healthy) |
 | searxng | running | - | Up 3 weeks |
 | sumeme-web | running | healthy | Up 3 weeks (healthy) |
 
@@ -39,14 +39,14 @@
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-09-29T01:14:50Z |
+| Publish project status | in_progress | main | 2026-09-29T05:40:27Z |
+| Smoke production | success | main | 2026-09-29T05:40:22Z |
+| Publish project status | success | main | 2026-09-29T01:15:24Z |
 | Publish project status | success | main | 2026-09-28T23:15:10Z |
 | Smoke production | success | main | 2026-09-28T23:14:28Z |
 | Publish project status | success | main | 2026-09-28T21:31:20Z |
 | Publish project status | success | main | 2026-09-28T15:57:19Z |
 | Publish project status | success | main | 2026-09-28T13:49:06Z |
-| Smoke production | success | main | 2026-09-28T13:48:14Z |
-| Publish project status | success | main | 2026-09-28T07:37:28Z |
 
 ## 开放 PR
 
@@ -79,7 +79,7 @@
 - 当前版本与 main 一致：`yes`
 - deploying SHA：`none`
 - 最近发布结果：`success`
-- 磁盘保护级别：`warning`
+- 磁盘保护级别：`critical`
 - Letta 必需：`no`
 - Letta 可用：`yes`
 - 最近 smoke test：`degraded`
