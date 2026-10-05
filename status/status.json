@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "generated_at": "2026-10-05T14:59:05+08:00",
+  "generated_at": "2026-10-05T22:31:25+08:00",
   "repository": "b8vipvip/sumeme",
   "overall": "degraded",
   "project_stage": "deployed_degraded",
@@ -156,14 +156,14 @@
   "system": {
     "disk": {
       "total_bytes": 42156257280,
-      "used_bytes": 38333730816,
-      "free_bytes": 1980665856,
-      "used_percent": 90.9
+      "used_bytes": 38518067200,
+      "free_bytes": 1796329472,
+      "used_percent": 91.4
     },
     "memory": {
       "total_bytes": 3904065536,
-      "available_bytes": 1877204992,
-      "used_percent": 51.9
+      "available_bytes": 1896992768,
+      "used_percent": 51.4
     }
   },
   "github": {
@@ -196,14 +196,40 @@
       {
         "name": "Publish project status",
         "display_title": "Publish project status",
-        "event": "schedule",
+        "event": "workflow_run",
         "status": "in_progress",
         "conclusion": null,
         "head_branch": "main",
         "head_sha": "d902a3ca02dc035b93200372dcced9c1c3db80d3",
+        "run_number": 1677,
+        "created_at": "2026-10-05T14:30:59Z",
+        "updated_at": "2026-10-05T14:31:04Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/37325324988"
+      },
+      {
+        "name": "Smoke production",
+        "display_title": "Smoke production",
+        "event": "schedule",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "d902a3ca02dc035b93200372dcced9c1c3db80d3",
+        "run_number": 257,
+        "created_at": "2026-10-05T14:30:15Z",
+        "updated_at": "2026-10-05T14:30:55Z",
+        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/37325223973"
+      },
+      {
+        "name": "Publish project status",
+        "display_title": "Publish project status",
+        "event": "schedule",
+        "status": "completed",
+        "conclusion": "success",
+        "head_branch": "main",
+        "head_sha": "d902a3ca02dc035b93200372dcced9c1c3db80d3",
         "run_number": 1676,
         "created_at": "2026-10-05T06:58:38Z",
-        "updated_at": "2026-10-05T06:58:42Z",
+        "updated_at": "2026-10-05T06:59:23Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/37275175026"
       },
       {
@@ -322,32 +348,6 @@
         "created_at": "2026-10-04T12:17:52Z",
         "updated_at": "2026-10-04T12:18:38Z",
         "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/37201614671"
-      },
-      {
-        "name": "Smoke production",
-        "display_title": "Smoke production",
-        "event": "schedule",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "d902a3ca02dc035b93200372dcced9c1c3db80d3",
-        "run_number": 254,
-        "created_at": "2026-10-04T12:17:11Z",
-        "updated_at": "2026-10-04T12:17:50Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/37201576553"
-      },
-      {
-        "name": "Publish project status",
-        "display_title": "Publish project status",
-        "event": "schedule",
-        "status": "completed",
-        "conclusion": "success",
-        "head_branch": "main",
-        "head_sha": "d902a3ca02dc035b93200372dcced9c1c3db80d3",
-        "run_number": 1668,
-        "created_at": "2026-10-04T11:30:52Z",
-        "updated_at": "2026-10-04T11:31:33Z",
-        "html_url": "https://github.com/b8vipvip/sumeme/actions/runs/37198995173"
       }
     ]
   },
@@ -356,16 +356,16 @@
     "workflow": null,
     "run_id": null
   },
-  "age_seconds": 0,
+  "age_seconds": 1,
   "stale": false,
   "freshness": {
-    "age_seconds": 0,
+    "age_seconds": 1,
     "stale": false,
-    "age_seconds_at_publish": 0,
+    "age_seconds_at_publish": 1,
     "expected_refresh_seconds": 900,
     "stale_after_seconds": 2100,
     "stale_at_publish": false,
-    "generated_at": "2026-10-05T14:59:05+08:00"
+    "generated_at": "2026-10-05T22:31:25+08:00"
   },
   "components": {
     "letta": {
@@ -433,7 +433,7 @@
         "service_scope_verification_failed"
       ],
       "deployment_classification": "external_degraded",
-      "age_seconds_at_publish": 2687969,
+      "age_seconds_at_publish": 2715110,
       "stale_at_publish": true,
       "stale_after_seconds": 86400
     }
