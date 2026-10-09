@@ -1,6 +1,6 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-10-09T21:12:27+08:00
+- **采集时间：** 2026-10-09T23:02:37+08:00
 - **总体状态：** `degraded`
 - **开发阶段：** `deployed_degraded`
 - **线上版本：** `d902a3ca02dc035b93200372dcced9c1c3db80d3`
@@ -17,8 +17,8 @@
 
 - 本地网关：`ok`
 - 公网入口：`ok`
-- 磁盘使用：`94.2%`，剩余 569.5 MiB
-- 内存使用：`51.6%`，可用 1.8 GiB
+- 磁盘使用：`94.1%`，剩余 613.7 MiB
+- 内存使用：`51.8%`，可用 1.8 GiB
 
 ## 容器服务
 
@@ -39,14 +39,14 @@
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | in_progress | main | 2026-10-09T13:12:05Z |
+| Publish project status | in_progress | main | 2026-10-09T15:02:15Z |
+| Publish project status | success | main | 2026-10-09T13:12:50Z |
 | Smoke production | success | main | 2026-10-09T13:11:59Z |
 | Publish project status | success | main | 2026-10-09T07:59:51Z |
 | Publish project status | success | main | 2026-10-09T06:04:59Z |
 | Smoke production | success | main | 2026-10-09T06:04:14Z |
 | Publish project status | success | main | 2026-10-09T01:33:55Z |
 | Publish project status | success | main | 2026-10-08T23:19:14Z |
-| Smoke production | success | main | 2026-10-08T23:18:37Z |
 
 ## 开放 PR
 
@@ -73,7 +73,7 @@
 
 ## 可靠性信号
 
-- 状态快照发布时年龄：`0s`
+- 状态快照发布时年龄：`1s`
 - 状态快照过期：`no`（阈值 2100s）
 - 部署状态：`idle`
 - 当前版本与 main 一致：`yes`
