@@ -1,6 +1,6 @@
 # SuMeMe 项目状态
 
-- **采集时间：** 2026-10-14T04:45:05+08:00
+- **采集时间：** 2026-10-14T06:41:40+08:00
 - **总体状态：** `degraded`
 - **开发阶段：** `deployed_degraded`
 - **线上版本：** `d902a3ca02dc035b93200372dcced9c1c3db80d3`
@@ -39,14 +39,14 @@
 
 | 工作流 | 结果 | 分支 | 时间 |
 |---|---|---|---|
-| Publish project status | queued | main | 2026-10-13T20:44:41Z |
+| Publish project status | in_progress | main | 2026-10-13T22:41:21Z |
+| Smoke production | success | main | 2026-10-13T22:41:16Z |
+| Publish project status | success | main | 2026-10-13T20:45:46Z |
 | Publish project status | success | main | 2026-10-13T15:25:02Z |
 | Publish project status | success | main | 2026-10-13T14:07:56Z |
 | Smoke production | success | main | 2026-10-13T14:06:59Z |
 | Publish project status | success | main | 2026-10-13T07:55:16Z |
 | Publish project status | success | main | 2026-10-13T01:22:37Z |
-| Publish project status | success | main | 2026-10-13T00:37:07Z |
-| Smoke production | success | main | 2026-10-13T00:36:27Z |
 
 ## 开放 PR
 
